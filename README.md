@@ -19,6 +19,7 @@ With Arcane SEO, you are able to use twig syntax inside the SEO fields of CMS/st
 ![article](https://developers.google.com/search/docs/data-types/images/mars-amp-mobile.png) 
 
 Enhance the display of your site in Google search results with schema.org structured data. Add it to any page using individual components. The currently available schemas are:
+
 - Article
 - Product
 - Video
