@@ -1,3 +1,4 @@
+# Arcane SEO
 If you ever wished to automatically generate the sitemap.xml for your whole site, or you wanted to dynamically set your SEO meta tags easily without having to write the code. With support for CMS Pages, RainLab.Pages and RainLab.Blog; you can add dynamic meta and Open Graph tags, structured data, and a sitemap.xml for all your pages and models from the backend area.
 
 ## ⭐ Automatic sitemap.xml
