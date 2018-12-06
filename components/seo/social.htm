@@ -1,0 +1,35 @@
+<meta property="og:type" content="{{ viewBag.og_type | t(_context) ?: 'website' }}" /> 
+<meta property="og:title" content="{{ 
+    viewBag.og_title | t(_context) | 
+    default( viewBag.meta_title | t(_context) ) |
+    default( viewBag.title )  
+}}" />
+<meta property="og:description" content="{{ 
+    viewBag.og_description | t(_context) | 
+    default( viewBag.meta_description | t(_context) ) | 
+    default( settings.site_description ) 
+}}" />
+<meta property="og:image" content="{{ 
+    viewBag.og_ref_image ? ( viewBag.og_ref_image | t(_context)  ) : "" |  
+    default( viewBag.og_image ? ( viewBag.og_image | media | url ) : "" ) | 
+    default( settings.site_image ? ( settings.site_image | media | url ) : "" )
+}}" />
+<meta property="og:url" content="{{ viewBag.canonical_url | t(_context) | url }}" />
+<meta property="fb:app_id" content="{{ settings.fb_app_id }}" />
+<meta name="twitter:title" content="{{
+    viewBag.og_title | t(_context) | 
+    default( viewBag.meta_title | t(_context) ) | 
+    default(viewBag.title)
+}}">
+<meta name="twitter:description" content="{{  
+    viewBag.og_description | t(_context) ?: 
+    viewBag.meta_description|t(_context) ?: 
+    settings.site_description
+}}">
+<meta name="twitter:image" content="{{ 
+    viewBag.og_ref_image ? ( viewBag.og_ref_image | t(_context)  ) : "" |  
+    default( viewBag.og_image ? ( viewBag.og_image | media | url ) : "" ) | 
+    default( settings.site_image ? ( settings.site_image | media | url ) : "" )
+}}" />
+{# <meta name="twitter:site" content="{{ viewBag.tw_site | t(_context) }}"> #}
+{# <meta name="twitter:creator" content="{{  viewBag.tw_creator | t(_context)  }}"> #}

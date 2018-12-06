@@ -1,0 +1,9 @@
+{
+    "name": "arcane/oc-seo-plugin",
+    "type": "october-plugin",
+    "description": "Easier SEO management",
+    "keywords": ["october", "cms", "seo", "plugin", "arcane", "schema", "structured", "data"],
+    "require": {
+        "spatie/schema-org": "^2.0"
+    }
+}
