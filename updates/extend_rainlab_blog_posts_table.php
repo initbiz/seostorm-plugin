@@ -13,7 +13,7 @@ class ExtendRainlabBlogPostsTable extends Migration
         {
             Schema::table('rainlab_blog_posts', function($table)
             {
-                $table->text('seo_options')->nullable();
+                $table->text('arcane_seo_options')->nullable();
             });
         }
     }
@@ -24,7 +24,7 @@ class ExtendRainlabBlogPostsTable extends Migration
         {
             Schema::table('rainlab_blog_posts', function($table)
             {
-                $table->dropColumn('seo_options');
+                $table->dropColumn('arcane_seo_options');
             });
         }
 

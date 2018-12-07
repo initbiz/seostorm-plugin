@@ -46,7 +46,7 @@ class  Sitemap
                 foreach ($models as $model) {
                     if ($page->hasComponent('blogPost')) 
                     {
-                        if (! (integer)$model->seo_options['enabled_in_sitemap']) continue;
+                        if (! (integer)$model->arcane_seo_options['enabled_in_sitemap']) continue;
                         $this->addItemToSet(Item::asPost($page, $model));
                     }
                     else $this->addItemToSet(Item::asCmsPage($page, $model));

@@ -69,7 +69,7 @@ class Plugin extends PluginBase
         if(PluginManager::instance()->hasPlugin('RainLab.Blog'))
         {
             \RainLab\Blog\Models\Post::extend(function($model) {
-                $model->addJsonable('seo_options');
+                $model->addJsonable('arcane_seo_options');
             });
         }
 
@@ -92,7 +92,7 @@ class Plugin extends PluginBase
             
             if(PluginManager::instance()->hasPlugin('RainLab.Blog') && $widget->model instanceof \RainLab\Blog\Models\Post)
                 $widget->addFields( array_except($this->blogSeoFields(), [
-                    'seo_options[model_class]', 'seo_options[lastmod]', 'seo_options[use_updated_at]', 'seo_options[sitemap_section]', 'seo_options[changefreq]', 'seo_options[priority]'
+                    'arcane_seo_options[model_class]', 'arcane_seo_options[lastmod]', 'arcane_seo_options[use_updated_at]', 'arcane_seo_options[sitemap_section]', 'arcane_seo_options[changefreq]', 'arcane_seo_options[priority]'
                 ]), 'secondary');
             
             if (!$widget->model instanceof \Cms\Classes\Page) return;
@@ -107,7 +107,7 @@ class Plugin extends PluginBase
     
     private function blogSeoFields() {
         return collect($this->seoFields())->mapWithKeys(function($item, $key) {
-            return ["seo_options[$key]" => $item];
+            return ["arcane_seo_options[$key]" => $item];
         })->toArray();
     }
     private function staticSeoFields() {
