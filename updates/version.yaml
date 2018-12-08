@@ -1,3 +1,5 @@
 1.0.0:
       - Plugin initialized 
+1.0.1:
+      - Added arcane_seo_options column to rainlab_blog_posts
       - extend_rainlab_blog_posts_table.php
