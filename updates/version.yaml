@@ -3,3 +3,5 @@
 1.0.1:
       - Added arcane_seo_options column to rainlab_blog_posts
       - extend_rainlab_blog_posts_table.php
+1.0.2:
+      - Bug fixes and README.md update

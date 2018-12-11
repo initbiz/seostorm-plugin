@@ -7,6 +7,7 @@ use Arcane\Seo\Models\Settings;
 use Arcane\Seo\Classes\Helper;
 use Cms\Classes\Theme;
 use Cms\Classes\Page;
+use Cms\Components\ViewBag;
 
 class Seo extends ComponentBase
 {
@@ -18,11 +19,12 @@ class Seo extends ComponentBase
     {
         $this->settings = Settings::instance();
         $thisPage = $this->page->page;
+        if (! $this->page['viewBag']) $this->page['viewBag'] = new ViewBag;
 
         if($this->page->page->hasComponent('blogPost')) // blog post
         {
             $post = $this->page['post'];
-            $this->page->viewBag->setProperties(array_merge($this->page->viewBag->getProperties(), $post->attributes, $post->arcane_seo_options));
+            $this->page['viewBag']->setProperties(array_merge($this->page->viewBag->getProperties(), $post->attributes, $post->arcane_seo_options));
             
         } else if (isset($this->page->apiBag['staticPage'])) { // static page
             $this->page['viewBag'] =  $this->page->controller->vars['page']->viewBag ;
