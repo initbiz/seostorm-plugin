@@ -68,9 +68,15 @@ class Helper {
     {
         return (new Carbon($date_str))->format('c');
     }
-    public function duration($str) {
-        return CarbonInterval::getIntervalSpec(CarbonInterval::createFromDateString($str));
+
+    public function d_8601 ($str) {
+       return (new Carbon($str))->toIso8601String();
     }
+
+    public Function i_8601 ($str) {
+        return CarbonInterval::fromString($str)->spec();
+    }
+
     
     public static function isBlogPost($model) {
         return 

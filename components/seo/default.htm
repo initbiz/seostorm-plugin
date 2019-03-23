@@ -1,27 +1,32 @@
+
 {% set self = __SELF__ %}
-{% set robots = [ viewBag.robot_index, viewBag.robot_follow, viewBag.robot_advanced ] %}
 {% set settings = __SELF__.settings %}
+{% set robots = [ 
+    viewBag.robot_index, 
+    viewBag.robot_follow, 
+    include(template_from_string(viewBag.robot_advanced)), 
+   ] 
+%}
+
 {%- if settings.enable_site_meta -%}
-<title>{{ 
-    viewBag.meta_title | t(_context) |
-    default(viewBag.title) | seotitle
-}}</title>
-<meta name="description" content="{{ viewBag.meta_description | t(_context) | default(settings.site_description) }}" />
-<meta name="keywords" content="{{ viewBag.meta_keywords | t(_context) | default(settings.site_keywords) }}" />
+<link rel="canonical" href="{{ include(template_from_string(viewBag.canonical_url)) | url  }}">
+<title>{{ include(template_from_string(viewBag.meta_title)) | default(viewBag.title) | seotitle }}</title>
+<meta name="description" content="{{ include(template_from_string(viewBag.meta_description)) | default(settings.site_description) }}" />
+<meta name="keywords" content="{{ include(template_from_string(viewBag.meta_keywords)) | default(settings.site_keywords) }}" />
 {% endif %}
 {%- if settings.enable_robots_meta -%} <meta name="robots" content="{{ robots | removenulls|join(', ') }}" /> {% endif %}
+
 {% if settings.extra_meta %} 
-{{ settings.extra_meta | raw }} 
+    {{ settings.extra_meta | raw }} 
 {% endif %}
 
-<link rel="canonical" href="{{ viewBag.canonical_url | t(_context) | url  }}">
 
 {% if settings.enable_og %}
-{% partial '@social.htm' settings=settings %}
+    {% partial '@social.htm' settings=settings %}
 {% endif %}
 
 {% if not self.disable_schema %}
     {% for schema in viewBag.schemas %} 
-    {{ schema.script | raw }}
+    {{ include(template_from_string(schema.script)) | raw }}
     {% endfor %}
 {% endif %}

@@ -46,12 +46,14 @@ class Plugin extends PluginBase
         $helper = new Helper();
         return [
             'filters' => [
-                'seotitle'             => [$helper, 'generateTitle'],
-                'removenulls'           => [$helper, 'removeNullsFromArray'],
-                'fillparams'            => ['Arcane\Seo\Classes\Helper', 'replaceUrlPlaceholders'],
-                't'            => ['Arcane\Seo\Classes\Helper', 'parseIfTwigSyntax'],
-                'url'            => [$helper, 'url'],
-                'duration'            => [$helper, 'duration'],
+                'seotitle'    => [$helper, 'generateTitle'],
+                'removenulls' => [$helper, 'removeNullsFromArray'],
+                'fillparams'  => ['Arcane\Seo\Classes\Helper', 'replaceUrlPlaceholders'],
+                't'   => ['Arcane\Seo\Classes\Helper', 'parseIfTwigSyntax'],
+                'url' => [$helper, 'url'],
+                'd_8601' => [$helper, 'd_8601'],
+                'i_8601' => [$helper, 'i_8601'],
+
             ]
         ];
     }
@@ -72,6 +74,13 @@ class Plugin extends PluginBase
                 $model->addJsonable('arcane_seo_options');
             });
         }
+
+        // add the template_from_string() function
+        \Event::listen('cms.page.beforeRenderPage', function($controller, $page) {
+
+            $twig = $controller->getTwig();
+            $twig->addExtension(new \Twig_Extension_StringLoader());
+        });
 
     }
     

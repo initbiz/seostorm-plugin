@@ -5,3 +5,12 @@
       - extend_rainlab_blog_posts_table.php
 1.0.2:
       - Bug fixes and README.md update
+
+1.1.0: !!! Minor breaking changes
+1.1.1:
+      - schema.org components won't need to check "enable twig syntax". Must use twig braces {{ }}.
+      - If using only one {{ }} in schema.org component fields, you must add a trailing space. Read the docs for more info.
+      - New twig filters; d_8601 and i_8601 for help with iso-8601 dates and intervals, inside dynamic fields.
+      - schema.org components won't convert dates/times to iso-8601 anymore.
+      - Added support for multiple twig braces in the dynamic fields >> {{hello}} ~ {{bye}}.
+      - The "advanced robots" and canonical url fields now support multiple twig syntax.

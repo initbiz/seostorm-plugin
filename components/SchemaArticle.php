@@ -18,10 +18,10 @@ class SchemaArticle extends ComponentBase
 
     public function onRun() {
         $this->setScript(Schema::Article()
-            ->headline($this->twigParse('headline'))
-            ->image($this->twigParse('image'))
-            ->datePublished($this->asDate('datePublished'))
-            ->dateModified($this->asDate('dateModified'))
+            ->headline($this->property('headline'))
+            ->image($this->property('image'))
+            ->datePublished($this->property('datePublished'))
+            ->dateModified($this->property('dateModified'))
             ->publisher($this->getPublisher())
             ->author($this->getAuthor())
             ->setProperty('mainEntityOfPage', $this->getMainEntityOfPage())

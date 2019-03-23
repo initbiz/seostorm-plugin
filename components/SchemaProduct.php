@@ -18,18 +18,18 @@ class SchemaProduct extends ComponentBase
     public function onRun() {
         $this->setScript(
             Schema::Product()
-                ->name($this->twig('name'))
-                ->description($this->twig('description'))
-                ->image($this->twig('image'))
-                ->sku($this->twig('sku'))
-                ->brand($this->twig('brand'))
+                ->name($this->property('name'))
+                ->description($this->property('description'))
+                ->image($this->property('image'))
+                ->sku($this->property('sku'))
+                ->brand($this->property('brand'))
                 ->offers(
                     Schema::Offer()
-                        ->priceCurrency($this->twig('priceCurrency'))
-                        ->price($this->twig('price'))
-                        ->itemCondition($this->twig('itemCondition'))
-                        ->availability($this->twig('availability'))
-                        ->url($this->twig('offerUrl'))
+                        ->priceCurrency($this->property('priceCurrency'))
+                        ->price($this->property('price'))
+                        ->itemCondition($this->property('itemCondition'))
+                        ->availability($this->property('availability'))
+                        ->url($this->property('offerUrl'))
                 )
             ->toScript()
         );

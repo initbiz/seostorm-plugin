@@ -37,6 +37,7 @@ class Seo extends ComponentBase
 
     }
 
+    
 
     public function componentDetails()
     {

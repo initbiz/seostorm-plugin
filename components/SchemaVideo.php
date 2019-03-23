@@ -18,12 +18,12 @@ class SchemaVideo extends ComponentBase
 
     function onRun() {
         $this->setScript( Schema::VideoObject()
-            ->name($this->twig('name'))
-            ->description($this->twig('description'))
-            ->thumbnailUrl($this->twig('thumbnailUrl'))
-            ->uploadDate($this->asDate('uploadDate'))
-            ->duration($this->asDuration('duration'))
-            ->interactionCount($this->twig('interactionCount'))
+            ->name($this->property('name'))
+            ->description($this->property('description'))
+            ->thumbnailUrl($this->property('thumbnailUrl'))
+            ->uploadDate($this->property('uploadDate'))
+            ->duration($this->property('duration'))
+            ->interactionCount($this->property('interactionCount'))
             ->toScript()
         )
         ;

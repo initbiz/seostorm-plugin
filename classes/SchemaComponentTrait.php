@@ -9,19 +9,7 @@ use Arcane\Seo\Classes\Helper;
 
 trait SchemaComponentTrait
 {
-    public $commonProperties = [
-        'is_iso_8601' => [
-            'title' => 'Convert to ISO-8601',
-            'description' => 'Set this if you want dates and durations to be converted to ISO-8601',
-            'type' => 'checkbox',
-        ],
-        'enable_twig' => [
-            'title' => 'Enable Twig syntax',
-            'description' => 'All fields will be interpreted as if they were inside a {{ }} twig string',
-            'type' => 'checkbox'
-        ]
-
-    ];
+    public $commonProperties = [];
 
     public $dateProperties = [
         'dateModified' => [
@@ -112,7 +100,7 @@ trait SchemaComponentTrait
         if (! $type) return;
 
         return Schema::$type()
-            ->name($this->twig('author_name'))
+            ->name($this->property('author_name'))
             ;
     }
 
@@ -121,33 +109,15 @@ trait SchemaComponentTrait
         $type = $this->property('publisher_type');
         if (! $type) return;
         return Schema::$type() 
-            ->name($this->twig('publisher_name'))
+            ->name($this->property('publisher_name'))
             ->logo(
                 Schema::ImageObject()
-                    ->url($this->twig('publisher_logo'))
+                    ->url($this->property('publisher_logo'))
             )
             ;
     }
     
-    public function asDate($prop) {
-        if ($this->property('is_iso_8601'))
-        {
-            // $date = $this->twig($prop);
-            return $prop ?: (new Carbon( $this->twig($prop) ))->toIso8601String() ;
-        } else {
-            return $this->twig($prop);
-        }
-    }
     
-    public function asDuration($prop) {
-        $interval = $this->twig($prop);
-        if ($this->property('is_iso_8601'))
-        {
-            return $interval ? CarbonInterval::fromString($interval)->spec() : '';
-        } else {
-            return $interval;
-        }
-    }
 
     public function getMainEntityOfPage() {
         return url( $this->page->canonical_url ?: $this->page->apiBag['staticPage']->viewBag['canonical_url'] ?? \Request::url() );
