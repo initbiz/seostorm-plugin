@@ -7,10 +7,12 @@
       - Bug fixes and README.md update
 
 1.1.0: !!! Minor breaking changes
-1.1.1:
-      - schema.org components won't need to check "enable twig syntax". Must use twig braces {{ }}.
-      - If using only one {{ }} in schema.org component fields, you must add a trailing space. Read the docs for more info.
-      - New twig filters; d_8601 and i_8601 for help with iso-8601 dates and intervals, inside dynamic fields.
-      - schema.org components won't convert dates/times to iso-8601 anymore.
-      - Added support for multiple twig braces in the dynamic fields >> {{hello}} ~ {{bye}}.
-      - The "advanced robots" and canonical url fields now support multiple twig syntax.
+1.1.1: schema.org components won't need to check "enable twig syntax". Must use twig braces {{ }}.
+1.1.2: If using only one {{ }} in schema.org component fields, you must add a trailing space. Read the docs for more info.
+1.1.3: New twig filters; d_8601 and i_8601 for help with iso-8601 dates and intervals, inside dynamic fields.
+1.1.4: schema.org components won't convert dates/times to iso-8601 anymore.
+1.1.5: Added support for multiple twig braces in the dynamic fields >> {{hello}} ~ {{bye}}.
+1.1.6: The "advanced robots" and canonical url fields now support multiple twig syntax.
+1.1.7: !!! fixing bugs with blog posts and static pages.
+1.1.8: fixed a bug that displays a fatal error in pages with the blogPost component.
+1.1.9: plugin will now require VojtaSvoboda.TwigExtensions plugin as dependency to avoid an error with template_from_string().

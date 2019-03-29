@@ -13,7 +13,9 @@ use Cms\Classes\Controller;
  */
 class Plugin extends PluginBase
 {
-
+    public $require = [
+        'VojtaSvoboda.TwigExtensions',
+    ];
 
     public function registerComponents()
     {
