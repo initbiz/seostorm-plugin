@@ -16,3 +16,4 @@
 1.1.7: !!! fixing bugs with blog posts and static pages.
 1.1.8: fixed a bug that displays a fatal error in pages with the blogPost component.
 1.1.9: plugin will now require VojtaSvoboda.TwigExtensions plugin as dependency to avoid an error with template_from_string().
+1.1.10: !!! Bug Fix: Removed initialization of Twig StringLoader Extension
