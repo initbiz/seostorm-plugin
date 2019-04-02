@@ -77,12 +77,12 @@ class Plugin extends PluginBase
             });
         }
 
-        // add the template_from_string() function
-        \Event::listen('cms.page.beforeRenderPage', function($controller, $page) {
+        // add the template_from_string() function, if twig extensions is not installed.
+        /*\Event::listen('cms.page.beforeRenderPage', function($controller, $page) {
 
             $twig = $controller->getTwig();
             $twig->addExtension(new \Twig_Extension_StringLoader());
-        });
+        });*/
 
     }
     
