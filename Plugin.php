@@ -91,26 +91,29 @@ class Plugin extends PluginBase
     {
         \Event::listen('backend.form.extendFields', function($widget)
         {
-            if (!($theme = Theme::getEditTheme())) throw new ApplicationException(Lang::get('cms::lang.theme.edit.not_found'));
-            if(PluginManager::instance()->hasPlugin('RainLab.Pages') && $widget->model instanceof \RainLab\Pages\Classes\Page)
-           {  
-                $widget->removeField('viewBag[meta_title]' );
-                $widget->removeField('viewBag[meta_description]');
-                $widget->addFields( array_except($this->staticSeoFields(), [
-                    'viewBag[model_class]', 'viewBag[use_updated_at]'
-                ]), 'primary'); 
-            }
+            if ($widget->isNested === false ) {
             
-            if(PluginManager::instance()->hasPlugin('RainLab.Blog') && $widget->model instanceof \RainLab\Blog\Models\Post)
-                $widget->addFields( array_except($this->blogSeoFields(), [
-                    'arcane_seo_options[model_class]', 'arcane_seo_options[lastmod]', 'arcane_seo_options[use_updated_at]', 'arcane_seo_options[sitemap_section]', 'arcane_seo_options[changefreq]', 'arcane_seo_options[priority]'
-                ]), 'secondary');
+                if (!($theme = Theme::getEditTheme())) throw new ApplicationException(Lang::get('cms::lang.theme.edit.not_found'));
+                if(PluginManager::instance()->hasPlugin('RainLab.Pages') && $widget->model instanceof \RainLab\Pages\Classes\Page)
+                {  
+                    $widget->removeField('viewBag[meta_title]' );
+                    $widget->removeField('viewBag[meta_description]');
+                    $widget->addFields( array_except($this->staticSeoFields(), [
+                        'viewBag[model_class]', 'viewBag[use_updated_at]'
+                    ]), 'primary'); 
+                }
             
-            if (!$widget->model instanceof \Cms\Classes\Page) return;
+                if(PluginManager::instance()->hasPlugin('RainLab.Blog') && $widget->model instanceof \RainLab\Blog\Models\Post)
+                    $widget->addFields( array_except($this->blogSeoFields(), [
+                        'arcane_seo_options[model_class]', 'arcane_seo_options[lastmod]', 'arcane_seo_options[use_updated_at]', 'arcane_seo_options[sitemap_section]', 'arcane_seo_options[changefreq]', 'arcane_seo_options[priority]'
+                    ]), 'secondary');
+            
+                if (!$widget->model instanceof \Cms\Classes\Page) return;
 
-            $widget->removeField('settings[meta_title]');
-            $widget->removeField('settings[meta_description]');
-            $widget->addFields( $this->cmsSeoFields(), 'primary');
+                $widget->removeField('settings[meta_title]');
+                $widget->removeField('settings[meta_description]');
+                $widget->addFields( $this->cmsSeoFields(), 'primary');
+            }
 
         });
     }
