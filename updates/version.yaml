@@ -17,4 +17,4 @@
 1.1.8: fixed a bug that displays a fatal error in pages with the blogPost component.
 1.1.9: plugin will now require VojtaSvoboda.TwigExtensions plugin as dependency to avoid an error with template_from_string().
 1.1.10: !!! Bug Fix: Removed initialization of Twig StringLoader Extension
-1.1.11: QuickFix for issue that caused repeater fields to repeat all the SEO fields. eg: https://ibb.co/s1YCQ37. Read more: https://octobercms.com/docs/plugin/extending#extending-backend-form
+1.1.11: "QuickFix for issue that caused repeater fields to repeat all the SEO fields. eg: https://ibb.co/s1YCQ37. Read more: https://octobercms.com/docs/plugin/extending#extending-backend-form"
