@@ -97,5 +97,3 @@ Currently supported tags are:
 
 **Note:** read the guidelines from Facebook and Twitter linked above for recommended values on these tags.
 
-## Redirection
-Although redirection isn't implemented, there is a plugin better suited for the job called [Redirect](https://octobercms.com/plugin/vdlp-redirect), with many (and powerful) features to handle any possible use case.
