@@ -1,4 +1,4 @@
-![Arcane SEO banner](https://vectr.com/alessrein/b4BaVTt3uz.png?width=620.0895801899236&height=153.9855183684984&select=b1H683SZxj,d2SzpA7JO2,group_a1x5X55x8&source=selection&quality=1)
+![Arcane SEO banner](https://vectr.com/alessrein/b4BaVTt3uz.svg?width=620.0895801899236&height=153.9855183684984&select=b1H683SZxj,d2SzpA7JO2,group_a1x5X55x8&source=selection&quality=1)
 ## Installation
 You can install from the market place by searching for "arcane seo" or:
 ```bash
