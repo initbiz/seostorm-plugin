@@ -2,11 +2,11 @@
 <meta property="og:type" content="{{ include(template_from_string(viewBag.og_type))  ?: 'website' }}" /> 
 <meta property="og:title" content="{{ 
     include(template_from_string(viewBag.og_title ?: viewBag.meta_title )) 
-    | default( viewBag.title ) | seotitle
+    | default('SEO')
 }}" />
 <meta property="og:description" content="{{ 
     include(template_from_string(viewBag.og_description ?: viewBag.meta_description )) 
-    | default(settings.site_description)
+    | default('SEO')
 }}" />
 <meta property="og:image" content="{{ 
     viewBag.og_ref_image ? include(template_from_string(viewBag.og_ref_image)) | media | url  : "" 

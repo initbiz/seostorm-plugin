@@ -18,3 +18,6 @@
 1.1.9: plugin will now require VojtaSvoboda.TwigExtensions plugin as dependency to avoid an error with template_from_string().
 1.1.10: !!! Bug Fix: Removed initialization of Twig StringLoader Extension
 1.1.11: "QuickFix for issue that caused repeater fields to repeat all the SEO fields. eg: https://ibb.co/s1YCQ37. Read more: https://octobercms.com/docs/plugin/extending#extending-backend-form"
+1.1.12: "Added character counting to meta title and description"
+1.1.13: "Removed keywords, this won't break anything."
+1.1.14: "Better defaults in form fields"

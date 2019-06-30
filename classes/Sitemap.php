@@ -53,7 +53,7 @@ class  Sitemap
                 }
             } else {
 
-                $this->addItemToSet(Item::asCmsPage($page, $page));
+                $this->addItemToSet(Item::asCmsPage($page));
             }
         }
 
@@ -164,12 +164,19 @@ class Item
         );
     }
     
-    public static function asCmsPage($page, $model) {
-        return new self(
-             url( Helper::replaceUrlPlaceholders($page->url, $model) ),
-             $page->lastmod ?: $model->updated_at,
-             $page->priority,
-             $page->changefreq
+    public static function asCmsPage($page, $model = null) {
+        if ($model)
+            return new self(
+                url( Helper::replaceUrlPlaceholders($page->url, $model) ),
+                $model->updated_at,
+                $page->priority,
+                $page->changefreq
+            );
+        return new Self(
+            $page->url, 
+            $page->lastmod ?: \Carbon\Carbon::createFromTimestamp($page->mtime),
+            $page->priority,
+            $page->changefreq
         );
     }
 

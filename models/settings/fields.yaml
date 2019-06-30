@@ -8,17 +8,20 @@ tabs:
             type: switch
             comment: 'title, description and keywords'
             tab: Meta
+
         enable_og:
             label: 'Enable Open Graph'
             comment: 'Display the Open Graph meta tags'
             span: auto
             type: switch
             tab: Open Graph
+
         enable_robots_meta:
             label: 'Enable robots meta tags'
             span: auto
             type: switch
             tab: Meta
+
         enable_sitemap:
             label: 'Enable sitemap.xml'
             span: auto
@@ -26,7 +29,7 @@ tabs:
             tab: Meta
         site_name:
             label: 'Site name'
-            span: auto
+            span: left
             placeholder: 'Your site name'
             type: text
             tab: Meta
@@ -44,7 +47,15 @@ tabs:
             label: 'Site name separator'
             span: auto
             type: text
-            comment: 'Character to use to separate site name from the title'
+            comment: 'Character to separate site name from title, eg: Page Title | SiteName'
+            placeholder: '|'
+            tab: Meta
+        site_description:
+            label: Default description
+            size: tiny
+            span: full
+            placeholder: 'Your site description'
+            type: textarea
             tab: Meta
         site_image:
             label: 'Site image'
@@ -69,19 +80,7 @@ tabs:
             type: text
             comment: 'The fb:app_id OG tag'
             tab: Open Graph
-        site_description:
-            label: Default description
-            size: small
-            span: left
-            placeholder: 'Your site description'
-            type: textarea
-            tab: Meta
-        site_keywords:
-            label: Default keywords
-            span: right
-            placeholder: 'Your site keywords'
-            type: text
-            tab: Meta
+        
         extra_meta:
             label: 'Aditional meta tags'
             size: huge

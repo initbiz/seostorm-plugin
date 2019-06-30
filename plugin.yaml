@@ -1,10 +1,9 @@
 plugin:
-    name: Arcane SEO
-    description: 'Manage all SEO of your site'
+    name: "Arcane SEO"
+    description: 'Magically manage the SEO of your site'
     author: Arcane
     icon: icon-search
-    homepage: 'http://www.arcainz.com'
 permissions:
-    arcainz.arcane.manage_seo:
+    arcane.manage_seo:
         tab: SEO
         label: 'Manage SEO'
