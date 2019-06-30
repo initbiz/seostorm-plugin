@@ -1,3 +1,15 @@
+![Arcane SEO banner](https://vectr.com/alessrein/b4BaVTt3uz.svg?width=620.09&height=153.99&select=b1H683SZxj,d2SzpA7JO2,group_a1x5X55x8&source=selection)
+## Installation
+You can install from the market place by searching for "arcane seo" or:
+```bash
+$ cd /path/to/project-root/
+$ git clone git@github.com:mstrrain/Arcane-SEO.git plugins/arcane/seo
+$ php artisan plugin:refresh Arcane.Seo
+
+$ cd plugins/arcane/seo
+$ composer install
+```
+# How to use
 ## The `seo` component
 This component is the head of all other components, from it, all the meta tags and schema.org scripts are rendered. If you want to use this plugin for CMS, static and blog post pages; then you must to place this component inside the `head` tag of each layout that will render SEO meta tags and structured data.
 
