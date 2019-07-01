@@ -80,7 +80,17 @@ tabs:
             type: text
             comment: 'The fb:app_id OG tag'
             tab: Open Graph
-        
+        og_locale: 
+            label: 'og:locale'
+            span: left
+            trigger:
+                action: enable
+                field: enable_og
+                condition: checked
+            type: text
+            commentHtml: true
+            comment: 'Set the locale of your site for social media. <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
+            tab: Open Graph
         extra_meta:
             label: 'Aditional meta tags'
             size: huge

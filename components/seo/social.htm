@@ -14,6 +14,7 @@
     | default( settings.site_image ? ( settings.site_image | media | url ) : "" )
 }}" />
 <meta property="og:url" content="{{ include(template_from_string(viewBag.canonical_url)) | url }}" />
+<meta property="og:locale" content="{{ settings.og_locale }}" />
 <meta property="fb:app_id" content="{{ settings.fb_app_id }}" />
 <meta name="twitter:title" content="{{
     include(template_from_string(viewBag.og_title ?: viewBag.meta_title)) 
