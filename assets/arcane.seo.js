@@ -7,6 +7,7 @@
       let $helpBlock = $target.next('.help-block');
       let isTwig = /\{{2}.*\}{2}/.test($target.val());
       let count = isTwig ? 'unrechable' : $target.val().length;
+      
       let min = $target.data('min');
       let max = $target.data('max');
       
@@ -18,7 +19,7 @@
       
       let $number = $helpBlock.find('b');
 
-      if (count < 60 && count > 30) {
+      if (count < max && count > min) {
         $number.css({color:'green'})
       } else if (isTwig) {
         $number.css({color: 'orange'})
