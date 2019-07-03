@@ -1,4 +1,4 @@
-![Arcane SEO banner](https://i.ibb.co/FDLXWXY/arcane-seo-banner.png)
+![Arcane SEO banner](https://i.ibb.co/8jCZj2N/arcane-seo-banner.png)
 
 ## Installation
 You can install from the market place by searching for "arcane seo" or:
