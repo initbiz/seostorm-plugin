@@ -1,32 +1,23 @@
 tabs:
-    defaultTab: 'Structured Data'
+    defaultTab: 'Meta'
     fields:
 
+
+        #----------------------------------------------------------------------
+        # Meta Tab
+        #----------------------------------------------------------------------
         enable_site_meta:
-            label: 'Enable site meta'
-            span: auto
-            type: switch
-            comment: 'title, description and keywords'
-            tab: Meta
-
-        enable_og:
-            label: 'Enable Open Graph'
-            comment: 'Display the Open Graph meta tags'
-            span: auto
-            type: switch
-            tab: Open Graph
-
-        enable_robots_meta:
-            label: 'Enable robots meta tags'
+            label: 'Enable title and description meta tags'
             span: auto
             type: switch
             tab: Meta
-
+            default: true
         enable_sitemap:
             label: 'Enable sitemap.xml'
             span: auto
             type: switch
             tab: Meta
+            default: true
         site_name:
             label: 'Site name'
             span: left
@@ -57,11 +48,88 @@ tabs:
             placeholder: 'Your site description'
             type: textarea
             tab: Meta
+            comment: '[data-counter]'
+            attributes:
+                data-counter: 1
+                data-min: 100
+                data-max: 160
+
+        #----------------------------------------------------------------------
+        # <head> Tab
+        #----------------------------------------------------------------------
+        extra_meta:
+            label: 'Aditional <head> content'
+            size: huge
+            language: html
+            span: full
+            type: codeeditor
+            tab: <head>
+
+
+        #----------------------------------------------------------------------
+        # Robots Tab
+        #----------------------------------------------------------------------
+        enable_robots_txt:
+            label: 'Enable robots.txt'
+            span: auto
+            type: switch
+            tab: Robots
+            default: true
+        enable_robots_meta:
+            label: 'Enable robots meta tags'
+            span: auto
+            type: switch
+            tab: Robots
+            default: true
+        robots_txt:
+            label: robots.txt
+            size: huge
+            language: plain_text
+            span: full
+            disabled: 0
+            hidden: 0
+            type: codeeditor
+            tab: Robots
+            default: "User-agent: *\r\nAllow: /"
+
+        #----------------------------------------------------------------------
+        # Minify Tab
+        #----------------------------------------------------------------------
+        minify_html:
+            label: Minify HTML automatically
+            type: switch
+            tab: Minify
+        enable_minifycss:
+            label: 'Enable minifycss twig filter'
+            comment: 'Usage: {{ "path/to/css" | theme | minifycss }}'
+            type: switch
+            tab: Minify
+        enable_minifyjs:
+            label: 'Enable minifyjs twig filter'
+            comment: 'Usage: {{ "path/to/js" | theme | minifyjs }}'
+            type: switch
+            tab: Minify
+        no_minify_for_users:
+            label: Disable for minification for backend users
+            type: switch
+            tab: Minify
+        btn_clear_cache:
+            type: Arcane\Seo\Widgets\ClearCache
+            tab: Minify
+
+        #----------------------------------------------------------------------
+        # og Tab
+        #----------------------------------------------------------------------
+        enable_og:
+            label: 'Enable Open Graph'
+            comment: 'Display the Open Graph meta tags'
+            type: switch
+            tab: Open Graph
+            default: true
         site_image:
             label: 'Site image'
             mode: image
             prompt: 'Drag files or click here'
-            span: auto
             hidden: 0
             trigger:
                 action: enable
@@ -71,7 +139,6 @@ tabs:
             tab: Open Graph
         fb_app_id:
             label: 'Facebook App ID'
-            span: auto
             disabled: 0
             trigger:
                 action: enable
@@ -82,7 +149,6 @@ tabs:
             tab: Open Graph
         og_locale: 
             label: 'og:locale'
-            span: left
             trigger:
                 action: enable
                 field: enable_og
@@ -91,27 +157,4 @@ tabs:
             commentHtml: true
             comment: 'Set the locale of your site for social media. <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
             tab: Open Graph
-        extra_meta:
-            label: 'Aditional meta tags'
-            size: huge
-            language: html
-            span: full
-            type: codeeditor
-            tab: Meta
-        enable_robots_txt:
-            label: 'Enable robots.txt'
-            span: full
-            default: 0
-            type: switch
-            comment: 'Generate a robots.txt when search engines visit yourdomain.com/robots.txt'
-            tab: robots.txt
-        robots_txt:
-            label: robots.txt
-            size: huge
-            language: plain_text
-            span: full
-            disabled: 0
-            hidden: 0
-            type: codeeditor
-            tab: robots.txt
-            default: "User-agent: *\r\nAllow: /\r\nHost: $domain\r\nSitemap: $domain/sitemap.xml"
+        #----------------------------------------------------------------------

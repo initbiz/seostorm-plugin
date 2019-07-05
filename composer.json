@@ -4,6 +4,9 @@
     "description": "Advanced SEO plugin for OctoberCMS",
     "keywords": ["october", "cms", "seo", "plugin", "arcane", "schema", "structured", "data"],
     "require": {
-        "spatie/schema-org": "^2.0"
+        "spatie/schema-org": "^2.0",
+        "tedivm/jshrink": "^1.3",
+        "tubalmartin/cssmin": "^4.1",
+        "voku/html-min": "^3.1"
     }
 }

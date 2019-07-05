@@ -10,7 +10,7 @@ class StructureData extends Model
     /**
      * @var string The database table used by the model.
      */
-    public $table = 'arcainz_arcane_structure_datas';
+    public $table = 'arcane_structure_datas';
 
     /**
      * @var array Guarded fields

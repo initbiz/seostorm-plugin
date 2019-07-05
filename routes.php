@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 use Arcane\Seo\Classes\Robots;
 use Arcane\Seo\Classes\Sitemap;
