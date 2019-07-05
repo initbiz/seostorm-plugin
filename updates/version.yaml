@@ -22,3 +22,4 @@
 1.1.13: "Removed keywords, this won't break anything."
 1.1.14: "Better defaults in form fields"
 1.1.15: "Fixed character count for description"
+1.1.16: "Added HTML/CSS/JS minification"
