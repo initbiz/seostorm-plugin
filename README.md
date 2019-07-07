@@ -6,9 +6,7 @@ You can install from the market place by searching for "arcane seo" or:
 $ cd /path/to/project-root/
 $ git clone git@github.com:mstrrain/Arcane-SEO.git plugins/arcane/seo
 $ php artisan plugin:refresh Arcane.Seo
-
-$ cd plugins/arcane/seo
-$ composer install
+$ composer update
 ```
 # How to use
 ## The `seo` component
