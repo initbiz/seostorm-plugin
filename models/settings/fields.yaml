@@ -95,27 +95,57 @@ tabs:
         #----------------------------------------------------------------------
         # Minify Tab
         #----------------------------------------------------------------------
+        minify_help:
+            type: partial
+            path: $/arcane/seo/models/settings/_minify_help.htm
+            tab: Minify
         minify_html:
             label: Minify HTML automatically
+            comment: Front-end HTML will be minimized. Clear the cache whenever you make a change.
             type: switch
             tab: Minify
-        enable_minifycss:
-            label: 'Enable minifycss twig filter'
+            default: false
+        minify_css:
+            label: 'Minify CSS'
             comment: 'Usage: {{ "path/to/css" | theme | minifycss }}'
             type: switch
             tab: Minify
-        enable_minifyjs:
-            label: 'Enable minifyjs twig filter'
+            default: false
+        minify_js:
+            label: 'Minify JS'
             comment: 'Usage: {{ "path/to/js" | theme | minifyjs }}'
             type: switch
             tab: Minify
-        no_minify_for_users:
-            label: Disable for minification for backend users
-            type: switch
+            default: false
+        no_minify_for_dev:
+            label: Disable minification when ENV=dev
+            comment: Change the ENV variable in your .env file
+            type: checkbox
             tab: Minify
         btn_clear_cache:
             type: Arcane\Seo\Widgets\ClearCache
             tab: Minify
+
+        #----------------------------------------------------------------------
+        # Favicon
+        #----------------------------------------------------------------------
+        favicon_enabled:
+            label: Enable favicon.ico
+            comment: This will generate a route to /favicon.ico
+            type: switch
+            default: false
+            tab: Favicon
+        favicon_16:
+            label: Resize favicon to 16x16
+            type: checkbox
+            default: false
+            tab: Favicon
+        favicon:
+            label: Select your favicon
+            type: mediafinder
+            mode: image
+            prompt: Click %s to search the media library
+            tab: Favicon
 
         #----------------------------------------------------------------------
         # og Tab
@@ -145,6 +175,7 @@ tabs:
                 field: enable_og
                 condition: checked
             type: text
+            span: left
             comment: 'The fb:app_id OG tag'
             tab: Open Graph
         og_locale: 
@@ -154,7 +185,8 @@ tabs:
                 field: enable_og
                 condition: checked
             type: text
+            span: left
             commentHtml: true
             comment: 'Set the locale of your site for social media. <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
             tab: Open Graph
-        #----------------------------------------------------------------------
+

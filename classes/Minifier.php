@@ -6,34 +6,30 @@ use voku\helper\HtmlMin;
 
 class Minifier {
     static function minifyJs (string $url) {
-        $user = \BackendAuth::getUser();
+        $isDev = env('ENV') === "dev";
         $settings = Settings::instance();
         
         $path = parse_url($url, PHP_URL_PATH);
         $jsContent = \File::get($_SERVER['DOCUMENT_ROOT'].$path);
         $miniJsPath = 'arcane/seo/minify/js'.$path;
 
-        if (! $settings->enable_minifyjs || $user && $settings->no_minify_for_users ) 
-            return $url;
+        if (!self::isMinifyEnabled('js')) return $url;
 
         if (! \Storage::exists($miniJsPath)) {
             $miniJs = \JShrink\Minifier::minify($jsContent);
             \Storage::put($miniJsPath, $miniJs);
         }
 
-        return \Storage::url($miniJsPath);
+        return url( \Storage::url($miniJsPath) );
     }
     
     static function minifyCss (string $url) {
-        $user = \BackendAuth::getUser();
-        $settings = Settings::instance();
         
         $path = parse_url($url, PHP_URL_PATH);
         $input_css = \File::get($_SERVER['DOCUMENT_ROOT'].$path);
         $miniCssPath = 'arcane/seo/minify/css'.$path;
         
-        if (! $settings->enable_minifycss || $user && $settings->no_minify_for_users ) 
-            return $url;
+        if (!self::isMinifyEnabled('css')) return $url;
 
         if (! \Storage::exists($miniCssPath)) {
             $compressor = new CssMin;
@@ -45,10 +41,13 @@ class Minifier {
           \Storage::put($miniCssPath, $output_css);
         }
 
-        return \Storage::url($miniCssPath);
+        return url(\Storage::url($miniCssPath) );
     }
 
     static function minifyHtml ($content) {
+       
+        if (!self::isMinifyEnabled('html')) return $content;
+
         $htmlMin = new HtmlMin();
         $htmlMin->doOptimizeViaHtmlDomParser(true);           // optimize html via "HtmlDomParser()"
         $htmlMin->doRemoveComments();                         // remove default HTML comments (depends on "doOptimizeViaHtmlDomParser(true)")
@@ -66,4 +65,31 @@ class Minifier {
 
         return $htmlMin->minify($content);
     }
+
+
+    static function isMinifyEnabled($type) {
+        $isDev = env('ENV') === "dev";
+        $settings = Settings::instance();
+        $contentEnabled = false;
+
+        switch($type) {
+            case 'html':
+                $contentEnabled = $settings->minify_html;
+                break;
+            case 'js':
+                $contentEnabled = $settings->minify_js;
+                break;
+            case 'css':
+                $contentEnabled = $settings->minify_css;
+                break;
+        }
+
+        return 
+            $contentEnabled && 
+            !$settings->no_minify_for_dev && !$isDev || 
+            !$settings->no_minify_for_dev && $isDev || 
+            $settings->no_minify_for_dev && !$isDev
+        ;
+    }
+
 }

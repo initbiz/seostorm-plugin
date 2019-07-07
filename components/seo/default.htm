@@ -15,17 +15,22 @@
 {% endif %}
 {%- if settings.enable_robots_meta -%} <meta name="robots" content="{{ robots | removenulls|join(', ') }}" /> {% endif %}
 
-{% if settings.extra_meta %} 
-    {{ settings.extra_meta | raw }} 
-{% endif %}
-
-
-{% if settings.enable_og %}
-    {% partial '@social.htm' settings=settings %}
-{% endif %}
 
 {% if not self.disable_schema %}
-    {% for schema in viewBag.schemas %} 
+{% for schema in viewBag.schemas %} 
     {{ include(template_from_string(schema.script)) | raw }}
     {% endfor %}
+{% endif %}
+
+{% if settings.favicon_enabled %}
+<link rel="shortcut icon" href="{{ 'favicon.ico' | app }}" type="image/x-icon">
+<link rel="icon" type="image/x-icon" href="{{ 'favicon.ico' | app }}" /> 
+{% endif %}
+
+{% if settings.enable_og %}
+{% partial '@social.htm' settings=settings %}
+{% endif %}
+
+{% if settings.extra_meta %} 
+    {{ settings.extra_meta | raw }} 
 {% endif %}

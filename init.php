@@ -4,7 +4,7 @@ use System\Classes\PluginManager;
 
 // Extend the frontend controller to minify HTML with the Minify middleware.
 \Cms\Classes\CmsController::extend(function($controller) {
-    $controller->middleware('Arcane\Seo\Middleware\Minify');
+    $controller->middleware('Arcane\Seo\Middleware\MinifyHtml');
 });
 
 // add js dependencies in the backend
@@ -12,8 +12,7 @@ use System\Classes\PluginManager;
     $controller->addJs('/plugins/arcane/seo/assets/arcane.seo.js');
 });
 
-
-// make Blog fields jsonable
+// make our Post fields jsonable
 if(PluginManager::instance()->hasPlugin('RainLab.Blog'))
 {
     \RainLab\Blog\Models\Post::extend(function($model) {
