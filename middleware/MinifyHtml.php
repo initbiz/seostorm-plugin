@@ -6,6 +6,8 @@ use Arcane\Seo\Classes\Minifier;
 
 class MinifyHtml {
     function handle ($request, Closure $next) {
+        $settings = Settings::instance();
+
         $cachePath = 'arcane/seo/minify/html'.$request->getRequestUri().'_content.html';
         
         if ( Minifier::isMinifyEnabled('html') ) {
@@ -24,8 +26,8 @@ class MinifyHtml {
         } else {
             $response = $next($request);
         }
-        
-        return $response;
+
+        return $response->header;
     }
 
 }

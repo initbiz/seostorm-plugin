@@ -16,8 +16,15 @@ class Settings extends Model{
 
     protected $cache = [];
 
+    
+
     public function getPageOptions() {
         return \Cms\Classes\Page::getNameList();
     }
+
+    public function initSettingsData() {
+        $this->htaccess = \File::get(base_path(".htaccess")) ;
+    }
+
 
 } 

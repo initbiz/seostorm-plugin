@@ -24,3 +24,4 @@
 1.1.15: "Fixed character count for description"
 1.1.16: "Added HTML/CSS/JS minification"
 1.1.17: Added favicon generation
+1.1.18: Added .htaccess file edition, better permissions

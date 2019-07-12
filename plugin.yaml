@@ -1,9 +1,18 @@
 plugin:
-    name: "Arcane SEO"
+    name: 'Arcane SEO'
     description: 'Magically manage the SEO of your site'
     author: Arcane
     icon: icon-search
 permissions:
-    arcane.manage_seo:
-        tab: SEO
-        label: 'Manage SEO'
+    arcane.seo.config:
+        tab: 'arcane.seo::lang.plugin.name'
+        label: 'Access Arcane SEO configuration'
+    arcane.seo.og:
+        tab: 'arcane.seo::lang.plugin.name'
+        label: 'Access Open Graph form'
+    arcane.seo.sitemap:
+        tab: 'arcane.seo::lang.plugin.name'
+        label: 'Access Sitemap form'
+    arcane.seo.meta:
+        tab: 'arcane.seo::lang.plugin.name'
+        label: 'Access Meta form'

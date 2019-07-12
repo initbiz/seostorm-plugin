@@ -12,6 +12,15 @@ use System\Classes\PluginManager;
     $controller->addJs('/plugins/arcane/seo/assets/arcane.seo.js');
 });
 
+
+Arcane\Seo\Models\Settings::extend(function($model) {
+    $model->bindEvent('model.afterSave', function() use ($model) {
+        $htaccess = $model->value["htaccess"];
+        File::put(base_path(".htaccess"), $htaccess);
+    });
+});
+
+
 // make our Post fields jsonable
 if(PluginManager::instance()->hasPlugin('RainLab.Blog'))
 {

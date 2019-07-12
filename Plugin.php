@@ -114,7 +114,6 @@ class Plugin extends PluginBase
                 $widget->removeField('settings[meta_title]');
                 $widget->removeField('settings[meta_description]');
                 $widget->addFields( $this->cmsSeoFields(), 'primary');
-
             }
 
         });
@@ -137,7 +136,37 @@ class Plugin extends PluginBase
         })->toArray();
     }
     private function seoFields() {
-        return \Yaml::parseFile(plugins_path('arcane/seo/config/seofields.yaml'));
+        $user = \BackendAuth::getUser();
+        // remove form fields when current users doesn't have access
+        return array_except(
+            \Yaml::parseFile(plugins_path('arcane/seo/config/seofields.yaml')), 
+            array_merge(
+                [],
+                !$user->hasPermission([ "arcane.seo.og" ]) ? [
+                    "og_title", 
+                    "og_description", 
+                    "og_image", 
+                    "og_type", 
+                    "og_ref_image"
+                ] : [],
+                !$user->hasPermission(["arcane.seo.sitemap"]) ? [
+                    "enabled_in_sitemap",
+                    "model_class",
+                    "use_updated_at",
+                    "lastmod",
+                    "changefreq",
+                    "priority",
+                ] : [],
+                !$user->hasPermission(["arcane.seo.meta"]) ? [
+                    "meta_title",
+                    "meta_description",
+                    "canonical_url",
+                    "robot_index",
+                    "robot_follow",
+                    "robot_advanced",
+                ] : []
+            )
+        );
     }
 
 

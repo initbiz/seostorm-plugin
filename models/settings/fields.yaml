@@ -58,12 +58,13 @@ tabs:
         # <head> Tab
         #----------------------------------------------------------------------
         extra_meta:
-            label: 'Aditional <head> content'
+            label: 'Additional <head> content'
             size: huge
             language: html
             span: full
             type: codeeditor
             tab: <head>
+            default: "<!-- Additional meta tags -->"
 
 
         #----------------------------------------------------------------------
@@ -146,7 +147,22 @@ tabs:
             mode: image
             prompt: Click %s to search the media library
             tab: Favicon
-
+            
+        #----------------------------------------------------------------------
+        # .htacess
+        #----------------------------------------------------------------------
+        htaccess:
+            label: Edit your .htaccess
+            comment: <b class="text-danger">Important:</b> If you use this, do not modify your file directly, because this field is in sync with the database aswell.
+            commentHtml: true
+            type: codeeditor
+            size: huge
+            tab: .htaccess
+        
+        #----------------------------------------------------------------------
+        # HTTP Headers
+        #----------------------------------------------------------------------
+       
         #----------------------------------------------------------------------
         # og Tab
         #----------------------------------------------------------------------
