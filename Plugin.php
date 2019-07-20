@@ -1,5 +1,4 @@
 <?php namespace Arcane\Seo;
-
 use System\Classes\PluginBase;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
@@ -50,10 +49,12 @@ class Plugin extends PluginBase
     {
         $helper = new Helper();
         $minifier = \Arcane\Seo\Classes\Minifier::class;
+        $schema = \Arcane\Seo\Classes\Schema::class;
         return [
             'filters' => [
                 'minifyjs' => [$minifier, 'minifyJs'],
                 'minifycss'=> [$minifier, 'minifyCss'],
+                'arcane_seo_schema' => [$schema, 'toScript'],
                 'seotitle'    => [$helper, 'generateTitle'],
                 'removenulls' => [$helper, 'removeNullsFromArray'],
                 'fillparams'  => ['Arcane\Seo\Classes\Helper', 'replaceUrlPlaceholders'],
@@ -71,7 +72,7 @@ class Plugin extends PluginBase
         ];
     }
 
-    public function registeFormWidgets() {
+    public function registerFormWidgets() {
       return [ ];
     }
 
@@ -164,7 +165,10 @@ class Plugin extends PluginBase
                     "robot_index",
                     "robot_follow",
                     "robot_advanced",
-                ] : []
+                  ] : [],
+                  !$user->hasPermission(["arcane.seo.schema"]) ? [
+                    "schemas"
+                  ] : []
             )
         );
     }

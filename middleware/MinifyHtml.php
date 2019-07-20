@@ -8,7 +8,7 @@ class MinifyHtml {
     function handle ($request, Closure $next) {
         $settings = Settings::instance();
 
-        $cachePath = 'arcane/seo/minify/html'.$request->getRequestUri().'_content.html';
+        $cachePath = 'arcane/seo/minify/html'.$request->getRequestUri().'/html';
         
         if ( Minifier::isMinifyEnabled('html') ) {
             
@@ -27,7 +27,7 @@ class MinifyHtml {
             $response = $next($request);
         }
 
-        return $response->header;
+        return $response;
     }
 
 }

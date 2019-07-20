@@ -24,7 +24,11 @@ class Seo extends ComponentBase
         if($this->page->page->hasComponent('blogPost')) // blog post
         {
             $post = $this->page['post'];
-            $this->page['viewBag']->setProperties(array_merge($this->page["viewBag"]->getProperties(), $post->attributes, $post->arcane_seo_options));
+            $this->page['viewBag']->setProperties(array_merge(
+              $this->page["viewBag"]->getProperties(), 
+              $post->attributes, 
+              $post->arcane_seo_options ?: [] // quickfix avoid error when plugin just installed
+            ));
             
         } else if (isset($this->page->apiBag['staticPage'])) { // static page
             $this->page['viewBag'] =  $this->page->controller->vars['page']->viewBag ;

@@ -1,0 +1,13 @@
+columns:
+    id:
+        label: 'arcane.seo::lang.schemas.id'
+        type: number
+    name:
+        label: 'arcane.seo::lang.schemas.name'
+        type: text
+    created_at:
+        label: 'arcane.seo::lang.schemas.created_at'
+        type: datetime
+    updated_at:
+        label: 'arcane.seo::lang.schemas.updated_at'
+        type: datetime

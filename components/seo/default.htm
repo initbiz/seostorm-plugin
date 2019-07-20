@@ -15,11 +15,12 @@
 {% endif %}
 {%- if settings.enable_robots_meta -%} <meta name="robots" content="{{ robots | removenulls|join(', ') }}" /> {% endif %}
 
-
 {% if not self.disable_schema %}
 {% for schema in viewBag.schemas %} 
-    {{ include(template_from_string(schema.script)) | raw }}
-    {% endfor %}
+{{ include(template_from_string(schema.script)) | raw }}
+{% endfor %}
+
+{{ include(template_from_string(viewBag.schemas | arcane_seo_schema)) | raw }}
 {% endif %}
 
 {% if settings.favicon_enabled %}
@@ -32,5 +33,5 @@
 {% endif %}
 
 {% if settings.extra_meta %} 
-    {{ settings.extra_meta | raw }} 
+{{ settings.extra_meta | raw }} 
 {% endif %}

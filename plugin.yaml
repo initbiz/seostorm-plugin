@@ -9,10 +9,13 @@ permissions:
         label: 'Access Arcane SEO configuration'
     arcane.seo.og:
         tab: 'arcane.seo::lang.plugin.name'
-        label: 'Access Open Graph form'
+        label: 'Access Open Graph tab'
     arcane.seo.sitemap:
         tab: 'arcane.seo::lang.plugin.name'
-        label: 'Access Sitemap form'
+        label: 'Access Sitemap tab'
     arcane.seo.meta:
         tab: 'arcane.seo::lang.plugin.name'
-        label: 'Access Meta form'
+        label: 'Access Meta tab'
+    arcane.seo.schema:
+        tab: 'arcane.seo::lang.plugin.name'
+        label: 'Access Schema tab'

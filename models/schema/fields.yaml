@@ -1,0 +1,14 @@
+fields:
+    name:
+        label: 'arcane.seo::lang.schemas.name'
+        span: full
+        placeholder: ''
+        type: text
+    template:
+        label: 'arcane.seo::lang.schemas.template'
+        size: giant
+        language: php
+        span: full
+        stretch: 1
+        type: codeeditor
+        language: php
