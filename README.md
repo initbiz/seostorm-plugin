@@ -9,12 +9,10 @@ $ php artisan plugin:refresh Arcane.Seo
 $ composer update
 ```
 # How to use
-## The `seo` component
-This component is the head of all other components, from it, all the meta tags and schema.org scripts are rendered. If you want to use this plugin for CMS, static and blog post pages; then you must to place this component inside the `head` tag of each layout that will render SEO meta tags and structured data.
+## Meta tags
+To enable meta tags, place the SEO component in one or more  of your layouts. Make sure meta tags are enabled from the settings page.
 
-![seo component screenshot example](https://i.paste.pics/1e252b05f91271178358840995a885fe.png)
-
-## Dynamic SEO meta tags
+### Dynamic meta tags
 SEO meta tag fields support twig syntax, this makes them more flexible when you  have a website with many records and you need to use their attribute values for search results, or generate the title and description of the page from a model field.
 
 ![seo fields screenshot](https://i.ibb.co/7JJvNgr/download.png)
