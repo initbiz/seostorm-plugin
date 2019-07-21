@@ -61,7 +61,33 @@ If you have a custom model that you want to generate the links from, add the ful
 
 
 ## Adding structured data (schema.org)
-The plugin comes with components that define some schema.org objects (Article, Product and VideoObject). These components are also available as snippets for `RainLab.Pages` and their properties support twig syntax. 
+
+You can write your own schemas on your cms pages, blog posts and static pages. Just locate the Schema tab and follow this syntax:
+
+```yaml
+# top level schema
+Article: 
+    # these are properties
+   headline: "BIG NEWS OF 2019"
+   # property names must be written exactly as schema.org
+   datePublished: "09/08/1992"
+   # You can specify the type of subschema like this
+   publisher@Organization:
+    # properties are dynamic
+    name: "{{ model.publisher.name }}"
+   # you can specify arrays of a type
+   author@Person[]:
+    0: 
+        name: "James"
+    1: 
+        name: "Tom"
+ 
+ # another top level schema
+ Organization:
+    ...
+```
+
+The plugin also comes with components that define some schema.org objects (Article, Product and VideoObject). These components are also available as snippets for `RainLab.Pages` and their properties support twig syntax. 
 
 It's highly recommended that you read the [Google guidelines](https://developers.google.com/search/docs/guides/intro-structured-data) if you're not familiar with structured data.
 
@@ -74,6 +100,9 @@ To use these components, all you need to do is drag the ones you need from the i
 ![trailing space at the end of the value](https://i.snag.gy/T2Qkzq.jpg)
 
 However, if using multiple braces you won't need to add any space.
+
+**Note**: The components will be removed in a later version.
+
 
 ## Open Graph & Twitter cards
 The configuration is done via the Open Graph tab. If you don't know about these tags read [the guide for Open Graph from Facebook](https://developers.facebook.com/docs/sharing/webmasters) and [the guide for Twitter cards from Twitter](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html).
