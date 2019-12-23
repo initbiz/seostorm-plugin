@@ -81,7 +81,7 @@ class Plugin extends PluginBase
 
     public function register()
     {
-        \Event::listen('backend.form.extendFields', function($widget)
+        \Event::listen('backend.form.extendFieldsBefore', function($widget)
         {
             if ($widget->isNested === false ) {
             
@@ -91,30 +91,28 @@ class Plugin extends PluginBase
                 if ( PluginManager::instance()->hasPlugin('RainLab.Pages') 
                     && $widget->model instanceof \RainLab\Pages\Classes\Page) {  
                         
-                    $widget->removeField('viewBag[meta_title]' );
-                    $widget->removeField('viewBag[meta_description]');
-                    $widget->addFields( array_except($this->staticSeoFields(), [
+                    $widget->tabs['fields'] =array_replace($widget->tabs['fields'], array_except($this->staticSeoFields(), [
                         'viewBag[model_class]', 
-                    ]), 'primary'); 
+                    ])); 
                 }
             
                 if ( PluginManager::instance()->hasPlugin('RainLab.Blog') 
                     && $widget->model instanceof \RainLab\Blog\Models\Post) {
 
-                        $widget->addFields( array_except($this->blogSeoFields(), [
+                        $widget->tabs['fields'] = array_replace($widget->tabs['fields'], array_except($this->blogSeoFields(), [
                             'arcane_seo_options[model_class]', 
                             'arcane_seo_options[lastmod]', 
                             'arcane_seo_options[use_updated_at]', 
                             'arcane_seo_options[changefreq]', 
                             'arcane_seo_options[priority]'
-                        ]), 'secondary');
+                        ]));
                 }
                 
                 if (!$widget->model instanceof \Cms\Classes\Page) return;
                 
-                $widget->removeField('settings[meta_title]');
-                $widget->removeField('settings[meta_description]');
-                $widget->addFields( $this->cmsSeoFields(), 'primary');
+                $widget->tabs['fields'] = array_replace($widget->tabs['fields'], $this->cmsSeoFields());
+
+                
             }
 
         });
