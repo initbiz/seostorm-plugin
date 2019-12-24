@@ -4,6 +4,7 @@ meta_title :
   span: full
   tab: Meta
   comment : Page title
+  trans: true
   attributes: 
     data-counter: 1
     data-min: 30
@@ -18,6 +19,7 @@ meta_description:
     tab: Meta
     cssClass: char-counter
     comment: Page description
+    trans: true
     attributes: 
       data-counter: 1 
       data-min: 100 
@@ -29,6 +31,7 @@ canonical_url:
     type: text
     tab: Meta
     span: full
+    trans: true
     comment: The canonical URL this page should point to defaults to current URL
 
 robot_index: 
@@ -139,6 +142,7 @@ og_title :
     label   : og:title (dynamic)
     tab     : Open Graph
     span    : auto
+    trans: true
     comment : Recommended 50-60 characters
     placeholder: Defaults to SEO if left blank
 
@@ -148,6 +152,7 @@ og_description :
     type : textarea
     size : tiny
     span    : auto
+    trans: true
     comment : The optimal length is 155
     placeholder: Defaults to SEO if left blank
 

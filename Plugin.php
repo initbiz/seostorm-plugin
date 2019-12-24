@@ -116,8 +116,21 @@ class Plugin extends PluginBase
             }
 
         });
-    }
 
+        \Cms\Classes\Page::extend(function($model){
+            $model->translatable =  array_merge($model->translatable, $this->seoFieldsToTranslate());
+            //$model->addDynamicProperty('translatable', $this->seoFieldsToTranslate() + 'title' ); 
+        });
+    }
+    private function seoFieldsToTranslate(){
+        $toTrans = [];
+        foreach($this->seoFields() as $fieldKey => $fieldValue){
+            if(isset($fieldValue['trans']) && $fieldValue['trans'] == true){
+                $toTrans[] = $fieldKey;
+            }
+        }
+        return $toTrans;
+    }
     
     private function blogSeoFields() {
         return collect($this->seoFields())->mapWithKeys(function($item, $key) {
