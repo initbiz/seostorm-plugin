@@ -6,7 +6,18 @@ use Model;
 
 class Settings extends Model{
 
-    public $implement = ['System.Behaviors.SettingsModel'];
+    public $implement = [
+        'System.Behaviors.SettingsModel',
+        '@RainLab.Translate.Behaviors.TranslatableModel',
+    ];
+
+    public $translatable = [
+        'site_name',
+        'site_description',
+        'extra_meta',
+        'site_image',
+        'og_locale',
+    ];
 
     // A unique code
     public $settingsCode = 'arcane_seo_settings';
@@ -16,8 +27,6 @@ class Settings extends Model{
 
     protected $cache = [];
 
-    
-
     public function getPageOptions() {
         return \Cms\Classes\Page::getNameList();
     }
@@ -25,6 +34,5 @@ class Settings extends Model{
     public function initSettingsData() {
         $this->htaccess = \File::get(base_path(".htaccess")) ;
     }
+}
 
-
-} 

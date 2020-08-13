@@ -1,14 +1,13 @@
-<?php namespace Arcane\Seo;
-use System\Classes\PluginBase;
+<?php
+
+namespace Arcane\Seo;
+
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
-use System\Classes\SettingsManager;
-
-use System\Classes\PluginManager;
 use Arcane\Seo\Classes\Helper;
-use Cms\Classes\Controller;
-
-use Arcane\Seo\Models\Settings;
+use System\Classes\PluginBase;
+use System\Classes\PluginManager;
+use System\Classes\SettingsManager;
 
 /**
  * Arcane Plugin Information File
@@ -39,10 +38,9 @@ class Plugin extends PluginBase
                 'category'    =>  SettingsManager::CATEGORY_CMS,
                 'class'       => 'Arcane\Seo\Models\Settings',
                 'order'       => 100,
-                'permissions' => [ 'arcane.manage_seo' ],
+                'permissions' => ['arcane.manage_seo'],
             ]
         ];
-
     }
 
     public function registerMarkupTags()
@@ -53,7 +51,7 @@ class Plugin extends PluginBase
         return [
             'filters' => [
                 'minifyjs' => [$minifier, 'minifyJs'],
-                'minifycss'=> [$minifier, 'minifyCss'],
+                'minifycss' => [$minifier, 'minifyCss'],
                 'arcane_seo_schema' => [$schema, 'toScript'],
                 'seotitle'    => [$helper, 'generateTitle'],
                 'removenulls' => [$helper, 'removeNullsFromArray'],
@@ -72,117 +70,128 @@ class Plugin extends PluginBase
         ];
     }
 
-    public function registerFormWidgets() {
-      return [ ];
-    }
-
-    public function boot() { }
-
-
     public function register()
     {
-        \Event::listen('backend.form.extendFieldsBefore', function($widget)
-        {
-            if ($widget->isNested === false ) {
-            
-                if (!($theme = Theme::getEditTheme())) 
+        \Event::listen('backend.form.extendFieldsBefore', function ($widget) {
+            if ($widget->isNested === false) {
+
+                if (!($theme = Theme::getEditTheme()))
                     throw new ApplicationException(Lang::get('cms::lang.theme.edit.not_found'));
-                    
-                if ( PluginManager::instance()->hasPlugin('RainLab.Pages') 
-                    && $widget->model instanceof \RainLab\Pages\Classes\Page) {  
-                        
-                    $widget->tabs['fields'] =array_replace($widget->tabs['fields'], array_except($this->staticSeoFields(), [
-                        'viewBag[model_class]', 
-                    ])); 
-                }
-            
-                if ( PluginManager::instance()->hasPlugin('RainLab.Blog') 
-                    && $widget->model instanceof \RainLab\Blog\Models\Post) {
 
-                        $widget->tabs['fields'] = array_replace($widget->tabs['fields'], array_except($this->blogSeoFields(), [
-                            'arcane_seo_options[model_class]', 
-                            'arcane_seo_options[lastmod]', 
-                            'arcane_seo_options[use_updated_at]', 
-                            'arcane_seo_options[changefreq]', 
+                if (
+                    PluginManager::instance()->hasPlugin('RainLab.Pages')
+                    && $widget->model instanceof \RainLab\Pages\Classes\Page
+                ) {
+
+                    $widget->tabs['fields'] = array_replace(
+                        $widget->tabs['fields'], array_except($this->staticSeoFields(), [
+                            'viewBag[model_class]',
+                        ]
+                    ));
+                }
+
+                if (
+                    PluginManager::instance()->hasPlugin('RainLab.Blog')
+                    && $widget->model instanceof \RainLab\Blog\Models\Post
+                ) {
+
+                    $widget->tabs['fields'] = array_replace(
+                        $widget->tabs['fields'], array_except($this->blogSeoFields(), [
+                            'arcane_seo_options[model_class]',
+                            'arcane_seo_options[lastmod]',
+                            'arcane_seo_options[use_updated_at]',
+                            'arcane_seo_options[changefreq]',
                             'arcane_seo_options[priority]'
-                        ]));
+                        ]
+                    ));
                 }
-                
+
                 if (!$widget->model instanceof \Cms\Classes\Page) return;
-                
+
                 $widget->tabs['fields'] = array_replace($widget->tabs['fields'], $this->cmsSeoFields());
-
-                
             }
-
         });
 
-        \Cms\Classes\Page::extend(function($model){
+        \Cms\Classes\Page::extend(function ($model) {
             $model->translatable =  array_merge($model->translatable, $this->seoFieldsToTranslate());
-            //$model->addDynamicProperty('translatable', $this->seoFieldsToTranslate() + 'title' ); 
+            //$model->addDynamicProperty('translatable', $this->seoFieldsToTranslate() + 'title' );
         });
     }
-    private function seoFieldsToTranslate(){
+
+    private function seoFieldsToTranslate()
+    {
         $toTrans = [];
-        foreach($this->seoFields() as $fieldKey => $fieldValue){
-            if(isset($fieldValue['trans']) && $fieldValue['trans'] == true){
+        foreach ($this->seoFields() as $fieldKey => $fieldValue) {
+            if (isset($fieldValue['trans']) && $fieldValue['trans'] == true) {
                 $toTrans[] = $fieldKey;
             }
         }
         return $toTrans;
     }
-    
-    private function blogSeoFields() {
-        return collect($this->seoFields())->mapWithKeys(function($item, $key) {
+
+    private function blogSeoFields()
+    {
+        return collect($this->seoFields())->mapWithKeys(function ($item, $key) {
             return ["arcane_seo_options[$key]" => $item];
         })->toArray();
     }
-    private function staticSeoFields() {
-        return collect($this->seoFields())->mapWithKeys(function($item, $key) {
+
+    private function staticSeoFields()
+    {
+        return collect($this->seoFields())->mapWithKeys(function ($item, $key) {
             return ["viewBag[$key]" => $item];
         })->toArray();
     }
-    private function cmsSeoFields() {
-        return collect($this->seofields())->mapWithKeys(function($item, $key) {
+
+    private function cmsSeoFields()
+    {
+        return collect($this->seofields())->mapWithKeys(function ($item, $key) {
             return ["settings[$key]" => $item];
         })->toArray();
     }
-    private function seoFields() {
+
+    private function seoFields()
+    {
+        $fields = \Yaml::parseFile(plugins_path('arcane/seo/config/seofields.yaml'));
+
         $user = \BackendAuth::getUser();
         // remove form fields when current users doesn't have access
-        return array_except(
-            \Yaml::parseFile(plugins_path('arcane/seo/config/seofields.yaml')), 
-            array_merge(
-                [],
-                !$user->hasPermission([ "arcane.seo.og" ]) ? [
-                    "og_title", 
-                    "og_description", 
-                    "og_image", 
-                    "og_type", 
-                    "og_ref_image"
-                ] : [],
-                !$user->hasPermission(["arcane.seo.sitemap"]) ? [
-                    "enabled_in_sitemap",
-                    "model_class",
-                    "use_updated_at",
-                    "lastmod",
-                    "changefreq",
-                    "priority",
-                ] : [],
-                !$user->hasPermission(["arcane.seo.meta"]) ? [
-                    "meta_title",
-                    "meta_description",
-                    "canonical_url",
-                    "robot_index",
-                    "robot_follow",
-                    "robot_advanced",
-                  ] : [],
-                  !$user->hasPermission(["arcane.seo.schema"]) ? [
-                    "schemas"
-                  ] : []
-            )
-        );
+
+        if ($user) {
+            $fields = array_except(
+                $fields,
+                array_merge(
+                    [],
+                    !$user->hasPermission(["arcane.seo.og"]) ? [
+                        "og_title",
+                        "og_description",
+                        "og_image",
+                        "og_type",
+                        "og_ref_image"
+                    ] : [],
+                    !$user->hasPermission(["arcane.seo.sitemap"]) ? [
+                        "enabled_in_sitemap",
+                        "model_class",
+                        "use_updated_at",
+                        "lastmod",
+                        "changefreq",
+                        "priority",
+                    ] : [],
+                    !$user->hasPermission(["arcane.seo.meta"]) ? [
+                        "meta_title",
+                        "meta_description",
+                        "canonical_url",
+                        "robot_index",
+                        "robot_follow",
+                        "robot_advanced",
+                    ] : [],
+                    !$user->hasPermission(["arcane.seo.schema"]) ? [
+                        "schemas"
+                    ] : []
+                )
+            );
+        }
+
+        return $fields;
     }
-
-
 }

@@ -147,7 +147,7 @@ tabs:
             mode: image
             prompt: Click %s to search the media library
             tab: Favicon
-            
+
         #----------------------------------------------------------------------
         # .htacess
         #----------------------------------------------------------------------
@@ -158,11 +158,11 @@ tabs:
             type: codeeditor
             size: huge
             tab: .htaccess
-        
+
         #----------------------------------------------------------------------
         # HTTP Headers
         #----------------------------------------------------------------------
-       
+
         #----------------------------------------------------------------------
         # og Tab
         #----------------------------------------------------------------------
@@ -194,7 +194,7 @@ tabs:
             span: left
             comment: 'The fb:app_id OG tag'
             tab: Open Graph
-        og_locale: 
+        og_locale:
             label: 'og:locale'
             trigger:
                 action: enable
@@ -203,6 +203,6 @@ tabs:
             type: text
             span: left
             commentHtml: true
-            comment: 'Set the locale of your site for social media. <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
+            comment: 'Set the locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
             tab: Open Graph
 
