@@ -1,51 +1,56 @@
-<?php namespace Arcane\Seo\Classes;
+<?php
 
-use tubalmartin\CssMin\Minifier as CssMin;
-use Arcane\Seo\Models\Settings;
+namespace Arcane\Seo\Classes;
+
 use voku\helper\HtmlMin;
+use Arcane\Seo\Models\Settings;
+use tubalmartin\CssMin\Minifier as CssMin;
 
-class Minifier {
-    static function minifyJs (string $url) {
+class Minifier
+{
+    static function minifyJs(string $url)
+    {
         $isDev = env('ENV') === "dev";
-        $settings = Settings::instance();
-        
+
         $path = parse_url($url, PHP_URL_PATH);
-        $jsContent = \File::get($_SERVER['DOCUMENT_ROOT'].$path);
-        $miniJsPath = 'arcane/seo/minify/js'.$path;
+        $jsContent = \File::get($_SERVER['DOCUMENT_ROOT'] . $path);
+        $miniJsPath = 'arcane/seo/minify/js' . $path;
 
         if (!self::isMinifyEnabled('js')) return $url;
 
-        if (! \Storage::exists($miniJsPath)) {
+        if (!\Storage::exists($miniJsPath)) {
             $miniJs = \JShrink\Minifier::minify($jsContent);
             \Storage::put($miniJsPath, $miniJs);
         }
 
-        return url( \Storage::url($miniJsPath) );
+        return url(\Storage::url($miniJsPath));
     }
-    
-    static function minifyCss (string $url) {
-        
+
+    static function minifyCss(string $url)
+    {
+
         $path = parse_url($url, PHP_URL_PATH);
-        $input_css = \File::get($_SERVER['DOCUMENT_ROOT'].$path);
-        $miniCssPath = 'arcane/seo/minify/css'.$path;
-        
+        $input_css = \File::get($_SERVER['DOCUMENT_ROOT'] . $path);
+        $miniCssPath = 'arcane/seo/minify/css' . $path;
+
         if (!self::isMinifyEnabled('css')) return $url;
 
-        if (! \Storage::exists($miniCssPath)) {
-            $compressor = new CssMin;
+        if (!\Storage::exists($miniCssPath)) {
+            $compressor = new CssMin();
             // Remove important comments from output.
             $compressor->removeImportantComments();
             // Compress the CSS code!
             $output_css = $compressor->run($input_css);
 
-          \Storage::put($miniCssPath, $output_css);
+            \Storage::put($miniCssPath, $output_css);
         }
 
-        return url(\Storage::url($miniCssPath) );
+        return url(\Storage::url($miniCssPath));
     }
 
-    static function minifyHtml ($content) {
-       
+    static function minifyHtml($content)
+    {
+
         if (!self::isMinifyEnabled('html')) return $content;
 
         $htmlMin = new HtmlMin();
@@ -67,12 +72,13 @@ class Minifier {
     }
 
 
-    static function isMinifyEnabled($type) {
+    static function isMinifyEnabled($type)
+    {
         $isDev = env('ENV') === "dev";
         $settings = Settings::instance();
         $contentEnabled = false;
 
-        switch($type) {
+        switch ($type) {
             case 'html':
                 $contentEnabled = $settings->minify_html;
                 break;
@@ -84,12 +90,10 @@ class Minifier {
                 break;
         }
 
-        return 
-            $contentEnabled && 
-            !$settings->no_minify_for_dev && !$isDev || 
-            !$settings->no_minify_for_dev && $isDev || 
-            $settings->no_minify_for_dev && !$isDev
-        ;
+        return
+            $contentEnabled &&
+            !$settings->no_minify_for_dev && !$isDev ||
+            !$settings->no_minify_for_dev && $isDev ||
+            $settings->no_minify_for_dev && !$isDev;
     }
-
 }

@@ -1,12 +1,16 @@
 <?php
 
+namespace Arcane\Seo;
+
+use App;
+use File;
+use Route;
+use Response;
+use Cms\Classes\Controller;
 use Arcane\Seo\Classes\Robots;
 use Arcane\Seo\Classes\Sitemap;
 use Arcane\Seo\Models\Settings;
-use Cms\Classes\Controller;
 use October\Rain\Database\Attach\Resizer;
-use File as FileHelper;
-
 
 Route::get('robots.txt', function () {
     return Robots::response();
@@ -15,9 +19,9 @@ Route::get('robots.txt', function () {
 Route::get('sitemap.xml', function () {
     $sitemap = new Sitemap();
     if (!Settings::get('enable_sitemap')) {
-        return  \App::make(Controller::class)->setStatusCode(404)->run('/404');
+        return  App::make(Controller::class)->setStatusCode(404)->run('/404');
     } else {
-        return \Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
+        return Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
     }
 });
 
@@ -38,8 +42,8 @@ Route::get('favicon.ico', function () {
         if (!file_exists($outputPath)) {
 
             if (
-                !FileHelper::makeDirectory($destinationPath, 0777, true, true) &&
-                !FileHelper::isDirectory($destinationPath)
+                !File::makeDirectory($destinationPath, 0777, true, true) &&
+                !File::isDirectory($destinationPath)
             ) {
                 trigger_error(error_get_last(), E_USER_WARNING);
             }

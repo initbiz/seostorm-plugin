@@ -1,14 +1,13 @@
-<?php namespace Arcane\Seo\Classes;
+<?php
+
+namespace Arcane\Seo\Classes;
 
 use Request;
-use Arcane\Seo\Models\Settings;
-
 use Cms\Classes\Controller;
+use Arcane\Seo\Models\Settings;
 
 class Robots
 {
-
-
     public static function generate()
     {
         $domain = self::getDomain();
@@ -17,19 +16,18 @@ class Robots
         return $content;
     }
 
-    public static function getDomain ()
+    public static function getDomain()
     {
-        if (Request::secure())
-        {
-            return 'https://'.$_SERVER['HTTP_HOST'];
+        if (Request::secure()) {
+            return 'https://' . $_SERVER['HTTP_HOST'];
         } else {
-            return 'http://'.$_SERVER['HTTP_HOST'];
+            return 'http://' . $_SERVER['HTTP_HOST'];
         }
     }
 
-    public static function response() {
-        if(! Settings::get('enable_robots_txt'))
-        {
+    public static function response()
+    {
+        if (!Settings::get('enable_robots_txt')) {
             return \App::make(Controller::class)->setStatusCode(404)->run('/404');
         } else {
             return \Response::make(self::generate())->header("Content-Type", "text/plain");

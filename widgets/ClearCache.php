@@ -1,4 +1,6 @@
-<?php namespace Arcane\Seo\Widgets;
+<?php
+
+namespace Arcane\Seo\Widgets;
 
 use Backend\Classes\WidgetBase;
 
@@ -15,38 +17,14 @@ class ClearCache extends WidgetBase
     /**
      * @inheritDoc
      */
-    public function init()
-    {
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function render()
     {
         $this->prepareVars();
         return $this->makePartial('clearcache');
     }
 
-    /**
-     * Prepares the form widget view data
-     */
-    public function prepareVars() { }
-
-    /**
-     * @inheritDoc
-     */
-    public function loadAssets() { }
-
-    /**
-     * @inheritDoc
-     */
-    public function getSaveValue($value)
+    public function onClearCache()
     {
-        return $value;
-    } 
-
-    public function onClearCache() {
         \Storage::deleteDirectory('arcane/seo/minify');
         \Flash::success('Cache cleared');
     }

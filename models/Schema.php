@@ -1,14 +1,12 @@
-<?php namespace Arcane\Seo\Models;
+<?php
+
+namespace Arcane\Seo\Models;
 
 use Model;
 
-/**
- * Model
- */
 class Schema extends Model
 {
     use \October\Rain\Database\Traits\Validation;
-    
 
     /**
      * @var string The database table used by the model.
@@ -18,7 +16,5 @@ class Schema extends Model
     /**
      * @var array Validation rules
      */
-    public $rules = [
-    ];
-
+    public $rules = [];
 }

@@ -1,10 +1,8 @@
-<?php namespace Arcane\Seo\Classes;
+<?php
+
+namespace Arcane\Seo\Classes;
 
 use Spatie\SchemaOrg\Schema;
-use Carbon\Carbon;
-use Carbon\CarbonInterval;
-
-use October\Rain\Parse\Twig;
 use Arcane\Seo\Classes\Helper;
 
 trait SchemaComponentTrait
@@ -26,12 +24,11 @@ trait SchemaComponentTrait
     ];
 
     public $authorProperties = [
-        
         'author_type' => [
             'title' => 'Type',
             'description' => 'Type of author: Organization or Person',
             'type' => 'dropdown',
-            'options' => ['Organization'=>'Organization', 'Person'=> 'Person'],
+            'options' => ['Organization' => 'Organization', 'Person' => 'Person'],
             'group' => 'Author'
         ],
         'author_name' => [
@@ -42,12 +39,11 @@ trait SchemaComponentTrait
     ];
 
     public $publisherProperties = [
-        
         'publisher_type' => [
             'title' => 'Type',
             'description' => 'Type of publisher: Organization or Person',
             'type' => 'dropdown',
-            'options' => ['Organization'=>'Organization', 'Person'=> 'Person'],
+            'options' => ['Organization' => 'Organization', 'Person' => 'Person'],
             'group' => 'Publisher'
         ],
 
@@ -65,25 +61,29 @@ trait SchemaComponentTrait
     ];
 
     public $script = "";
-    public function onRender() {
+
+    public function onRender()
+    {
         return $this->script;
     }
 
-    public function setScript($script) {
+    public function setScript($script)
+    {
         $this->script = $script;
         $this->setSchema($script);
     }
-    
-    public function getSchemas() {
+
+    public function getSchemas()
+    {
         $page = $this->page;
-        // dd($page, get_class($page));
         if (is_array($page->viewBag))
             return $page->apiBag['staticPage']->viewBag['schemas'] ?? [];
         else
             return $page->viewBag->property('schemas') ?: [];
     }
-    
-    public function setSchema($script) {
+
+    public function setSchema($script)
+    {
         $schemas = $this->getSchemas();
         $schemas[$this->alias] = $this;
         $page = $this->page;
@@ -93,43 +93,37 @@ trait SchemaComponentTrait
         else
             $page->viewBag->setProperty('schemas', $schemas);
     }
-    
-    public function getAuthor() {
-        
+
+    public function getAuthor()
+    {
         $type = $this->property('author_type');
-        if (! $type) return;
+        if (!$type) return;
 
         return Schema::$type()
-            ->name($this->property('author_name'))
-            ;
+            ->name($this->property('author_name'));
     }
 
-    public function getPublisher() {
-
+    public function getPublisher()
+    {
         $type = $this->property('publisher_type');
-        if (! $type) return;
-        return Schema::$type() 
+        if (!$type) return;
+        return Schema::$type()
             ->name($this->property('publisher_name'))
             ->logo(
                 Schema::ImageObject()
                     ->url($this->property('publisher_logo'))
-            )
-            ;
+            );
     }
-    
-    
 
-    public function getMainEntityOfPage() {
-        return url( $this->page->canonical_url ?: $this->page->apiBag['staticPage']->viewBag['canonical_url'] ?? \Request::url() );
+    public function getMainEntityOfPage()
+    {
+        return url($this->page->canonical_url ?: $this->page->apiBag['staticPage']->viewBag['canonical_url'] ?? \Request::url());
     }
-    
-   
-   
-    public function twig($prop) {
+
+    public function twig($prop)
+    {
         $value = $this->property($prop) ?: "null";
         $enableTwig = $this->property('enable_twig');
         return Helper::parseIfTwigSyntax($enableTwig ? "{{ $value }}" : $value, $this->page->controller->vars);
     }
-    
-    
 }

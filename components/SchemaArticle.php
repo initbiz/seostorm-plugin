@@ -1,13 +1,14 @@
-<?php namespace Arcane\Seo\Components;
+<?php
 
-use Cms\Classes\ComponentBase;
+namespace Arcane\Seo\Components;
+
 use Spatie\SchemaOrg\Schema;
-use October\Rain\Parse\Twig;
+use Cms\Classes\ComponentBase;
 
 class SchemaArticle extends ComponentBase
 {
     use \Arcane\Seo\Classes\SchemaComponentTrait;
-    
+
     public function componentDetails()
     {
         return [
@@ -16,7 +17,8 @@ class SchemaArticle extends ComponentBase
         ];
     }
 
-    public function onRun() {
+    public function onRun()
+    {
         $this->setScript(Schema::Article()
             ->headline($this->property('headline'))
             ->image($this->property('image'))
@@ -25,22 +27,19 @@ class SchemaArticle extends ComponentBase
             ->publisher($this->getPublisher())
             ->author($this->getAuthor())
             ->setProperty('mainEntityOfPage', $this->getMainEntityOfPage())
-            ->toScript()
-        )
-        ;
+            ->toScript());
     }
 
     public function defineProperties()
     {
         return array_merge(
             $this->commonProperties,
-            $this->myProperties, 
+            $this->myProperties,
             $this->publisherProperties,
-            $this->authorProperties, 
+            $this->authorProperties,
             $this->dateProperties
         );
     }
-
 
     public $myProperties =  [
         'headline' => [

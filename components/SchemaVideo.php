@@ -1,7 +1,9 @@
-<?php namespace Arcane\Seo\Components;
+<?php
 
-use Cms\Classes\ComponentBase;
+namespace Arcane\Seo\Components;
+
 use Spatie\SchemaOrg\Schema;
+use Cms\Classes\ComponentBase;
 
 
 class SchemaVideo extends ComponentBase
@@ -16,17 +18,16 @@ class SchemaVideo extends ComponentBase
         ];
     }
 
-    function onRun() {
-        $this->setScript( Schema::VideoObject()
+    function onRun()
+    {
+        $this->setScript(Schema::VideoObject()
             ->name($this->property('name'))
             ->description($this->property('description'))
             ->thumbnailUrl($this->property('thumbnailUrl'))
             ->uploadDate($this->property('uploadDate'))
             ->duration($this->property('duration'))
             ->interactionCount($this->property('interactionCount'))
-            ->toScript()
-        )
-        ;
+            ->toScript());
     }
 
     public function defineProperties()
@@ -40,7 +41,7 @@ class SchemaVideo extends ComponentBase
             'title' => 'Name',
             'description' => 'Name of the video ',
             'group' => 'Properties',
-            'required' 
+            'required'
         ],
         'description' => [
             'title' => 'Description',

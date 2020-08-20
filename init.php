@@ -1,5 +1,7 @@
 <?php
 
+namespace Arcane\Seo;
+
 use System\Classes\PluginManager;
 
 // Extend the frontend controller to minify HTML with the Minify middleware.

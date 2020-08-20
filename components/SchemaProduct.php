@@ -1,7 +1,9 @@
-<?php namespace Arcane\Seo\Components;
+<?php
 
-use Cms\Classes\ComponentBase;
+namespace Arcane\Seo\Components;
+
 use Spatie\SchemaOrg\Schema;
+use Cms\Classes\ComponentBase;
 
 class SchemaProduct extends ComponentBase
 {
@@ -15,7 +17,8 @@ class SchemaProduct extends ComponentBase
         ];
     }
 
-    public function onRun() {
+    public function onRun()
+    {
         $this->setScript(
             Schema::Product()
                 ->name($this->property('name'))
@@ -31,7 +34,7 @@ class SchemaProduct extends ComponentBase
                         ->availability($this->property('availability'))
                         ->url($this->property('offerUrl'))
                 )
-            ->toScript()
+                ->toScript()
         );
     }
 

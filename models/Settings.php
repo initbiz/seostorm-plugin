@@ -4,8 +4,8 @@ namespace Arcane\Seo\Models;
 
 use Model;
 
-class Settings extends Model{
-
+class Settings extends Model
+{
     public $implement = [
         'System.Behaviors.SettingsModel',
         '@RainLab.Translate.Behaviors.TranslatableModel',
@@ -27,12 +27,13 @@ class Settings extends Model{
 
     protected $cache = [];
 
-    public function getPageOptions() {
+    public function getPageOptions()
+    {
         return \Cms\Classes\Page::getNameList();
     }
 
-    public function initSettingsData() {
-        $this->htaccess = \File::get(base_path(".htaccess")) ;
+    public function initSettingsData()
+    {
+        $this->htaccess = \File::get(base_path(".htaccess"));
     }
 }
-
