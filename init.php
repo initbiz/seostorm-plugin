@@ -16,7 +16,7 @@ use System\Classes\PluginManager;
 });
 
 
-Arcane\Seo\Models\Settings::extend(function($model) {
+\Arcane\Seo\Models\Settings::extend(function($model) {
     $model->bindEvent('model.afterSave', function() use ($model) {
         $htaccess = $model->value["htaccess"];
         File::put(base_path(".htaccess"), $htaccess);
