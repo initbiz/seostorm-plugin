@@ -95,8 +95,8 @@ class Plugin extends PluginBase
                     && $widget->model instanceof \RainLab\Blog\Models\Post
                 ) {
 
-                    $widget->tabs['fields'] = array_replace(
-                        $widget->tabs['fields'], array_except($this->blogSeoFields(), [
+                    $widget->secondaryTabs['fields'] = array_replace(
+                        $widget->secondaryTabs['fields'], array_except($this->blogSeoFields(), [
                             'arcane_seo_options[model_class]',
                             'arcane_seo_options[lastmod]',
                             'arcane_seo_options[use_updated_at]',
@@ -118,7 +118,7 @@ class Plugin extends PluginBase
         });
     }
 
-    private function seoFieldsToTranslate()
+    protected function seoFieldsToTranslate()
     {
         $toTrans = [];
         foreach ($this->seoFields() as $fieldKey => $fieldValue) {
@@ -129,28 +129,28 @@ class Plugin extends PluginBase
         return $toTrans;
     }
 
-    private function blogSeoFields()
+    protected function blogSeoFields()
     {
         return collect($this->seoFields())->mapWithKeys(function ($item, $key) {
             return ["arcane_seo_options[$key]" => $item];
         })->toArray();
     }
 
-    private function staticSeoFields()
+    protected function staticSeoFields()
     {
         return collect($this->seoFields())->mapWithKeys(function ($item, $key) {
             return ["viewBag[$key]" => $item];
         })->toArray();
     }
 
-    private function cmsSeoFields()
+    protected function cmsSeoFields()
     {
         return collect($this->seofields())->mapWithKeys(function ($item, $key) {
             return ["settings[$key]" => $item];
         })->toArray();
     }
 
-    private function seoFields()
+    protected function seoFields()
     {
         $fields = \Yaml::parseFile(plugins_path('arcane/seo/config/seofields.yaml'));
 
@@ -192,6 +192,6 @@ class Plugin extends PluginBase
             );
         }
 
-        return $fields ?? [];
+        return $fields;
     }
 }
