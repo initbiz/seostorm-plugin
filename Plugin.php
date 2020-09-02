@@ -192,6 +192,6 @@ class Plugin extends PluginBase
             );
         }
 
-        return $fields;
+        return $fields ?? [];
     }
 }
