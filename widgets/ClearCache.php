@@ -19,7 +19,6 @@ class ClearCache extends WidgetBase
      */
     public function render()
     {
-        $this->prepareVars();
         return $this->makePartial('clearcache');
     }
 
