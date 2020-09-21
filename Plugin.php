@@ -84,10 +84,11 @@ class Plugin extends PluginBase
                 ) {
 
                     $widget->tabs['fields'] = array_replace(
-                        $widget->tabs['fields'], array_except($this->staticSeoFields(), [
+                        $widget->tabs['fields'],
+                        array_except($this->staticSeoFields(), [
                             'viewBag[model_class]',
-                        ]
-                    ));
+                        ])
+                    );
                 }
 
                 if (
@@ -96,26 +97,28 @@ class Plugin extends PluginBase
                 ) {
 
                     $widget->secondaryTabs['fields'] = array_replace(
-                        $widget->secondaryTabs['fields'], array_except($this->blogSeoFields(), [
+                        $widget->secondaryTabs['fields'],
+                        array_except($this->blogSeoFields(), [
                             'arcane_seo_options[model_class]',
                             'arcane_seo_options[lastmod]',
                             'arcane_seo_options[use_updated_at]',
                             'arcane_seo_options[changefreq]',
                             'arcane_seo_options[priority]'
-                        ]
-                    ));
+                        ])
+                    );
                 }
 
-                if (!$widget->model instanceof \Cms\Classes\Page) return;
+                if (!$widget->model instanceof Page) return;
 
                 $widget->tabs['fields'] = array_replace($widget->tabs['fields'], $this->cmsSeoFields());
             }
         });
 
-        \Cms\Classes\Page::extend(function ($model) {
-            $model->translatable =  array_merge($model->translatable, $this->seoFieldsToTranslate());
-            //$model->addDynamicProperty('translatable', $this->seoFieldsToTranslate() + 'title' );
-        });
+        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
+            Page::extend(function ($model) {
+                $model->translatable = array_merge($model->translatable, $this->seoFieldsToTranslate());
+            });
+        }
     }
 
     protected function seoFieldsToTranslate()
