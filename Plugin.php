@@ -14,10 +14,6 @@ use System\Classes\SettingsManager;
  */
 class Plugin extends PluginBase
 {
-    public $require = [
-        'VojtaSvoboda.TwigExtensions',
-    ];
-
     public function registerComponents()
     {
         return [
