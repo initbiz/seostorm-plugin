@@ -183,6 +183,17 @@ tabs:
                 condition: checked
             type: mediafinder
             tab: Open Graph
+        og_site_name:
+            label: 'Site name'
+            disabled: 0
+            trigger:
+                action: enable
+                field: enable_og
+                condition: checked
+            type: text
+            span: left
+            comment: 'The og:site_name OG tag'
+            tab: Open Graph
         fb_app_id:
             label: 'Facebook App ID'
             disabled: 0

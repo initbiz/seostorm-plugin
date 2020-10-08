@@ -2,6 +2,7 @@
 
 namespace Arcane\Seo\Components;
 
+use Config;
 use Cms\Components\ViewBag;
 use Cms\Classes\ComponentBase;
 use Arcane\Seo\Models\Settings;
@@ -41,8 +42,7 @@ class Seo extends ComponentBase
             $this->page['viewBag'] = new ViewBag();
         }
 
-        if ($this->page->page->hasComponent('blogPost'))
-        {
+        if ($this->page->page->hasComponent('blogPost')) {
             $post = $this->page['post'];
             $this->page['viewBag']->setProperties(array_merge(
                 $this->page["viewBag"]->getProperties(),
@@ -54,34 +54,57 @@ class Seo extends ComponentBase
         } else {
             $this->page['viewBag']->setProperties(array_merge($this->page['viewBag']->getProperties(), $this->page->settings));
         }
-
-        $viewBag = $this->page["viewBag"];
-        $this->openGraph = [
-            'title' => $viewBag['og_title'] ?? $viewBag['meta_title'],
-        ];
-        $this->viewBag = $this->page["viewBag"];
+        $this->viewBag = $this->page['viewBag'];
         $this->disable_schema = $this->property('disable_schema');
+        dd($this->page->layout->components);
     }
 
-    public function getOgTitle()
+    public function getOgTitle($ogTitle = null)
     {
-        return $this->viewBag['og_title'] ?? $this->viewBag['meta_title'];
+        if (!$ogTitle) {
+            $ogTitle = $this->page['title'];
+            if (isset($this->viewBag['meta_title'])) {
+                $ogTitle = $this->viewBag['meta_title'];
+            }
+
+            if (isset($this->viewBag['og_title'])) {
+                $ogTitle = $this->viewBag['og_title'];
+            }
+        }
+        return $ogTitle;
     }
 
-    public function getOgDescription()
+    public function getOgDescription($ogDescription = null)
     {
-        return $this->viewBag['og_description'] ?? $this->viewBag['meta_description'];
+        if (!$ogDescription) {
+
+            if (isset($this->viewBag['og_description'])) {
+                $ogDescription = $this->viewBag['og_description'];
+            }
+        }
+        return $ogDescription;
     }
 
-    public function getOgImage()
+    public function getOgImage($ogImage = null)
     {
-        $settings = Settings::instance();
-        dd($settings->site_image);
-        return $this->viewBag['og_image'] ?? $this->viewBag[''];
+        if (!$ogImage) {
+            $mediaUrl = url(Config::get('cms.storage.media.path'));
+            if ($settingsSiteImage = Settings::instance()->siteImage) {
+                $ogImage = $mediaUrl . $settingsSiteImage;
+            }
+
+            if (isset($this->viewBag['og_image'])) {
+                $ogImage = $mediaUrl . $this->viewBag['og_image'];
+            }
+        }
+        return $ogImage;
     }
 
-    public function getOgType()
+    public function getOgType($ogType = null)
     {
-        return $this->viewBag['og_type'] ?? 'website';
+        if (!$ogType) {
+            $ogType = $this->viewBag['og_type'] ?? 'website';
+        }
+        return $ogType;
     }
 }
