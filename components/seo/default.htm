@@ -8,11 +8,14 @@
 %}
 
 {%- if settings.enable_site_meta -%}
-<title>{{ viewBag.meta_title|default(viewBag.title)|seotitle }}</title>
-<meta name="description" content="{{ viewBag.meta_description|default(settings.site_description) }}" />
-<link rel="canonical" href="{{ viewBag.canonical_url|url }}">
+    <title>{{ viewBag.meta_title|default(viewBag.title)|seotitle }}</title>
+    <meta name="description" content="{{ viewBag.meta_description|default(settings.site_description) }}" />
+    <link rel="canonical" href="{{ viewBag.canonical_url|url }}">
 {% endif %}
-{%- if settings.enable_robots_meta -%} <meta name="robots" content="{{ robots|removenulls|join(', ') }}" /> {% endif %}
+
+{%- if settings.enable_robots_meta -%}
+    <meta name="robots" content="{{ robots|removenulls|join(', ') }}" />
+{% endif %}
 
 {% if not self.disable_schema %}
     {% for schema in viewBag.schemas %}
@@ -23,8 +26,8 @@
 {% endif %}
 
 {% if settings.favicon_enabled %}
-    <link rel="shortcut icon" href="{{ 'favicon.ico' | app }}" type="image/x-icon">
-    <link rel="icon" type="image/x-icon" href="{{ 'favicon.ico' | app }}" />
+    <link rel="shortcut icon" href="{{ 'favicon.ico'|app }}" type="image/x-icon">
+    <link rel="icon" type="image/x-icon" href="{{ 'favicon.ico'|app }}" />
 {% endif %}
 
 {% if settings.enable_og %}

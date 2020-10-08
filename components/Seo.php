@@ -12,33 +12,7 @@ class Seo extends ComponentBase
 
     public $disable_schema;
 
-    // setup the viewBag for the component
-    public function onRender()
-    {
-        $this->settings = Settings::instance();
-
-        $thisPage = $this->page->page;
-
-        if (!$this->page['viewBag']) {
-            $this->page['viewBag'] = new ViewBag();
-        }
-
-        if ($this->page->page->hasComponent('blogPost')) // blog post
-        {
-            $post = $this->page['post'];
-            $this->page['viewBag']->setProperties(array_merge(
-                $this->page["viewBag"]->getProperties(),
-                $post->attributes,
-                $post->arcane_seo_options ?: [] // quickfix avoid error when plugin just installed
-            ));
-        } elseif (isset($this->page->apiBag['staticPage'])) { // static page
-            $this->page['viewBag'] =  $this->page->controller->vars['page']->viewBag;
-        } else { // cms page
-            $this->page['viewBag']->setProperties(array_merge($this->page['viewBag']->getProperties(), $this->page->settings));
-        }
-
-        $this->disable_schema = $this->property('disable_schema');
-    }
+    public $viewBag;
 
     public function componentDetails()
     {
@@ -57,5 +31,57 @@ class Seo extends ComponentBase
                 'type' => 'checkbox'
             ]
         ];
+    }
+
+    public function onRun()
+    {
+        $this->settings = Settings::instance();
+
+        if (!$this->page['viewBag']) {
+            $this->page['viewBag'] = new ViewBag();
+        }
+
+        if ($this->page->page->hasComponent('blogPost'))
+        {
+            $post = $this->page['post'];
+            $this->page['viewBag']->setProperties(array_merge(
+                $this->page["viewBag"]->getProperties(),
+                $post->attributes,
+                $post->arcane_seo_options ?: []
+            ));
+        } elseif (isset($this->page->apiBag['staticPage'])) {
+            $this->page['viewBag'] = $this->page->controller->vars['page']->viewBag;
+        } else {
+            $this->page['viewBag']->setProperties(array_merge($this->page['viewBag']->getProperties(), $this->page->settings));
+        }
+
+        $viewBag = $this->page["viewBag"];
+        $this->openGraph = [
+            'title' => $viewBag['og_title'] ?? $viewBag['meta_title'],
+        ];
+        $this->viewBag = $this->page["viewBag"];
+        $this->disable_schema = $this->property('disable_schema');
+    }
+
+    public function getOgTitle()
+    {
+        return $this->viewBag['og_title'] ?? $this->viewBag['meta_title'];
+    }
+
+    public function getOgDescription()
+    {
+        return $this->viewBag['og_description'] ?? $this->viewBag['meta_description'];
+    }
+
+    public function getOgImage()
+    {
+        $settings = Settings::instance();
+        dd($settings->site_image);
+        return $this->viewBag['og_image'] ?? $this->viewBag[''];
+    }
+
+    public function getOgType()
+    {
+        return $this->viewBag['og_type'] ?? 'website';
     }
 }

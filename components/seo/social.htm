@@ -1,23 +1,10 @@
-<meta property="og:type" content="{{ viewBag.og_type ?: 'website' }}" />
-<meta property="og:title" content="{{ viewBag.og_title ?: viewBag.meta_title|default(viewBag.title)|seotitle }}" />
-<meta property="og:description" content="{{ viewBag.og_description ?: viewBag.meta_description|default(settings.site_description) }}" />
-<meta property="og:image" content="{{ viewBag.og_ref_image ? viewBag.og_ref_image|media|url : ""
-|default( viewBag.og_image ? (viewBag.og_image|media|url) : "")
-|default( settings.site_image ? (settings.site_image| media|url) : "")
-}}" />
+<meta property="og:type" content="{{ __SELF__.getOgType() }}" />
+<meta property="og:title" content="{{ __SELF__.getOgTitle() }}" />
+<meta property="og:description" content="{{ __SELF__.getOgDescription() }}" />
+<meta property="og:image" content="{{ __SELF__.getOgImage() }}" />
 <meta property="og:url" content="{{ viewBag.canonical_url|url }}" />
 <meta property="og:locale" content="{{ settings.og_locale }}" />
 <meta property="fb:app_id" content="{{ settings.fb_app_id }}" />
-<meta name="twitter:title" content="{{
-    viewBag.og_title ?: viewBag.meta_title
-    |default(viewBag.title)
-}}">
-<meta name="twitter:description" content="{{
-    viewBag.og_description ?: viewBag.meta_description
-    |default(settings.site_description)
-}}">
-<meta name="twitter:image" content="{{
-    viewBag.og_ref_image ? viewBag.og_ref_image|media|url : ""
-    |default(viewBag.og_image ? (viewBag.og_image|media|url) : "")
-    |default(settings.site_image ? (settings.site_image|media|url) : "")
-}}" />
+<meta name="twitter:title" content="{{ __SELF__.getOgTitle() }}">
+<meta name="twitter:description" content="{{ __SELF__.getOgDescription() }}">
+<meta name="twitter:image" content="{{ __SELF__.getOgImage() }}" />

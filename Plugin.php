@@ -71,14 +71,13 @@ class Plugin extends PluginBase
         \Event::listen('backend.form.extendFieldsBefore', function ($widget) {
             if ($widget->isNested === false) {
 
-                if (!($theme = Theme::getEditTheme()))
+                if (!Theme::getEditTheme())
                     throw new ApplicationException(Lang::get('cms::lang.theme.edit.not_found'));
 
                 if (
                     PluginManager::instance()->hasPlugin('RainLab.Pages')
                     && $widget->model instanceof \RainLab\Pages\Classes\Page
                 ) {
-
                     $widget->tabs['fields'] = array_replace(
                         $widget->tabs['fields'],
                         array_except($this->staticSeoFields(), [
@@ -154,7 +153,6 @@ class Plugin extends PluginBase
         $fields = \Yaml::parseFile(plugins_path('arcane/seo/config/seofields.yaml'));
 
         $user = \BackendAuth::getUser();
-        // remove form fields when current users doesn't have access
 
         if ($user) {
             $fields = array_except(
