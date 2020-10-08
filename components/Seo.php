@@ -59,52 +59,70 @@ class Seo extends ComponentBase
         dd($this->page->layout->components);
     }
 
-    public function getOgTitle($ogTitle = null)
+    public function getTitle()
     {
-        if (!$ogTitle) {
-            $ogTitle = $this->page['title'];
-            if (isset($this->viewBag['meta_title'])) {
-                $ogTitle = $this->viewBag['meta_title'];
-            }
+        $title = $this->page['title'];
+        if (isset($this->viewBag['meta_title'])) {
+            $title = $this->viewBag['meta_title'];
+        }
+        return $title;
+    }
 
-            if (isset($this->viewBag['og_title'])) {
-                $ogTitle = $this->viewBag['og_title'];
-            }
+    public function getDescription()
+    {
+        $description = Settings::instance()->description;
+        if (isset($this->page['description'])) {
+            $description = $this->page['description'];
+        }
+
+        if (isset($this->viewBag['meta_description'])) {
+            $description = $this->viewBag['meta_description'];
+        }
+        return $description;
+    }
+
+    public function getOgTitle()
+    {
+        $ogTitle = $this->getTitle();
+        if (isset($this->viewBag['og_title'])) {
+            $ogTitle = $this->viewBag['og_title'];
         }
         return $ogTitle;
     }
 
-    public function getOgDescription($ogDescription = null)
+    public function getOgDescription()
     {
-        if (!$ogDescription) {
-
-            if (isset($this->viewBag['og_description'])) {
-                $ogDescription = $this->viewBag['og_description'];
-            }
+        $ogDescription = $this->getDescription();
+        if (isset($this->viewBag['og_description'])) {
+            $ogDescription = $this->viewBag['og_description'];
         }
         return $ogDescription;
     }
 
-    public function getOgImage($ogImage = null)
+    public function getOgImage()
     {
-        if (!$ogImage) {
-            $mediaUrl = url(Config::get('cms.storage.media.path'));
-            if ($settingsSiteImage = Settings::instance()->siteImage) {
-                $ogImage = $mediaUrl . $settingsSiteImage;
-            }
+        $mediaUrl = url(Config::get('cms.storage.media.path'));
+        if ($settingsSiteImage = Settings::instance()->siteImage) {
+            $ogImage = $mediaUrl . $settingsSiteImage;
+        }
 
-            if (isset($this->viewBag['og_image'])) {
-                $ogImage = $mediaUrl . $this->viewBag['og_image'];
-            }
+        if (isset($this->viewBag['og_image'])) {
+            $ogImage = $mediaUrl . $this->viewBag['og_image'];
         }
         return $ogImage;
     }
 
-    public function getOgType($ogType = null)
+    public function getOgVideo()
     {
-        if (!$ogType) {
-            $ogType = $this->viewBag['og_type'] ?? 'website';
+        if (isset($this->viewBag['og_video'])) {
+            $ogVideo = $this->viewBag['og_video'];
         }
+        return $ogVideo;
+    }
+
+    public function getOgType()
+    {
+        $ogType = $this->viewBag['og_type'] ?? 'website';
         return $ogType;
     }
 }

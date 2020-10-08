@@ -9,7 +9,7 @@
 
 {%- if settings.enable_site_meta -%}
     <title>{{ viewBag.meta_title|default(viewBag.title)|seotitle }}</title>
-    <meta name="description" content="{{ viewBag.meta_description|default(settings.site_description) }}" />
+    <meta name="description" content="{{ __SELF__.getDescription() }}" />
     <link rel="canonical" href="{{ viewBag.canonical_url|url }}">
 {% endif %}
 
