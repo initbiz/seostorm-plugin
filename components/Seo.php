@@ -64,7 +64,7 @@ class Seo extends ComponentBase
 
     public function getTitle()
     {
-        $title = $this->page['title'];
+        $title = $this->viewBag['title'];
         if (isset($this->viewBag['meta_title'])) {
             $title = $this->viewBag['meta_title'];
         }
