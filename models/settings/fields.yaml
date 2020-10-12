@@ -1,8 +1,6 @@
 tabs:
     defaultTab: 'Meta'
     fields:
-
-
         #----------------------------------------------------------------------
         # Meta Tab
         #----------------------------------------------------------------------
@@ -108,13 +106,13 @@ tabs:
             default: false
         minify_css:
             label: 'Minify CSS'
-            comment: 'Usage: {{ "path/to/css" | theme | minifycss }}'
+            comment: 'Usage: {{ "path/to/css"|theme|minifycss }}'
             type: switch
             tab: Minify
             default: false
         minify_js:
             label: 'Minify JS'
-            comment: 'Usage: {{ "path/to/js" | theme | minifyjs }}'
+            comment: 'Usage: {{ "path/to/js"|theme|minifyjs }}'
             type: switch
             tab: Minify
             default: false
@@ -123,7 +121,7 @@ tabs:
             comment: Change the ENV variable in your .env file
             type: checkbox
             tab: Minify
-        btn_clear_cache:
+        _btn_clear_cache:
             type: Arcane\Seo\Widgets\ClearCache
             tab: Minify
 
@@ -164,7 +162,7 @@ tabs:
         #----------------------------------------------------------------------
 
         #----------------------------------------------------------------------
-        # og Tab
+        # social Tab
         #----------------------------------------------------------------------
         enable_og:
             label: 'Enable Open Graph'
@@ -172,28 +170,66 @@ tabs:
             type: switch
             tab: Open Graph
             default: true
-        site_image:
-            label: 'Site image'
-            mode: image
-            prompt: 'Drag files or click here'
-            hidden: 0
+        site_image_help:
+            type: partial
+            span: right
+            path: $/arcane/seo/models/settings/_site_image_help.htm
+            tab: Open Graph
+        site_image_from:
+            label: 'Where to get default site image from'
+            tab: Open Graph
+            span: left
+            type: dropdown
+            options:
+                media: Media
+                fileupload: File Upload
+                url: Url
             trigger:
                 action: enable
                 field: enable_og
                 condition: checked
-            type: mediafinder
+        site_image:
+            label: 'Site image'
             tab: Open Graph
+            span: right
+            type: mediafinder
+            mode: image
+            trigger:
+                action: show
+                field: site_image_from
+                condition: value[media]
+        site_image_fileupload:
+            label: 'Site image'
+            tab: Open Graph
+            span: right
+            type: fileupload
+            mode: image
+            imageHeight: 260
+            imageWidth: 260
+            trigger:
+                action: show
+                field: site_image_from
+                condition: value[fileupload]
+        site_image_url:
+            label: 'Site image'
+            tab: Open Graph
+            span: right
+            type: text
+            trigger:
+                action: show
+                field: site_image_from
+                condition: value[url]
         og_site_name:
             label: 'Site name'
             disabled: 0
-            trigger:
-                action: enable
-                field: enable_og
-                condition: checked
             type: text
             span: left
             comment: 'The og:site_name OG tag'
             tab: Open Graph
+            trigger:
+                action: enable
+                field: enable_og
+                condition: checked
         fb_app_id:
             label: 'Facebook App ID'
             disabled: 0

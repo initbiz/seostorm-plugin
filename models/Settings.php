@@ -19,6 +19,12 @@ class Settings extends Model
         'og_locale',
     ];
 
+    public $attachOne = [
+        'site_image_fileupload' => [
+            '\System\Models\File',
+        ],
+    ];
+
     // A unique code
     public $settingsCode = 'arcane_seo_settings';
 

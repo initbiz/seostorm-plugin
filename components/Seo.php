@@ -60,6 +60,7 @@ class Seo extends ComponentBase
         $this->disable_schema = $this->property('disable_schema');
         $this->viewBag = $this->page['viewBag']->properties;
         $this->locale = App::getLocale();
+        $this->siteImage();
     }
 
     public function getTitle()
@@ -67,6 +68,10 @@ class Seo extends ComponentBase
         $title = $this->viewBag['title'];
         if (isset($this->viewBag['meta_title'])) {
             $title = $this->viewBag['meta_title'];
+        }
+
+        if (isset($this->viewBag['meta_title[' . $this->locale . ']'])) {
+            $title = $this->viewBag['meta_title[' . $this->locale . ']'];
         }
         return $title;
     }
@@ -141,5 +146,10 @@ class Seo extends ComponentBase
     {
         $ogType = $this->viewBag['og_type'] ?? 'website';
         return $ogType;
+    }
+
+    public function siteImage()
+    {
+        dd(Settings::instance()->site_image_from);
     }
 }
