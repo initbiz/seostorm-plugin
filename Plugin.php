@@ -49,7 +49,6 @@ class Plugin extends PluginBase
                 'minifyjs' => [$minifier, 'minifyJs'],
                 'minifycss' => [$minifier, 'minifyCss'],
                 'arcane_seo_schema' => [$schema, 'toScript'],
-                'seotitle'    => [$helper, 'generateTitle'],
                 'removenulls' => [$helper, 'removeNullsFromArray'],
                 'fillparams'  => ['Arcane\Seo\Classes\Helper', 'replaceUrlPlaceholders'],
                 'url' => [$helper, 'url'],

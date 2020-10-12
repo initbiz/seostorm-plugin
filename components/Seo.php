@@ -14,7 +14,7 @@ class Seo extends ComponentBase
 
     public $disable_schema;
 
-    public $viewBag;
+    public $viewBagProperties;
 
     public $locale;
 
@@ -45,34 +45,53 @@ class Seo extends ComponentBase
             $this->page['viewBag'] = new ViewBag();
         }
 
+
         if ($this->page->page->hasComponent('blogPost')) {
             $post = $this->page['post'];
-            $this->page['viewBag']->setProperties(array_merge(
+            $properties = array_merge(
                 $this->page["viewBag"]->getProperties(),
                 $post->attributes,
                 $post->arcane_seo_options ?: []
-            ));
+            );
+            $this->viewBagProperties = $properties;
+            $this->page['viewBag']->setProperties($properties);
         } elseif (isset($this->page->apiBag['staticPage'])) {
-            $this->page['viewBag'] = $this->page->controller->vars['page']->viewBag;
+            $this->viewBagProperties = $this->page['viewBag'] = array_merge(
+                $this->page->controller->vars['page']->viewBag,
+                $this->page->attributes
+            );
         } else {
-            $this->page['viewBag']->setProperties(array_merge($this->page['viewBag']->getProperties(), $this->page->settings));
+            $properties = array_merge(
+                $this->page['viewBag']->getProperties(), $this->page->settings
+            );
+
+            $this->viewBagProperties = $properties;
+            $this->page['viewBag']->setProperties($properties);
         }
         $this->disable_schema = $this->property('disable_schema');
-        $this->viewBag = $this->page['viewBag']->properties;
         $this->locale = App::getLocale();
         $this->siteImage();
     }
 
     public function getTitle()
     {
-        $title = $this->viewBag['title'];
-        if (isset($this->viewBag['meta_title'])) {
-            $title = $this->viewBag['meta_title'];
+        $title = $this->viewBagProperties['title'];
+        if (isset($this->viewBagProperties['meta_title'])) {
+            $title = $this->viewBagProperties['meta_title'];
         }
 
-        if (isset($this->viewBag['meta_title[' . $this->locale . ']'])) {
-            $title = $this->viewBag['meta_title[' . $this->locale . ']'];
+        if (isset($this->viewBagProperties['meta_title[' . $this->locale . ']'])) {
+            $title = $this->viewBagProperties['meta_title[' . $this->locale . ']'];
         }
+
+        $settings = Settings::instance();
+
+        if ($settings->site_name_position == 'prefix') {
+            $title = "{$settings->site_name} {$settings->site_name_separator} {$title}";
+        } else if ($settings->site_name_position == 'suffix') {
+            $title = "{$title} {$settings->site_name_separator} {$settings->site_name}";
+        }
+
         return $title;
     }
 
@@ -83,12 +102,12 @@ class Seo extends ComponentBase
             $description = $this->page['description'];
         }
 
-        if (isset($this->viewBag['meta_description'])) {
-            $description = $this->viewBag['meta_description'];
+        if (isset($this->viewBagProperties['meta_description'])) {
+            $description = $this->viewBagProperties['meta_description'];
         }
 
-        if (isset($this->viewBag['localeMeta_description[' . $this->locale . ']'])) {
-            $description = $this->viewBag['localeMeta_description[' . $this->locale . ']'];
+        if (isset($this->viewBagProperties['localeMeta_description[' . $this->locale . ']'])) {
+            $description = $this->viewBagProperties['localeMeta_description[' . $this->locale . ']'];
         }
         return $description;
     }
@@ -96,12 +115,12 @@ class Seo extends ComponentBase
     public function getOgTitle()
     {
         $ogTitle = $this->getTitle();
-        if (isset($this->viewBag['og_title'])) {
-            $ogTitle = $this->viewBag['og_title'];
+        if (isset($this->viewBagProperties['og_title'])) {
+            $ogTitle = $this->viewBagProperties['og_title'];
         }
 
-        if (isset($this->viewBag['og_title[' . $this->locale . ']'])) {
-            $ogTitle = $this->viewBag['og_title[' . $this->locale . ']'];
+        if (isset($this->viewBagProperties['og_title[' . $this->locale . ']'])) {
+            $ogTitle = $this->viewBagProperties['og_title[' . $this->locale . ']'];
         }
         return $ogTitle;
     }
@@ -109,12 +128,12 @@ class Seo extends ComponentBase
     public function getOgDescription()
     {
         $ogDescription = $this->getDescription();
-        if (isset($this->viewBag['og_description'])) {
-            $ogDescription = $this->viewBag['og_description'];
+        if (isset($this->viewBagProperties['og_description'])) {
+            $ogDescription = $this->viewBagProperties['og_description'];
         }
 
-        if (isset($this->viewBag['LocaleOg_description[' . $this->locale . ']'])) {
-            $ogDescription = $this->viewBag['LocaleOg_description['. $this->locale . ']'];
+        if (isset($this->viewBagProperties['LocaleOg_description[' . $this->locale . ']'])) {
+            $ogDescription = $this->viewBagProperties['LocaleOg_description['. $this->locale . ']'];
         }
         return $ogDescription;
     }
@@ -127,8 +146,8 @@ class Seo extends ComponentBase
             $ogImage = $mediaUrl . $settingsSiteImage;
         }
 
-        if (isset($this->viewBag['og_image'])) {
-            $ogImage = $mediaUrl . $this->viewBag['og_image'];
+        if (isset($this->viewBagProperties['og_image'])) {
+            $ogImage = $mediaUrl . $this->viewBagProperties['og_image'];
         }
         return $ogImage;
     }
@@ -136,20 +155,19 @@ class Seo extends ComponentBase
     public function getOgVideo()
     {
         $ogVideo = null;
-        if (isset($this->viewBag['og_video'])) {
-            $ogVideo = $this->viewBag['og_video'];
+        if (isset($this->viewBagProperties['og_video'])) {
+            $ogVideo = $this->viewBagProperties['og_video'];
         }
         return $ogVideo;
     }
 
     public function getOgType()
     {
-        $ogType = $this->viewBag['og_type'] ?? 'website';
+        $ogType = $this->viewBagProperties['og_type'] ?? 'website';
         return $ogType;
     }
 
     public function siteImage()
     {
-        dd(Settings::instance()->site_image_from);
     }
 }
