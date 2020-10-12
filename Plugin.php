@@ -111,6 +111,9 @@ class Plugin extends PluginBase
 
         if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
             Page::extend(function ($model) {
+                if (!$model->propertyExists('translatable')) {
+                    $model->addDynamicProperty('translatable', []);
+                }
                 $model->translatable = array_merge($model->translatable, $this->seoFieldsToTranslate());
             });
         }

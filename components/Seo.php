@@ -2,6 +2,7 @@
 
 namespace Arcane\Seo\Components;
 
+use App;
 use Config;
 use Cms\Components\ViewBag;
 use Cms\Classes\ComponentBase;
@@ -14,6 +15,8 @@ class Seo extends ComponentBase
     public $disable_schema;
 
     public $viewBag;
+
+    public $locale;
 
     public function componentDetails()
     {
@@ -54,9 +57,9 @@ class Seo extends ComponentBase
         } else {
             $this->page['viewBag']->setProperties(array_merge($this->page['viewBag']->getProperties(), $this->page->settings));
         }
-        $this->viewBag = $this->page['viewBag'];
         $this->disable_schema = $this->property('disable_schema');
-        dd($this->page->layout->components);
+        $this->viewBag = $this->page['viewBag']->properties;
+        $this->locale = App::getLocale();
     }
 
     public function getTitle()
@@ -78,6 +81,10 @@ class Seo extends ComponentBase
         if (isset($this->viewBag['meta_description'])) {
             $description = $this->viewBag['meta_description'];
         }
+
+        if (isset($this->viewBag['localeMeta_description[' . $this->locale . ']'])) {
+            $description = $this->viewBag['localeMeta_description[' . $this->locale . ']'];
+        }
         return $description;
     }
 
@@ -86,6 +93,10 @@ class Seo extends ComponentBase
         $ogTitle = $this->getTitle();
         if (isset($this->viewBag['og_title'])) {
             $ogTitle = $this->viewBag['og_title'];
+        }
+
+        if (isset($this->viewBag['og_title[' . $this->locale . ']'])) {
+            $ogTitle = $this->viewBag['og_title[' . $this->locale . ']'];
         }
         return $ogTitle;
     }
@@ -96,12 +107,17 @@ class Seo extends ComponentBase
         if (isset($this->viewBag['og_description'])) {
             $ogDescription = $this->viewBag['og_description'];
         }
+
+        if (isset($this->viewBag['LocaleOg_description[' . $this->locale . ']'])) {
+            $ogDescription = $this->viewBag['LocaleOg_description['. $this->locale . ']'];
+        }
         return $ogDescription;
     }
 
     public function getOgImage()
     {
         $mediaUrl = url(Config::get('cms.storage.media.path'));
+        $ogImage = null;
         if ($settingsSiteImage = Settings::instance()->siteImage) {
             $ogImage = $mediaUrl . $settingsSiteImage;
         }
@@ -114,6 +130,7 @@ class Seo extends ComponentBase
 
     public function getOgVideo()
     {
+        $ogVideo = null;
         if (isset($this->viewBag['og_video'])) {
             $ogVideo = $this->viewBag['og_video'];
         }
