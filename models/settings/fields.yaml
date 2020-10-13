@@ -252,4 +252,15 @@ tabs:
             commentHtml: true
             comment: 'Set the locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
             tab: Open Graph
+        og_locale_alternate:
+            label: 'og:locale:alternate'
+            trigger:
+                action: enable
+                field: enable_og
+                condition: checked
+            type: text
+            span: left
+            commentHtml: true
+            comment: 'Set the alternate locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
+            tab: Open Graph
 

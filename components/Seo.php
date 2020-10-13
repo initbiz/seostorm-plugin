@@ -70,7 +70,6 @@ class Seo extends ComponentBase
         }
         $this->disable_schema = $this->property('disable_schema');
         $this->locale = App::getLocale();
-        $this->siteImage();
     }
 
     public function getTitle()
@@ -141,7 +140,7 @@ class Seo extends ComponentBase
     public function getOgImage()
     {
         $mediaUrl = url(Config::get('cms.storage.media.path'));
-        $ogImage = null;
+        $ogImage = $this->getSiteImageFromSettings();
         if ($settingsSiteImage = Settings::instance()->siteImage) {
             $ogImage = $mediaUrl . $settingsSiteImage;
         }
@@ -167,7 +166,22 @@ class Seo extends ComponentBase
         return $ogType;
     }
 
-    public function siteImage()
+    public function getSiteImageFromSettings()
     {
+        $siteImage = null;
+        $mediaUrl = url(Config::get('cms.storage.media.path'));
+
+        if (Settings::instance()->site_image_from === 'media') {
+            $siteImage = $mediaUrl . Settings::instance()->site_image;
+        }
+
+        if (Settings::instance()->site_image_from === "fileupload") {
+            $siteImage = Settings::instance()->site_image_fileupload()->getSimpleValue();
+        }
+
+        if (Settings::instance()->site_image_from === "url") {
+            $siteImage = Settings::instance()->site_image_url;
+        }
+        return $siteImage;
     }
 }
