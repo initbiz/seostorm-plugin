@@ -140,17 +140,17 @@ class Seo extends ComponentBase
         return $siteImage;
     }
 
-    public function getPropertyTranslated(string $viewBagPropertie)
+    public function getPropertyTranslated(string $viewBagProperty)
     {
         $locale = App::getLocale();
         $property= null;
 
-        if (isset($this->viewBagProperties[$viewBagPropertie])) {
-            $property = $this->viewBagProperties[$viewBagPropertie];
+        if (isset($this->viewBagProperties[$viewBagProperty])) {
+            $property = $this->viewBagProperties[$viewBagProperty];
         }
 
-        if (isset($this->viewBagProperties['Locale' . $viewBagPropertie . '[' . $locale . ']'])) {
-            $property = $this->viewBagProperties['Locale' . $viewBagPropertie . '['. $locale . ']'];
+        if (isset($this->viewBagProperties['Locale' . $viewBagProperty . '[' . $locale . ']'])) {
+            $property = $this->viewBagProperties['Locale' . $viewBagProperty . '['. $locale . ']'];
         }
         return $property;
     }
