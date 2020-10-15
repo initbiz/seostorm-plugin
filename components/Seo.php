@@ -3,7 +3,6 @@
 namespace Arcane\Seo\Components;
 
 use App;
-use Config;
 use Cms\Components\ViewBag;
 use Cms\Classes\ComponentBase;
 use Arcane\Seo\Models\Settings;
