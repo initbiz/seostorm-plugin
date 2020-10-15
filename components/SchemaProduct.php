@@ -54,7 +54,6 @@ class SchemaProduct extends ComponentBase
             'description' => 'arcane.seo::lang.components.schema_product.properties.image.description',
             'group' => 'Product',
         ],
-
         'sku' => [
             'title' => 'arcane.seo::lang.components.schema_product.properties.sku.title',
             'description' => 'arcane.seo::lang.components.schema_product.properties.sku.description',

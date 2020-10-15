@@ -84,6 +84,36 @@
                     'description' => 'Indicate how many people have voted for the product',
                 ],
             ]
-        ]
+        ],
+        'schema_video' =>[
+            'name' => 'Video (schema.org)',
+            'description' => 'Inserts an schema.org VideoObject',
+            'properties' => [
+                'name' => [
+                    'name' => 'Name',
+                    'description' => 'Name of the video ',
+                ],
+                'description' => [
+                    'name' => 'Description',
+                    'description' => 'Description of the video',
+                ],
+                'thumbnail_url' => [
+                    'name' => 'Thumbnail URL',
+                    'description' => 'Thumnail of the video',
+                ],
+                'upload_date' => [
+                    'name' => 'Upload Date',
+                    'description' => 'Upload date of the video',
+                ],
+                'duration' => [
+                    'name' => 'Duration',
+                    'description' => 'Duration of the video',
+                ],
+                'interaction_count' => [
+                    'name' => 'Interaction count',
+                    'description' => 'Number of times the video has been viewed ',
+                ],
+            ]
+        ],
     ]
 ];

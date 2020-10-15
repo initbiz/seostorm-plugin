@@ -13,8 +13,8 @@ class SchemaVideo extends ComponentBase
     public function componentDetails()
     {
         return [
-            'name'        => 'Video (schema.org)',
-            'description' => 'Inserts an schema.org VideoObject'
+            'name'        => 'arcane.seo::lang.components.schema_video.name',
+            'description' => 'arcane.seo::lang.components.schema_video.description'
         ];
     }
 
@@ -38,34 +38,34 @@ class SchemaVideo extends ComponentBase
 
     public  $myProperties = [
         'name' => [
-            'title' => 'Name',
-            'description' => 'Name of the video ',
+            'title' => 'arcane.seo::lang.components.schema_video.properties.name.title',
+            'description' => 'arcane.seo::lang.components.schema_video.properties.name.description',
             'group' => 'Properties',
             'required'
         ],
         'description' => [
-            'title' => 'Description',
-            'description' => 'Description of the video ',
+            'title' => 'arcane.seo::lang.components.schema_video.properties.description.title',
+            'description' => 'arcane.seo::lang.components.schema_video.properties.description.description',
             'group' => 'Properties',
         ],
         'thumbnailUrl' => [
-            'title' => 'Thumbnail URL',
-            'description' => 'Thumbnail of the video ',
+            'title' => 'arcane.seo::lang.components.schema_video.properties.thumbnail_url.title',
+            'description' => 'arcane.seo::lang.components.schema_video.properties.thumbnail_url.description',
             'group' => 'Properties',
         ],
         'uploadDate' => [
-            'title' => 'Upload Date',
-            'description' => 'Upload date of the video ',
+            'title' => 'arcane.seo::lang.components.schema_video.properties.upload_date.title',
+            'description' => 'arcane.seo::lang.components.schema_video.properties.upload_date.description',
             'group' => 'Properties',
         ],
         'duration' => [
-            'title' => 'Duration',
-            'description' => 'Duration of the video ',
+            'title' => 'arcane.seo::lang.components.schema_video.properties.duration.title',
+            'description' => 'arcane.seo::lang.components.schema_video.properties.duration.description',
             'group' => 'Properties',
         ],
         'interactionCount' => [
-            'title' => 'Interaction count',
-            'description' => 'Number of times the video has been viewed ',
+            'title' => 'arcane.seo::lang.components.schema_video.properties.interaction_count.title',
+            'description' => 'arcane.seo::lang.components.schema_video.properties.interaction_count.description',
             'group' => 'Properties',
         ],
     ];
