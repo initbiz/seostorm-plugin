@@ -86,12 +86,15 @@ class Seo extends ComponentBase
     public function getDescription()
     {
         $description = Settings::instance()->site_description;
+
         if (!$description) {
             $description = $this->viewBagProperties['description'];
         }
+
         if (!$description) {
             $description = $this->getPropertyTranslated('meta_description');
         }
+
         return $description;
     }
 
