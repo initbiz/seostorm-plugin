@@ -177,7 +177,7 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Check 
+     * Check
      *
      * @return void
      */
