@@ -16,8 +16,6 @@ class Seo extends ComponentBase
 
     public $viewBagProperties;
 
-    public $locale;
-
     public function componentDetails()
     {
         return [
@@ -69,18 +67,14 @@ class Seo extends ComponentBase
             $this->page['viewBag']->setProperties($properties);
         }
         $this->disable_schema = $this->property('disable_schema');
-        $this->locale = App::getLocale();
     }
 
     public function getTitle()
     {
         $title = $this->viewBagProperties['title'];
-        if (isset($this->viewBagProperties['meta_title'])) {
-            $title = $this->viewBagProperties['meta_title'];
-        }
-
-        if (isset($this->viewBagProperties['meta_title[' . $this->locale . ']'])) {
-            $title = $this->viewBagProperties['meta_title[' . $this->locale . ']'];
+        $localeTitle = $this->getPropertyTranslated('meta_title');
+        if ($localeTitle) {
+            $title= $localeTitle;
         }
 
         $settings = Settings::instance();
@@ -97,16 +91,10 @@ class Seo extends ComponentBase
     public function getDescription()
     {
         $description = Settings::instance()->description;
-        if (isset($this->page['description'])) {
-            $description = $this->page['description'];
-        }
 
-        if (isset($this->viewBagProperties['meta_description'])) {
-            $description = $this->viewBagProperties['meta_description'];
-        }
-
-        if (isset($this->viewBagProperties['localeMeta_description[' . $this->locale . ']'])) {
-            $description = $this->viewBagProperties['localeMeta_description[' . $this->locale . ']'];
+        $localeDescription = $this->getPropertyTranslated('meta_description');
+        if ($localeDescription) {
+            $description = $localeDescription;
         }
         return $description;
     }
@@ -114,12 +102,9 @@ class Seo extends ComponentBase
     public function getOgTitle()
     {
         $ogTitle = $this->getTitle();
-        if (isset($this->viewBagProperties['og_title'])) {
-            $ogTitle = $this->viewBagProperties['og_title'];
-        }
-
-        if (isset($this->viewBagProperties['og_title[' . $this->locale . ']'])) {
-            $ogTitle = $this->viewBagProperties['og_title[' . $this->locale . ']'];
+        $localeOgTitle = $this->getPropertyTranslated('og_title');
+        if ($localeOgTitle) {
+            $ogTitle = $localeOgTitle;
         }
         return $ogTitle;
     }
@@ -127,12 +112,9 @@ class Seo extends ComponentBase
     public function getOgDescription()
     {
         $ogDescription = $this->getDescription();
-        if (isset($this->viewBagProperties['og_description'])) {
-            $ogDescription = $this->viewBagProperties['og_description'];
-        }
-
-        if (isset($this->viewBagProperties['LocaleOg_description[' . $this->locale . ']'])) {
-            $ogDescription = $this->viewBagProperties['LocaleOg_description['. $this->locale . ']'];
+        $localeOgDescription = $this->getPropertyTranslated('og_description');
+        if ($localeOgDescription) {
+            $ogDescription = $localeOgDescription;
         }
         return $ogDescription;
     }
@@ -145,8 +127,9 @@ class Seo extends ComponentBase
             $ogImage = $mediaUrl . $settingsSiteImage;
         }
 
-        if (isset($this->viewBagProperties['og_image'])) {
-            $ogImage = $mediaUrl . $this->viewBagProperties['og_image'];
+        $localeOgImage = $this->getPropertyTranslated('og_image');
+        if ($localeOgImage) {
+            $ogImage = $localeOgImage;
         }
         return $ogImage;
     }
@@ -154,16 +137,16 @@ class Seo extends ComponentBase
     public function getOgVideo()
     {
         $ogVideo = null;
-        if (isset($this->viewBagProperties['og_video'])) {
-            $ogVideo = $this->viewBagProperties['og_video'];
+        $localeOgVideo = $this->getPropertyTranslated('og_video');
+        if ($localeOgVideo) {
+            $ogVideo = $localeOgVideo;
         }
         return $ogVideo;
     }
 
     public function getOgType()
     {
-        $ogType = $this->viewBagProperties['og_type'] ?? 'website';
-        return $ogType;
+        return $this->viewBagProperties['og_type'] ?? 'website';;
     }
 
     public function getSiteImageFromSettings()
@@ -183,5 +166,20 @@ class Seo extends ComponentBase
             $siteImage = Settings::instance()->site_image_url;
         }
         return $siteImage;
+    }
+
+    public function getPropertyTranslated(string $viewBagPropertie)
+    {
+        $locale = App::getLocale();
+        $property= null;
+
+        if (isset($this->viewBagProperties[$viewBagPropertie])) {
+            $property = $this->viewBagProperties[$viewBagPropertie];
+        }
+
+        if (isset($this->viewBagProperties['Locale' . $viewBagPropertie . '[' . $locale . ']'])) {
+            $property = $this->viewBagProperties['Locale' . $viewBagPropertie . '['. $locale . ']'];
+        }
+        return $property;
     }
 }
