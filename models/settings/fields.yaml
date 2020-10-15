@@ -194,6 +194,8 @@ tabs:
             span: right
             type: mediafinder
             mode: image
+            imageHeight: 260
+            imageWidth: 260
             trigger:
                 action: show
                 field: site_image_from

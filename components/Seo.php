@@ -7,6 +7,7 @@ use Config;
 use Cms\Components\ViewBag;
 use Cms\Classes\ComponentBase;
 use Arcane\Seo\Models\Settings;
+use System\Classes\MediaLibrary;
 
 class Seo extends ComponentBase
 {
@@ -71,14 +72,9 @@ class Seo extends ComponentBase
 
     public function getTitle()
     {
-        $title = $this->viewBagProperties['title'];
-        $localeTitle = $this->getPropertyTranslated('meta_title');
-        if ($localeTitle) {
-            $title= $localeTitle;
-        }
+        $title = $this->getPropertyTranslated('meta_title') ?? $this->viewBagProperties['title'];
 
         $settings = Settings::instance();
-
         if ($settings->site_name_position == 'prefix') {
             $title = "{$settings->site_name} {$settings->site_name_separator} {$title}";
         } else if ($settings->site_name_position == 'suffix') {
@@ -90,58 +86,37 @@ class Seo extends ComponentBase
 
     public function getDescription()
     {
-        $description = Settings::instance()->description;
-
-        $localeDescription = $this->getPropertyTranslated('meta_description');
-        if ($localeDescription) {
-            $description = $localeDescription;
+        $description = Settings::instance()->site_description;
+        if (!$description) {
+            $description = $this->viewBagProperties['description'];
+        }
+        if (!$description) {
+            $description = $this->getPropertyTranslated('meta_description');
         }
         return $description;
     }
 
     public function getOgTitle()
     {
-        $ogTitle = $this->getTitle();
-        $localeOgTitle = $this->getPropertyTranslated('og_title');
-        if ($localeOgTitle) {
-            $ogTitle = $localeOgTitle;
-        }
-        return $ogTitle;
+        return $this->getPropertyTranslated('og_title') ?? $this->getTitle();
     }
 
     public function getOgDescription()
     {
-        $ogDescription = $this->getDescription();
-        $localeOgDescription = $this->getPropertyTranslated('og_description');
-        if ($localeOgDescription) {
-            $ogDescription = $localeOgDescription;
-        }
-        return $ogDescription;
+        return $this->getPropertyTranslated('og_description') ?? $this->getDescription();
     }
 
     public function getOgImage()
     {
-        $mediaUrl = url(Config::get('cms.storage.media.path'));
-        $ogImage = $this->getSiteImageFromSettings();
-        if ($settingsSiteImage = Settings::instance()->siteImage) {
-            $ogImage = $mediaUrl . $settingsSiteImage;
+        if ($this->getPropertyTranslated('og_image')) {
+            $ogImage = MediaLibrary::instance()->getPathUrl($this->getPropertyTranslated('og_image'));
         }
-
-        $localeOgImage = $this->getPropertyTranslated('og_image');
-        if ($localeOgImage) {
-            $ogImage = $localeOgImage;
-        }
-        return $ogImage;
+        return $ogImage ?? $this->getSiteImageFromSettings();
     }
 
     public function getOgVideo()
     {
-        $ogVideo = null;
-        $localeOgVideo = $this->getPropertyTranslated('og_video');
-        if ($localeOgVideo) {
-            $ogVideo = $localeOgVideo;
-        }
-        return $ogVideo;
+        return $this->viewBagProperties['og_video'] ?? null;
     }
 
     public function getOgType()
@@ -152,10 +127,8 @@ class Seo extends ComponentBase
     public function getSiteImageFromSettings()
     {
         $siteImage = null;
-        $mediaUrl = url(Config::get('cms.storage.media.path'));
-
-        if (Settings::instance()->site_image_from === 'media') {
-            $siteImage = $mediaUrl . Settings::instance()->site_image;
+        if (Settings::instance()->site_image_from === 'media' && Settings::instance()->site_image) {
+            $siteImage = MediaLibrary::instance()->getPathUrl(Settings::instance()->site_image);
         }
 
         if (Settings::instance()->site_image_from === "fileupload") {
