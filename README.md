@@ -1,10 +1,10 @@
 ![Arcane SEO banner](https://i.ibb.co/8jCZj2N/arcane-seo-banner.png)
 
 ## Installation
-You can install from the market place by searching for "arcane seo" or:
+This is a fork of the plugin "Arcane SEO" and is not yet been published in the October CMS market, to install it do:
 ```bash
 $ cd /path/to/project-root/
-$ git clone git@github.com:mstrrain/Arcane-SEO.git plugins/arcane/seo
+$ git clone git@github.com:initbiz/Arcane-SEO.git plugins/arcane/seo
 $ php artisan plugin:refresh Arcane.Seo
 $ composer update
 ```
