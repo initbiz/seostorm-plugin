@@ -11,23 +11,23 @@ use System\Classes\MediaLibrary;
 class Seo extends ComponentBase
 {
     /**
-     * Undocumented variable
+     * Settings plugin
      *
-     * @var [type]
+     * @var Collection
      */
     public $settings;
 
     /**
-     * Undocumented variable
+     * Is schema disable
      *
-     * @var [type]
+     * @var Boolean
      */
     public $disable_schema;
 
     /**
-     * Undocumented variable
+     * Current viewBag set in the current pages
      *
-     * @var [type]
+     * @var Array
      */
     public $viewBagProperties;
 
@@ -145,7 +145,7 @@ class Seo extends ComponentBase
     /**
      * Returns og_image if is set in the viewBag otherwise run function getSiteImageFromSettings and return het value
      *
-     * @return void
+     * @return string
      */
     public function getOgImage()
     {
@@ -159,7 +159,7 @@ class Seo extends ComponentBase
     /**
      * Returns og_video if is set in the viewBag
      *
-     * @return void
+     * @return string
      */
     public function getOgVideo()
     {
@@ -169,7 +169,7 @@ class Seo extends ComponentBase
     /**
      * Returns og_type if is set in the viewBag otherwise website
      *
-     * @return void
+     * @return string
      */
     public function getOgType()
     {
@@ -177,9 +177,9 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Check
+     * Get site image from settings and personalize his url
      *
-     * @return void
+     * @return string site images url from settings
      */
     public function getSiteImageFromSettings()
     {
@@ -194,10 +194,10 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Undocumented function
+     * Returns the set viewaBag taking translated into consideration
      *
      * @param string $viewBagProperty
-     * @return void
+     * @return string
      */
     public function getPropertyTranslated(string $viewBagProperty)
     {
