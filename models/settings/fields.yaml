@@ -162,22 +162,22 @@ tabs:
         #----------------------------------------------------------------------
 
         #----------------------------------------------------------------------
-        # social Tab
+        # social media Tab
         #----------------------------------------------------------------------
         enable_og:
-            label: 'Enable Open Graph'
-            comment: 'Display the Open Graph meta tags'
+            label: 'Enable Social Media'
+            comment: 'Display the Social Media meta tags'
             type: switch
-            tab: Open Graph
+            tab: Social Media
             default: true
         site_image_help:
             type: partial
             span: right
             path: $/arcane/seo/models/settings/_site_image_help.htm
-            tab: Open Graph
+            tab: Social Media
         site_image_from:
             label: 'Where to get default site image from'
-            tab: Open Graph
+            tab: Social Media
             span: left
             type: dropdown
             options:
@@ -190,7 +190,7 @@ tabs:
                 condition: checked
         site_image:
             label: 'Site image'
-            tab: Open Graph
+            tab: Social Media
             span: right
             type: mediafinder
             mode: image
@@ -202,7 +202,7 @@ tabs:
                 condition: value[media]
         site_image_fileupload:
             label: 'Site image'
-            tab: Open Graph
+            tab: Social Media
             span: right
             type: fileupload
             mode: image
@@ -214,7 +214,7 @@ tabs:
                 condition: value[fileupload]
         site_image_url:
             label: 'Site image'
-            tab: Open Graph
+            tab: Social Media
             span: right
             type: text
             trigger:
@@ -227,7 +227,7 @@ tabs:
             type: text
             span: left
             comment: 'The og:site_name OG tag'
-            tab: Open Graph
+            tab: Social Media
             trigger:
                 action: enable
                 field: enable_og
@@ -242,7 +242,7 @@ tabs:
             type: text
             span: left
             comment: 'The fb:app_id OG tag'
-            tab: Open Graph
+            tab: Social Media
         og_locale:
             label: 'og:locale'
             trigger:
@@ -253,7 +253,7 @@ tabs:
             span: left
             commentHtml: true
             comment: 'Set the locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
-            tab: Open Graph
+            tab: Social Media
         og_locale_alternate:
             label: 'og:locale:alternate'
             trigger:
@@ -264,5 +264,4 @@ tabs:
             span: left
             commentHtml: true
             comment: 'Set the alternate locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
-            tab: Open Graph
-
+            tab: Social Media
