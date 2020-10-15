@@ -43,8 +43,8 @@ class Seo extends ComponentBase
     public function componentDetails()
     {
         return [
-            'name'        => 'SEO',
-            'description' => 'Renders SEO meta tags in place'
+            'name'        => 'arcane.seo::lang.components.seo.name',
+            'description' => 'arcane.seo::lang.components.seo.description'
         ];
     }
 
@@ -52,8 +52,8 @@ class Seo extends ComponentBase
     {
         return [
             'disable_schema' => [
-                'title' => 'Disable schemas',
-                'description' => 'Enable this if you do not want to output schema scripts from the seo component.',
+                'title' => 'arcane.seo::lang.components.seo.properties.disable_schema.title',
+                'description' => 'arcane.seo::lang.components.seo.properties.disable_schema.description',
                 'type' => 'checkbox'
             ]
         ];

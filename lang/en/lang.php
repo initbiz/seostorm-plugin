@@ -10,4 +10,16 @@
         'updated_at' => 'Updated',
         'template' => 'Template',
     ],
+    'components' => [
+        'seo' => [
+            'name' => 'Seo',
+            'description' => 'Renders SEO meta tags in place',
+            'properties' => [
+                'disable_schema' => [
+                    'name' => 'Disable schemas',
+                    'description' => 'Enable this if you do not want to output schema scripts from the seo component',
+                ]
+            ]
+        ]
+    ]
 ];
