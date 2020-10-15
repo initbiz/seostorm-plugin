@@ -10,10 +10,25 @@ use System\Classes\MediaLibrary;
 
 class Seo extends ComponentBase
 {
+    /**
+     * Undocumented variable
+     *
+     * @var [type]
+     */
     public $settings;
 
+    /**
+     * Undocumented variable
+     *
+     * @var [type]
+     */
     public $disable_schema;
 
+    /**
+     * Undocumented variable
+     *
+     * @var [type]
+     */
     public $viewBagProperties;
 
     public function componentDetails()
@@ -68,7 +83,11 @@ class Seo extends ComponentBase
         }
         $this->disable_schema = $this->property('disable_schema');
     }
-
+    /**
+     * Returns the title of the page taking position from settings into consideration
+     *
+     * @return string title of the page;
+     */
     public function getTitle()
     {
         $title = $this->getPropertyTranslated('meta_title') ?? $this->viewBagProperties['title'];
@@ -76,13 +95,18 @@ class Seo extends ComponentBase
         $settings = Settings::instance();
         if ($settings->site_name_position == 'prefix') {
             $title = "{$settings->site_name} {$settings->site_name_separator} {$title}";
-        } else if ($settings->site_name_position == 'suffix') {
+        } elseif ($settings->site_name_position == 'suffix') {
             $title = "{$title} {$settings->site_name_separator} {$settings->site_name}";
         }
 
         return $title;
     }
 
+    /**
+     * Returns the deafualt description from settings otherwise if set description or meta_description in the viewBag her value
+     *
+     * @return string description of the page
+     */
     public function getDescription()
     {
         $description = Settings::instance()->site_description;
@@ -98,63 +122,91 @@ class Seo extends ComponentBase
         return $description;
     }
 
+    /**
+     * Returns og_title if set in the viewBag otherwise fall back to getTitle
+     *
+     * @return string social media title
+     */
     public function getOgTitle()
     {
         return $this->getPropertyTranslated('og_title') ?? $this->getTitle();
     }
 
+    /**
+     * Returns og_description if is set in the ViewBag otherwise fall back to getDescription
+     *
+     * @return string social media description
+     */
     public function getOgDescription()
     {
         return $this->getPropertyTranslated('og_description') ?? $this->getDescription();
     }
 
+    /**
+     * Returns og_image if is set in the viewBag otherwise run function getSiteImageFromSettings and return het value
+     *
+     * @return void
+     */
     public function getOgImage()
     {
-        if ($this->getPropertyTranslated('og_image')) {
-            $ogImage = MediaLibrary::instance()->getPathUrl($this->getPropertyTranslated('og_image'));
+        if ($ogImage = $this->getPropertyTranslated('og_image')) {
+            return MediaLibrary::instance()->getPathUrl($ogImage);
         }
-        return $ogImage ?? $this->getSiteImageFromSettings();
+
+        return $this->getSiteImageFromSettings();
     }
 
+    /**
+     * Returns og_video if is set in the viewBag
+     *
+     * @return void
+     */
     public function getOgVideo()
     {
         return $this->viewBagProperties['og_video'] ?? null;
     }
 
+    /**
+     * Returns og_type if is set in the viewBag otherwise website
+     *
+     * @return void
+     */
     public function getOgType()
     {
-        return $this->viewBagProperties['og_type'] ?? 'website';;
+        return $this->viewBagProperties['og_type'] ?? 'website';
     }
 
+    /**
+     * Check 
+     *
+     * @return void
+     */
     public function getSiteImageFromSettings()
     {
-        $siteImage = null;
-        if (Settings::instance()->site_image_from === 'media' && Settings::instance()->site_image) {
-            $siteImage = MediaLibrary::instance()->getPathUrl(Settings::instance()->site_image);
+        $siteImageFrom = Settings::instance()->site_image_from;
+        if ($siteImageFrom === 'media' && Settings::instance()->site_image) {
+            return MediaLibrary::instance()->getPathUrl(Settings::instance()->site_image);
+        }elseif ($siteImageFrom === "fileupload") {
+            return Settings::instance()->site_image_fileupload()->getSimpleValue();
+        }elseif ($siteImageFrom === "url") {
+            return Settings::instance()->site_image_url;
         }
-
-        if (Settings::instance()->site_image_from === "fileupload") {
-            $siteImage = Settings::instance()->site_image_fileupload()->getSimpleValue();
-        }
-
-        if (Settings::instance()->site_image_from === "url") {
-            $siteImage = Settings::instance()->site_image_url;
-        }
-        return $siteImage;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param string $viewBagProperty
+     * @return void
+     */
     public function getPropertyTranslated(string $viewBagProperty)
     {
         $locale = App::getLocale();
-        $property= null;
-
-        if (isset($this->viewBagProperties[$viewBagProperty])) {
-            $property = $this->viewBagProperties[$viewBagProperty];
-        }
 
         if (isset($this->viewBagProperties['Locale' . $viewBagProperty . '[' . $locale . ']'])) {
-            $property = $this->viewBagProperties['Locale' . $viewBagProperty . '['. $locale . ']'];
+            return $this->viewBagProperties['Locale' . $viewBagProperty . '['. $locale . ']'];
+        }elseif (isset($this->viewBagProperties[$viewBagProperty])) {
+            return $this->viewBagProperties[$viewBagProperty];
         }
-        return $property;
     }
 }
