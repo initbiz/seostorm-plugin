@@ -8,6 +8,7 @@ use Arcane\Seo\Classes\Helper;
 use System\Classes\PluginBase;
 use System\Classes\PluginManager;
 use System\Classes\SettingsManager;
+use Twig\Extension\StringLoaderExtension;
 
 /**
  * Arcane Plugin Information File
@@ -52,8 +53,21 @@ class Plugin extends PluginBase
                 'removenulls' => [$helper, 'removeNullsFromArray'],
                 'fillparams'  => ['Arcane\Seo\Classes\Helper', 'replaceUrlPlaceholders'],
                 'url' => [$helper, 'url'],
+            ],
+            'functions' => [
+                'template_from_string' => [$this, 'templateFromString'],
             ]
         ];
+    }
+
+    public function templateFromString($template)
+    {
+        $twig = $this->app->make('twig.environment');
+        $stringLoader = new StringLoaderExtension();
+        $twig->addExtension($stringLoader);
+        $stringLoaderFunc = $stringLoader->getFunctions();
+        $callable = $stringLoaderFunc[0]->getCallable();
+        return $callable($twig, $template);
     }
 
     public function registerPageSnippets()
