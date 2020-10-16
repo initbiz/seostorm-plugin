@@ -7,25 +7,25 @@ tabs:
         # Meta Tab
         #----------------------------------------------------------------------
         enable_site_meta:
-            label: 'Enable title and description meta tags'
+            label: ''
             span: auto
             type: switch
             tab: Meta
             default: true
         enable_sitemap:
-            label: 'Enable sitemap.xml'
+            label: ''
             span: auto
             type: switch
             tab: Meta
             default: true
         site_name:
-            label: 'Site name'
+            label: ''
             span: left
             placeholder: 'Your site name'
             type: text
             tab: Meta
         site_name_position:
-            label: 'Site name display'
+            label: ''
             options:
                 prefix: 'Prefix (at the start)'
                 suffix: 'Suffix (at the end)'
@@ -35,14 +35,14 @@ tabs:
             commentAbove: 'Select how the site name should appear in the title'
             tab: Meta
         site_name_separator:
-            label: 'Site name separator'
+            label: ''
             span: auto
             type: text
             comment: 'Character to separate site name from title, eg: Page Title | SiteName'
             placeholder: '|'
             tab: Meta
         site_description:
-            label: Default description
+            label:
             size: tiny
             span: full
             placeholder: 'Your site description'
@@ -58,7 +58,7 @@ tabs:
         # <head> Tab
         #----------------------------------------------------------------------
         extra_meta:
-            label: 'Additional <head> content'
+            label: ''
             size: huge
             language: html
             span: full
@@ -71,13 +71,13 @@ tabs:
         # Robots Tab
         #----------------------------------------------------------------------
         enable_robots_txt:
-            label: 'Enable robots.txt'
+            label: ''
             span: auto
             type: switch
             tab: Robots
             default: true
         enable_robots_meta:
-            label: 'Enable robots meta tags'
+            label: ''
             span: auto
             type: switch
             tab: Robots
