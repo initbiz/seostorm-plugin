@@ -1,9 +1,8 @@
-{% set self = __SELF__ %}
 {% set settings = __SELF__.settings %}
 {% set robots = [
     viewBag.robot_index,
     viewBag.robot_follow,
-    viewBag.robot_advanced,
+    include(template_from_string(viewBag.robot_advanced))
    ]
 %}
 
@@ -17,12 +16,12 @@
     <meta name="robots" content="{{ robots|removenulls|join(', ') }}" />
 {% endif %}
 
-{% if not self.disable_schema %}
+{% if not __SELF__.disable_schema %}
     {% for schema in viewBag.schemas %}
-        {{ schema.script|raw }}
+        {{ include(template_from_string(schema.script))|raw }}
     {% endfor %}
 
-    {{ viewBag.schemas|arcane_seo_schema|raw }}
+    {{ include(template_from_string(viewBag.schemas|arcane_seo_schema)) | raw }}
 {% endif %}
 
 {% if settings.favicon_enabled %}

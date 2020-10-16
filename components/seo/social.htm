@@ -1,13 +1,16 @@
 <meta property="og:site_name" content="settings.og_site_name">
-<meta property="og:type" content="{{ __SELF__.getOgType() }}" />
-<meta property="og:title" content="{{ __SELF__.getOgTitle() }}" />
+<meta property="og:type" content="{{ include(template_from_string(viewBag.og_type))  ?: __SELF__.getOgType() }}" />
+<meta property="og:title" content="{{ include(template_from_string(viewBag.og_title ?: viewBag.meta_title ))|default(__SELF__.getOgTitle()) }}" />
+
 <meta property="og:description" content="{{ __SELF__.getOgDescription() }}" />
 <meta property="og:image" content="{{ __SELF__.getOgImage() }}" />
 <meta property="og:url" content="{{ viewBag.canonical_url|url }}" />
 <meta property="og:locale" content="{{ settings.og_locale }}" />
 <meta property="og:video" content="{{ __SELF__.getOgVideo() }}" />
 <meta property="og:locale:alternate" content="{{ settings.og_locale_alternate }}" />
+
 <meta property="fb:app_id" content="{{ settings.fb_app_id }}" />
+
 <meta name="twitter:title" content="{{ __SELF__.getOgTitle() }}">
 <meta name="twitter:description" content="{{ __SELF__.getOgDescription() }}">
 <meta name="twitter:image" content="{{ __SELF__.getOgImage() }}" />
