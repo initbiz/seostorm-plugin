@@ -83,6 +83,7 @@ class Seo extends ComponentBase
         }
         $this->disable_schema = $this->property('disable_schema');
     }
+
     /**
      * Returns the title of the page taking position from settings into consideration
      *
@@ -103,27 +104,29 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Returns the deafualt description from settings otherwise if set description or meta_description in the viewBag her value
+     * Returns the description set in the viewBag as a meta_description
+     * or description, otherwise returns the default value from the settings
      *
-     * @return string description of the page
+     * @return string page description
      */
     public function getDescription()
     {
-        $description = Settings::instance()->site_description;
+        $description = $this->getPropertyTranslated('meta_description');
 
         if (!$description) {
             $description = $this->viewBagProperties['description'];
         }
 
         if (!$description) {
-            $description = $this->getPropertyTranslated('meta_description');
+            $description = Settings::instance()->site_description;
         }
 
         return $description;
     }
 
     /**
-     * Returns og_title if set in the viewBag otherwise fall back to getTitle
+     * Returns og_title if set in the viewBag
+     * otherwise fallback to getTitle
      *
      * @return string social media title
      */
@@ -133,7 +136,8 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Returns og_description if is set in the ViewBag otherwise fall back to getDescription
+     * Returns og_description if is set in the ViewBag
+     * otherwise fallback to getDescription
      *
      * @return string social media description
      */
@@ -143,7 +147,8 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Returns og_image if is set in the viewBag otherwise run function getSiteImageFromSettings and return het value
+     * Returns og_image if set in the viewBag
+     * otherwise fallback to getSiteImageFromSettings()
      *
      * @return string
      */
@@ -157,7 +162,7 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Returns og_video if is set in the viewBag
+     * Returns og_video if set in the viewBag
      *
      * @return string
      */
@@ -167,9 +172,10 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Returns og_type if is set in the viewBag otherwise website
+     * Returns og_type if set in the viewBag
+     * otherwise returns string 'website'
      *
-     * @return string
+     * @return string default 'website'
      */
     public function getOgType()
     {
@@ -177,36 +183,33 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Get site image from settings and personalize his url
+     * Returns the URL of the site image
      *
-     * @return string site images url from settings
+     * @return string site image url
      */
     public function getSiteImageFromSettings()
     {
         $siteImageFrom = Settings::instance()->site_image_from;
         if ($siteImageFrom === 'media' && Settings::instance()->site_image) {
             return MediaLibrary::instance()->getPathUrl(Settings::instance()->site_image);
-        }elseif ($siteImageFrom === "fileupload") {
+        } elseif ($siteImageFrom === "fileupload") {
             return Settings::instance()->site_image_fileupload()->getSimpleValue();
-        }elseif ($siteImageFrom === "url") {
+        } elseif ($siteImageFrom === "url") {
             return Settings::instance()->site_image_url;
         }
     }
 
     /**
-     * Returns the set viewaBag taking translated into consideration
+     * Returns the property from the viewBag
+     * taking translated version into consideration
      *
      * @param string $viewBagProperty
-     * @return string
+     * @return string|null
      */
     public function getPropertyTranslated(string $viewBagProperty)
     {
         $locale = App::getLocale();
-
-        if (isset($this->viewBagProperties['Locale' . $viewBagProperty . '[' . $locale . ']'])) {
-            return $this->viewBagProperties['Locale' . $viewBagProperty . '['. $locale . ']'];
-        }elseif (isset($this->viewBagProperties[$viewBagProperty])) {
-            return $this->viewBagProperties[$viewBagProperty];
-        }
+        $localizedKey = 'Locale' . $viewBagProperty . '['. $locale . ']';
+        return $this->viewBagProperties[$localizedKey] ?? $this->viewBagProperties[$viewBagProperty] ?? null;
     }
 }
