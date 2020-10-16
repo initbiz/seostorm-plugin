@@ -11,14 +11,14 @@ use System\Classes\MediaLibrary;
 class Seo extends ComponentBase
 {
     /**
-     * Settings plugin
+     * Plugin settings
      *
      * @var Collection
      */
     public $settings;
 
     /**
-     * Is schema disable
+     * Is schema disabled
      *
      * @var Boolean
      */
