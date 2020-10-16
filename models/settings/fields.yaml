@@ -2,7 +2,6 @@ tabs:
     defaultTab: 'Meta'
     fields:
 
-
         #----------------------------------------------------------------------
         # Meta Tab
         #----------------------------------------------------------------------
@@ -21,34 +20,34 @@ tabs:
         site_name:
             label: ''
             span: left
-            placeholder: 'Your site name'
+            placeholder: ''
             type: text
             tab: Meta
         site_name_position:
             label: ''
             options:
-                prefix: 'Prefix (at the start)'
-                suffix: 'Suffix (at the end)'
-                nowhere: 'Nowhere (does not appear)'
+                prefix: ''
+                suffix: ''
+                nowhere: ''
             span: auto
             type: radio
-            commentAbove: 'Select how the site name should appear in the title'
+            commentAbove: ''
             tab: Meta
         site_name_separator:
             label: ''
             span: auto
             type: text
-            comment: 'Character to separate site name from title, eg: Page Title | SiteName'
-            placeholder: '|'
+            comment: ''
+            placeholder: ''
             tab: Meta
         site_description:
             label:
             size: tiny
             span: full
-            placeholder: 'Your site description'
+            placeholder: ''
             type: textarea
             tab: Meta
-            comment: '[data-counter]'
+            comment: ''
             attributes:
                 data-counter: 1
                 data-min: 100
@@ -64,7 +63,7 @@ tabs:
             span: full
             type: codeeditor
             tab: <head>
-            default: "<!-- Additional meta tags -->"
+            default: ""
 
 
         #----------------------------------------------------------------------
@@ -83,7 +82,7 @@ tabs:
             tab: Robots
             default: true
         robots_txt:
-            label: robots.txt
+            label:
             size: huge
             language: plain_text
             span: full
@@ -91,7 +90,7 @@ tabs:
             hidden: 0
             type: codeeditor
             tab: Robots
-            default: "User-agent: *\r\nAllow: /"
+            default: ""
 
         #----------------------------------------------------------------------
         # Minify Tab
@@ -101,25 +100,25 @@ tabs:
             path: $/arcane/seo/models/settings/_minify_help.htm
             tab: Minify
         minify_html:
-            label: Minify HTML automatically
+            label:
             comment: Front-end HTML will be minimized. Clear the cache whenever you make a change.
             type: switch
             tab: Minify
             default: false
         minify_css:
-            label: 'Minify CSS'
+            label: ''
             comment: 'Usage: {{ "path/to/css" | theme | minifycss }}'
             type: switch
             tab: Minify
             default: false
         minify_js:
-            label: 'Minify JS'
+            label: ''
             comment: 'Usage: {{ "path/to/js" | theme | minifyjs }}'
             type: switch
             tab: Minify
             default: false
         no_minify_for_dev:
-            label: Disable minification when ENV=dev
+            label:
             comment: Change the ENV variable in your .env file
             type: checkbox
             tab: Minify
@@ -131,18 +130,18 @@ tabs:
         # Favicon
         #----------------------------------------------------------------------
         favicon_enabled:
-            label: Enable favicon.ico
+            label:
             comment: This will generate a route to /favicon.ico
             type: switch
             default: false
             tab: Favicon
         favicon_16:
-            label: Resize favicon to 16x16
+            label:
             type: checkbox
             default: false
             tab: Favicon
         favicon:
-            label: Select your favicon
+            label:
             type: mediafinder
             mode: image
             prompt: Click %s to search the media library
@@ -152,7 +151,7 @@ tabs:
         # .htacess
         #----------------------------------------------------------------------
         htaccess:
-            label: Edit your .htaccess
+            label:
             comment: <b class="text-danger">Important:</b> If you use this, do not modify your file directly, because this field is in sync with the database aswell.
             commentHtml: true
             type: codeeditor
@@ -167,13 +166,13 @@ tabs:
         # og Tab
         #----------------------------------------------------------------------
         enable_og:
-            label: 'Enable Open Graph'
+            label: ''
             comment: 'Display the Open Graph meta tags'
             type: switch
             tab: Open Graph
             default: true
         site_image:
-            label: 'Site image'
+            label: ''
             mode: image
             prompt: 'Drag files or click here'
             hidden: 0
@@ -184,7 +183,7 @@ tabs:
             type: mediafinder
             tab: Open Graph
         fb_app_id:
-            label: 'Facebook App ID'
+            label: ''
             disabled: 0
             trigger:
                 action: enable
@@ -195,7 +194,7 @@ tabs:
             comment: 'The fb:app_id OG tag'
             tab: Open Graph
         og_locale:
-            label: 'og:locale'
+            label: ''
             trigger:
                 action: enable
                 field: enable_og
