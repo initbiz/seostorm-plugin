@@ -1,6 +1,6 @@
 <?php
 
-namespace Arcane\Seo\Widgets;
+namespace Arcane\Seo\FormWidgets;
 
 use Flash;
 use Storage;

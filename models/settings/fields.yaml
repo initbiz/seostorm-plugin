@@ -122,7 +122,7 @@ tabs:
             type: checkbox
             tab: Minify
         _btn_clear_cache:
-            type: Arcane\Seo\Widgets\ClearCache
+            type: Arcane\Seo\FormWidgets\ClearCache
             tab: Minify
 
         #----------------------------------------------------------------------

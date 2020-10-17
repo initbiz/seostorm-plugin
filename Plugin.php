@@ -63,11 +63,13 @@ class Plugin extends PluginBase
     public function templateFromString($template)
     {
         $twig = $this->app->make('twig.environment');
-        $stringLoader = new StringLoaderExtension();
-        $twig->addExtension($stringLoader);
-        $stringLoaderFunc = $stringLoader->getFunctions();
-        $callable = $stringLoaderFunc[0]->getCallable();
-        return $callable($twig, $template);
+
+        if (!$twig->hasExtension(StringLoaderExtension::class)) {
+            $stringLoader = new StringLoaderExtension();
+            $twig->addExtension($stringLoader);
+        }
+
+        return twig_template_from_string($twig, $template);
     }
 
     public function registerPageSnippets()
