@@ -173,16 +173,16 @@ tabs:
             type: hint
             span: right
             path: $/arcane/seo/models/settings/_site_image_hint.htm
-            tab: Social Media
+            tab: arcane.seo::lang.form.settings.tab_social_media
         site_image_from:
-            label: 'Where to get default site image from'
-            tab: Social Media
+            label: arcane.seo::lang.form.settings.site_image_from
+            tab: arcane.seo::lang.form.settings.tab_social_media
             span: left
             type: dropdown
             options:
-                media: Media
-                fileupload: File Upload
-                url: Url
+                media: arcane.seo::lang.form.settings.site_image_from_media
+                fileupload: arcane.seo::lang.form.settings.site_image_from_fileupload
+                url: arcane.seo::lang.form.settings.site_image_from_url
             trigger:
                 action: enable
                 field: enable_og
@@ -190,14 +190,50 @@ tabs:
         site_image:
             label: arcane.seo::lang.form.settings.site_image
             mode: image
+            span: right
             prompt: arcane.seo::lang.form.settings.site_image_prompt
+            type: mediafinder
+            tab: arcane.seo::lang.form.settings.tab_social_media
             hidden: 0
+            imageHeight: 260
+            imageWidth: 260
+            trigger:
+                action: show
+                field: site_image_from
+                condition: value[media]
+
+        site_image_fileupload:
+            label: arcane.seo::lang.form.settings.site_image
+            tab: arcane.seo::lang.form.settings.tab_social_media
+            span: right
+            type: fileupload
+            mode: image
+            imageHeight: 260
+            imageWidth: 260
+            trigger:
+                action: show
+                field: site_image_from
+                condition: value[fileupload]
+        site_image_url:
+            label: arcane.seo::lang.form.settings.site_image
+            tab: arcane.seo::lang.form.settings.tab_social_media
+            span: right
+            type: text
+            trigger:
+                action: show
+                field: site_image_from
+                condition: value[url]
+        og_site_name:
+            label: arcane.seo::lang.form.settings.og_site_image
+            disabled: 0
+            type: text
+            span: left
+            comment: arcane.seo::lang.form.settings.social_media_site_name_comment
+            tab: arcane.seo::lang.form.settings.tab_social_media
             trigger:
                 action: enable
                 field: enable_og
                 condition: checked
-            type: mediafinder
-            tab: arcane.seo::lang.form.settings.tab_social_media
         fb_app_id:
             label: arcane.seo::lang.form.settings.fb_app_id
             disabled: 0
@@ -221,7 +257,7 @@ tabs:
             comment: arcane.seo::lang.form.settings.og_locale_comment
             tab: arcane.seo::lang.form.settings.tab_social_media
         og_locale_alternate:
-            label: 'og:locale:alternate'
+            label: arcane.seo::lang.form.settings.og_locale_alternate
             trigger:
                 action: enable
                 field: enable_og
@@ -229,5 +265,5 @@ tabs:
             type: text
             span: left
             commentHtml: true
-            comment: 'Set the alternate locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
-            tab: Social Media
+            comment: arcane.seo::lang.form.settings.og_locale_alternate_comment
+            tab: arcane.seo::lang.form.settings.tab_social_media
