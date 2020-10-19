@@ -1,7 +1,6 @@
 tabs:
     defaultTab: arcane.seo::lang.form.settings.tab_meta
     fields:
-
         #----------------------------------------------------------------------
         # Meta Tab
         #----------------------------------------------------------------------
@@ -121,7 +120,7 @@ tabs:
             comment: arcane.seo::lang.form.settings.no_minify_for_dev_comment
             type: checkbox
             tab: arcane.seo::lang.form.settings.tab_minify
-        btn_clear_cache:
+        _btn_clear_cache:
             type: Arcane\Seo\Widgets\ClearCache
             tab: arcane.seo::lang.form.settings.tab_minify
 
@@ -170,6 +169,24 @@ tabs:
             type: switch
             tab: arcane.seo::lang.form.settings.tab_social_media
             default: true
+        site_image_hint:
+            type: hint
+            span: right
+            path: $/arcane/seo/models/settings/_site_image_hint.htm
+            tab: Social Media
+        site_image_from:
+            label: 'Where to get default site image from'
+            tab: Social Media
+            span: left
+            type: dropdown
+            options:
+                media: Media
+                fileupload: File Upload
+                url: Url
+            trigger:
+                action: enable
+                field: enable_og
+                condition: checked
         site_image:
             label: arcane.seo::lang.form.settings.site_image
             mode: image
@@ -203,3 +220,14 @@ tabs:
             commentHtml: true
             comment: arcane.seo::lang.form.settings.og_locale_comment
             tab: arcane.seo::lang.form.settings.tab_social_media
+        og_locale_alternate:
+            label: 'og:locale:alternate'
+            trigger:
+                action: enable
+                field: enable_og
+                condition: checked
+            type: text
+            span: left
+            commentHtml: true
+            comment: 'Set the alternate locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
+            tab: Social Media
