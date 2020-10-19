@@ -20,7 +20,7 @@ tabs:
         site_name:
             label: arcane.seo::lang.form.settings.site_name
             span: left
-            placeholder:
+            placeholder: arcane.seo::lang.form.settings.site_name_placeholder
             type: text
             tab: arcane.seo::lang.form.settings.tab_meta
         site_name_position:
@@ -38,7 +38,7 @@ tabs:
             span: auto
             type: text
             comment: arcane.seo::lang.form.settings.site_name_separator_comment
-            placeholder:
+            placeholder: arcane.seo::lang.form.settings.site_name_separator_placeholder
             tab: arcane.seo::lang.form.settings.tab_meta
         site_description:
             label: arcane.seo::lang.form.settings.site_description
@@ -162,7 +162,7 @@ tabs:
         #----------------------------------------------------------------------
 
         #----------------------------------------------------------------------
-        # og Tab
+        # Social Media Tab
         #----------------------------------------------------------------------
         enable_og:
             label: arcane.seo::lang.form.settings.enable_og
@@ -203,4 +203,3 @@ tabs:
             commentHtml: true
             comment: arcane.seo::lang.form.settings.og_locale_comment
             tab: arcane.seo::lang.form.settings.tab_social_media
-
