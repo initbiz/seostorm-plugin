@@ -170,10 +170,10 @@ tabs:
             type: switch
             tab: Social Media
             default: true
-        site_image_help:
-            type: partial
+        site_image_hint:
+            type: hint
             span: right
-            path: $/arcane/seo/models/settings/_site_image_help.htm
+            path: $/arcane/seo/models/settings/_site_image_hint.htm
             tab: Social Media
         site_image_from:
             label: 'Where to get default site image from'
