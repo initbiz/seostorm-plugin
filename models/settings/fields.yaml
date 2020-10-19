@@ -1,53 +1,53 @@
 tabs:
-    defaultTab: 'Meta'
+    defaultTab: arcane.seo::lang.form.settings.tab_meta
     fields:
 
         #----------------------------------------------------------------------
         # Meta Tab
         #----------------------------------------------------------------------
         enable_site_meta:
-            label: ''
+            label: arcane.seo::lang.form.settings.enable_site_meta
             span: auto
             type: switch
-            tab: Meta
+            tab: arcane.seo::lang.form.settings.tab_meta
             default: true
         enable_sitemap:
-            label: ''
+            label: arcane.seo::lang.form.settings.enable_sitemap
             span: auto
             type: switch
-            tab: Meta
+            tab: arcane.seo::lang.form.settings.tab_meta
             default: true
         site_name:
-            label: ''
+            label: arcane.seo::lang.form.settings.site_name
             span: left
-            placeholder: ''
+            placeholder:
             type: text
-            tab: Meta
+            tab: arcane.seo::lang.form.settings.tab_meta
         site_name_position:
-            label: ''
+            label: arcane.seo::lang.form.settings.site_name_position
             options:
-                prefix: ''
-                suffix: ''
-                nowhere: ''
+                prefix: arcane.seo::lang.form.settings.site_name_position_prefix
+                suffix: arcane.seo::lang.form.settings.site_name_position_suffix
+                nowhere: arcane.seo::lang.form.settings.site_name_position_nowhere
             span: auto
             type: radio
-            commentAbove: ''
-            tab: Meta
+            commentAbove: arcane.seo::lang.form.settings.site_name_position
+            tab: arcane.seo::lang.form.settings.tab_meta
         site_name_separator:
-            label: ''
+            label: arcane.seo::lang.form.settings.site_name_separator
             span: auto
             type: text
-            comment: ''
-            placeholder: ''
-            tab: Meta
+            comment: arcane.seo::lang.form.settings.site_name_separator_comment
+            placeholder:
+            tab: arcane.seo::lang.form.settings.tab_meta
         site_description:
-            label:
+            label: arcane.seo::lang.form.settings.site_description
             size: tiny
             span: full
-            placeholder: ''
+            placeholder: arcane.seo::lang.form.settings.site_description_placeholder
             type: textarea
-            tab: Meta
-            comment: ''
+            tab: arcane.seo::lang.form.settings.tab_meta
+            comment: arcane.seo::lang.form.settings.site_description_comment
             attributes:
                 data-counter: 1
                 data-min: 100
@@ -57,106 +57,105 @@ tabs:
         # <head> Tab
         #----------------------------------------------------------------------
         extra_meta:
-            label: ''
+            label: arcane.seo::lang.form.settings.extra_meta
             size: huge
             language: html
             span: full
             type: codeeditor
-            tab: <head>
-            default: ""
-
+            tab: arcane.seo::lang.form.settings.tab_head
+            comment: arcane.seo::lang.form.settings.extra_meta_comment
 
         #----------------------------------------------------------------------
         # Robots Tab
         #----------------------------------------------------------------------
         enable_robots_txt:
-            label: ''
+            label: arcane.seo::lang.form.settings.enable_robots_txt
             span: auto
             type: switch
-            tab: Robots
+            tab: arcane.seo::lang.form.settings.tab_robots
             default: true
         enable_robots_meta:
-            label: ''
+            label: arcane.seo::lang.form.settings.enable_robots_meta
             span: auto
             type: switch
-            tab: Robots
+            tab: arcane.seo::lang.form.settings.tab_robots
             default: true
         robots_txt:
-            label:
+            label: arcane.seo::lang.form.settings.robots_txt
             size: huge
             language: plain_text
             span: full
             disabled: 0
             hidden: 0
             type: codeeditor
-            tab: Robots
-            default: ""
+            tab: arcane.seo::lang.form.settings.tab_robots
+            default: "User-agent: *\r\nAllow: /"
 
         #----------------------------------------------------------------------
         # Minify Tab
         #----------------------------------------------------------------------
-        minify_help:
-            type: partial
-            path: $/arcane/seo/models/settings/_minify_help.htm
-            tab: Minify
+        minify_hint:
+            type: hint
+            path: $/arcane/seo/models/settings/_minify_hint.htm
+            tab: arcane.seo::lang.form.settings.tab_minify
         minify_html:
-            label:
-            comment: Front-end HTML will be minimized. Clear the cache whenever you make a change.
+            label: arcane.seo::lang.form.settings.minify_html
+            comment: arcane.seo::lang.form.settings.minify_html_comment
             type: switch
-            tab: Minify
+            tab: arcane.seo::lang.form.settings.tab_minify
             default: false
         minify_css:
-            label: ''
-            comment: 'Usage: {{ "path/to/css" | theme | minifycss }}'
+            label: arcane.seo::lang.form.settings.minify_css
+            comment: arcane.seo::lang.form.settings.minify_css_comment
             type: switch
-            tab: Minify
+            tab: arcane.seo::lang.form.settings.tab_minify
             default: false
         minify_js:
-            label: ''
-            comment: 'Usage: {{ "path/to/js" | theme | minifyjs }}'
+            label: arcane.seo::lang.form.settings.minify_js
+            comment: arcane.seo::lang.form.settings.minify_js_comment
             type: switch
-            tab: Minify
+            tab: arcane.seo::lang.form.settings.tab_minify
             default: false
         no_minify_for_dev:
-            label:
-            comment: Change the ENV variable in your .env file
+            label: arcane.seo::lang.form.settings.no_minify_for_dev
+            comment: arcane.seo::lang.form.settings.no_minify_for_dev_comment
             type: checkbox
-            tab: Minify
+            tab: arcane.seo::lang.form.settings.tab_minify
         btn_clear_cache:
             type: Arcane\Seo\Widgets\ClearCache
-            tab: Minify
+            tab: arcane.seo::lang.form.settings.tab_minify
 
         #----------------------------------------------------------------------
         # Favicon
         #----------------------------------------------------------------------
         favicon_enabled:
-            label:
-            comment: This will generate a route to /favicon.ico
+            label: arcane.seo::lang.form.settings.favicon_enabled
+            comment: arcane.seo::lang.form.settings.favicon_enabled_comment
             type: switch
             default: false
-            tab: Favicon
+            tab: arcane.seo::lang.form.settings.tab_favicon
         favicon_16:
-            label:
+            label: arcane.seo::lang.form.settings.favicon_16
             type: checkbox
             default: false
-            tab: Favicon
+            tab: arcane.seo::lang.form.settings.tab_favicon
         favicon:
-            label:
+            label: arcane.seo::lang.form.settings.favicon
             type: mediafinder
             mode: image
-            prompt: Click %s to search the media library
-            tab: Favicon
+            prompt: arcane.seo::lang.form.settings.favicon_prompt
+            tab: arcane.seo::lang.form.settings.tab_favicon
 
         #----------------------------------------------------------------------
         # .htacess
         #----------------------------------------------------------------------
         htaccess:
-            label:
-            comment: <b class="text-danger">Important:</b> If you use this, do not modify your file directly, because this field is in sync with the database aswell.
+            label: arcane.seo::lang.form.settings.htaccess
+            comment: arcane.seo::lang.form.settings.htaccess_comment
             commentHtml: true
             type: codeeditor
             size: huge
-            tab: .htaccess
+            tab: arcane.seo::lang.form.settings.tab_htaccess
 
         #----------------------------------------------------------------------
         # HTTP Headers
@@ -166,24 +165,24 @@ tabs:
         # og Tab
         #----------------------------------------------------------------------
         enable_og:
-            label: ''
-            comment: 'Display the Open Graph meta tags'
+            label: arcane.seo::lang.form.settings.enable_og
+            comment: arcane.seo::lang.form.settings.enable_og_comment
             type: switch
-            tab: Open Graph
+            tab: arcane.seo::lang.form.settings.tab_social_media
             default: true
         site_image:
-            label: ''
+            label: arcane.seo::lang.form.settings.site_image
             mode: image
-            prompt: 'Drag files or click here'
+            prompt: arcane.seo::lang.form.settings.site_image_prompt
             hidden: 0
             trigger:
                 action: enable
                 field: enable_og
                 condition: checked
             type: mediafinder
-            tab: Open Graph
+            tab: arcane.seo::lang.form.settings.tab_social_media
         fb_app_id:
-            label: ''
+            label: arcane.seo::lang.form.settings.fb_app_id
             disabled: 0
             trigger:
                 action: enable
@@ -191,10 +190,10 @@ tabs:
                 condition: checked
             type: text
             span: left
-            comment: 'The fb:app_id OG tag'
-            tab: Open Graph
+            comment: arcane.seo::lang.form.settings.fb_app_id_comment
+            tab: arcane.seo::lang.form.settings.tab_social_media
         og_locale:
-            label: ''
+            label: arcane.seo::lang.form.settings.og_locale
             trigger:
                 action: enable
                 field: enable_og
@@ -202,6 +201,6 @@ tabs:
             type: text
             span: left
             commentHtml: true
-            comment: 'Set the locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
-            tab: Open Graph
+            comment: arcane.seo::lang.form.settings.og_locale_comment
+            tab: arcane.seo::lang.form.settings.tab_social_media
 
