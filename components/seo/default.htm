@@ -7,7 +7,7 @@
 %}
 
 {%- if settings.enable_site_meta -%}
-    <title>{{ __SELF__.getTitle }}</title>
+    <title>{{ include(template_from_string(__SELF__.getTitle)) }}</title>
     <meta name="description" content="{{ __SELF__.getDescription() }}" />
     <link rel="canonical" href="{{ viewBag.canonical_url|url }}">
 {% endif %}
@@ -21,7 +21,7 @@
         {{ include(template_from_string(schema.script))|raw }}
     {% endfor %}
 
-    {{ include(template_from_string(viewBag.schemas|arcane_seo_schema)) | raw }}
+    {{ include(template_from_string(viewBag.schemas|arcane_seo_schema))|raw }}
 {% endif %}
 
 {% if settings.favicon_enabled %}
