@@ -121,7 +121,7 @@ tabs:
             type: checkbox
             tab: initbiz.seostorm::lang.form.settings.tab_minify
         _btn_clear_cache:
-            type: Initbiz\SeoStorm\Widgets\ClearCache
+            type: Initbiz\SeoStorm\FormWidgets\ClearCache
             tab: initbiz.seostorm::lang.form.settings.tab_minify
 
         #----------------------------------------------------------------------

@@ -2,13 +2,15 @@
 
 namespace Initbiz\SeoStorm;
 
+use Lang;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
-use Initbiz\SeoStorm\Classes\Helper;
 use System\Classes\PluginBase;
 use System\Classes\PluginManager;
 use System\Classes\SettingsManager;
+use Initbiz\SeoStorm\Classes\Helper;
 use Twig\Extension\StringLoaderExtension;
+use October\Rain\Exception\ApplicationException;
 
 /**
  * Initbiz Plugin Information File
@@ -83,11 +85,14 @@ class Plugin extends PluginBase
 
     public function register()
     {
+        $this->registerConsoleCommand('migrate:arcane', 'Initbiz\SeoStorm\Console\MigrateArcane');
+
         \Event::listen('backend.form.extendFieldsBefore', function ($widget) {
             if ($widget->isNested === false) {
 
-                if (!Theme::getEditTheme())
+                if (!Theme::getEditTheme()) {
                     throw new ApplicationException(Lang::get('cms::lang.theme.edit.not_found'));
+                }
 
                 if (
                     PluginManager::instance()->hasPlugin('RainLab.Pages')
