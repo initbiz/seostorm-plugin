@@ -1,19 +1,19 @@
 <?php
 
-namespace Arcane\Seo\Components;
+namespace Initbiz\Seo\Components;
 
 use Spatie\SchemaOrg\Schema;
 use Cms\Classes\ComponentBase;
 
 class SchemaProduct extends ComponentBase
 {
-    use \Arcane\Seo\Classes\SchemaComponentTrait;
+    use \Initbiz\Seo\Classes\SchemaComponentTrait;
 
     public function componentDetails()
     {
         return [
-            'name'        => 'arcane.seo::lang.components.schema_product.name',
-            'description' => 'arcane.seo::lang.components.schema_product.description'
+            'name'        => 'initbiz.seo::lang.components.schema_product.name',
+            'description' => 'initbiz.seo::lang.components.schema_product.description'
         ];
     }
 
@@ -40,59 +40,59 @@ class SchemaProduct extends ComponentBase
 
     public $myProperties = [
         'name' => [
-            'title' => 'arcane.seo::lang.components.schema_product.properties.name.title',
-            'description' => 'arcane.seo::lang.components.schema_product.properties.name.description',
-            'group' => 'arcane.seo::lang.components.group.product',
+            'title' => 'initbiz.seo::lang.components.schema_product.properties.name.title',
+            'description' => 'initbiz.seo::lang.components.schema_product.properties.name.description',
+            'group' => 'initbiz.seo::lang.components.group.product',
         ],
         'description' => [
-            'title' => 'arcane.seo::lang.components.schema_product.properties.description.title',
-            'description' => 'arcane.seo::lang.components.schema_product.properties.description.description',
-            'group' => 'arcane.seo::lang.components.group.product',
+            'title' => 'initbiz.seo::lang.components.schema_product.properties.description.title',
+            'description' => 'initbiz.seo::lang.components.schema_product.properties.description.description',
+            'group' => 'initbiz.seo::lang.components.group.product',
         ],
         'image' => [
-            'title' => 'arcane.seo::lang.components.schema_product.properties.image.title',
-            'description' => 'arcane.seo::lang.components.schema_product.properties.image.description',
-            'group' => 'arcane.seo::lang.components.group.product',
+            'title' => 'initbiz.seo::lang.components.schema_product.properties.image.title',
+            'description' => 'initbiz.seo::lang.components.schema_product.properties.image.description',
+            'group' => 'initbiz.seo::lang.components.group.product',
         ],
         'sku' => [
-            'title' => 'arcane.seo::lang.components.schema_product.properties.sku.title',
-            'description' => 'arcane.seo::lang.components.schema_product.properties.sku.description',
-            'group' => 'arcane.seo::lang.components.group.product',
+            'title' => 'initbiz.seo::lang.components.schema_product.properties.sku.title',
+            'description' => 'initbiz.seo::lang.components.schema_product.properties.sku.description',
+            'group' => 'initbiz.seo::lang.components.group.product',
         ],
         'brand' => [
-            'title' => 'arcane.seo::lang.components.schema_product.properties.brand.title',
-            'description' => 'arcane.seo::lang.components.schema_product.properties.brand.description',
-            'group' => 'arcane.seo::lang.components.group.product',
+            'title' => 'initbiz.seo::lang.components.schema_product.properties.brand.title',
+            'description' => 'initbiz.seo::lang.components.schema_product.properties.brand.description',
+            'group' => 'initbiz.seo::lang.components.group.product',
         ],
         'priceCurrency' => [
-            'title' => 'arcane.seo::lang.components.schema_product.properties.price_currency.title',
-            'description' => 'arcane.seo::lang.components.schema_product.properties.price_currency.description',
-            'group' => 'arcane.seo::lang.components.group.offer',
+            'title' => 'initbiz.seo::lang.components.schema_product.properties.price_currency.title',
+            'description' => 'initbiz.seo::lang.components.schema_product.properties.price_currency.description',
+            'group' => 'initbiz.seo::lang.components.group.offer',
         ],
         'price' => [
-            'title' => 'arcane.seo::lang.components.schema_product.properties.price.title',
-            'group' => 'arcane.seo::lang.components.group.offer',
-            'description' => 'arcane.seo::lang.components.schema_product.properties.price.description',
+            'title' => 'initbiz.seo::lang.components.schema_product.properties.price.title',
+            'group' => 'initbiz.seo::lang.components.group.offer',
+            'description' => 'initbiz.seo::lang.components.schema_product.properties.price.description',
         ],
         'availability' => [
-            'title' => 'arcane.seo::lang.components.schema_product.properties.availability.title',
-            'group' => 'arcane.seo::lang.components.group.offer',
-            'description' => 'arcane.seo::lang.components.schema_product.properties.availability.description'
+            'title' => 'initbiz.seo::lang.components.schema_product.properties.availability.title',
+            'group' => 'initbiz.seo::lang.components.group.offer',
+            'description' => 'initbiz.seo::lang.components.schema_product.properties.availability.description'
         ],
         'offerUrl' => [
-            'title' => 'arcane.seo::lang.components.schema_product.properties.offer_url.title',
-            'description' => 'arcane.seo::lang.components.schema_product.properties.offer_url.description',
-            'group' => 'arcane.seo::lang.components.group.offer',
+            'title' => 'initbiz.seo::lang.components.schema_product.properties.offer_url.title',
+            'description' => 'initbiz.seo::lang.components.schema_product.properties.offer_url.description',
+            'group' => 'initbiz.seo::lang.components.group.offer',
         ],
         'ratingValue' => [
-            'title' => 'arcane.seo::lang.components.schema_product.properties.rating_value.title',
-            'description' => 'arcane.seo::lang.components.schema_product.properties.rating_value.description',
-            'group' => 'arcane.seo::lang.components.group.reviews',
+            'title' => 'initbiz.seo::lang.components.schema_product.properties.rating_value.title',
+            'description' => 'initbiz.seo::lang.components.schema_product.properties.rating_value.description',
+            'group' => 'initbiz.seo::lang.components.group.reviews',
         ],
         'reviewCount' => [
-            'title' => 'arcane.seo::lang.components.schema_product.properties.review_count.title',
-            'description' => 'arcane.seo::lang.components.schema_product.properties.review_count.description',
-            'group' => 'arcane.seo::lang.components.group.reviews',
+            'title' => 'initbiz.seo::lang.components.schema_product.properties.review_count.title',
+            'description' => 'initbiz.seo::lang.components.schema_product.properties.review_count.description',
+            'group' => 'initbiz.seo::lang.components.group.reviews',
         ],
     ];
 

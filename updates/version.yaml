@@ -1,28 +1,3 @@
 1.0.0:
-    - 'Plugin initialized'
-1.0.1:
-    - 'Added arcane_seo_options column to rainlab_blog_posts'
-    - extend_rainlab_blog_posts_table.php
-1.0.2:
-    - 'Bug fixes and README.md update'
-1.1.0: '!!! Minor breaking changes'
-1.1.1: 'schema.org components won''t need to check "enable twig syntax". Must use twig braces {{ }}.'
-1.1.2: 'If using only one {{ }} in schema.org component fields, you must add a trailing space. Read the docs for more info.'
-1.1.3: 'New twig filters; d_8601 and i_8601 for help with iso-8601 dates and intervals, inside dynamic fields.'
-1.1.4: 'schema.org components won''t convert dates/times to iso-8601 anymore.'
-1.1.5: 'Added support for multiple twig braces in the dynamic fields >> {{hello}} ~ {{bye}}.'
-1.1.6: 'The "advanced robots" and canonical url fields now support multiple twig syntax.'
-1.1.7: '!!! fixing bugs with blog posts and static pages.'
-1.1.8: 'fixed a bug that displays a fatal error in pages with the blogPost component.'
-1.1.9: 'plugin will now require VojtaSvoboda.TwigExtensions plugin as dependency to avoid an error with template_from_string().'
-1.1.10: '!!! Bug Fix: Removed initialization of Twig StringLoader Extension'
-1.1.11: 'QuickFix for issue that caused repeater fields to repeat all the SEO fields. eg: https://ibb.co/s1YCQ37. Read more: https://octobercms.com/docs/plugin/extending#extending-backend-form'
-1.1.12: 'Added character counting to meta title and description'
-1.1.13: 'Removed keywords, this won''t break anything.'
-1.1.14: 'Better defaults in form fields'
-1.1.15: 'Fixed character count for description'
-1.1.16: 'Added HTML/CSS/JS minification'
-1.1.17: 'Added favicon generation'
-1.1.18: 'Added .htaccess file edition, better permissions'
-1.1.19: 'Fixed bug with Blog plugin'
-1.1.20: 'Added a custom Schema tab'
+    - 'First version of the plugin'
+

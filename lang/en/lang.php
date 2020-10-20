@@ -1,6 +1,6 @@
 <?php return [
     'plugin' => [
-        'name' => 'Arcane SEO',
+        'name' => 'Initbiz SEO',
         'description' => 'Manage all SEO aspects of your site',
     ],
     'schemas' => [

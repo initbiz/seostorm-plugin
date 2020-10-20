@@ -1,11 +1,11 @@
 fields:
     name:
-        label: 'arcane.seo::lang.schemas.name'
+        label: 'initbiz.seo::lang.schemas.name'
         span: full
         placeholder: ''
         type: text
     template:
-        label: 'arcane.seo::lang.schemas.template'
+        label: 'initbiz.seo::lang.schemas.template'
         size: giant
         language: php
         span: full

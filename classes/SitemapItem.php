@@ -1,6 +1,6 @@
 <?php
 
-namespace Arcane\Seo\Classes;
+namespace Initbiz\Seo\Classes;
 
 use Carbon\Carbon;
 

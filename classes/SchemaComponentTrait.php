@@ -1,9 +1,9 @@
 <?php
 
-namespace Arcane\Seo\Classes;
+namespace Initbiz\Seo\Classes;
 
 use Spatie\SchemaOrg\Schema;
-use Arcane\Seo\Classes\Helper;
+use Initbiz\Seo\Classes\Helper;
 
 trait SchemaComponentTrait
 {

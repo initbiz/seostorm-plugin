@@ -21,7 +21,7 @@
         {{ include(template_from_string(schema.script))|raw }}
     {% endfor %}
 
-    {{ include(template_from_string(viewBag.schemas|arcane_seo_schema))|raw }}
+    {{ include(template_from_string(viewBag.schemas|initbiz_seo_schema))|raw }}
 {% endif %}
 
 {% if settings.favicon_enabled %}

@@ -1,6 +1,6 @@
 <?php
 
-namespace Arcane\Seo\Models;
+namespace Initbiz\Seo\Models;
 
 use Model;
 
@@ -26,7 +26,7 @@ class Settings extends Model
     ];
 
     // A unique code
-    public $settingsCode = 'arcane_seo_settings';
+    public $settingsCode = 'initbiz_seo_settings';
 
     // Reference to field configuration
     public $settingsFields = 'fields.yaml';

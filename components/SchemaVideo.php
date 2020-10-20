@@ -1,6 +1,6 @@
 <?php
 
-namespace Arcane\Seo\Components;
+namespace Initbiz\Seo\Components;
 
 use Spatie\SchemaOrg\Schema;
 use Cms\Classes\ComponentBase;
@@ -8,13 +8,13 @@ use Cms\Classes\ComponentBase;
 
 class SchemaVideo extends ComponentBase
 {
-    use \Arcane\Seo\Classes\SchemaComponentTrait;
+    use \Initbiz\Seo\Classes\SchemaComponentTrait;
 
     public function componentDetails()
     {
         return [
-            'name'        => 'arcane.seo::lang.components.schema_video.name',
-            'description' => 'arcane.seo::lang.components.schema_video.description'
+            'name'        => 'initbiz.seo::lang.components.schema_video.name',
+            'description' => 'initbiz.seo::lang.components.schema_video.description'
         ];
     }
 
@@ -38,35 +38,35 @@ class SchemaVideo extends ComponentBase
 
     public  $myProperties = [
         'name' => [
-            'title' => 'arcane.seo::lang.components.schema_video.properties.name.title',
-            'description' => 'arcane.seo::lang.components.schema_video.properties.name.description',
-            'group' => 'arcane.seo::lang.components.group.properties',
+            'title' => 'initbiz.seo::lang.components.schema_video.properties.name.title',
+            'description' => 'initbiz.seo::lang.components.schema_video.properties.name.description',
+            'group' => 'initbiz.seo::lang.components.group.properties',
             'required'
         ],
         'description' => [
-            'title' => 'arcane.seo::lang.components.schema_video.properties.description.title',
-            'description' => 'arcane.seo::lang.components.schema_video.properties.description.description',
-            'group' => 'arcane.seo::lang.components.group.properties',
+            'title' => 'initbiz.seo::lang.components.schema_video.properties.description.title',
+            'description' => 'initbiz.seo::lang.components.schema_video.properties.description.description',
+            'group' => 'initbiz.seo::lang.components.group.properties',
         ],
         'thumbnailUrl' => [
-            'title' => 'arcane.seo::lang.components.schema_video.properties.thumbnail_url.title',
-            'description' => 'arcane.seo::lang.components.schema_video.properties.thumbnail_url.description',
-            'group' => 'arcane.seo::lang.components.group.properties',
+            'title' => 'initbiz.seo::lang.components.schema_video.properties.thumbnail_url.title',
+            'description' => 'initbiz.seo::lang.components.schema_video.properties.thumbnail_url.description',
+            'group' => 'initbiz.seo::lang.components.group.properties',
         ],
         'uploadDate' => [
-            'title' => 'arcane.seo::lang.components.schema_video.properties.upload_date.title',
-            'description' => 'arcane.seo::lang.components.schema_video.properties.upload_date.description',
-            'group' => 'arcane.seo::lang.components.group.properties',
+            'title' => 'initbiz.seo::lang.components.schema_video.properties.upload_date.title',
+            'description' => 'initbiz.seo::lang.components.schema_video.properties.upload_date.description',
+            'group' => 'initbiz.seo::lang.components.group.properties',
         ],
         'duration' => [
-            'title' => 'arcane.seo::lang.components.schema_video.properties.duration.title',
-            'description' => 'arcane.seo::lang.components.schema_video.properties.duration.description',
-            'group' => 'arcane.seo::lang.components.group.properties',
+            'title' => 'initbiz.seo::lang.components.schema_video.properties.duration.title',
+            'description' => 'initbiz.seo::lang.components.schema_video.properties.duration.description',
+            'group' => 'initbiz.seo::lang.components.group.properties',
         ],
         'interactionCount' => [
-            'title' => 'arcane.seo::lang.components.schema_video.properties.interaction_count.title',
-            'description' => 'arcane.seo::lang.components.schema_video.properties.interaction_count.description',
-            'group' => 'arcane.seo::lang.components.group.properties',
+            'title' => 'initbiz.seo::lang.components.schema_video.properties.interaction_count.title',
+            'description' => 'initbiz.seo::lang.components.schema_video.properties.interaction_count.description',
+            'group' => 'initbiz.seo::lang.components.group.properties',
         ],
     ];
 }

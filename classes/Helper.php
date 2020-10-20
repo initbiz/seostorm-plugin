@@ -1,11 +1,11 @@
 <?php
 
-namespace Arcane\Seo\Classes;
+namespace Initbiz\Seo\Classes;
 
 use Request;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use Arcane\Seo\Models\Settings;
+use Initbiz\Seo\Models\Settings;
 
 use System\Classes\PluginManager;
 

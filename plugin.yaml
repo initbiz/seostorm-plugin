@@ -1,21 +1,21 @@
 plugin:
-    name: 'Arcane SEO'
+    name: 'Initbiz SEO'
     description: 'Magically manage the SEO of your site'
-    author: Arcane
+    author: Initbiz
     icon: icon-search
 permissions:
-    arcane.seo.config:
-        tab: 'arcane.seo::lang.plugin.name'
-        label: 'Access Arcane SEO configuration'
-    arcane.seo.og:
-        tab: 'arcane.seo::lang.plugin.name'
+    initbiz.seo.config:
+        tab: 'initbiz.seo::lang.plugin.name'
+        label: 'Access Initbiz SEO configuration'
+    initbiz.seo.og:
+        tab: 'initbiz.seo::lang.plugin.name'
         label: 'Access Open Graph tab'
-    arcane.seo.sitemap:
-        tab: 'arcane.seo::lang.plugin.name'
+    initbiz.seo.sitemap:
+        tab: 'initbiz.seo::lang.plugin.name'
         label: 'Access Sitemap tab'
-    arcane.seo.meta:
-        tab: 'arcane.seo::lang.plugin.name'
+    initbiz.seo.meta:
+        tab: 'initbiz.seo::lang.plugin.name'
         label: 'Access Meta tab'
-    arcane.seo.schema:
-        tab: 'arcane.seo::lang.plugin.name'
+    initbiz.seo.schema:
+        tab: 'initbiz.seo::lang.plugin.name'
         label: 'Access Schema tab'

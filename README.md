@@ -1,11 +1,9 @@
-![Arcane SEO banner](https://i.ibb.co/8jCZj2N/arcane-seo-banner.png)
-
 ## Installation
-This is a fork of the plugin "Arcane SEO" and is not yet been published in the October CMS market, to install it do:
+This is a fork of the plugin "Initbiz SEO" and is not yet been published in the October CMS market, to install it do:
 ```bash
 $ cd /path/to/project-root/
-$ git clone git@github.com:initbiz/Arcane-SEO.git plugins/arcane/seo
-$ php artisan plugin:refresh Arcane.Seo
+$ git clone git@github.com:initbiz/Initbiz-SEO.git plugins/initbiz/seo
+$ php artisan plugin:refresh Initbiz.Seo
 $ composer update
 ```
 # How to use

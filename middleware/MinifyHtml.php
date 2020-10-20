@@ -1,16 +1,16 @@
 <?php
 
-namespace Arcane\Seo\Middleware;
+namespace Initbiz\Seo\Middleware;
 
 use Closure;
 use Storage;
-use Arcane\Seo\Classes\Minifier;
+use Initbiz\Seo\Classes\Minifier;
 
 class MinifyHtml
 {
     function handle($request, Closure $next)
     {
-        $cachePath = 'arcane/seo/minify/html' . $request->getRequestUri() . '/html';
+        $cachePath = 'initbiz/seo/minify/html' . $request->getRequestUri() . '/html';
 
         if (Minifier::isMinifyEnabled('html')) {
             if (!Storage::exists($cachePath)) {

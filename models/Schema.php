@@ -1,6 +1,6 @@
 <?php
 
-namespace Arcane\Seo\Models;
+namespace Initbiz\Seo\Models;
 
 use Model;
 
@@ -11,7 +11,7 @@ class Schema extends Model
     /**
      * @var string The database table used by the model.
      */
-    public $table = 'arcane_seo_schemas';
+    public $table = 'initbiz_seo_schemas';
 
     /**
      * @var array Validation rules

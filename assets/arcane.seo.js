@@ -1,7 +1,7 @@
 (function (win, doc) {
   
-  arcane = win.arcane || {}
-  arcane.seo = {
+  initbiz = win.initbiz || {}
+  initbiz.seo = {
     charCountHandler: function(target) {
       $target = $(target);
       let $helpBlock = $target.next('.help-block');
@@ -74,12 +74,12 @@
 
   // Expose stuff
   win.ready = ready;
-  win.arcane = arcane;
+  win.initbiz = initbiz;
       
   // execute listeners
   win.ready('[data-counter]', (el) => {
-    arcane.seo.charCountHandler(el)
-    el.oninput = event => arcane.seo.charCountHandler(el);
+    initbiz.seo.charCountHandler(el)
+    el.oninput = event => initbiz.seo.charCountHandler(el);
   });
 
 })(window, document);

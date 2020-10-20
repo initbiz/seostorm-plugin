@@ -1,6 +1,6 @@
 <?php
 
-namespace Arcane\Seo\FormWidgets;
+namespace Initbiz\Seo\FormWidgets;
 
 use Flash;
 use Storage;
@@ -14,7 +14,7 @@ class ClearCache extends FormWidgetBase
     /**
      * @inheritDoc
      */
-    protected $defaultAlias = 'arcane_seo_clear_cache';
+    protected $defaultAlias = 'initbiz_seo_clear_cache';
 
     /**
      * @inheritDoc
@@ -26,7 +26,7 @@ class ClearCache extends FormWidgetBase
 
     public function onClearCache()
     {
-        Storage::deleteDirectory('arcane/seo/minify');
+        Storage::deleteDirectory('initbiz/seo/minify');
         Flash::success('Cache cleared');
     }
 }

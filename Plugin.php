@@ -1,27 +1,27 @@
 <?php
 
-namespace Arcane\Seo;
+namespace Initbiz\Seo;
 
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
-use Arcane\Seo\Classes\Helper;
+use Initbiz\Seo\Classes\Helper;
 use System\Classes\PluginBase;
 use System\Classes\PluginManager;
 use System\Classes\SettingsManager;
 use Twig\Extension\StringLoaderExtension;
 
 /**
- * Arcane Plugin Information File
+ * Initbiz Plugin Information File
  */
 class Plugin extends PluginBase
 {
     public function registerComponents()
     {
         return [
-            'Arcane\Seo\Components\Seo' => 'seo',
-            'Arcane\Seo\Components\SchemaVideo' => 'schemaVideo',
-            'Arcane\Seo\Components\SchemaArticle' => 'schemaArticle',
-            'Arcane\Seo\Components\SchemaProduct' => 'schemaProduct',
+            'Initbiz\Seo\Components\Seo' => 'seo',
+            'Initbiz\Seo\Components\SchemaVideo' => 'schemaVideo',
+            'Initbiz\Seo\Components\SchemaArticle' => 'schemaArticle',
+            'Initbiz\Seo\Components\SchemaProduct' => 'schemaProduct',
         ];
     }
 
@@ -29,13 +29,13 @@ class Plugin extends PluginBase
     {
         return [
             'settings' => [
-                'label'       => 'Arcane SEO settings',
-                'description' => 'Configure Arcane SEO',
+                'label'       => 'Initbiz SEO settings',
+                'description' => 'Configure Initbiz SEO',
                 'icon'        => 'icon-search',
                 'category'    =>  SettingsManager::CATEGORY_CMS,
-                'class'       => 'Arcane\Seo\Models\Settings',
+                'class'       => 'Initbiz\Seo\Models\Settings',
                 'order'       => 100,
-                'permissions' => ['arcane.manage_seo'],
+                'permissions' => ['initbiz.manage_seo'],
             ]
         ];
     }
@@ -43,15 +43,15 @@ class Plugin extends PluginBase
     public function registerMarkupTags()
     {
         $helper = new Helper();
-        $minifier = \Arcane\Seo\Classes\Minifier::class;
-        $schema = \Arcane\Seo\Classes\Schema::class;
+        $minifier = \Initbiz\Seo\Classes\Minifier::class;
+        $schema = \Initbiz\Seo\Classes\Schema::class;
         return [
             'filters' => [
                 'minifyjs' => [$minifier, 'minifyJs'],
                 'minifycss' => [$minifier, 'minifyCss'],
-                'arcane_seo_schema' => [$schema, 'toScript'],
+                'initbiz_seo_schema' => [$schema, 'toScript'],
                 'removenulls' => [$helper, 'removeNullsFromArray'],
-                'fillparams'  => ['Arcane\Seo\Classes\Helper', 'replaceUrlPlaceholders'],
+                'fillparams'  => ['Initbiz\Seo\Classes\Helper', 'replaceUrlPlaceholders'],
                 'url' => [$helper, 'url'],
             ],
             'functions' => [
@@ -75,9 +75,9 @@ class Plugin extends PluginBase
     public function registerPageSnippets()
     {
         return [
-            '\Arcane\Seo\Components\SchemaVideo' => 'schemaVideo',
-            '\Arcane\Seo\Components\SchemaArticle' => 'schemaArticle',
-            '\Arcane\Seo\Components\SchemaProduct' => 'schemaProduct',
+            '\Initbiz\Seo\Components\SchemaVideo' => 'schemaVideo',
+            '\Initbiz\Seo\Components\SchemaArticle' => 'schemaArticle',
+            '\Initbiz\Seo\Components\SchemaProduct' => 'schemaProduct',
         ];
     }
 
@@ -109,11 +109,11 @@ class Plugin extends PluginBase
                     $widget->secondaryTabs['fields'] = array_replace(
                         $widget->secondaryTabs['fields'],
                         array_except($this->blogSeoFields(), [
-                            'arcane_seo_options[model_class]',
-                            'arcane_seo_options[lastmod]',
-                            'arcane_seo_options[use_updated_at]',
-                            'arcane_seo_options[changefreq]',
-                            'arcane_seo_options[priority]'
+                            'initbiz_seo_options[model_class]',
+                            'initbiz_seo_options[lastmod]',
+                            'initbiz_seo_options[use_updated_at]',
+                            'initbiz_seo_options[changefreq]',
+                            'initbiz_seo_options[priority]'
                         ])
                     );
                 }
@@ -148,7 +148,7 @@ class Plugin extends PluginBase
     protected function blogSeoFields()
     {
         return collect($this->seoFields())->mapWithKeys(function ($item, $key) {
-            return ["arcane_seo_options[$key]" => $item];
+            return ["initbiz_seo_options[$key]" => $item];
         })->toArray();
     }
 
@@ -168,7 +168,7 @@ class Plugin extends PluginBase
 
     protected function seoFields()
     {
-        $fields = \Yaml::parseFile(plugins_path('arcane/seo/config/seofields.yaml'));
+        $fields = \Yaml::parseFile(plugins_path('initbiz/seo/config/seofields.yaml'));
 
         $user = \BackendAuth::getUser();
 
@@ -177,14 +177,14 @@ class Plugin extends PluginBase
                 $fields,
                 array_merge(
                     [],
-                    !$user->hasPermission(["arcane.seo.og"]) ? [
+                    !$user->hasPermission(["initbiz.seo.og"]) ? [
                         "og_title",
                         "og_description",
                         "og_image",
                         "og_type",
                         "og_ref_image"
                     ] : [],
-                    !$user->hasPermission(["arcane.seo.sitemap"]) ? [
+                    !$user->hasPermission(["initbiz.seo.sitemap"]) ? [
                         "enabled_in_sitemap",
                         "model_class",
                         "use_updated_at",
@@ -192,7 +192,7 @@ class Plugin extends PluginBase
                         "changefreq",
                         "priority",
                     ] : [],
-                    !$user->hasPermission(["arcane.seo.meta"]) ? [
+                    !$user->hasPermission(["initbiz.seo.meta"]) ? [
                         "meta_title",
                         "meta_description",
                         "canonical_url",
@@ -200,7 +200,7 @@ class Plugin extends PluginBase
                         "robot_follow",
                         "robot_advanced",
                     ] : [],
-                    !$user->hasPermission(["arcane.seo.schema"]) ? [
+                    !$user->hasPermission(["initbiz.seo.schema"]) ? [
                         "schemas"
                     ] : []
                 )

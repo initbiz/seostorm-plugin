@@ -1,10 +1,10 @@
 <?php
 
-namespace Arcane\Seo\Classes;
+namespace Initbiz\Seo\Classes;
 
 use Request;
 use Cms\Classes\Controller;
-use Arcane\Seo\Models\Settings;
+use Initbiz\Seo\Models\Settings;
 
 class Robots
 {
