@@ -1,11 +1,11 @@
 <?php
 
-namespace Initbiz\Seo\Classes;
+namespace Initbiz\SeoStorm\Classes;
 
 use Request;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use Initbiz\Seo\Models\Settings;
+use Initbiz\SeoStorm\Models\Settings;
 
 use System\Classes\PluginManager;
 

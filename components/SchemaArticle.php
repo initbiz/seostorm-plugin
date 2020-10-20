@@ -1,19 +1,19 @@
 <?php
 
-namespace Initbiz\Seo\Components;
+namespace Initbiz\SeoStorm\Components;
 
 use Spatie\SchemaOrg\Schema;
 use Cms\Classes\ComponentBase;
 
 class SchemaArticle extends ComponentBase
 {
-    use \Initbiz\Seo\Classes\SchemaComponentTrait;
+    use \Initbiz\SeoStorm\Classes\SchemaComponentTrait;
 
     public function componentDetails()
     {
         return [
-            'name'        => 'initbiz.seo::lang.components.schema_article.name',
-            'description' => 'initbiz.seo::lang.components.schema_article.name'
+            'name'        => 'initbiz.seostorm::lang.components.schema_article.name',
+            'description' => 'initbiz.seostorm::lang.components.schema_article.name'
         ];
     }
 
@@ -43,14 +43,14 @@ class SchemaArticle extends ComponentBase
 
     public $myProperties =  [
         'headline' => [
-            'title' => 'initbiz.seo::lang.components.schema_article.properties.headline.title',
-            'description' => 'initbiz.seo::lang.components.schema_article.properties.headline.description',
-            'group' => 'initbiz.seo::lang.components.group.properties',
+            'title' => 'initbiz.seostorm::lang.components.schema_article.properties.headline.title',
+            'description' => 'initbiz.seostorm::lang.components.schema_article.properties.headline.description',
+            'group' => 'initbiz.seostorm::lang.components.group.properties',
         ],
         'image' => [
-            'title' => 'initbiz.seo::lang.components.schema_article.properties.headline.title',
-            'description' => 'initbiz.seo::lang.components.schema_article.properties.headline.description',
-            'group' => 'initbiz.seo::lang.components.group.properties',
+            'title' => 'initbiz.seostorm::lang.components.schema_article.properties.headline.title',
+            'description' => 'initbiz.seostorm::lang.components.schema_article.properties.headline.description',
+            'group' => 'initbiz.seostorm::lang.components.group.properties',
         ],
     ];
 }

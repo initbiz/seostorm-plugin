@@ -2,8 +2,8 @@
 This is a fork of the plugin "Initbiz SEO" and is not yet been published in the October CMS market, to install it do:
 ```bash
 $ cd /path/to/project-root/
-$ git clone git@github.com:initbiz/Initbiz-SEO.git plugins/initbiz/seo
-$ php artisan plugin:refresh Initbiz.Seo
+$ git clone git@github.com:initbiz/Initbiz-SEO.git plugins/initbiz/seostorm
+$ php artisan plugin:refresh Initbiz.SeoStorm
 $ composer update
 ```
 # How to use

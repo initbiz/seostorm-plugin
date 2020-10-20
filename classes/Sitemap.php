@@ -1,6 +1,6 @@
 <?php
 
-namespace Initbiz\Seo\Classes;
+namespace Initbiz\SeoStorm\Classes;
 
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
@@ -42,7 +42,7 @@ class  Sitemap
 
                 foreach ($models as $model) {
                     if ($page->hasComponent('blogPost')) {
-                        if (!(int)$model->initbiz_seo_options['enabled_in_sitemap']) {
+                        if (!(int)$model->initbiz_seostorm_options['enabled_in_sitemap']) {
                              continue;
                         }
                         $this->addItemToSet(SitemapItem::asPost($page, $model));

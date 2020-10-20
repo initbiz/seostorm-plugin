@@ -1,15 +1,15 @@
 <?php
 
-namespace Initbiz\Seo;
+namespace Initbiz\SeoStorm;
 
 use App;
 use File;
 use Route;
 use Response;
 use Cms\Classes\Controller;
-use Initbiz\Seo\Classes\Robots;
-use Initbiz\Seo\Classes\Sitemap;
-use Initbiz\Seo\Models\Settings;
+use Initbiz\SeoStorm\Classes\Robots;
+use Initbiz\SeoStorm\Classes\Sitemap;
+use Initbiz\SeoStorm\Models\Settings;
 use October\Rain\Database\Attach\Resizer;
 
 Route::get('robots.txt', function () {
@@ -36,7 +36,7 @@ Route::get('favicon.ico', function () {
 
     if ($settings->favicon_16) {
 
-        $destinationPath = storage_path('app/initbiz/seo/favicon/' . dirname($settings->favicon) . '/');
+        $destinationPath = storage_path('app/initbiz/seostorm/favicon/' . dirname($settings->favicon) . '/');
         $finalPath = $outputPath = $destinationPath . basename($settings->favicon);
 
         if (!file_exists($outputPath)) {

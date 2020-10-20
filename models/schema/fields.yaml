@@ -1,11 +1,11 @@
 fields:
     name:
-        label: 'initbiz.seo::lang.schemas.name'
+        label: 'initbiz.seostorm::lang.schemas.name'
         span: full
         placeholder: ''
         type: text
     template:
-        label: 'initbiz.seo::lang.schemas.template'
+        label: 'initbiz.seostorm::lang.schemas.template'
         size: giant
         language: php
         span: full

@@ -1,9 +1,9 @@
 <?php
 
-namespace Initbiz\Seo\Classes;
+namespace Initbiz\SeoStorm\Classes;
 
 use voku\helper\HtmlMin;
-use Initbiz\Seo\Models\Settings;
+use Initbiz\SeoStorm\Models\Settings;
 use tubalmartin\CssMin\Minifier as CssMin;
 
 class Minifier
@@ -14,7 +14,7 @@ class Minifier
 
         $path = parse_url($url, PHP_URL_PATH);
         $jsContent = \File::get($_SERVER['DOCUMENT_ROOT'] . $path);
-        $miniJsPath = 'initbiz/seo/minify/js' . $path;
+        $miniJsPath = 'initbiz/seostorm/minify/js' . $path;
 
         if (!self::isMinifyEnabled('js')) return $url;
 
@@ -31,7 +31,7 @@ class Minifier
 
         $path = parse_url($url, PHP_URL_PATH);
         $input_css = \File::get($_SERVER['DOCUMENT_ROOT'] . $path);
-        $miniCssPath = 'initbiz/seo/minify/css' . $path;
+        $miniCssPath = 'initbiz/seostorm/minify/css' . $path;
 
         if (!self::isMinifyEnabled('css')) return $url;
 

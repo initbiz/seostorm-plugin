@@ -1,6 +1,6 @@
 <?php
 
-namespace Initbiz\Seo\Updates;
+namespace Initbiz\SeoStorm\Updates;
 
 use Schema;
 use System\Classes\PluginManager;
@@ -12,7 +12,7 @@ class ExtendRainlabBlogPostsTable extends Migration
     {
         if (PluginManager::instance()->hasPlugin('RainLab.Blog')) {
             Schema::table('rainlab_blog_posts', function ($table) {
-                $table->text('initbiz_seo_options')->nullable();
+                $table->text('initbiz_seostorm_options')->nullable();
             });
         }
     }
@@ -20,9 +20,9 @@ class ExtendRainlabBlogPostsTable extends Migration
     public function down()
     {
         if (PluginManager::instance()->hasPlugin('RainLab.Blog')) {
-            if (Schema::hasColumn('rainlab_blog_posts', 'initbiz_seo_options')) {
+            if (Schema::hasColumn('rainlab_blog_posts', 'initbiz_seostorm_options')) {
                 Schema::table('rainlab_blog_posts', function ($table) {
-                    $table->dropColumn('initbiz_seo_options');
+                    $table->dropColumn('initbiz_seostorm_options');
                 });
             }
         }

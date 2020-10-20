@@ -1,10 +1,10 @@
 <?php
 
-namespace Initbiz\Seo;
+namespace Initbiz\SeoStorm;
 
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
-use Initbiz\Seo\Classes\Helper;
+use Initbiz\SeoStorm\Classes\Helper;
 use System\Classes\PluginBase;
 use System\Classes\PluginManager;
 use System\Classes\SettingsManager;
@@ -18,10 +18,10 @@ class Plugin extends PluginBase
     public function registerComponents()
     {
         return [
-            'Initbiz\Seo\Components\Seo' => 'seo',
-            'Initbiz\Seo\Components\SchemaVideo' => 'schemaVideo',
-            'Initbiz\Seo\Components\SchemaArticle' => 'schemaArticle',
-            'Initbiz\Seo\Components\SchemaProduct' => 'schemaProduct',
+            'Initbiz\SeoStorm\Components\Seo' => 'seo',
+            'Initbiz\SeoStorm\Components\SchemaVideo' => 'schemaVideo',
+            'Initbiz\SeoStorm\Components\SchemaArticle' => 'schemaArticle',
+            'Initbiz\SeoStorm\Components\SchemaProduct' => 'schemaProduct',
         ];
     }
 
@@ -29,11 +29,11 @@ class Plugin extends PluginBase
     {
         return [
             'settings' => [
-                'label'       => 'Initbiz SEO settings',
-                'description' => 'Configure Initbiz SEO',
+                'label'       => 'initbiz.seostorm::lang.form.settings.label',
+                'description' => 'initbiz.seostorm::lang.form.settings.description',
                 'icon'        => 'icon-search',
                 'category'    =>  SettingsManager::CATEGORY_CMS,
-                'class'       => 'Initbiz\Seo\Models\Settings',
+                'class'       => 'Initbiz\SeoStorm\Models\Settings',
                 'order'       => 100,
                 'permissions' => ['initbiz.manage_seo'],
             ]
@@ -43,15 +43,15 @@ class Plugin extends PluginBase
     public function registerMarkupTags()
     {
         $helper = new Helper();
-        $minifier = \Initbiz\Seo\Classes\Minifier::class;
-        $schema = \Initbiz\Seo\Classes\Schema::class;
+        $minifier = \Initbiz\SeoStorm\Classes\Minifier::class;
+        $schema = \Initbiz\SeoStorm\Classes\Schema::class;
         return [
             'filters' => [
                 'minifyjs' => [$minifier, 'minifyJs'],
                 'minifycss' => [$minifier, 'minifyCss'],
-                'initbiz_seo_schema' => [$schema, 'toScript'],
+                'initbiz_seostorm_schema' => [$schema, 'toScript'],
                 'removenulls' => [$helper, 'removeNullsFromArray'],
-                'fillparams'  => ['Initbiz\Seo\Classes\Helper', 'replaceUrlPlaceholders'],
+                'fillparams'  => ['Initbiz\SeoStorm\Classes\Helper', 'replaceUrlPlaceholders'],
                 'url' => [$helper, 'url'],
             ],
             'functions' => [
@@ -75,9 +75,9 @@ class Plugin extends PluginBase
     public function registerPageSnippets()
     {
         return [
-            '\Initbiz\Seo\Components\SchemaVideo' => 'schemaVideo',
-            '\Initbiz\Seo\Components\SchemaArticle' => 'schemaArticle',
-            '\Initbiz\Seo\Components\SchemaProduct' => 'schemaProduct',
+            '\Initbiz\SeoStorm\Components\SchemaVideo' => 'schemaVideo',
+            '\Initbiz\SeoStorm\Components\SchemaArticle' => 'schemaArticle',
+            '\Initbiz\SeoStorm\Components\SchemaProduct' => 'schemaProduct',
         ];
     }
 
@@ -109,11 +109,11 @@ class Plugin extends PluginBase
                     $widget->secondaryTabs['fields'] = array_replace(
                         $widget->secondaryTabs['fields'],
                         array_except($this->blogSeoFields(), [
-                            'initbiz_seo_options[model_class]',
-                            'initbiz_seo_options[lastmod]',
-                            'initbiz_seo_options[use_updated_at]',
-                            'initbiz_seo_options[changefreq]',
-                            'initbiz_seo_options[priority]'
+                            'initbiz_seostorm_options[model_class]',
+                            'initbiz_seostorm_options[lastmod]',
+                            'initbiz_seostorm_options[use_updated_at]',
+                            'initbiz_seostorm_options[changefreq]',
+                            'initbiz_seostorm_options[priority]'
                         ])
                     );
                 }
@@ -148,7 +148,7 @@ class Plugin extends PluginBase
     protected function blogSeoFields()
     {
         return collect($this->seoFields())->mapWithKeys(function ($item, $key) {
-            return ["initbiz_seo_options[$key]" => $item];
+            return ["initbiz_seostorm_options[$key]" => $item];
         })->toArray();
     }
 
@@ -168,7 +168,7 @@ class Plugin extends PluginBase
 
     protected function seoFields()
     {
-        $fields = \Yaml::parseFile(plugins_path('initbiz/seo/config/seofields.yaml'));
+        $fields = \Yaml::parseFile(plugins_path('initbiz/seostorm/config/seofields.yaml'));
 
         $user = \BackendAuth::getUser();
 
@@ -177,14 +177,14 @@ class Plugin extends PluginBase
                 $fields,
                 array_merge(
                     [],
-                    !$user->hasPermission(["initbiz.seo.og"]) ? [
+                    !$user->hasPermission(["initbiz.seostorm.og"]) ? [
                         "og_title",
                         "og_description",
                         "og_image",
                         "og_type",
                         "og_ref_image"
                     ] : [],
-                    !$user->hasPermission(["initbiz.seo.sitemap"]) ? [
+                    !$user->hasPermission(["initbiz.seostorm.sitemap"]) ? [
                         "enabled_in_sitemap",
                         "model_class",
                         "use_updated_at",
@@ -192,7 +192,7 @@ class Plugin extends PluginBase
                         "changefreq",
                         "priority",
                     ] : [],
-                    !$user->hasPermission(["initbiz.seo.meta"]) ? [
+                    !$user->hasPermission(["initbiz.seostorm.meta"]) ? [
                         "meta_title",
                         "meta_description",
                         "canonical_url",
@@ -200,7 +200,7 @@ class Plugin extends PluginBase
                         "robot_follow",
                         "robot_advanced",
                     ] : [],
-                    !$user->hasPermission(["initbiz.seo.schema"]) ? [
+                    !$user->hasPermission(["initbiz.seostorm.schema"]) ? [
                         "schemas"
                     ] : []
                 )

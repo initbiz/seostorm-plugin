@@ -1,6 +1,6 @@
 <?php
 
-namespace Initbiz\Seo\Classes;
+namespace Initbiz\SeoStorm\Classes;
 
 class Schema
 {

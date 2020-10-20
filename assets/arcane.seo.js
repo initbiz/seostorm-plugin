@@ -1,7 +1,7 @@
 (function (win, doc) {
   
   initbiz = win.initbiz || {}
-  initbiz.seo = {
+  initbiz.seostorm = {
     charCountHandler: function(target) {
       $target = $(target);
       let $helpBlock = $target.next('.help-block');
@@ -78,8 +78,8 @@
       
   // execute listeners
   win.ready('[data-counter]', (el) => {
-    initbiz.seo.charCountHandler(el)
-    el.oninput = event => initbiz.seo.charCountHandler(el);
+    initbiz.seostorm.charCountHandler(el)
+    el.oninput = event => initbiz.seostorm.charCountHandler(el);
   });
 
 })(window, document);

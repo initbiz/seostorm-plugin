@@ -1,7 +1,15 @@
 <?php return [
     'plugin' => [
-        'name' => 'Initbiz SEO',
-        'description' => 'Manage all SEO aspects of your site',
+        'name' => 'SEO Storm',
+        'description' => 'Total SEO page control in October',
+    ],
+    'permissions' => [
+        'settings_tab' => 'SEO Storm',
+        'config' => 'Access SEO Storm configuration',
+        'og' => 'Access Open Graph tab',
+        'sitemap' => 'Accsss Sitemap tab',
+        'meta' => 'Access Meta tab',
+        'schema' => 'Access Schema tab',
     ],
     'schemas' => [
         'id' => 'ID',
@@ -12,6 +20,8 @@
     ],
     'form' => [
         'settings' => [
+            'label' => 'SEO Storm settings',
+            'description' => 'Configure SEO Storm',
             'tab_meta' => 'Meta',
             'tab_head' => '<head>',
             'tab_robots' => 'Robots',
@@ -93,9 +103,6 @@
                     'description' => 'Enable this if you do not want to output schema scripts from the seo component',
                 ]
             ],
-            'group' => [
-                'properties' => 'Properties',
-            ]
         ],
         'schema_article' => [
             'name' => 'Article (schema.org)',

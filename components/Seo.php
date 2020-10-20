@@ -1,11 +1,11 @@
 <?php
 
-namespace Initbiz\Seo\Components;
+namespace Initbiz\SeoStorm\Components;
 
 use App;
 use Cms\Components\ViewBag;
 use Cms\Classes\ComponentBase;
-use Initbiz\Seo\Models\Settings;
+use Initbiz\SeoStorm\Models\Settings;
 use System\Classes\MediaLibrary;
 
 class Seo extends ComponentBase
@@ -34,8 +34,8 @@ class Seo extends ComponentBase
     public function componentDetails()
     {
         return [
-            'name'        => 'initbiz.seo::lang.components.seo.name',
-            'description' => 'initbiz.seo::lang.components.seo.description'
+            'name'        => 'initbiz.seostorm::lang.components.seo.name',
+            'description' => 'initbiz.seostorm::lang.components.seo.description'
         ];
     }
 
@@ -43,8 +43,8 @@ class Seo extends ComponentBase
     {
         return [
             'disable_schema' => [
-                'title' => 'initbiz.seo::lang.components.seo.properties.disable_schema.title',
-                'description' => 'initbiz.seo::lang.components.seo.properties.disable_schema.description',
+                'title' => 'initbiz.seostorm::lang.components.seo.properties.disable_schema.title',
+                'description' => 'initbiz.seostorm::lang.components.seo.properties.disable_schema.description',
                 'type' => 'checkbox'
             ]
         ];
@@ -63,7 +63,7 @@ class Seo extends ComponentBase
             $properties = array_merge(
                 $this->page["viewBag"]->getProperties(),
                 $post->attributes,
-                $post->initbiz_seo_options ?: []
+                $post->initbiz_seostorm_options ?: []
             );
             $this->viewBagProperties = $properties;
             $this->page['viewBag']->setProperties($properties);

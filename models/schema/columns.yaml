@@ -1,13 +1,13 @@
 columns:
     id:
-        label: 'initbiz.seo::lang.schemas.id'
+        label: 'initbiz.seostorm::lang.schemas.id'
         type: number
     name:
-        label: 'initbiz.seo::lang.schemas.name'
+        label: 'initbiz.seostorm::lang.schemas.name'
         type: text
     created_at:
-        label: 'initbiz.seo::lang.schemas.created_at'
+        label: 'initbiz.seostorm::lang.schemas.created_at'
         type: datetime
     updated_at:
-        label: 'initbiz.seo::lang.schemas.updated_at'
+        label: 'initbiz.seostorm::lang.schemas.updated_at'
         type: datetime

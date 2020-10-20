@@ -1,9 +1,9 @@
 <?php
 
-namespace Initbiz\Seo\Classes;
+namespace Initbiz\SeoStorm\Classes;
 
 use Spatie\SchemaOrg\Schema;
-use Initbiz\Seo\Classes\Helper;
+use Initbiz\SeoStorm\Classes\Helper;
 
 trait SchemaComponentTrait
 {

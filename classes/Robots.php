@@ -1,10 +1,10 @@
 <?php
 
-namespace Initbiz\Seo\Classes;
+namespace Initbiz\SeoStorm\Classes;
 
 use Request;
 use Cms\Classes\Controller;
-use Initbiz\Seo\Models\Settings;
+use Initbiz\SeoStorm\Models\Settings;
 
 class Robots
 {
