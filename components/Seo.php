@@ -58,7 +58,6 @@ class Seo extends ComponentBase
             $this->page['viewBag'] = new ViewBag();
         }
 
-
         if ($this->page->page->hasComponent('blogPost')) {
             $post = $this->page['post'];
             $properties = array_merge(
