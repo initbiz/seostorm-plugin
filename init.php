@@ -12,7 +12,6 @@ use System\Classes\PluginManager;
 // add js dependencies in the backend
 \Event::listen('backend.page.beforeDisplay', function($controller, $action, $params) {
     $controller->addJs('/plugins/arcane/seo/assets/arcane.seo.js');
-    $controller->addJs('https://cdn.jsdelivr.net/npm/vue');
 });
 
 
