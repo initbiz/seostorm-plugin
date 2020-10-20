@@ -40,33 +40,33 @@ class SchemaVideo extends ComponentBase
         'name' => [
             'title' => 'arcane.seo::lang.components.schema_video.properties.name.title',
             'description' => 'arcane.seo::lang.components.schema_video.properties.name.description',
-            'group' => 'Properties',
+            'group' => 'arcane.seo::lang.components.group.properties',
             'required'
         ],
         'description' => [
             'title' => 'arcane.seo::lang.components.schema_video.properties.description.title',
             'description' => 'arcane.seo::lang.components.schema_video.properties.description.description',
-            'group' => 'Properties',
+            'group' => 'arcane.seo::lang.components.group.properties',
         ],
         'thumbnailUrl' => [
             'title' => 'arcane.seo::lang.components.schema_video.properties.thumbnail_url.title',
             'description' => 'arcane.seo::lang.components.schema_video.properties.thumbnail_url.description',
-            'group' => 'Properties',
+            'group' => 'arcane.seo::lang.components.group.properties',
         ],
         'uploadDate' => [
             'title' => 'arcane.seo::lang.components.schema_video.properties.upload_date.title',
             'description' => 'arcane.seo::lang.components.schema_video.properties.upload_date.description',
-            'group' => 'Properties',
+            'group' => 'arcane.seo::lang.components.group.properties',
         ],
         'duration' => [
             'title' => 'arcane.seo::lang.components.schema_video.properties.duration.title',
             'description' => 'arcane.seo::lang.components.schema_video.properties.duration.description',
-            'group' => 'Properties',
+            'group' => 'arcane.seo::lang.components.group.properties',
         ],
         'interactionCount' => [
             'title' => 'arcane.seo::lang.components.schema_video.properties.interaction_count.title',
             'description' => 'arcane.seo::lang.components.schema_video.properties.interaction_count.description',
-            'group' => 'Properties',
+            'group' => 'arcane.seo::lang.components.group.properties',
         ],
     ];
 }

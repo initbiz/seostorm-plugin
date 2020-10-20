@@ -42,57 +42,57 @@ class SchemaProduct extends ComponentBase
         'name' => [
             'title' => 'arcane.seo::lang.components.schema_product.properties.name.title',
             'description' => 'arcane.seo::lang.components.schema_product.properties.name.description',
-            'group' => 'Product',
+            'group' => 'arcane.seo::lang.components.group.product',
         ],
         'description' => [
             'title' => 'arcane.seo::lang.components.schema_product.properties.description.title',
             'description' => 'arcane.seo::lang.components.schema_product.properties.description.description',
-            'group' => 'Product',
+            'group' => 'arcane.seo::lang.components.group.product',
         ],
         'image' => [
             'title' => 'arcane.seo::lang.components.schema_product.properties.image.title',
             'description' => 'arcane.seo::lang.components.schema_product.properties.image.description',
-            'group' => 'Product',
+            'group' => 'arcane.seo::lang.components.group.product',
         ],
         'sku' => [
             'title' => 'arcane.seo::lang.components.schema_product.properties.sku.title',
             'description' => 'arcane.seo::lang.components.schema_product.properties.sku.description',
-            'group' => 'Product',
+            'group' => 'arcane.seo::lang.components.group.product',
         ],
         'brand' => [
             'title' => 'arcane.seo::lang.components.schema_product.properties.brand.title',
             'description' => 'arcane.seo::lang.components.schema_product.properties.brand.description',
-            'group' => 'Product',
+            'group' => 'arcane.seo::lang.components.group.product',
         ],
         'priceCurrency' => [
             'title' => 'arcane.seo::lang.components.schema_product.properties.price_currency.title',
             'description' => 'arcane.seo::lang.components.schema_product.properties.price_currency.description',
-            'group' => 'Offer',
+            'group' => 'arcane.seo::lang.components.group.offer',
         ],
         'price' => [
             'title' => 'arcane.seo::lang.components.schema_product.properties.price.title',
-            'group' => 'Offer',
+            'group' => 'arcane.seo::lang.components.group.offer',
             'description' => 'arcane.seo::lang.components.schema_product.properties.price.description',
         ],
         'availability' => [
             'title' => 'arcane.seo::lang.components.schema_product.properties.availability.title',
-            'group' => 'Offer',
+            'group' => 'arcane.seo::lang.components.group.offer',
             'description' => 'arcane.seo::lang.components.schema_product.properties.availability.description'
         ],
         'offerUrl' => [
             'title' => 'arcane.seo::lang.components.schema_product.properties.offer_url.title',
             'description' => 'arcane.seo::lang.components.schema_product.properties.offer_url.description',
-            'group' => 'Offer',
+            'group' => 'arcane.seo::lang.components.group.offer',
         ],
         'ratingValue' => [
             'title' => 'arcane.seo::lang.components.schema_product.properties.rating_value.title',
             'description' => 'arcane.seo::lang.components.schema_product.properties.rating_value.description',
-            'group' => 'Reviews',
+            'group' => 'arcane.seo::lang.components.group.reviews',
         ],
         'reviewCount' => [
             'title' => 'arcane.seo::lang.components.schema_product.properties.review_count.title',
             'description' => 'arcane.seo::lang.components.schema_product.properties.review_count.description',
-            'group' => 'Reviews',
+            'group' => 'arcane.seo::lang.components.group.reviews',
         ],
     ];
 

@@ -78,109 +78,120 @@
         ]
     ],
     'components' => [
+        'group' => [
+            'properties' => 'Properties',
+            'product' => 'Product',
+            'offer' => 'Offer',
+            'reviews' => 'Reviews',
+        ],
         'seo' => [
             'name' => 'Seo',
             'description' => 'Renders SEO meta tags in place',
             'properties' => [
                 'disable_schema' => [
-                    'name' => 'Disable schemas',
+                    'title' => 'Disable schemas',
                     'description' => 'Enable this if you do not want to output schema scripts from the seo component',
                 ]
+            ],
+            'group' => [
+                'properties' => 'Properties',
             ]
         ],
-        'schema_article' =>[
+        'schema_article' => [
             'name' => 'Article (schema.org)',
             'description' => 'Interts a schema.org article in JSON-LD',
             'properties' => [
                 'headline' => [
-                    'name' => 'Headline',
+                    'title' => 'Headline',
                     'description' => '',
+                    'group' => 'Properties',
                 ],
                 'image' => [
-                    'name' => 'Image',
+                    'title' => 'Image',
                     'description' => '',
+                    'group' => 'Properties',
                 ]
-            ]
+            ],
         ],
-        'schema_product' =>[
+        'schema_product' => [
             'name' => 'Product (schema.org)',
             'description' => 'Defines a schema.org product',
             'properties' => [
                 'name' => [
-                    'name' => 'Name',
+                    'title' => 'Name',
                     'description' => '',
                 ],
                 'description' => [
-                    'name' => 'Description',
+                    'title' => 'Description',
                     'description' => '',
                 ],
                 'image' => [
-                    'name' => 'Image',
+                    'title' => 'Image',
                     'description' => '',
                 ],
                 'sku' => [
-                    'name' => 'SKU',
+                    'title' => 'SKU',
                     'description' => '',
                 ],
                 'brand' => [
-                    'name' => 'Brand',
+                    'title' => 'Brand',
                     'description' => '',
                 ],
                 'price_currency' => [
-                    'name' => 'Price currency',
+                    'title' => 'Price currency',
                     'description' => 'The currency used to describe the product price, in three-letter ISO 4217 format. ',
                 ],
                 'price' => [
-                    'name' => 'Price',
+                    'title' => 'Price',
                     'description' => 'The price of the product. Follow schema.org/price usage guidelines. ',
                 ],
                 'availability' => [
-                    'name' => 'Availability',
+                    'title' => 'Availability',
                     'description' => 'Value is taken from a constrained list of options, expressed in markup using URL links. Google also understands their short names (for example InStock or OutOfStock, without the full URL scope.) Example: http://schema.org/InStock',
                 ],
                 'offerUrl' => [
-                    'name' => 'URL',
+                    'title' => 'URL',
                     'description' => '',
                 ],
                 'rating_value' => [
-                    'name' => 'Rating value',
+                    'title' => 'Rating value',
                     'description' => 'Rating of the product: 0-5, can accept decimals',
                 ],
-                'reviewCount' => [
-                    'name' => 'Review count',
+                'review_count' => [
+                    'title' => 'Review count',
                     'description' => 'Indicate how many people have voted for the product',
                 ],
-            ]
+            ],
         ],
-        'schema_video' =>[
+        'schema_video' => [
             'name' => 'Video (schema.org)',
             'description' => 'Inserts an schema.org VideoObject',
             'properties' => [
                 'name' => [
-                    'name' => 'Name',
+                    'title' => 'Name',
                     'description' => 'Name of the video ',
                 ],
                 'description' => [
-                    'name' => 'Description',
+                    'title' => 'Description',
                     'description' => 'Description of the video',
                 ],
                 'thumbnail_url' => [
-                    'name' => 'Thumbnail URL',
+                    'title' => 'Thumbnail URL',
                     'description' => 'Thumnail of the video',
                 ],
                 'upload_date' => [
-                    'name' => 'Upload Date',
+                    'title' => 'Upload Date',
                     'description' => 'Upload date of the video',
                 ],
                 'duration' => [
-                    'name' => 'Duration',
+                    'title' => 'Duration',
                     'description' => 'Duration of the video',
                 ],
                 'interaction_count' => [
-                    'name' => 'Interaction count',
+                    'title' => 'Interaction count',
                     'description' => 'Number of times the video has been viewed ',
                 ],
-            ]
+            ],
         ],
     ]
 ];

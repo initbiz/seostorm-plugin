@@ -45,12 +45,12 @@ class SchemaArticle extends ComponentBase
         'headline' => [
             'title' => 'arcane.seo::lang.components.schema_article.properties.headline.title',
             'description' => 'arcane.seo::lang.components.schema_article.properties.headline.description',
-            'group' => 'Properties',
+            'group' => 'arcane.seo::lang.components.group.properties',
         ],
         'image' => [
             'title' => 'arcane.seo::lang.components.schema_article.properties.headline.title',
             'description' => 'arcane.seo::lang.components.schema_article.properties.headline.description',
-            'group' => 'Properties'
+            'group' => 'arcane.seo::lang.components.group.properties',
         ],
     ];
 }
