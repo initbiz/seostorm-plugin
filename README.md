@@ -10,10 +10,10 @@ $ composer update
 ```
 # How to use
 ## Meta tags
-To enable meta tags, place the SEO component in one or more  of your layouts. Make sure meta tags are enabled from the settings page.
+To enable meta tags, place the SEO component in one or more of your layouts. Make sure meta tags are enabled from the settings page.
 
 ### Dynamic meta tags
-SEO meta tag fields support twig syntax, this makes them more flexible when you  have a website with many records and you need to use their attribute values for search results, or generate the title and description of the page from a model field.
+SEO meta tag fields support twig syntax, this makes them more flexible when you have a website with many records and you need to use their attribute values for search results, or generate the title and description of the page from a model field.
 
 ![seo fields screenshot](https://i.ibb.co/7JJvNgr/download.png)
 
@@ -21,18 +21,18 @@ SEO meta tag fields support twig syntax, this makes them more flexible when you 
 The twig syntax is very helpful, it allows you to do something like this:
 
     {{ "This is the meta title of my page" | _ }}
-    
+
 After rendering the page the first time, the string will be registered by the `RainLab.Translate`'s `_` filter as a translation message. This means that these meta tags can become multilingual.
 
 ### Restrictions
 - Sitemap.xml fields don't use dynamic fields.
-- If you are using only one `{{ }}` inside a the property field of a schema.org component, you need to add at least one trailing space, from the code of the page not the October interface. Example: 
+- If you are using only one `{{ }}` inside a the property field of a schema.org component, you need to add at least one trailing space, from the code of the page not the October interface. Example:
 
 ```
 [schemaVideo]
 description = "{{ episode.serie.summary }} " <-- this is the trailing space
 ```
-    
+
 
 ##  Automating the sitemap.xml
 To automatically generate the sitemap.xml, follow the steps below:
@@ -66,7 +66,7 @@ You can write your own schemas on your cms pages, blog posts and static pages. J
 
 ```yaml
 # top level schema
-Article: 
+Article:
     # these are properties
    headline: "BIG NEWS OF 2019"
    # property names must be written exactly as schema.org
@@ -77,17 +77,17 @@ Article:
     name: "{{ model.publisher.name }}"
    # you can specify arrays of a type
    author@Person[]:
-    0: 
+    0:
         name: "James"
-    1: 
+    1:
         name: "Tom"
- 
+
  # another top level schema
  Organization:
     ...
 ```
 
-The plugin also comes with components that define some schema.org objects (Article, Product and VideoObject). These components are also available as snippets for `RainLab.Pages` and their properties support twig syntax. 
+The plugin also comes with components that define some schema.org objects (Article, Product and VideoObject). These components are also available as snippets for `RainLab.Pages` and their properties support twig syntax.
 
 It's highly recommended that you read the [Google guidelines](https://developers.google.com/search/docs/guides/intro-structured-data) if you're not familiar with structured data.
 
@@ -105,7 +105,7 @@ However, if using multiple braces you won't need to add any space.
 
 
 ## Open Graph & Twitter cards
-The configuration is done via the Open Graph tab. If you don't know about these tags read [the guide for Open Graph from Facebook](https://developers.facebook.com/docs/sharing/webmasters) and [the guide for Twitter cards from Twitter](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html).
+The configuration is done via the Social Media tab. If you don't know about these tags read [the guide for Open Graph from Facebook](https://developers.facebook.com/docs/sharing/webmasters) and [the guide for Twitter cards from Twitter](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html).
 
 **Note:** Twitter cards are automatically set from the OG * fields.
 
@@ -114,7 +114,7 @@ The configuration is done via the Open Graph tab. If you don't know about these 
 Currently supported tags are:
 - `og:title`defaults to _page meta\_title | page title_
 - `og:description` defaults to _page meta\_description | site description_ in the Settings page
-- `og:image` defaults to  _page image|site image_ in Settings page - Open Graph tab
+- `og:image` defaults to _page image|site image_ in Settings page - Social media tab
 - `og:type` defaults to "website"
 - `og:site_name` set in the settings page.
 - `twitter:title` from `og:title`

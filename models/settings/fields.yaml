@@ -1,8 +1,6 @@
 tabs:
     defaultTab: 'Meta'
     fields:
-
-
         #----------------------------------------------------------------------
         # Meta Tab
         #----------------------------------------------------------------------
@@ -108,13 +106,13 @@ tabs:
             default: false
         minify_css:
             label: 'Minify CSS'
-            comment: 'Usage: {{ "path/to/css" | theme | minifycss }}'
+            comment: 'Usage: {{ "path/to/css"|theme|minifycss }}'
             type: switch
             tab: Minify
             default: false
         minify_js:
             label: 'Minify JS'
-            comment: 'Usage: {{ "path/to/js" | theme | minifyjs }}'
+            comment: 'Usage: {{ "path/to/js"|theme|minifyjs }}'
             type: switch
             tab: Minify
             default: false
@@ -123,8 +121,8 @@ tabs:
             comment: Change the ENV variable in your .env file
             type: checkbox
             tab: Minify
-        btn_clear_cache:
-            type: Arcane\Seo\Widgets\ClearCache
+        _btn_clear_cache:
+            type: Arcane\Seo\FormWidgets\ClearCache
             tab: Minify
 
         #----------------------------------------------------------------------
@@ -164,25 +162,76 @@ tabs:
         #----------------------------------------------------------------------
 
         #----------------------------------------------------------------------
-        # og Tab
+        # social media Tab
         #----------------------------------------------------------------------
         enable_og:
-            label: 'Enable Open Graph'
-            comment: 'Display the Open Graph meta tags'
+            label: 'Enable Social Media'
+            comment: 'Display the Social Media meta tags'
             type: switch
-            tab: Open Graph
+            tab: Social Media
             default: true
-        site_image:
-            label: 'Site image'
-            mode: image
-            prompt: 'Drag files or click here'
-            hidden: 0
+        site_image_hint:
+            type: hint
+            span: right
+            path: $/arcane/seo/models/settings/_site_image_hint.htm
+            tab: Social Media
+        site_image_from:
+            label: 'Where to get default site image from'
+            tab: Social Media
+            span: left
+            type: dropdown
+            options:
+                media: Media
+                fileupload: File Upload
+                url: Url
             trigger:
                 action: enable
                 field: enable_og
                 condition: checked
+        site_image:
+            label: 'Site image'
+            tab: Social Media
+            span: right
             type: mediafinder
-            tab: Open Graph
+            mode: image
+            imageHeight: 260
+            imageWidth: 260
+            trigger:
+                action: show
+                field: site_image_from
+                condition: value[media]
+        site_image_fileupload:
+            label: 'Site image'
+            tab: Social Media
+            span: right
+            type: fileupload
+            mode: image
+            imageHeight: 260
+            imageWidth: 260
+            trigger:
+                action: show
+                field: site_image_from
+                condition: value[fileupload]
+        site_image_url:
+            label: 'Site image'
+            tab: Social Media
+            span: right
+            type: text
+            trigger:
+                action: show
+                field: site_image_from
+                condition: value[url]
+        og_site_name:
+            label: 'Site name'
+            disabled: 0
+            type: text
+            span: left
+            comment: 'The og:site_name OG tag'
+            tab: Social Media
+            trigger:
+                action: enable
+                field: enable_og
+                condition: checked
         fb_app_id:
             label: 'Facebook App ID'
             disabled: 0
@@ -193,7 +242,7 @@ tabs:
             type: text
             span: left
             comment: 'The fb:app_id OG tag'
-            tab: Open Graph
+            tab: Social Media
         og_locale:
             label: 'og:locale'
             trigger:
@@ -204,5 +253,15 @@ tabs:
             span: left
             commentHtml: true
             comment: 'Set the locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
-            tab: Open Graph
-
+            tab: Social Media
+        og_locale_alternate:
+            label: 'og:locale:alternate'
+            trigger:
+                action: enable
+                field: enable_og
+                condition: checked
+            type: text
+            span: left
+            commentHtml: true
+            comment: 'Set the alternate locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>'
+            tab: Social Media

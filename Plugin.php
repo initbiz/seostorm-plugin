@@ -8,16 +8,13 @@ use Arcane\Seo\Classes\Helper;
 use System\Classes\PluginBase;
 use System\Classes\PluginManager;
 use System\Classes\SettingsManager;
+use Twig\Extension\StringLoaderExtension;
 
 /**
  * Arcane Plugin Information File
  */
 class Plugin extends PluginBase
 {
-    public $require = [
-        'VojtaSvoboda.TwigExtensions',
-    ];
-
     public function registerComponents()
     {
         return [
@@ -53,12 +50,26 @@ class Plugin extends PluginBase
                 'minifyjs' => [$minifier, 'minifyJs'],
                 'minifycss' => [$minifier, 'minifyCss'],
                 'arcane_seo_schema' => [$schema, 'toScript'],
-                'seotitle'    => [$helper, 'generateTitle'],
                 'removenulls' => [$helper, 'removeNullsFromArray'],
                 'fillparams'  => ['Arcane\Seo\Classes\Helper', 'replaceUrlPlaceholders'],
                 'url' => [$helper, 'url'],
+            ],
+            'functions' => [
+                'template_from_string' => [$this, 'templateFromString'],
             ]
         ];
+    }
+
+    public function templateFromString($template)
+    {
+        $twig = $this->app->make('twig.environment');
+
+        if (!$twig->hasExtension(StringLoaderExtension::class)) {
+            $stringLoader = new StringLoaderExtension();
+            $twig->addExtension($stringLoader);
+        }
+
+        return twig_template_from_string($twig, $template);
     }
 
     public function registerPageSnippets()
@@ -75,14 +86,13 @@ class Plugin extends PluginBase
         \Event::listen('backend.form.extendFieldsBefore', function ($widget) {
             if ($widget->isNested === false) {
 
-                if (!($theme = Theme::getEditTheme()))
+                if (!Theme::getEditTheme())
                     throw new ApplicationException(Lang::get('cms::lang.theme.edit.not_found'));
 
                 if (
                     PluginManager::instance()->hasPlugin('RainLab.Pages')
                     && $widget->model instanceof \RainLab\Pages\Classes\Page
                 ) {
-
                     $widget->tabs['fields'] = array_replace(
                         $widget->tabs['fields'],
                         array_except($this->staticSeoFields(), [
@@ -116,6 +126,9 @@ class Plugin extends PluginBase
 
         if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
             Page::extend(function ($model) {
+                if (!$model->propertyExists('translatable')) {
+                    $model->addDynamicProperty('translatable', []);
+                }
                 $model->translatable = array_merge($model->translatable, $this->seoFieldsToTranslate());
             });
         }
@@ -158,7 +171,6 @@ class Plugin extends PluginBase
         $fields = \Yaml::parseFile(plugins_path('arcane/seo/config/seofields.yaml'));
 
         $user = \BackendAuth::getUser();
-        // remove form fields when current users doesn't have access
 
         if ($user) {
             $fields = array_except(

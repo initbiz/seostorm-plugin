@@ -4,15 +4,12 @@ namespace Arcane\Seo\Middleware;
 
 use Closure;
 use Storage;
-use Arcane\Seo\Models\Settings;
 use Arcane\Seo\Classes\Minifier;
 
 class MinifyHtml
 {
     function handle($request, Closure $next)
     {
-        $settings = Settings::instance();
-
         $cachePath = 'arcane/seo/minify/html' . $request->getRequestUri() . '/html';
 
         if (Minifier::isMinifyEnabled('html')) {

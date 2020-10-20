@@ -1,13 +1,15 @@
 <?php
 
-namespace Arcane\Seo\Widgets;
+namespace Arcane\Seo\FormWidgets;
 
-use Backend\Classes\WidgetBase;
+use Flash;
+use Storage;
+use Backend\Classes\FormWidgetBase;
 
 /**
  * Minify Form Widget
  */
-class ClearCache extends WidgetBase
+class ClearCache extends FormWidgetBase
 {
     /**
      * @inheritDoc
@@ -24,7 +26,7 @@ class ClearCache extends WidgetBase
 
     public function onClearCache()
     {
-        \Storage::deleteDirectory('arcane/seo/minify');
-        \Flash::success('Cache cleared');
+        Storage::deleteDirectory('arcane/seo/minify');
+        Flash::success('Cache cleared');
     }
 }
