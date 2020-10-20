@@ -14,11 +14,6 @@ class ClearCache extends FormWidgetBase
     /**
      * @inheritDoc
      */
-    protected $defaultAlias = 'initbiz_seostorm_clear_cache';
-
-    /**
-     * @inheritDoc
-     */
     public function render()
     {
         return $this->makePartial('clearcache');
