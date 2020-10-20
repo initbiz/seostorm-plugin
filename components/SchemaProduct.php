@@ -12,8 +12,8 @@ class SchemaProduct extends ComponentBase
     public function componentDetails()
     {
         return [
-            'name'        => 'Product (schema.org)',
-            'description' => 'Defines a schema.org product'
+            'name'        => 'arcane.seo::lang.components.schema_product.name',
+            'description' => 'arcane.seo::lang.components.schema_product.description'
         ];
     }
 
@@ -40,54 +40,59 @@ class SchemaProduct extends ComponentBase
 
     public $myProperties = [
         'name' => [
-            'title' => 'Name',
-            'group' => 'Product',
+            'title' => 'arcane.seo::lang.components.schema_product.properties.name.title',
+            'description' => 'arcane.seo::lang.components.schema_product.properties.name.description',
+            'group' => 'arcane.seo::lang.components.group.product',
         ],
         'description' => [
-            'title' => 'Description',
-            'group' => 'Product',
+            'title' => 'arcane.seo::lang.components.schema_product.properties.description.title',
+            'description' => 'arcane.seo::lang.components.schema_product.properties.description.description',
+            'group' => 'arcane.seo::lang.components.group.product',
         ],
         'image' => [
-            'title' => 'Image',
-            'group' => 'Product',
+            'title' => 'arcane.seo::lang.components.schema_product.properties.image.title',
+            'description' => 'arcane.seo::lang.components.schema_product.properties.image.description',
+            'group' => 'arcane.seo::lang.components.group.product',
         ],
-
         'sku' => [
-            'title' => 'SKU',
-            'group' => 'Product',
+            'title' => 'arcane.seo::lang.components.schema_product.properties.sku.title',
+            'description' => 'arcane.seo::lang.components.schema_product.properties.sku.description',
+            'group' => 'arcane.seo::lang.components.group.product',
         ],
         'brand' => [
-            'title' => 'Brand',
-            'group' => 'Product',
+            'title' => 'arcane.seo::lang.components.schema_product.properties.brand.title',
+            'description' => 'arcane.seo::lang.components.schema_product.properties.brand.description',
+            'group' => 'arcane.seo::lang.components.group.product',
         ],
         'priceCurrency' => [
-            'title' => 'Price currency',
-            'description' => 'The currency used to describe the product price, in three-letter ISO 4217 format. ',
-            'group' => 'Offer',
+            'title' => 'arcane.seo::lang.components.schema_product.properties.price_currency.title',
+            'description' => 'arcane.seo::lang.components.schema_product.properties.price_currency.description',
+            'group' => 'arcane.seo::lang.components.group.offer',
         ],
         'price' => [
-            'title' => 'Price',
-            'group' => 'Offer',
-            'description' => 'The price of the product. Follow schema.org/price usage guidelines. ',
+            'title' => 'arcane.seo::lang.components.schema_product.properties.price.title',
+            'group' => 'arcane.seo::lang.components.group.offer',
+            'description' => 'arcane.seo::lang.components.schema_product.properties.price.description',
         ],
         'availability' => [
-            'title' => 'Availability',
-            'group' => 'Offer',
-            'description' => 'Value is taken from a constrained list of options, expressed in markup using URL links. Google also understands their short names (for example InStock or OutOfStock, without the full URL scope.) Example: http://schema.org/InStock'
+            'title' => 'arcane.seo::lang.components.schema_product.properties.availability.title',
+            'group' => 'arcane.seo::lang.components.group.offer',
+            'description' => 'arcane.seo::lang.components.schema_product.properties.availability.description'
         ],
         'offerUrl' => [
-            'title' => 'URL',
-            'group' => 'Offer',
+            'title' => 'arcane.seo::lang.components.schema_product.properties.offer_url.title',
+            'description' => 'arcane.seo::lang.components.schema_product.properties.offer_url.description',
+            'group' => 'arcane.seo::lang.components.group.offer',
         ],
         'ratingValue' => [
-            'title' => 'Rating value',
-            'description' => 'Rating of the product: 0-5, can accept decimals',
-            'group' => 'Reviews',
+            'title' => 'arcane.seo::lang.components.schema_product.properties.rating_value.title',
+            'description' => 'arcane.seo::lang.components.schema_product.properties.rating_value.description',
+            'group' => 'arcane.seo::lang.components.group.reviews',
         ],
         'reviewCount' => [
-            'title' => 'Review count',
-            'description' => 'Indicate how many people have voted for the product',
-            'group' => 'Reviews',
+            'title' => 'arcane.seo::lang.components.schema_product.properties.review_count.title',
+            'description' => 'arcane.seo::lang.components.schema_product.properties.review_count.description',
+            'group' => 'arcane.seo::lang.components.group.reviews',
         ],
     ];
 

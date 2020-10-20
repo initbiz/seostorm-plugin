@@ -12,8 +12,8 @@ class SchemaArticle extends ComponentBase
     public function componentDetails()
     {
         return [
-            'name'        => 'Article (schema.org)',
-            'description' => 'Interts a schema.org article in JSON-LD'
+            'name'        => 'arcane.seo::lang.components.schema_article.name',
+            'description' => 'arcane.seo::lang.components.schema_article.name'
         ];
     }
 
@@ -43,14 +43,14 @@ class SchemaArticle extends ComponentBase
 
     public $myProperties =  [
         'headline' => [
-            'title' => 'Headline',
-            'description' => '',
-            'group' => 'Properties',
+            'title' => 'arcane.seo::lang.components.schema_article.properties.headline.title',
+            'description' => 'arcane.seo::lang.components.schema_article.properties.headline.description',
+            'group' => 'arcane.seo::lang.components.group.properties',
         ],
         'image' => [
-            'title' => 'Image',
-            'description' => '',
-            'group' => 'Properties'
+            'title' => 'arcane.seo::lang.components.schema_article.properties.headline.title',
+            'description' => 'arcane.seo::lang.components.schema_article.properties.headline.description',
+            'group' => 'arcane.seo::lang.components.group.properties',
         ],
     ];
 }
