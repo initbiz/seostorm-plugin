@@ -14,7 +14,6 @@ use System\Classes\PluginManager;
     $controller->addJs('/plugins/initbiz/seostorm/assets/initbiz.seostorm.js');
 });
 
-
 \Initbiz\SeoStorm\Models\Settings::extend(function($model) {
     $model->bindEvent('model.afterSave', function() use ($model) {
         $htaccess = $model->value["htaccess"];
@@ -22,11 +21,4 @@ use System\Classes\PluginManager;
     });
 });
 
-
-// make our Post fields jsonable
-if(PluginManager::instance()->hasPlugin('RainLab.Blog'))
-{
-    \RainLab\Blog\Models\Post::extend(function($model) {
-        $model->addJsonable('initbiz_seostorm_options');
-    });
-}
+\Event::subscribe(\Initbiz\SeoStorm\EventHandlers\SeoStormedModelsHandler::class);

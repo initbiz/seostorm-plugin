@@ -24,6 +24,7 @@ class MigrateArcane extends Command
         $this->settings();
         $this->rolesPermissions();
         $this->userPermissions();
+        $this->rainlabBlog();
     }
 
     protected function settings()
@@ -68,6 +69,21 @@ class MigrateArcane extends Command
             }
             $user->permissions = $permissions;
             $user->save();
+        }
+    }
+
+    protected function rainlabBlog()
+    {
+        if (!PluginManager::instance()->hasPlugin('RainLab.Blog')) {
+            return;
+        }
+
+        $posts = \RainLab\Blog\Models\Post::all();
+        foreach ($posts as $post) {
+            if (isset($post->arcane_seo_options)) {
+                $post->seo_options = $post->arcane_seo_options;
+                $post->save();
+            }
         }
     }
 }
