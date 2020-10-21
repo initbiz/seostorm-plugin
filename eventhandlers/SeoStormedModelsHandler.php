@@ -18,21 +18,20 @@ class SeoStormedModelsHandler
             } catch (\Throwable $th) {
                 continue;
             }
+
             $model->extend(function ($model) {
                 if (!$model->isClassExtendedWith('Initbiz.SeoStorm.Behaviors.SeoStormed')) {
                     $model->extendClassWith('Initbiz.SeoStorm.Behaviors.SeoStormed');
                 }
             });
-        }
 
-        SeoOptions::extend(function($model) use ($modelClasses) {
-            foreach ($modelClasses as $modelClass) {
+            SeoOptions::extend(function($model) use ($modelClass) {
                 $model->morphTo['seostorm_options'][] = [
                     $modelClass,
                     'name' => 'stormed',
                     'table' => 'initbiz_seostorm_seo_options'
                 ];
-            }
-        });
+            });
+        }
     }
 }
