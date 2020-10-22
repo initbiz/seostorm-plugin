@@ -5,8 +5,8 @@ namespace Initbiz\SeoStorm\Components;
 use App;
 use Cms\Components\ViewBag;
 use Cms\Classes\ComponentBase;
-use Initbiz\SeoStorm\Models\Settings;
 use System\Classes\MediaLibrary;
+use Initbiz\SeoStorm\Models\Settings;
 
 class Seo extends ComponentBase
 {
@@ -63,7 +63,7 @@ class Seo extends ComponentBase
             $properties = array_merge(
                 $this->page["viewBag"]->getProperties(),
                 $post->attributes,
-                $post->initbiz_seostorm_options ?: []
+                $post->seo_options ?: []
             );
             $this->viewBagProperties = $properties;
             $this->page['viewBag']->setProperties($properties);

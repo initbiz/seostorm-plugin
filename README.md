@@ -1,7 +1,7 @@
 ## Note
 The plugin is a fork of [Arcane.SEO plugin](https://github.com/mrjeanp/Arcane-SEO). Since then it has changed a lot.
 
-> **The docs are prepared and not yet complete.**
+> **The plugin is still under development. Once ready, it will be published in the marketplace**
 
 ## Installation
 

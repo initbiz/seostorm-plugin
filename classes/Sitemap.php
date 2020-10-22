@@ -42,7 +42,7 @@ class  Sitemap
 
                 foreach ($models as $model) {
                     if ($page->hasComponent('blogPost')) {
-                        if (!(int)$model->initbiz_seostorm_options['enabled_in_sitemap']) {
+                        if (!(int)$model->seo_options['enabled_in_sitemap']) {
                              continue;
                         }
                         $this->addItemToSet(SitemapItem::asPost($page, $model));

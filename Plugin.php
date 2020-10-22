@@ -120,11 +120,11 @@ class Plugin extends PluginBase
                     $widget->secondaryTabs['fields'] = array_replace(
                         $widget->secondaryTabs['fields'],
                         array_except($this->blogSeoFields(), [
-                            'initbiz_seostorm_options[model_class]',
-                            'initbiz_seostorm_options[lastmod]',
-                            'initbiz_seostorm_options[use_updated_at]',
-                            'initbiz_seostorm_options[changefreq]',
-                            'initbiz_seostorm_options[priority]'
+                            'seo_options[model_class]',
+                            'seo_options[lastmod]',
+                            'seo_options[use_updated_at]',
+                            'seo_options[changefreq]',
+                            'seo_options[priority]'
                         ])
                     );
                 }
@@ -159,7 +159,7 @@ class Plugin extends PluginBase
     protected function blogSeoFields()
     {
         return collect($this->seoFields())->mapWithKeys(function ($item, $key) {
-            return ["initbiz_seostorm_options[$key]" => $item];
+            return ["seo_options[$key]" => $item];
         })->toArray();
     }
 
