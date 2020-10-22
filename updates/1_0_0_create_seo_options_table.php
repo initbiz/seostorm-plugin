@@ -16,11 +16,18 @@ class CreateSeoOptionsTable extends Migration
             $table->text('options');
             $table->integer('stormed_id');
             $table->string('stormed_type');
+            $table->index(['stormed_id', 'stormed_type'], 'initbiz_seostorm_options_stormed_index');
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('initbiz_seostorm_seo_options');
+        if (Schema::hasTable('initbiz_seostorm_seo_options')) {
+            Schema::table('initbiz_seostorm_seo_options', function ($table) {
+                $table->dropIndex('initbiz_seostorm_options_stormed_index');
+            });
+
+            Schema::drop('initbiz_seostorm_seo_options');
+        }
     }
 }
