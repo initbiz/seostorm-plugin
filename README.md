@@ -1,11 +1,19 @@
+## Note
+The plugin was forked from [Arcane.SEO plugin](https://github.com/mrjeanp/Arcane-SEO).
+
+> **The docs are prepared and not yet complete.**
+
 ## Installation
+
 This is a fork of the plugin "Initbiz SEO" and is not yet been published in the October CMS market, to install it do:
+
 ```bash
 $ cd /path/to/project-root/
-$ git clone git@github.com:initbiz/Initbiz-SEO.git plugins/initbiz/seostorm
-$ php artisan plugin:refresh Initbiz.SeoStorm
+$ git clone git@github.com:initbiz/oc-seo-storm-plugin.git plugins/initbiz/seostorm
+$ php artisan october:up
 $ composer update
 ```
+
 # How to use
 ## Meta tags
 To enable meta tags, place the SEO component in one or more of your layouts. Make sure meta tags are enabled from the settings page.
