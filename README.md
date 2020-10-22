@@ -1,5 +1,5 @@
 ## Note
-The plugin was forked from [Arcane.SEO plugin](https://github.com/mrjeanp/Arcane-SEO).
+The plugin is a fork of [Arcane.SEO plugin](https://github.com/mrjeanp/Arcane-SEO). Since then it has changed a lot.
 
 > **The docs are prepared and not yet complete.**
 

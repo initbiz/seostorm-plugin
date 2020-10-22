@@ -89,12 +89,16 @@ class Plugin extends PluginBase
     {
         $this->registerConsoleCommand('migrate:arcane', 'Initbiz\SeoStorm\Console\MigrateArcane');
 
+        //TODO: Move the extending to other files/classes
+
         \Event::listen('backend.form.extendFieldsBefore', function ($widget) {
             if ($widget->isNested === false) {
 
                 if (!Theme::getEditTheme()) {
                     throw new ApplicationException(Lang::get('cms::lang.theme.edit.not_found'));
                 }
+
+                //TODO: change the concept so that it's easier to use in other plugins
 
                 if (
                     PluginManager::instance()->hasPlugin('RainLab.Pages')
