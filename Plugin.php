@@ -51,6 +51,8 @@ class Plugin extends PluginBase
             'filters' => [
                 'minifyjs' => [$minifier, 'minifyJs'],
                 'minifycss' => [$minifier, 'minifyCss'],
+                // Backward compatibility, to be removed soon
+                'arcane_seo_schema' => [$schema, 'toScript'],
                 'initbiz_seostorm_schema' => [$schema, 'toScript'],
                 'removenulls' => [$helper, 'removeNullsFromArray'],
                 'fillparams'  => ['Initbiz\SeoStorm\Classes\Helper', 'replaceUrlPlaceholders'],
