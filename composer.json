@@ -1,8 +1,8 @@
 {
-    "name": "initbiz/oc-seo-plugin",
+    "name": "initbiz/oc-seo-storm-plugin",
     "type": "october-plugin",
-    "description": "Advanced SEO plugin for OctoberCMS",
-    "keywords": ["october", "cms", "seo", "plugin", "initbiz", "schema", "structured", "data"],
+    "description": "Total SEO page control in October",
+    "keywords": ["october", "cms", "seo", "plugin", "schema"],
     "require": {
         "spatie/schema-org": "^2.0",
         "tedivm/jshrink": "^1.3",
