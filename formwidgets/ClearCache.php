@@ -2,6 +2,7 @@
 
 namespace Initbiz\SeoStorm\FormWidgets;
 
+use Lang;
 use Flash;
 use Storage;
 use Backend\Classes\FormWidgetBase;
@@ -22,6 +23,6 @@ class ClearCache extends FormWidgetBase
     public function onClearCache()
     {
         Storage::deleteDirectory('initbiz/seostorm/minify');
-        Flash::success('Cache cleared');
+        Flash::success(Lang::get('initbiz.seostorm::lang.form_widgets.cache_cleared'));
     }
 }

@@ -267,3 +267,8 @@ tabs:
             commentHtml: true
             comment: initbiz.seostorm::lang.form.settings.og_locale_alternate_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
+
+        _btn_migrate:
+            type: Initbiz\SeoStorm\FormWidgets\Migrate
+            tab: initbiz.seostorm::lang.form.settings.tab_migrate
+

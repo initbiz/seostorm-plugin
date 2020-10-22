@@ -1,0 +1,18 @@
+<h2>
+    <?= e(trans('initbiz.seostorm::lang.form_widgets.migrate_head')) ?>
+</h2>
+<p>
+    <?= e(trans('initbiz.seostorm::lang.form_widgets.migrate_comment')) ?>
+</p>
+<div class="loading-indicator-container">
+    <button
+        class="btn btn-primary"
+        data-request="<?= $this->getEventHandler('onMigrate') ?>"
+        data-disposable
+        data-load-indicator="<?= e(trans('initbiz.seostorm::lang.form_widgets.migrating')) ?>"
+        data-request-data="redirect:0"
+        data-request-confirm="<?= e(trans('initbiz.seostorm::lang.form_widgets.migrate_confirm')) ?>"
+    >
+        <?= e(trans('initbiz.seostorm::lang.form_widgets.migrate')) ?>
+    </button>
+</div>
