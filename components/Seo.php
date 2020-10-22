@@ -90,7 +90,7 @@ class Seo extends ComponentBase
      */
     public function getTitle()
     {
-        $title = $this->getPropertyTranslated('meta_title') ?? $this->viewBagProperties['title'];
+        $title = $this->getPropertyTranslated('meta_title') ?? $this->viewBagProperties['title'] ?? null;
 
         $settings = Settings::instance();
         if ($settings->site_name_position == 'prefix') {
@@ -113,7 +113,7 @@ class Seo extends ComponentBase
         $description = $this->getPropertyTranslated('meta_description');
 
         if (!$description) {
-            $description = $this->viewBagProperties['description'];
+            $description = $this->viewBagProperties['description'] ?? null;
         }
 
         if (!$description) {
