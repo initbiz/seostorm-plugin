@@ -5,7 +5,7 @@ namespace Initbiz\SeoStorm\Classes;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 
-class  Sitemap
+class Sitemap
 {
     /**
      * Maximum URLs allowed (Protocol limit is 50k)
@@ -31,8 +31,15 @@ class  Sitemap
         $pages = Page::listInTheme(Theme::getEditTheme());
         $models = [];
 
+        $pages = $pages
+            ->filter(function ($value, $key) {
+                return $value->enabled_in_sitemap;
+            })->sortByDesc('priority');
+
         foreach ($pages as $page) {
-            if (!$page->enabled_in_sitemap) continue;
+            if (!$page->enabled_in_sitemap) {
+                continue;
+            }
 
             $modelClass = $page->model_class;
 
@@ -42,8 +49,11 @@ class  Sitemap
 
                 foreach ($models as $model) {
                     if ($page->hasComponent('blogPost')) {
-                        if (!(int)$model->seo_options['enabled_in_sitemap']) {
-                             continue;
+                        if (
+                            !(int)$model->seo_options['enabled_in_sitemap']
+                            || !($model->published && $model->published_at)
+                        ) {
+                            continue;
                         }
                         $this->addItemToSet(SitemapItem::asPost($page, $model));
                     } else {
@@ -94,7 +104,7 @@ class  Sitemap
         return $this->urlSet = $urlSet;
     }
 
-    protected function addItemToSet(SitemapItem $item, $url = null, $mtime = null)
+    protected function addItemToSet(SitemapItem $item)
     {
         $xml = $this->makeRoot();
         $urlSet = $this->makeUrlSet();
