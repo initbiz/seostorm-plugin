@@ -45,6 +45,18 @@ class SitemapItem
 
     public static function asPost($page, $post)
     {
+        if ($post) {
+            $parts = explode('/', trim($page->url, '/'));
+            if (in_array(':category', $parts)) {
+                // category in URL, fetch first category slug
+                if (isset($post->categories[0])) {
+                    $post->category = $post->categories[0]->slug;
+                } else {
+                    $post->category = 'default';
+                }
+            }
+        }
+
         $item = new self;
         $use_updated = $page->use_updated_at;
         $item->loc = url(Helper::replaceUrlPlaceholders($page->url, $post));
