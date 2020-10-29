@@ -18,7 +18,6 @@ Route::get('robots.txt', function () {
 
 Route::get('sitemap.xml', function () {
     $sitemap = new Sitemap();
-    dd('asdas');
     if (!Settings::get('enable_sitemap')) {
         return App::make(Controller::class)->setStatusCode(404)->run('/404');
     } else {
