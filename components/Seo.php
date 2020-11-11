@@ -69,7 +69,7 @@ class Seo extends ComponentBase
             $this->page['viewBag']->setProperties($properties);
         } elseif (isset($this->page->apiBag['staticPage'])) {
             $this->viewBagProperties = $this->page['viewBag'] = array_merge(
-                $this->page->controller->vars['page']->viewBag,
+                $this->page->apiBag['staticPage']->viewBag,
                 $this->page->attributes
             );
         } else {
