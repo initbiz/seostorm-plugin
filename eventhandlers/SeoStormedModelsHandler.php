@@ -31,23 +31,32 @@ class SeoStormedModelsHandler
         Event::fire('initbiz.seostorm.modelsHandler.listClasses', [$this]);
 
         foreach ($this->modelClasses as $modelClass) {
-            try {
-                $model = new $modelClass;
-            } catch (\Throwable $th) {
+            if (!class_exists($modelClass)) {
                 continue;
             }
 
-            $model->extend(function ($model) {
+            $modelClass::extend(function ($model) {
                 if (!$model->isClassExtendedWith('Initbiz.SeoStorm.Behaviors.SeoStormed')) {
                     $model->extendClassWith('Initbiz.SeoStorm.Behaviors.SeoStormed');
                 }
+
+                if (!isset($model->morphOne)) {
+                    $model->addDynamicProperty('morphOne');
+                }
+
+                $model->morphOne['seostorm_options'] = [
+                    SeoOptions::class,
+                    'name' => 'stormed',
+                    'table' => 'initbiz_seostorm_seo_options',
+                ];
             });
 
+            // Define reverse of the relation in the SeoOptions model
             SeoOptions::extend(function ($model) use ($modelClass) {
-                $model->morphTo['seostorm_options'][] = [
+                $model->morphTo['stormed_models'][] = [
                     $modelClass,
                     'name' => 'stormed',
-                    'table' => 'initbiz_seostorm_seo_options'
+                    'table' => 'initbiz_seostorm_seo_options',
                 ];
             });
         }
