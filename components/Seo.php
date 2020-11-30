@@ -84,7 +84,6 @@ class Seo extends ComponentBase
             $this->page['viewBag']->setProperties($properties);
         }
         $this->disable_schema = $this->property('disable_schema');
-        $this->getTitle();
     }
 
     /**
