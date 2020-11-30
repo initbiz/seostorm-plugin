@@ -59,8 +59,9 @@ class Seo extends ComponentBase
         }
 
         if ($this->page->page->hasComponent('blogPost')) {
-            //TODO fix if in the page don't have post
-            if ($post = $this->page['post']) {
+            $blogPostComponent = $this->page->page->components['blogPost'];
+            $blogPostComponent->onRender();
+            if ($post = $blogPostComponent->post) {
                 $properties = array_merge(
                     $this->page["viewBag"]->getProperties(),
                     $post->attributes,
@@ -83,6 +84,7 @@ class Seo extends ComponentBase
             $this->page['viewBag']->setProperties($properties);
         }
         $this->disable_schema = $this->property('disable_schema');
+        $this->getTitle();
     }
 
     /**
@@ -92,9 +94,9 @@ class Seo extends ComponentBase
      */
     public function getTitle()
     {
-        $title = $this->getPropertyTranslated('meta_title') ?? $this->viewBagProperties['title'] ?? null;
-
+        $title = $this->getPropertyTranslated('meta_title') ?: $this->viewBagProperties['title'] ?: null;
         $settings = Settings::instance();
+
         if ($settings->site_name_position == 'prefix') {
             $title = "{$settings->site_name} {$settings->site_name_separator} {$title}";
         } elseif ($settings->site_name_position == 'suffix') {
