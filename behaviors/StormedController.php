@@ -13,12 +13,37 @@ class StormedController extends ExtensionBase
      */
     protected $controller;
 
+    /**
+     * Where to place the seo options fields, either fields, tabs or secondaryTabs
+     *
+     * @var string
+     */
+    public $seoFieldsPlacement = 'fields';
+
     public function __construct($controller)
     {
         $this->controller = $controller;
+
+        if (isset($this->controller->seoFieldsPlacement)) {
+            $this->seoFieldsPlacement = $this->controller->seoFieldsPlacement;
+        }
+
+        $controller->extendFormFields(function($form, $model, $context) {
+            if (!$model instanceof MyModel) {
+                return;
+            }
+
+            $form->addFields([
+                'my_field' => [
+                    'label'   => 'My Field',
+                    'comment' => 'This is a custom field I have added.',
+                ],
+            ]);
+
+        });
     }
 
-    public function getSeoFieldsDefinitions(string $prefix = 'seo_options')
+    protected function getSeoFieldsDefinitions(string $prefix = 'seo_options', array $excludeFields = [])
     {
         $user = BackendAuth::getUser();
 
@@ -42,8 +67,10 @@ class StormedController extends ExtensionBase
 
         $prefixedFieldsDefinitions = [];
         foreach ($fieldsDefinitions as $key => $fieldDef) {
-            $newKey = $prefix . "[" . $key . "]";
-            $prefixedFieldsDefinitions[$newKey] = $fieldDef;
+            if (!in_array($key, $excludeFields)) {
+                $newKey = $prefix . "[" . $key . "]";
+                $prefixedFieldsDefinitions[$newKey] = $fieldDef;
+            }
         }
 
         return $prefixedFieldsDefinitions;

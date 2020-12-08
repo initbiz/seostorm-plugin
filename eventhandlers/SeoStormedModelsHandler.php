@@ -16,6 +16,7 @@ class SeoStormedModelsHandler
 
     public function subscribe($event)
     {
+        $this->extendFormWidgets($event);
         $this->addModelClass('\RainLab\Blog\Models\Post');
 
         /*
@@ -65,5 +66,10 @@ class SeoStormedModelsHandler
     public function addModelClass(string $className)
     {
         $this->modelClasses[] = $className;
+    }
+
+    public function extendFormWidgets($event)
+    {
+        # code...
     }
 }
