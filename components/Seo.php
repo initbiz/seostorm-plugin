@@ -86,6 +86,11 @@ class Seo extends ComponentBase
         $this->disable_schema = $this->property('disable_schema');
     }
 
+    public function getTitleRaw()
+    {
+        return $this->getPropertyTranslated('meta_title') ?: $this->viewBagProperties['title'] ?: null;
+    }
+
     /**
      * Returns the title of the page taking position from settings into consideration
      *
@@ -93,7 +98,8 @@ class Seo extends ComponentBase
      */
     public function getTitle()
     {
-        $title = $this->getPropertyTranslated('meta_title') ?: $this->viewBagProperties['title'] ?: null;
+        $title = $this->getTitleRaw();
+
         $settings = Settings::instance();
 
         if ($settings->site_name_position == 'prefix') {
