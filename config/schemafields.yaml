@@ -1,6 +1,6 @@
 schemas:
-    label: Write the schemas for this page
+    label: initbiz.seostorm::lang.form.general.schemas_label
     type: codeeditor
     size: giant
     stretch: true
-    tab: Schemas
+    tab: initbiz.seostorm::lang.form.general.tab_schemas

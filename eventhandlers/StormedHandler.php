@@ -80,11 +80,11 @@ class StormedHandler
                     $fields = $this->getSeoFieldsDefinitions($prefix, $excludeFields);
 
                     if ($placement === 'fields') {
-                        $widget->fields = array_replace($widget->fields, $fields);
+                        $widget->fields = array_replace($widget->fields ?? [], $fields);
                     } elseif ($placement === 'tabs') {
-                        $widget->tabs['fields'] = array_replace($widget->tabs['fields'], $fields);
+                        $widget->tabs['fields'] = array_replace($widget->tabs['fields'] ?? [], $fields);
                     } elseif ($placement === 'secondaryTabs') {
-                        $widget->secondaryTabs['fields'] = array_replace($widget->secondaryTabs['fields'], $fields);
+                        $widget->secondaryTabs['fields'] = array_replace($widget->secondaryTabs['fields'] ?? [], $fields);
                     }
                     break;
                 }
@@ -109,7 +109,7 @@ class StormedHandler
 
         foreach ($plugins as $plugin) {
             if (method_exists($plugin, $methodName)) {
-                $methodResult = $plugin->$methodName();
+                $methodResult = $plugin->$methodName() ?? [];
                 $result = array_merge($result, $methodResult);
             }
         }

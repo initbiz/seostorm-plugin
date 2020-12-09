@@ -1,38 +1,37 @@
 og_title:
-    label: og:title (dynamic)
-    tab: Open Graph
+    label: initbiz.seostorm::lang.form.general.og_title_label
+    tab: initbiz.seostorm::lang.form.general.tab_open_graph
     span: auto
     trans: true
-    comment: Recommended 50-60 characters
-    placeholder: Defaults to SEO if left blank
-
+    comment: initbiz.seostorm::lang.form.general.og_title_comment
+    placeholder: initbiz.seostorm::lang.form.general.og_title_placeholder
 og_description:
-    label: og:description (dynamic)
-    tab: Open Graph
+    label: initbiz.seostorm::lang.form.general.og_description_label
+    tab: initbiz.seostorm::lang.form.general.tab_open_graph
     type: textarea
     size: tiny
     span: auto
     trans: true
-    comment: The optimal length is 155
-    placeholder: Defaults to SEO if left blank
+    comment: initbiz.seostorm::lang.form.general.og_description_comment
+    placeholder: initbiz.seostorm::lang.form.general.og_description_placeholder
 
 og_type:
-    label: og:type (dynamic)
-    tab: Open Graph
+    label: initbiz.seostorm::lang.form.general.og_type_label
+    tab: initbiz.seostorm::lang.form.general.tab_open_graph
     span: auto
-    placeholder: website article video etc...
+    placeholder: initbiz.seostorm::lang.form.general.og_type_placeholder
 
 og_image:
-    label: og:image
+    label: initbiz.seostorm::lang.form.general.og_image_label
     type: mediafinder
     mode: image
-    tab: Open Graph
+    tab: initbiz.seostorm::lang.form.general.tab_open_graph
     span: auto
-    comment:
+    comment: initbiz.seostorm::lang.form.general.og_image_comment
 
 og_ref_image:
-    label: og:image (dynamic)
-    tab: Open Graph
+    label: initbiz.seostorm::lang.form.general.og_ref_image_label
+    tab: initbiz.seostorm::lang.form.general.tab_open_graph
     span: auto
-    placeholder: "{{ example.image }}"
-    comment: This will take priority over og:image
+    placeholder: initbiz.seostorm::lang.form.general.og_ref_image_placeholder
+    comment: initbiz.seostorm::lang.form.general.og_ref_image_comment

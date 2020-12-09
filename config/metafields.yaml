@@ -1,9 +1,9 @@
 meta_title:
-    label: Page title (dynamic)
+    label: initbiz.seostorm::lang.form.general.meta_title_label
     type: text
     span: full
-    tab: Meta
-    comment: Page title
+    tab: initbiz.seostorm::lang.form.general.tab_meta
+    comment: initbiz.seostorm::lang.form.general.meta_title_comment
     trans: true
     attributes:
         data-counter: 1
@@ -12,13 +12,13 @@ meta_title:
         data-seo: title
 
 meta_description:
-    label: Page description (dynamic)
+    label: initbiz.seostorm::lang.form.general.meta_description_label
     type: textarea
     size: tiny
     span: full
-    tab: Meta
+    tab: initbiz.seostorm::lang.form.general.tab_meta
     cssClass: char-counter
-    comment: Page description
+    comment: initbiz.seostorm::lang.form.general.meta_description_comment
     trans: true
     attributes:
         data-counter: 1
@@ -27,37 +27,37 @@ meta_description:
         data-seo: description
 
 canonical_url:
-    label: Canonical URL (dynamic)
+    label: initbiz.seostorm::lang.form.general.canonical_url_label
     type: text
-    tab: Meta
+    tab: initbiz.seostorm::lang.form.general.tab_meta
     span: full
     trans: true
-    comment: The canonical URL this page should point to defaults to current URL
+    comment: initbiz.seostorm::lang.form.general.canonical_url_comment
 
 robot_index:
-    label: robots index
+    label: initbiz.seostorm::lang.form.general.robot_index_label
     type: balloon-selector
-    tab: Meta
+    tab: initbiz.seostorm::lang.form.general.tab_meta
     options:
         index: index
         noindex: noindex
-    comment: Specify if search engines should index this page
+    comment: initbiz.seostorm::lang.form.general.robot_index_comment
     span: left
     default: index
 
 robot_follow:
-    label: robots follow
+    label: initbiz.seostorm::lang.form.general.robot_follow_label
     type: balloon-selector
-    tab: Meta
+    tab: initbiz.seostorm::lang.form.general.tab_meta
     options:
         follow: follow
         nofollow: nofollow
-    comment: Specify if search engines should follow the links on this page
+    comment: initbiz.seostorm::lang.form.general.robot_follow_comment
     span: right
     default: follow
 
 robot_advanced:
-    label: Advanced robots (dynamic)
-    tab: Meta
-    comment: Add aditional directives to the robots meta tag separated by commas
+    label: initbiz.seostorm::lang.form.general.robot_advanced_label
+    tab: initbiz.seostorm::lang.form.general.tab_meta
+    comment: initbiz.seostorm::lang.form.general.robot_advanced_comment
     span: left
