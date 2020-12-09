@@ -18,8 +18,8 @@ class StormedHandler
 
     public function subscribe($event)
     {
-        $this->extendFormWidgets($event);
         $this->extendModels($event);
+        $this->extendFormWidgets($event);
     }
 
     protected function extendModels($event)
@@ -128,7 +128,6 @@ class StormedHandler
         }
         return $toTrans;
     }
-
 
     protected function getSeoFieldsDefinitions(string $prefix = 'seo_options', array $excludeFields = [])
     {
