@@ -71,5 +71,6 @@ class SeoStormedModelsHandler
     public function extendFormWidgets($event)
     {
         # code...
+        // TODO: in registration: which model what fields
     }
 }
