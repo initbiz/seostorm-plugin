@@ -51,7 +51,7 @@ class Plugin extends PluginBase
             'filters' => [
                 'minifyjs' => [$minifier, 'minifyJs'],
                 'minifycss' => [$minifier, 'minifyCss'],
-                // Backward compatibility, to be removed soon
+                // TODO: Backward compatibility, to be removed soon
                 'arcane_seo_schema' => [$schema, 'toScript'],
                 'initbiz_seostorm_schema' => [$schema, 'toScript'],
                 'removenulls' => [$helper, 'removeNullsFromArray'],
@@ -88,137 +88,6 @@ class Plugin extends PluginBase
     public function register()
     {
         $this->registerConsoleCommand('migrate:arcane', 'Initbiz\SeoStorm\Console\MigrateArcane');
-
-        //TODO: Move the extending to other files/classes
-
-        \Event::listen('backend.form.extendFieldsBefore', function ($widget) {
-            if ($widget->isNested === false) {
-
-                if (!Theme::getEditTheme()) {
-                    throw new ApplicationException(Lang::get('cms::lang.theme.edit.not_found'));
-                }
-
-                //TODO: change the concept so that it's easier to use in other plugins
-
-                if (
-                    PluginManager::instance()->hasPlugin('RainLab.Pages')
-                    && $widget->model instanceof \RainLab\Pages\Classes\Page
-                ) {
-                    $widget->tabs['fields'] = array_replace(
-                        $widget->tabs['fields'],
-                        array_except($this->staticSeoFields(), [
-                            'viewBag[model_class]',
-                        ])
-                    );
-                }
-
-                if (
-                    PluginManager::instance()->hasPlugin('RainLab.Blog')
-                    && $widget->model instanceof \RainLab\Blog\Models\Post
-                ) {
-
-                    $widget->secondaryTabs['fields'] = array_replace(
-                        $widget->secondaryTabs['fields'],
-                        array_except($this->blogSeoFields(), [
-                            'seo_options[model_class]',
-                            'seo_options[lastmod]',
-                            'seo_options[use_updated_at]',
-                            'seo_options[changefreq]',
-                            'seo_options[priority]'
-                        ])
-                    );
-                }
-
-                if (!$widget->model instanceof Page) return;
-
-                $widget->tabs['fields'] = array_replace($widget->tabs['fields'], $this->cmsSeoFields());
-            }
-        });
-
-        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
-            Page::extend(function ($model) {
-                if (!$model->propertyExists('translatable')) {
-                    $model->addDynamicProperty('translatable', []);
-                }
-                $model->translatable = array_merge($model->translatable, $this->seoFieldsToTranslate());
-            });
-        }
-    }
-
-    protected function seoFieldsToTranslate()
-    {
-        $toTrans = [];
-        foreach ($this->seoFields() as $fieldKey => $fieldValue) {
-            if (isset($fieldValue['trans']) && $fieldValue['trans'] == true) {
-                $toTrans[] = $fieldKey;
-            }
-        }
-        return $toTrans;
-    }
-
-    protected function blogSeoFields()
-    {
-        return collect($this->seoFields())->mapWithKeys(function ($item, $key) {
-            return ["seo_options[$key]" => $item];
-        })->toArray();
-    }
-
-    protected function staticSeoFields()
-    {
-        return collect($this->seoFields())->mapWithKeys(function ($item, $key) {
-            return ["viewBag[$key]" => $item];
-        })->toArray();
-    }
-
-    protected function cmsSeoFields()
-    {
-        return collect($this->seofields())->mapWithKeys(function ($item, $key) {
-            return ["settings[$key]" => $item];
-        })->toArray();
-    }
-
-    protected function seoFields()
-    {
-        $fields = \Yaml::parseFile(plugins_path('initbiz/seostorm/config/seofields.yaml'));
-
-        $user = \BackendAuth::getUser();
-
-        if ($user) {
-            $fields = array_except(
-                $fields,
-                array_merge(
-                    [],
-                    !$user->hasPermission(["initbiz.seostorm.og"]) ? [
-                        "og_title",
-                        "og_description",
-                        "og_image",
-                        "og_type",
-                        "og_ref_image"
-                    ] : [],
-                    !$user->hasPermission(["initbiz.seostorm.sitemap"]) ? [
-                        "enabled_in_sitemap",
-                        "model_class",
-                        "use_updated_at",
-                        "lastmod",
-                        "changefreq",
-                        "priority",
-                    ] : [],
-                    !$user->hasPermission(["initbiz.seostorm.meta"]) ? [
-                        "meta_title",
-                        "meta_description",
-                        "canonical_url",
-                        "robot_index",
-                        "robot_follow",
-                        "robot_advanced",
-                    ] : [],
-                    !$user->hasPermission(["initbiz.seostorm.schema"]) ? [
-                        "schemas"
-                    ] : []
-                )
-            );
-        }
-
-        return $fields;
     }
 
     public function registerStormedModels()
@@ -226,6 +95,7 @@ class Plugin extends PluginBase
         return [
             'Cms\Classes\Page' => [
                 'prefix' => 'settings',
+                'placement' => 'tabs',
             ],
             'Rainlab\Blog\Models\Post' => [
                 'placement' => 'secondaryTabs',

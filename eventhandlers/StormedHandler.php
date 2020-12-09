@@ -38,11 +38,23 @@ class StormedHandler
                     $model->addDynamicProperty('morphOne');
                 }
 
-                $model->morphOne['seostorm_options'] = [
+                $morphOne = $model->morphOne;
+
+                $morphOne['seostorm_options'] = [
                     SeoOptions::class,
                     'name' => 'stormed',
                     'table' => 'initbiz_seostorm_seo_options',
                 ];
+
+                $model->morphOne = $morphOne;
+
+                if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
+                    if (!$model->propertyExists('translatable')) {
+                        $model->addDynamicProperty('translatable', []);
+                    }
+                    $model->translatable = array_merge($model->translatable, $this->seoFieldsToTranslate());
+                }
+
             });
 
             // Define reverse of the relation in the SeoOptions model
@@ -105,6 +117,18 @@ class StormedHandler
         $this->modelClasses = $result;
         return $this->modelClasses;
     }
+
+    protected function seoFieldsToTranslate()
+    {
+        $toTrans = [];
+        foreach ($this->getSeoFieldsDefinitions() as $fieldKey => $fieldValue) {
+            if (isset($fieldValue['trans']) && $fieldValue['trans'] === true) {
+                $toTrans[] = $fieldKey;
+            }
+        }
+        return $toTrans;
+    }
+
 
     protected function getSeoFieldsDefinitions(string $prefix = 'seo_options', array $excludeFields = [])
     {
