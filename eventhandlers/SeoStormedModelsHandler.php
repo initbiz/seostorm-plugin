@@ -3,6 +3,7 @@
 namespace Initbiz\SeoStorm\EventHandlers;
 
 use Event;
+use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Models\SeoOptions;
 
 class SeoStormedModelsHandler
@@ -16,25 +17,10 @@ class SeoStormedModelsHandler
 
     public function subscribe($event)
     {
-        $this->addModelClass('\RainLab\Blog\Models\Post');
-
-        /*
-         * @event initbiz.seostorm.modelsHandler.listClasses
-         * Gives the ability to manage the model classes attribute dynamically
-         *
-         * Example usage to add a custom class for the extension:
-         *
-         * Event::listen('initbiz.seostorm.modelsHandler.listClasses', function($handler) {
-         *     $handler->addModelClass(Model::class);
-         * });
-         */
-        Event::fire('initbiz.seostorm.modelsHandler.listClasses', [$this]);
-
-        foreach ($this->modelClasses as $modelClass) {
+        foreach ($this->getStormedModels() as $modelClass) {
             if (!class_exists($modelClass)) {
                 continue;
             }
-
             $modelClass::extend(function ($model) {
                 if (!$model->isClassExtendedWith('Initbiz.SeoStorm.Behaviors.SeoStormed')) {
                     $model->extendClassWith('Initbiz.SeoStorm.Behaviors.SeoStormed');
@@ -62,8 +48,27 @@ class SeoStormedModelsHandler
         }
     }
 
-    public function addModelClass(string $className)
+    protected function getStormedModels()
     {
-        $this->modelClasses[] = $className;
+        if ($this->modelClasses) {
+            return $this->modelClasses;
+        }
+
+        $methodName = 'registerStormedModels';
+
+        $pluginManager = PluginManager::instance();
+        $plugins = $pluginManager->getPlugins();
+
+        $result = [];
+
+        foreach ($plugins as $plugin) {
+            if (method_exists($plugin, $methodName)) {
+                $methodResult = $plugin->$methodName();
+                $result = array_merge($result, $methodResult);
+            }
+        }
+
+        $this->modelClasses = $result;
+        return $this->modelClasses;
     }
 }

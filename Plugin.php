@@ -133,7 +133,7 @@ class Plugin extends PluginBase
 
                 $widget->tabs['fields'] = array_replace($widget->tabs['fields'], $this->cmsSeoFields());
             }
-        });
+        }, 500);
 
         if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
             Page::extend(function ($model) {
@@ -219,5 +219,10 @@ class Plugin extends PluginBase
         }
 
         return $fields;
+    }
+
+    public function registerStormedModels()
+    {
+        return ['Rainlab\Blog\Models\Post'];
     }
 }
