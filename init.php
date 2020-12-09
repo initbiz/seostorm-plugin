@@ -21,4 +21,4 @@ use System\Classes\PluginManager;
     });
 });
 
-\Event::subscribe(\Initbiz\SeoStorm\EventHandlers\SeoStormedModelsHandler::class);
+\Event::subscribe(\Initbiz\SeoStorm\EventHandlers\StormedHandler::class);

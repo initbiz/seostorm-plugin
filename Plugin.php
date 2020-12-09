@@ -220,4 +220,31 @@ class Plugin extends PluginBase
 
         return $fields;
     }
+
+    public function registerStormedModels()
+    {
+        return [
+            'Cms\Classes\Page' => [
+                'prefix' => 'settings',
+            ],
+            'Rainlab\Blog\Models\Post' => [
+                'placement' => 'secondaryTabs',
+                'excludeFields' => [
+                    'model_class',
+                    'lastmod',
+                    'use_updated_at',
+                    'changefreq',
+                    'priority',
+                ],
+            ],
+            '\RainLab\Pages\Classes\Page' => [
+                'excludeFields' => [
+                    'model_class',
+                ],
+                'prefix' => 'viewBag',
+                'placement' => 'tabs',
+            ],
+        ];
+    }
+
 }

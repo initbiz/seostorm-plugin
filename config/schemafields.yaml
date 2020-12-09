@@ -1,0 +1,6 @@
+schemas:
+    label: Write the schemas for this page
+    type: codeeditor
+    size: giant
+    stretch: true
+    tab: Schemas

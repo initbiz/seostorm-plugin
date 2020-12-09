@@ -1,0 +1,67 @@
+enabled_in_sitemap:
+    label: Enable in the sitemap.xml
+    comment: Page will appear in the sitemap.xml
+    type: checkbox
+    tab: Sitemap
+    span: left
+    default: true
+
+model_class:
+    label: Model class
+    type: text
+    span: right
+    comment: Associate this page with a model links will be generated from it\s records
+    placeholder: Author\Plugin\Models\ModelClass
+    tab: Sitemap
+
+use_updated_at:
+    label: Use "updated_at" from the model as "Last time modified"
+    commentHtml: true
+    comment: "If the updated_at field isnt available in the model it will default to the files last time modified aka: <b>Page::$mtime</b>"
+    type: checkbox
+    tab: Sitemap
+    default: true
+
+lastmod:
+    label: Last time modified
+    type: datepicker
+    mode: datetime
+    tab: Sitemap
+    span: full
+    trigger:
+        action: hide
+        field: settings[use_updated_at]
+        condition: checked
+    comment: Date and time this page was last modified
+
+changefreq:
+    label: Changing frequency
+    type: dropdown
+    tab: Sitemap
+    options:
+        always: always
+        hourly: hourly
+        weekly: weekly
+        monthly: monthly
+        yearly: yearly
+        never: never
+    span: left
+    comment: Tell search engines how frequently this page changes
+
+priority:
+    label: Priority
+    type: dropdown
+    tab: Sitemap
+    options:
+        0.1: 0.1
+        0.2: 0.2
+        0.3: 0.3
+        0.4: 0.4
+        0.5: 0.5
+        0.6: 0.6
+        0.7: 0.7
+        0.8: 0.8
+        0.9: 0.9
+        1.0: 1.0
+    span: right
+    comment: Rank the importance of the page to search engines

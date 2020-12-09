@@ -1,0 +1,63 @@
+meta_title:
+    label: Page title (dynamic)
+    type: text
+    span: full
+    tab: Meta
+    comment: Page title
+    trans: true
+    attributes:
+        data-counter: 1
+        data-min: 30
+        data-max: 60
+        data-seo: title
+
+meta_description:
+    label: Page description (dynamic)
+    type: textarea
+    size: tiny
+    span: full
+    tab: Meta
+    cssClass: char-counter
+    comment: Page description
+    trans: true
+    attributes:
+        data-counter: 1
+        data-min: 100
+        data-max: 160
+        data-seo: description
+
+canonical_url:
+    label: Canonical URL (dynamic)
+    type: text
+    tab: Meta
+    span: full
+    trans: true
+    comment: The canonical URL this page should point to defaults to current URL
+
+robot_index:
+    label: robots index
+    type: balloon-selector
+    tab: Meta
+    options:
+        index: index
+        noindex: noindex
+    comment: Specify if search engines should index this page
+    span: left
+    default: index
+
+robot_follow:
+    label: robots follow
+    type: balloon-selector
+    tab: Meta
+    options:
+        follow: follow
+        nofollow: nofollow
+    comment: Specify if search engines should follow the links on this page
+    span: right
+    default: follow
+
+robot_advanced:
+    label: Advanced robots (dynamic)
+    tab: Meta
+    comment: Add aditional directives to the robots meta tag separated by commas
+    span: left
