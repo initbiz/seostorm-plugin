@@ -2,6 +2,7 @@
 
 namespace Initbiz\SeoStorm\EventHandlers;
 
+use App;
 use Yaml;
 use BackendAuth;
 use System\Classes\PluginManager;
@@ -19,7 +20,9 @@ class StormedHandler
     public function subscribe($event)
     {
         $this->extendModels($event);
-        $this->extendFormWidgets($event);
+        if (App::runningInBackend()) {
+            $this->extendFormWidgets($event);
+        }
     }
 
     protected function extendModels($event)

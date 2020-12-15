@@ -6,17 +6,10 @@ enabled_in_sitemap:
     span: left
     default: true
 
-model_class:
-    label: initbiz.seostorm::lang.form.general.enabled_in_sitemap_label
-    type: text
-    span: right
-    comment: initbiz.seostorm::lang.form.general.enabled_in_sitemap_comment
-    placeholder: initbiz.seostorm::lang.form.general.model_class_placeholder
-    tab: initbiz.seostorm::lang.form.general.tab_sitemap
-
 use_updated_at:
     label: initbiz.seostorm::lang.form.general.use_updated_at_label
     commentHtml: true
+    span: right
     comment: initbiz.seostorm::lang.form.general.use_updated_at_comment
     type: checkbox
     tab: initbiz.seostorm::lang.form.general.tab_sitemap
@@ -30,7 +23,7 @@ lastmod:
     span: full
     trigger:
         action: hide
-        field: settings[use_updated_at]
+        field: use_updated_at
         condition: checked
     comment: initbiz.seostorm::lang.form.general.lastmod_comment
 
@@ -65,3 +58,11 @@ priority:
         1.0: 1.0
     span: right
     comment: initbiz.seostorm::lang.form.general.priority_comment
+
+model_class:
+    label: initbiz.seostorm::lang.form.general.model_class
+    type: text
+    span: left
+    comment: initbiz.seostorm::lang.form.general.model_class_comment
+    placeholder: initbiz.seostorm::lang.form.general.model_class_placeholder
+    tab: initbiz.seostorm::lang.form.general.tab_sitemap
