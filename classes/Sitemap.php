@@ -4,6 +4,7 @@ namespace Initbiz\SeoStorm\Classes;
 
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
+use System\Classes\PluginManager;
 
 class  Sitemap
 {
@@ -22,10 +23,11 @@ class  Sitemap
      */
     protected $urlCount = 0;
 
-    private $xml;
-    private $urlSet;
+    protected $xml;
 
-    function generate()
+    protected $urlSet;
+
+    public function generate()
     {
         // get all pages of the current theme
         $pages = Page::listInTheme(Theme::getEditTheme());
@@ -43,7 +45,7 @@ class  Sitemap
                 foreach ($models as $model) {
                     if ($page->hasComponent('blogPost')) {
                         if (!(int)$model->seo_options['enabled_in_sitemap']) {
-                             continue;
+                            continue;
                         }
                         $this->addItemToSet(SitemapItem::asPost($page, $model));
                     } else {
@@ -55,8 +57,7 @@ class  Sitemap
             }
         }
 
-        // if RainLab.Pages is installed
-        if (Helper::rainlabPagesExists()) {
+        if (PluginManager::instance()->hasPlugin('RainLab.Pages')) {
             $staticPages = \RainLab\Pages\Classes\Page::listInTheme(Theme::getActiveTheme());
             foreach ($staticPages as $staticPage) {
                 if (!$staticPage->getViewBag()->property('enabled_in_sitemap')) continue;
