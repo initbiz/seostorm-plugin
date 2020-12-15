@@ -14,6 +14,10 @@ use_updated_at:
     type: checkbox
     tab: initbiz.seostorm::lang.form.general.tab_sitemap
     default: true
+    trigger:
+        action: show
+        field: enabled_in_sitemap
+        condition: checked
 
 lastmod:
     label: initbiz.seostorm::lang.form.general.lastmod_label
@@ -40,6 +44,10 @@ changefreq:
         never: never
     span: left
     comment: initbiz.seostorm::lang.form.general.changefreq_comment
+    trigger:
+        action: show
+        field: enabled_in_sitemap
+        condition: checked
 
 priority:
     label: initbiz.seostorm::lang.form.general.priority_label
@@ -58,11 +66,19 @@ priority:
         1.0: 1.0
     span: right
     comment: initbiz.seostorm::lang.form.general.priority_comment
+    trigger:
+        action: show
+        field: enabled_in_sitemap
+        condition: checked
 
 model_class:
-    label: initbiz.seostorm::lang.form.general.model_class
+    label: initbiz.seostorm::lang.form.general.model_class_label
     type: text
     span: left
     comment: initbiz.seostorm::lang.form.general.model_class_comment
     placeholder: initbiz.seostorm::lang.form.general.model_class_placeholder
     tab: initbiz.seostorm::lang.form.general.tab_sitemap
+    trigger:
+        action: show
+        field: enabled_in_sitemap
+        condition: checked

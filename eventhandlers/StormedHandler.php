@@ -134,26 +134,27 @@ class StormedHandler
 
     protected function getSeoFieldsDefinitions(string $prefix = 'seo_options', array $excludeFields = [])
     {
+        $runningInFrontend = !App::runningInBackend();
         $user = BackendAuth::getUser();
 
         $fieldsDefinitions = [];
 
-        if ($user->hasAccess("initbiz.seostorm.meta")) {
+        if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.meta")) {
             $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/metafields.yaml'));
             $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
         }
 
-        if ($user->hasAccess("initbiz.seostorm.og")) {
+        if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.og")) {
             $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/ogfields.yaml'));
             $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
         }
 
-        if ($user->hasAccess("initbiz.seostorm.sitemap")) {
+        if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.sitemap")) {
             $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/sitemapfields.yaml'));
             $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
         }
 
-        if ($user->hasAccess("initbiz.seostorm.schema")) {
+        if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.schema")) {
             $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/schemafields.yaml'));
             $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
         }
@@ -162,6 +163,9 @@ class StormedHandler
         foreach ($fieldsDefinitions as $key => $fieldDef) {
             if (!in_array($key, $excludeFields)) {
                 $newKey = $prefix . "[" . $key . "]";
+                if (isset($fieldDef['trigger'])) {
+                    $fieldDef['trigger']['field'] = $prefix . "[" . $fieldDef['trigger']['field'] . "]";
+                }
                 $prefixedFieldsDefinitions[$newKey] = $fieldDef;
             }
         }
