@@ -3,7 +3,7 @@ og_title:
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
     span: auto
     trans: true
-    comment: initbiz.seostorm::lang.form.general.og_title_comment
+    commentAbove: initbiz.seostorm::lang.form.general.og_title_comment
     placeholder: initbiz.seostorm::lang.form.general.og_title_placeholder
 og_description:
     label: initbiz.seostorm::lang.form.general.og_description_label
@@ -12,7 +12,7 @@ og_description:
     size: tiny
     span: auto
     trans: true
-    comment: initbiz.seostorm::lang.form.general.og_description_comment
+    commentAbove: initbiz.seostorm::lang.form.general.og_description_comment
     placeholder: initbiz.seostorm::lang.form.general.og_description_placeholder
 
 og_type:
@@ -27,11 +27,11 @@ og_image:
     mode: image
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
     span: auto
-    comment: initbiz.seostorm::lang.form.general.og_image_comment
+    commentAbove: initbiz.seostorm::lang.form.general.og_image_comment
 
 og_ref_image:
     label: initbiz.seostorm::lang.form.general.og_ref_image_label
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
     span: auto
     placeholder: initbiz.seostorm::lang.form.general.og_ref_image_placeholder
-    comment: initbiz.seostorm::lang.form.general.og_ref_image_comment
+    commentAbove: initbiz.seostorm::lang.form.general.og_ref_image_comment
