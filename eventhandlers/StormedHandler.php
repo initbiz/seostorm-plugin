@@ -75,7 +75,7 @@ class StormedHandler
     {
         $event->listen('backend.form.extendFieldsBefore', function ($widget) {
             foreach ($this->getStormedModels() as $stormedModelClass => $stormedModelDef) {
-                if ($widget->model instanceof $stormedModelClass) {
+                if ($widget->isNested === false && $widget->model instanceof $stormedModelClass) {
                     $placement = $stormedModelDef['placement'] ?? 'fields';
                     $prefix = $stormedModelDef['prefix'] ?? 'seo_options';
                     $excludeFields = $stormedModelDef['excludeFields'] ?? [];
