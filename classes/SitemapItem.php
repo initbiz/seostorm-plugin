@@ -6,7 +6,13 @@ use Carbon\Carbon;
 
 class SitemapItem
 {
-    public $loc, $lastmod, $priority, $changefreq;
+    public $loc;
+
+    public $lastmod;
+
+    public $priority;
+
+    public $changefreq;
 
     function __construct($url = null, $lastmod = null, $priority = null, $changefreq = null)
     {
@@ -18,23 +24,28 @@ class SitemapItem
 
     public static function asStaticPage($staticPage)
     {
-        return new self(
-            url($staticPage->url),
-            $staticPage->getViewBag()->property('lastmod') ?: $staticPage->updated_at,
-            $staticPage->getViewBag()->property('priority'),
-            $staticPage->getViewBag()->property('changefreq')
-        );
+        $sitemapItem = new Self();
+
+        $viewBag = $staticPage->getViewBag();
+
+        $sitemapItem->loc = url($staticPage->url);
+        $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->updated_at;
+        $sitemapItem->priority = $viewBag->property('priority');
+        $sitemapItem->changefreq = $viewBag->property('changefreq');
+
+        return $sitemapItem;
     }
 
     public static function asCmsPage($page, $model = null)
     {
-        if ($model)
-            return new self(
+        if ($model) {
+            return new Self(
                 url(Helper::replaceUrlPlaceholders($page->url, $model)),
                 $model->updated_at,
                 $page->priority,
                 $page->changefreq
             );
+        }
         return new Self(
             $page->url,
             $page->lastmod ?: Carbon::createFromTimestamp($page->mtime),
@@ -57,7 +68,7 @@ class SitemapItem
             }
         }
 
-        $item = new self;
+        $item = new Self;
         $use_updated = $page->use_updated_at;
         $item->loc = url(Helper::replaceUrlPlaceholders($page->url, $post));
         $item->lastmod = $use_updated ? $post->updated_at->format('c') : $page->lastmod;

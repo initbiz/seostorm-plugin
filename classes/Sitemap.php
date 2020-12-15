@@ -103,7 +103,7 @@ class  Sitemap
         $urlElement = $this->makeUrlElement(
             $xml,
             url($item->loc), // make sure output is a valid url
-            Helper::w3cDatetime($item->lastmod), // make sure output is  a valid datetime
+            Helper::w3cDatetime($item->lastmod), // make sure output is a valid datetime
             $item->changefreq,
             $item->priority
         );
