@@ -97,22 +97,10 @@ model_scope:
 
 model_params:
     label: initbiz.seostorm::lang.form.general.model_params_label
-    type: repeater
-    span: full
     commentAbove: initbiz.seostorm::lang.form.general.model_params_comment
+    placeholder: initbiz.seostorm::lang.form.general.model_params_placeholder
     tab: initbiz.seostorm::lang.form.general.tab_sitemap
     trigger:
         action: show
         field: enabled_in_sitemap
         condition: checked
-    form:
-        fields:
-            param:
-                label: initbiz.seostorm::lang.form.general.model_params_param_label
-                placeholder: initbiz.seostorm::lang.form.general.model_params_param_placeholder
-                span: left
-            get_from:
-                label: initbiz.seostorm::lang.form.general.model_params_get_from_label
-                placeholder: initbiz.seostorm::lang.form.general.model_params_get_from_placeholder
-                span: right
-

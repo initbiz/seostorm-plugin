@@ -2,6 +2,7 @@
 
 namespace Initbiz\SeoStorm\Classes;
 
+use Event;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use System\Classes\PluginManager;
@@ -33,24 +34,56 @@ class  Sitemap
         $pages = Page::listInTheme(Theme::getEditTheme());
         $models = [];
 
-        foreach ($pages as $page) {
-            if (!$page->enabled_in_sitemap) continue;
+        $pages = $pages
+            ->filter(function ($page) {
+                return $page->enabled_in_sitemap;
+            })->sortByDesc('priority');
 
+        foreach ($pages as $page) {
+            // $page = Event::fire('initbiz.seostorm.generateSitemapCmsPage', [$page]);
             $modelClass = $page->model_class;
 
             // if page has model class
             if (class_exists($modelClass)) {
-                $models = $modelClass::all();
+                $scope = $page->model_scope;
+                if (empty($scope)) {
+                    $models = $modelClass::all();
+                } else {
+                    $models = $modelClass::$scope()->get();
+                }
 
                 foreach ($models as $model) {
-                    if ($page->hasComponent('blogPost')) {
-                        if (!(int)$model->seo_options['enabled_in_sitemap']) {
-                            continue;
+                    $modelParams = $page->model_params;
+                    $loc = $page->url;
+
+                    if (!empty($modelParams)) {
+                        $modelParams = explode('|', $modelParams);
+                        foreach ($modelParams as $modelParam) {
+                            list($urlParam, $modelParam) = explode(':', $modelParam);
+
+                            $pattern = '/:' . $urlParam . '\??/i';
+                            $replacement = '';
+                            if (strpos($modelParam, '.') === false) {
+                                $replacement = $model->$modelParam;
+                            } else {
+                                // parameter with dot -> try to find by relation
+                                list($relationMethod, $relatedAttribute) = explode('.', $modelParam);
+                                if ($relatedObject = $model->$relationMethod()) {
+                                    $replacement = $relatedObject->$relatedAttribute;
+                                }
+                            }
+                            $loc = preg_replace($pattern, $replacement, $loc);
                         }
-                        $this->addItemToSet(SitemapItem::asPost($page, $model));
-                    } else {
-                        $this->addItemToSet(SitemapItem::asCmsPage($page, $model));
                     }
+
+                    $sitemapItem = new SitemapItem();
+                    $use_updated = $page->use_updated_at;
+                    $sitemapItem->loc = $loc;
+                    $sitemapItem->lastmod = $use_updated ? $model->updated_at->format('c') : $page->lastmod;
+                    $sitemapItem->priority = $page->priority;
+                    $sitemapItem->changefreq = $page->changefreq;
+
+                    $this->addItemToSet($sitemapItem);
                 }
             } else {
                 $this->addItemToSet(SitemapItem::asCmsPage($page));
@@ -95,7 +128,7 @@ class  Sitemap
         return $this->urlSet = $urlSet;
     }
 
-    protected function addItemToSet(SitemapItem $item, $url = null, $mtime = null)
+    protected function addItemToSet(SitemapItem $item)
     {
         $xml = $this->makeRoot();
         $urlSet = $this->makeUrlSet();

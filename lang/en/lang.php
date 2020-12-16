@@ -79,10 +79,7 @@
             'model_scope_placeholder' => 'e.g. isPublished',
             'model_params_label' => 'Model parameters',
             'model_params_comment' => 'Get the URL parameters from related objects',
-            'model_params_param_label' => 'URL param',
-            'model_params_param_placeholder' => 'e.g. slug',
-            'model_params_get_from_label' => 'Model parameter or related object parameter',
-            'model_params_get_from_placeholder' => 'e.g. category.slug',
+            'model_params_placeholder' => 'slug:slug|categorySlug:category.slug',
         ],
         'settings' => [
             'label' => 'SEO Storm settings',
