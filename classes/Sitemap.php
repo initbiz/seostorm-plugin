@@ -62,6 +62,8 @@ class  Sitemap
                     $models = $modelClass::$scope()->get();
                 }
 
+                // TODO: make it backward compatible with RainLab.BlogPost
+                //       Proposition: add components to Plugin.php with pair with the registered models
                 // TODO: refactor the code, it works but is ugly
                 foreach ($models as $model) {
                     $modelParams = $page->model_params;

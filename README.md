@@ -55,16 +55,35 @@ To automatically generate the sitemap.xml, follow the steps below:
 
 **Note**: The fields in the "Sitemap" section are not dynamic.
 
+### Dynamic URLs based on the models
+If you have a model that you want to generate the links from in the sitemap you can use those three parameters to accomplish that:
 
+1. Model class
+2. Model scope
+3. Model params
 
-### Custom models
-If you have a custom model that you want to generate the links from, add the full class name of your model in the "Settings" tab of the **CMS page**. If the page has the `blogPost` component, you don't need to set the Model class.
+To make it work you will have to enter both:
 
-![model class field screenshot](https://i.ibb.co/8g3SrS0/download.jpg)
+1. the class (e.g. `Author\Plugin\Models\ModelClass`) to the `model_class` field, and
+1. model parameters that match the parameters in the URL (e.g. `slug:slug`).
 
-**Important:** The URL parameters of the page, for example: `/post/:slug`, will be replaced by the attribute values of the model with the same name, so you must ensure the model has an attribute called `slug` in this case.
+If you want to filter the objects of the model, use the `model_scope` (more about scopes [here](https://octobercms.com/docs/database/model#query-scopes)).
+For example `isPublished`.
 
+#### Model params
+First parameter of the definition is the URL parameter while the second one is the corresponding model attribute.
 
+> For example: `post:slug` means we have a `post` parameter in the URL and `slug` attribute in the model.
+
+If you want to add more attributes, split them by pipe character (`|`). For example: `date:date|slug:slug`.
+
+Model parameters adds a nice feature to pull the parameter from the related objects.
+
+For example:
+
+    slug:slug|category:categories.slug
+
+> Note: The relation attribute will always take the first element of the relation.
 
 ## Adding structured data (schema.org)
 
@@ -128,4 +147,3 @@ Currently supported tags are:
 - `twitter:image` from `og:image`
 
 **Note:** read the guidelines from Facebook and Twitter linked above for recommended values on these tags.
-
