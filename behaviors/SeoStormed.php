@@ -54,5 +54,6 @@ class SeoStormed extends ModelBehavior
             $seoOptions->save();
             $this->model->seostorm_options()->add($seoOptions, post('_session_key'));
         }
+        unset($this->model->attributes['seo_options']);
     }
 }
