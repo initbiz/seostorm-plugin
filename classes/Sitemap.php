@@ -91,8 +91,8 @@ class  Sitemap
 
                     $sitemapItem->loc = $loc;
 
-                    if ($page->use_updated_at) {
-                        $sitemapItem->lastmod = $model->updated_at->format('c') ?? $page->lastmod;
+                    if ($page->use_updated_at && isset($model->updated_at)) {
+                        $sitemapItem->lastmod = $model->updated_at->format('c');
                     }
 
                     $this->addItemToSet($sitemapItem);
@@ -156,10 +156,16 @@ class  Sitemap
         $xml = $this->makeRoot();
         $urlSet = $this->makeUrlSet();
 
+        try {
+            $lastmod = new Carbon($item->lastmod);
+        } catch (\Throwable $th) {
+            $lastmod = new Carbon();
+        }
+
         $urlElement = $this->makeUrlElement(
             $xml,
             url($item->loc), // make sure output is a valid url
-            Helper::w3cDatetime($item->lastmod), // make sure output is a valid datetime
+            $lastmod->format('c'),
             $item->changefreq,
             $item->priority
         );

@@ -89,6 +89,54 @@ Currently supported tags are:
 
 **Note:** read the guidelines from Facebook and Twitter linked above for recommended values on these tags.
 
+## Registering SEO Stormed Models
+The most awesome feature in the SEO Storm is dynamic extending models to have the `seo_options` attributes.
+
+To make it work you have to register your models as `stormed`.
+Add the `registerStormedModels()` method in your `Plugin.php` file, for example:
+
+    public function registerStormedModels()
+    {
+        return [
+            '\Author\Plugin\Models\ExampleModel' => [
+                'prefix' => 'viewBag',
+                'placement' => 'tabs',
+                'excludeFields' => [
+                    'model_class',
+                    'model_scope',
+                    'model_params',
+                ],
+            ],
+            '\Author\Plugin\Models\ExampleModel2' => [
+                'placement' => 'secondaryTabs',
+                'excludeFields' => [
+                    '*',
+                    'meta_title',
+                    'meta_description',
+                    'og_image',
+                    'og_ref_image',
+                    'og_title',
+                    'og_description',
+                ],
+            ],
+        ];
+    }
+
+This will make the models automatically extended and form widgets to automatically have the required fields.
+
+SEO Storm automatically takes care of `CMS page`, `Static pages` and `RainLab.Blog Post` models.
+
+`seo_options` are stored in the automatically binded polymorphic relation beetween the model and `SeoOptions` model.
+This feature frees you from defining the attributes in your models, tables and `fields.yaml`.
+
+To make it more clear:
+
+* `placement` defines where the fields are going to be rendered. Possible options are: `fields`, `tabs` and `secondaryTabs`,
+* `prefix` defines the relation prefix to automatically add to the fields definition, by default `seo_options`,
+* `excludeFields` will exclude the fields from the form
+
+`excludeFields` can also define the inverse by `*`, so in the second example we will have all the fields excluded except those defined later.
+
 ## The differences between Arcane.SEO and inIT SEO Storm
 
 1. Dropped schema components support,

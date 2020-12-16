@@ -3,9 +3,9 @@
 namespace Initbiz\SeoStorm\Classes;
 
 use Request;
-use Carbon\Carbon;
 use October\Rain\Exception\ApplicationException;
 
+// TODO: the class is to be removed soon
 class Helper
 {
     public function removeNullsFromArray($array)
@@ -34,11 +34,6 @@ class Helper
     public function url($str)
     {
         return $str ? url($str) : \Request::url();
-    }
-
-    public static function w3cDatetime($date_str)
-    {
-        return (new Carbon($date_str))->format('c');
     }
 
     public static function parseIfTwigSyntax($str, $env = null)
