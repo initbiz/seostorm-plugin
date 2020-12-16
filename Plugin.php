@@ -101,6 +101,8 @@ class Plugin extends PluginBase
                 'placement' => 'secondaryTabs',
                 'excludeFields' => [
                     'model_class',
+                    'model_scope',
+                    'model_params',
                     'lastmod',
                     'use_updated_at',
                     'changefreq',
@@ -110,6 +112,8 @@ class Plugin extends PluginBase
             '\RainLab\Pages\Classes\Page' => [
                 'excludeFields' => [
                     'model_class',
+                    'model_scope',
+                    'model_params',
                 ],
                 'prefix' => 'viewBag',
                 'placement' => 'tabs',
