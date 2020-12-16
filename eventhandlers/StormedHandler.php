@@ -163,6 +163,7 @@ class StormedHandler
         foreach ($fieldsDefinitions as $key => $fieldDef) {
             if (!in_array($key, $excludeFields)) {
                 $newKey = $prefix . "[" . $key . "]";
+                // Make javascript trigger work with the prefixed fields
                 if (isset($fieldDef['trigger'])) {
                     $fieldDef['trigger']['field'] = $prefix . "[" . $fieldDef['trigger']['field'] . "]";
                 }
