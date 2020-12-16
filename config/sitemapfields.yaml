@@ -1,6 +1,6 @@
 enabled_in_sitemap:
     label: initbiz.seostorm::lang.form.general.enabled_in_sitemap_label
-    comment: initbiz.seostorm::lang.form.general.enabled_in_sitemap_comment
+    commentAbove: initbiz.seostorm::lang.form.general.enabled_in_sitemap_comment
     type: checkbox
     tab: initbiz.seostorm::lang.form.general.tab_sitemap
     span: left
@@ -9,8 +9,8 @@ enabled_in_sitemap:
 use_updated_at:
     label: initbiz.seostorm::lang.form.general.use_updated_at_label
     commentHtml: true
-    span: right
-    comment: initbiz.seostorm::lang.form.general.use_updated_at_comment
+    span: left
+    commentAbove: initbiz.seostorm::lang.form.general.use_updated_at_comment
     type: checkbox
     tab: initbiz.seostorm::lang.form.general.tab_sitemap
     default: true
@@ -24,12 +24,12 @@ lastmod:
     type: datepicker
     mode: datetime
     tab: initbiz.seostorm::lang.form.general.tab_sitemap
-    span: full
+    span: right
     trigger:
-        action: hide
-        field: use_updated_at
+        action: show
+        field: enabled_in_sitemap
         condition: checked
-    comment: initbiz.seostorm::lang.form.general.lastmod_comment
+    commentAbove: initbiz.seostorm::lang.form.general.lastmod_comment
 
 changefreq:
     label: initbiz.seostorm::lang.form.general.changefreq_label
@@ -43,7 +43,7 @@ changefreq:
         yearly: yearly
         never: never
     span: left
-    comment: initbiz.seostorm::lang.form.general.changefreq_comment
+    commentAbove: initbiz.seostorm::lang.form.general.changefreq_comment
     trigger:
         action: show
         field: enabled_in_sitemap
@@ -54,18 +54,18 @@ priority:
     type: dropdown
     tab: initbiz.seostorm::lang.form.general.tab_sitemap
     options:
-        0.1: 0.1
-        0.2: 0.2
-        0.3: 0.3
-        0.4: 0.4
-        0.5: 0.5
-        0.6: 0.6
-        0.7: 0.7
-        0.8: 0.8
-        0.9: 0.9
-        1.0: 1.0
-    span: right
-    comment: initbiz.seostorm::lang.form.general.priority_comment
+        0.1: '0.1'
+        0.2: '0.2'
+        0.3: '0.3'
+        0.4: '0.4'
+        0.5: '0.5'
+        0.6: '0.6'
+        0.7: '0.7'
+        0.8: '0.8'
+        0.9: '0.9'
+        1.0: '1.0'
+    span: left
+    commentAbove: initbiz.seostorm::lang.form.general.priority_comment
     trigger:
         action: show
         field: enabled_in_sitemap
@@ -75,8 +75,30 @@ model_class:
     label: initbiz.seostorm::lang.form.general.model_class_label
     type: text
     span: left
-    comment: initbiz.seostorm::lang.form.general.model_class_comment
+    commentAbove: initbiz.seostorm::lang.form.general.model_class_comment
     placeholder: initbiz.seostorm::lang.form.general.model_class_placeholder
+    tab: initbiz.seostorm::lang.form.general.tab_sitemap
+    trigger:
+        action: show
+        field: enabled_in_sitemap
+        condition: checked
+
+model_scope:
+    label: initbiz.seostorm::lang.form.general.model_scope_label
+    type: text
+    span: right
+    commentAbove: initbiz.seostorm::lang.form.general.model_scope_comment
+    placeholder: initbiz.seostorm::lang.form.general.model_scope_placeholder
+    tab: initbiz.seostorm::lang.form.general.tab_sitemap
+    trigger:
+        action: show
+        field: enabled_in_sitemap
+        condition: checked
+
+model_params:
+    label: initbiz.seostorm::lang.form.general.model_params_label
+    commentAbove: initbiz.seostorm::lang.form.general.model_params_comment
+    placeholder: initbiz.seostorm::lang.form.general.model_params_placeholder
     tab: initbiz.seostorm::lang.form.general.tab_sitemap
     trigger:
         action: show

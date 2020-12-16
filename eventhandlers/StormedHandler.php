@@ -75,7 +75,7 @@ class StormedHandler
     {
         $event->listen('backend.form.extendFieldsBefore', function ($widget) {
             foreach ($this->getStormedModels() as $stormedModelClass => $stormedModelDef) {
-                if ($widget->model instanceof $stormedModelClass) {
+                if ($widget->isNested === false && $widget->model instanceof $stormedModelClass) {
                     $placement = $stormedModelDef['placement'] ?? 'fields';
                     $prefix = $stormedModelDef['prefix'] ?? 'seo_options';
                     $excludeFields = $stormedModelDef['excludeFields'] ?? [];
@@ -159,17 +159,29 @@ class StormedHandler
             $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
         }
 
-        $prefixedFieldsDefinitions = [];
+        // Inverted excluding
+        if (in_array('*', $excludeFields)) {
+            $newExcludeFields = [];
+            foreach ($fieldsDefinitions as $key => $fieldDef) {
+                if (!in_array($key, $excludeFields)) {
+                    $newExcludeFields[] = $key;
+                }
+            }
+            $excludeFields = $newExcludeFields;
+        }
+
+        $readyFieldsDefs = [];
         foreach ($fieldsDefinitions as $key => $fieldDef) {
             if (!in_array($key, $excludeFields)) {
                 $newKey = $prefix . "[" . $key . "]";
+                // Make javascript trigger work with the prefixed fields
                 if (isset($fieldDef['trigger'])) {
                     $fieldDef['trigger']['field'] = $prefix . "[" . $fieldDef['trigger']['field'] . "]";
                 }
-                $prefixedFieldsDefinitions[$newKey] = $fieldDef;
+                $readyFieldsDefs[$newKey] = $fieldDef;
             }
         }
 
-        return $prefixedFieldsDefinitions;
+        return $readyFieldsDefs;
     }
 }

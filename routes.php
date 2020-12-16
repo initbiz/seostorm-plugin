@@ -19,7 +19,7 @@ Route::get('robots.txt', function () {
 Route::get('sitemap.xml', function () {
     $sitemap = new Sitemap();
     if (!Settings::get('enable_sitemap')) {
-        return  App::make(Controller::class)->setStatusCode(404)->run('/404');
+        return App::make(Controller::class)->setStatusCode(404)->run('/404');
     } else {
         return Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
     }
@@ -29,7 +29,7 @@ Route::get('favicon.ico', function () {
     $settings = Settings::instance();
 
     if (!$settings->favicon_enabled) {
-        return \App::make(Controller::class)->setStatusCode(404)->run('/404');
+        return App::make(Controller::class)->setStatusCode(404)->run('/404');
     }
 
     $finalPath = $inputPath = storage_path('app/media' . $settings->favicon);
@@ -40,7 +40,6 @@ Route::get('favicon.ico', function () {
         $finalPath = $outputPath = $destinationPath . basename($settings->favicon);
 
         if (!file_exists($outputPath)) {
-
             if (
                 !File::makeDirectory($destinationPath, 0777, true, true) &&
                 !File::isDirectory($destinationPath)
@@ -48,10 +47,7 @@ Route::get('favicon.ico', function () {
                 trigger_error(error_get_last(), E_USER_WARNING);
             }
 
-            Resizer::open($inputPath)
-                ->resize(16, 16)
-                ->save($outputPath);
-
+            Resizer::open($inputPath)->resize(16, 16)->save($outputPath);
             $finalPath = $outputPath;
         }
     }
