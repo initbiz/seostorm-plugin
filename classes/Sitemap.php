@@ -82,8 +82,9 @@ class  Sitemap
                                 // parameter with dot -> try to find by relation
                                 list($relationMethod, $relatedAttribute) = explode('.', $modelParam);
                                 if ($relatedObject = $model->$relationMethod()->first()) {
-                                    $replacement = $relatedObject->$relatedAttribute;
+                                    $replacement = $relatedObject->$relatedAttribute ?? 'default';
                                 }
+                                $replacement = empty($replacement) ? 'default' : $replacement;
                             }
                             $loc = preg_replace($pattern, $replacement, $loc);
                         }
