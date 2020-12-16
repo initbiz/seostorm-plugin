@@ -3,9 +3,11 @@
 namespace Initbiz\SeoStorm\Classes;
 
 use Event;
+use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use System\Classes\PluginManager;
+use Initbiz\SeoStorm\Classes\SitemapItem;
 
 class  Sitemap
 {
@@ -43,6 +45,14 @@ class  Sitemap
             // $page = Event::fire('initbiz.seostorm.generateSitemapCmsPage', [$page]);
             $modelClass = $page->model_class;
 
+            $loc = $page->url;
+
+            $sitemapItem = new SitemapItem();
+            $sitemapItem->priority = $page->priority;
+            $sitemapItem->changefreq = $page->changefreq;
+            $sitemapItem->loc = $loc;
+            $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
+
             // if page has model class
             if (class_exists($modelClass)) {
                 $scope = $page->model_scope;
@@ -52,6 +62,7 @@ class  Sitemap
                     $models = $modelClass::$scope()->get();
                 }
 
+                // TODO: refactor the code, it works but is ugly
                 foreach ($models as $model) {
                     $modelParams = $page->model_params;
                     $loc = $page->url;
@@ -68,7 +79,7 @@ class  Sitemap
                             } else {
                                 // parameter with dot -> try to find by relation
                                 list($relationMethod, $relatedAttribute) = explode('.', $modelParam);
-                                if ($relatedObject = $model->$relationMethod()) {
+                                if ($relatedObject = $model->$relationMethod()->first()) {
                                     $replacement = $relatedObject->$relatedAttribute;
                                 }
                             }
@@ -76,41 +87,39 @@ class  Sitemap
                         }
                     }
 
-                    $sitemapItem = new SitemapItem();
-                    $use_updated = $page->use_updated_at;
                     $sitemapItem->loc = $loc;
-                    $sitemapItem->lastmod = $use_updated ? $model->updated_at->format('c') : $page->lastmod;
-                    $sitemapItem->priority = $page->priority;
-                    $sitemapItem->changefreq = $page->changefreq;
+
+                    if ($page->use_updated_at) {
+                        $sitemapItem->lastmod = $model->updated_at->format('c') ?? $page->lastmod;
+                    }
 
                     $this->addItemToSet($sitemapItem);
                 }
             } else {
-                $this->addItemToSet(SitemapItem::asCmsPage($page));
+                $this->addItemToSet($sitemapItem);
             }
         }
 
         if (PluginManager::instance()->hasPlugin('RainLab.Pages')) {
             $staticPages = \RainLab\Pages\Classes\Page::listInTheme(Theme::getActiveTheme());
             foreach ($staticPages as $staticPage) {
-                if (!$staticPage->getViewBag()->property('enabled_in_sitemap')) continue;
-                $this->addItemToSet(SitemapItem::asStaticPage($staticPage));
+                $viewBag = $staticPage->getViewBag();
+                if (!$viewBag->property('enabled_in_sitemap')) {
+                    continue;
+                }
+
+                $sitemapItem = new SitemapItem();
+                $sitemapItem->loc = url($staticPage->url);
+                $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->updated_at;
+                $sitemapItem->priority = $viewBag->property('priority');
+                $sitemapItem->changefreq = $viewBag->property('changefreq');
+
+                $this->addItemToSet($sitemapItem);
             }
         }
 
-        return $this->make();
-    }
-
-    protected function makeRoot()
-    {
-        if ($this->xml !== null) {
-            return $this->xml;
-        }
-
-        $xml = new \DOMDocument;
-        $xml->encoding = 'UTF-8';
-
-        return $this->xml = $xml;
+        $this->makeUrlSet();
+        return $this->xml->saveXML();
     }
 
     protected function makeUrlSet()
@@ -126,6 +135,18 @@ class  Sitemap
         $urlSet->setAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd');
         $xml->appendChild($urlSet);
         return $this->urlSet = $urlSet;
+    }
+
+    protected function makeRoot()
+    {
+        if ($this->xml !== null) {
+            return $this->xml;
+        }
+
+        $xml = new \DOMDocument;
+        $xml->encoding = 'UTF-8';
+
+        return $this->xml = $xml;
     }
 
     protected function addItemToSet(SitemapItem $item)
@@ -163,11 +184,5 @@ class  Sitemap
         $priority && $url->appendChild($xml->createElement('priority', $priority));
 
         return $url;
-    }
-
-    protected function make()
-    {
-        $this->makeUrlSet();
-        return $this->xml->saveXML();
     }
 }
