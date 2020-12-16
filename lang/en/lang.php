@@ -32,9 +32,7 @@
     'form' => [
         'general' => [
             'meta_title_label' => 'Page title',
-            'meta_title_comment' => 'Page title',
             'meta_description_label' => 'Page description',
-            'meta_description_comment' => 'Page description',
             'og_title_label' => 'OG:title',
             'og_title_comment' => 'Recommended 50-60 characters',
             'og_title_placeholder' => 'Title of the page',
@@ -54,7 +52,7 @@
             'use_updated_at_label' => 'Use "updated_at" from the model as "Last time modified"',
             'use_updated_at_comment' => 'If the updated_at field isnt available in the model it will default to the files last time modified aka: <b>Page::$mtime</b>',
             'lastmod_label' => 'Last time modified',
-            'lastmod_comment' => 'Date and time this page was last modified',
+            'lastmod_comment' => 'Date and time this page was last modified (will be overwritten by the updated_at if checked)',
             'changefreq_label' => 'Changing frequency',
             'changefreq_comment' => 'Tell search engines how frequently this page changes',
             'priority_label' => 'Priority',

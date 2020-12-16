@@ -3,7 +3,6 @@ meta_title:
     type: text
     span: full
     tab: initbiz.seostorm::lang.form.general.tab_meta
-    commentAbove: initbiz.seostorm::lang.form.general.meta_title_comment
     trans: true
     attributes:
         data-counter: 1
@@ -18,7 +17,6 @@ meta_description:
     span: full
     tab: initbiz.seostorm::lang.form.general.tab_meta
     cssClass: char-counter
-    commentAbove: initbiz.seostorm::lang.form.general.meta_description_comment
     trans: true
     attributes:
         data-counter: 1
