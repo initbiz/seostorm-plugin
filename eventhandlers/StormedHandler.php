@@ -159,7 +159,18 @@ class StormedHandler
             $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
         }
 
-        $prefixedFieldsDefinitions = [];
+        // Inverted excluding
+        if (in_array('*', $excludeFields)) {
+            $newExcludeFields = [];
+            foreach ($fieldsDefinitions as $key => $fieldDef) {
+                if (!in_array($key, $excludeFields)) {
+                    $newExcludeFields[] = $key;
+                }
+            }
+            $excludeFields = $newExcludeFields;
+        }
+
+        $readyFieldsDefs = [];
         foreach ($fieldsDefinitions as $key => $fieldDef) {
             if (!in_array($key, $excludeFields)) {
                 $newKey = $prefix . "[" . $key . "]";
@@ -167,10 +178,10 @@ class StormedHandler
                 if (isset($fieldDef['trigger'])) {
                     $fieldDef['trigger']['field'] = $prefix . "[" . $fieldDef['trigger']['field'] . "]";
                 }
-                $prefixedFieldsDefinitions[$newKey] = $fieldDef;
+                $readyFieldsDefs[$newKey] = $fieldDef;
             }
         }
 
-        return $prefixedFieldsDefinitions;
+        return $readyFieldsDefs;
     }
 }
