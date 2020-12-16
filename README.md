@@ -132,7 +132,7 @@ This feature frees you from defining the attributes in your models, tables and `
 To make it more clear:
 
 * `placement` defines where the fields are going to be rendered. Possible options are: `fields`, `tabs` and `secondaryTabs`,
-* `prefix` defines the relation prefix to automatically add to the fields definition, by default `seo_options`,
+* `prefix` defines the relation prefix to automatically add to the fields definition, by default `seo_options` - you probably won't want to change it,
 * `excludeFields` will exclude the fields from the form
 
 `excludeFields` can also define the inverse by `*`, so in the second example we will have all the fields excluded except those defined later.
