@@ -155,13 +155,18 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Returns og_image if set in the viewBag
-     * otherwise fallback to getSiteImageFromSettings()
+     * Returns og_ref_image if set
+     * else og_image if set
+     * else fallback to getSiteImageFromSettings()
      *
      * @return string
      */
     public function getOgImage()
     {
+        if ($ogImage = $this->getPropertyTranslated('og_ref_image')) {
+            return $ogImage;
+        }
+
         if ($ogImage = $this->getPropertyTranslated('og_image')) {
             return MediaLibrary::instance()->getPathUrl($ogImage);
         }
