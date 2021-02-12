@@ -6,6 +6,7 @@ use App;
 use Yaml;
 use BackendAuth;
 use System\Classes\PluginManager;
+use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Models\SeoOptions;
 
 class StormedHandler
@@ -144,9 +145,11 @@ class StormedHandler
             $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
         }
 
-        if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.og")) {
-            $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/ogfields.yaml'));
-            $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
+        if (Settings::get('enable_og')) {
+            if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.og")) {
+                $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/ogfields.yaml'));
+                $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
+            }
         }
 
         if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.sitemap")) {
