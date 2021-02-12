@@ -30,16 +30,4 @@ class Settings extends Model
 
     // Reference to field configuration
     public $settingsFields = 'fields.yaml';
-
-    protected $cache = [];
-
-    public function getPageOptions()
-    {
-        return \Cms\Classes\Page::getNameList();
-    }
-
-    public function initSettingsData()
-    {
-        $this->htaccess = \File::get(base_path(".htaccess"));
-    }
 }

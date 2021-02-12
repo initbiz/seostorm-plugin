@@ -14,7 +14,7 @@ use System\Classes\PluginManager;
     $controller->addJs('/plugins/initbiz/seostorm/assets/initbiz.seostorm.js');
 });
 
-\Initbiz\SeoStorm\Models\Settings::extend(function($model) {
+\Initbiz\SeoStorm\Models\Htaccess::extend(function($model) {
     $model->bindEvent('model.afterSave', function() use ($model) {
         $htaccess = $model->value["htaccess"];
         \File::put(base_path(".htaccess"), $htaccess);
