@@ -196,6 +196,17 @@ class Seo extends ComponentBase
     }
 
     /**
+     * Returns og_card if set in the viewBag
+     * otherwise returns string 'summary_large_image'
+     *
+     * @return string default 'summary_large_image'
+     */
+    public function getOgCard()
+    {
+        return $this->viewBagProperties['og_card'] ?? 'summary_large_image';
+    }
+
+    /**
      * Returns the URL of the site image
      *
      * @return string site image url

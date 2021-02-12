@@ -12,7 +12,7 @@
 <meta property="fb:app_id" content="{{ settings.fb_app_id }}" />
 
 {# TODO: add the card to settings and page options #}
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:card" content="{{ include(template_from_string(__SELF__.getOgCard())) }}">
 <meta name="twitter:title" content="{{ include(template_from_string(__SELF__.getOgTitle())) }}">
 <meta name="twitter:description" content="{{ include(template_from_string(__SELF__.getOgDescription())) }}">
 <meta name="twitter:image" content="{{ include(template_from_string(__SELF__.getOgImage())) }}" />
