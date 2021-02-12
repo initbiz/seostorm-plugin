@@ -146,17 +146,6 @@ tabs:
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
 
         #----------------------------------------------------------------------
-        # .htacess
-        #----------------------------------------------------------------------
-        htaccess:
-            label: initbiz.seostorm::lang.form.settings.htaccess
-            comment: initbiz.seostorm::lang.form.settings.htaccess_comment
-            commentHtml: true
-            type: codeeditor
-            size: huge
-            tab: initbiz.seostorm::lang.form.settings.tab_htaccess
-
-        #----------------------------------------------------------------------
         # HTTP Headers
         #----------------------------------------------------------------------
 

@@ -1,0 +1,12 @@
+tabs:
+    fields:
+        #----------------------------------------------------------------------
+        # .htacess
+        #----------------------------------------------------------------------
+        htaccess:
+            label: initbiz.seostorm::lang.form.htaccess.label
+            comment: initbiz.seostorm::lang.form.htaccess.description
+            commentHtml: true
+            type: codeeditor
+            size: huge
+            tab: initbiz.seostorm::lang.form.htaccess.label

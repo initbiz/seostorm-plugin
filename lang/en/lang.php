@@ -80,7 +80,7 @@
             'model_params_placeholder' => 'slug:slug|categorySlug:category.slug',
         ],
         'settings' => [
-            'label' => 'SEO Storm settings',
+            'label' => 'General settings',
             'description' => 'Configure SEO Storm',
             'tab_meta' => 'Meta',
             'tab_head' => '<head>',
@@ -142,6 +142,10 @@
             'minify_hint_line_one' => 'Ajax requests with the same URL will return the first cached HTML.',
             'minify_hint_line_two' => 'This will break components that use the ajax framework from October. A workaround will be implemented soon.',
             'site_image_hint' => 'Recommended resolution of the image is 1200px x 627px',
+        ],
+        'htaccess' => [
+            'label' => 'Htaccess',
+            'description' => 'Configure htaccess',
         ]
     ],
     'components' => [
