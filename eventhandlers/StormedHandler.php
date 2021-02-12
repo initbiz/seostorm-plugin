@@ -152,9 +152,11 @@ class StormedHandler
             }
         }
 
-        if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.sitemap")) {
-            $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/sitemapfields.yaml'));
-            $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
+        if (Settings::get('enable_sitemap')) {
+            if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.sitemap")) {
+                $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/sitemapfields.yaml'));
+                $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
+            }
         }
 
         if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.schema")) {
