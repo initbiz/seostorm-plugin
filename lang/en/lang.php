@@ -143,7 +143,7 @@
             'minify_hint_line_two' => 'This will break components that use the ajax framework from October. A workaround will be implemented soon.',
             'site_image_hint' => 'Recommended resolution of the image is 1200px x 627px',
             'og_site_name' => 'OG:site_name',
-            'og_site_name_comment' => 'site_name',
+            'og_site_name_comment' => 'If your object is part of a larger web site, the name which should be displayed for the overall site. e.g., "Init".',
         ]
     ],
     'components' => [
