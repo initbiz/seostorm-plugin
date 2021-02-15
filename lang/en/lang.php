@@ -136,8 +136,6 @@
             'og_locale_comment' => 'Set the locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>',
             'og_locale_alternate' => 'OG:locale:alternate',
             'og_locale_alternate_comment' => 'Set the alternate locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>',
-            'social_media_site_image' => 'Social media site name',
-            'social_media_site_image_comment' => 'The OG:site_name OG tag',
             'minify_hint_title' => 'HTML and Cache',
             'minify_hint_line_one' => 'Ajax requests with the same URL will return the first cached HTML.',
             'minify_hint_line_two' => 'This will break components that use the ajax framework from October. A workaround will be implemented soon.',
