@@ -213,11 +213,11 @@ tabs:
                 field: site_image_from
                 condition: value[url]
         og_site_name:
-            label: initbiz.seostorm::lang.form.settings.og_site_image
+            label: initbiz.seostorm::lang.form.settings.og_site_name
             disabled: 0
             type: text
             span: left
-            comment: initbiz.seostorm::lang.form.settings.social_media_site_name_comment
+            comment: initbiz.seostorm::lang.form.settings.og_site_name_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
             trigger:
                 action: enable
