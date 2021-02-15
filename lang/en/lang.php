@@ -142,6 +142,8 @@
             'minify_hint_line_one' => 'Ajax requests with the same URL will return the first cached HTML.',
             'minify_hint_line_two' => 'This will break components that use the ajax framework from October. A workaround will be implemented soon.',
             'site_image_hint' => 'Recommended resolution of the image is 1200px x 627px',
+            'og_site_name' => 'OG:site_name',
+            'og_site_name_comment' => 'site_name',
         ]
     ],
     'components' => [
