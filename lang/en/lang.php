@@ -136,12 +136,12 @@
             'og_locale_comment' => 'Set the locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>',
             'og_locale_alternate' => 'OG:locale:alternate',
             'og_locale_alternate_comment' => 'Set the alternate locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>',
-            'social_media_site_image' => 'Social media site name',
-            'social_media_site_image_comment' => 'The OG:site_name OG tag',
             'minify_hint_title' => 'HTML and Cache',
             'minify_hint_line_one' => 'Ajax requests with the same URL will return the first cached HTML.',
             'minify_hint_line_two' => 'This will break components that use the ajax framework from October. A workaround will be implemented soon.',
             'site_image_hint' => 'Recommended resolution of the image is 1200px x 627px',
+            'og_site_name' => 'OG:site_name',
+            'og_site_name_comment' => 'If your object is part of a larger web site, the name which should be displayed for the overall site. e.g., "Init".',
         ]
     ],
     'components' => [
