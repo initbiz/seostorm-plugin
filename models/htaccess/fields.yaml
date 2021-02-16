@@ -1,0 +1,7 @@
+fields:
+    htaccess:
+        label: initbiz.seostorm::lang.form.htaccess.label
+        comment: initbiz.seostorm::lang.form.htaccess.description
+        commentHtml: true
+        type: codeeditor
+        size: giant

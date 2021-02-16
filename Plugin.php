@@ -29,9 +29,18 @@ class Plugin extends PluginBase
                 'label'       => 'initbiz.seostorm::lang.form.settings.label',
                 'description' => 'initbiz.seostorm::lang.form.settings.description',
                 'icon'        => 'icon-search',
-                'category'    =>  SettingsManager::CATEGORY_CMS,
+                'category'    => 'initbiz.seostorm::lang.form.settings.category_label', 
                 'class'       => 'Initbiz\SeoStorm\Models\Settings',
                 'order'       => 100,
+                'permissions' => ['initbiz.manage_seo'],
+            ],
+            'htaccess' => [
+                'label'       => 'initbiz.seostorm::lang.form.htaccess.label',
+                'description' => 'initbiz.seostorm::lang.form.htaccess.description',
+                'icon'        => 'icon-file-text-o',
+                'category'    => 'initbiz.seostorm::lang.form.settings.category_label', 
+                'class'       => 'Initbiz\SeoStorm\Models\Htaccess',
+                'order'       => 200,
                 'permissions' => ['initbiz.manage_seo'],
             ]
         ];

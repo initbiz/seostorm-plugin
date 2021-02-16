@@ -80,7 +80,8 @@
             'model_params_placeholder' => 'slug:slug|categorySlug:category.slug',
         ],
         'settings' => [
-            'label' => 'SEO Storm settings',
+            'category_label' => 'SEO Storm',
+            'label' => 'General settings',
             'description' => 'Configure SEO Storm',
             'tab_meta' => 'Meta',
             'tab_head' => '<head>',
@@ -120,8 +121,6 @@
             'favicon_16' => 'Resize favicon to 16x16',
             'favicon' => 'Select your favicon',
             'favicon_prompt' => 'Click %s to search the media library',
-            'htaccess' => 'Edit your .htaccess',
-            'htaccess_comment' => '<b class="text-danger">Important:</b> If you use this, do not modify your file directly, because this field is in sync with the database aswell.',
             'enable_og' => 'Enable Open Graph',
             'enable_og_comment' => 'Display the Open Graph meta tags',
             'site_image_from' => 'Where to get default site image from',
@@ -142,6 +141,10 @@
             'site_image_hint' => 'Recommended resolution of the image is 1200px x 627px',
             'og_site_name' => 'OG:site_name',
             'og_site_name_comment' => 'If your object is part of a larger web site, the name which should be displayed for the overall site. e.g., "Init".',
+        ],
+        'htaccess' => [
+            'label' => '.htaccess',
+            'description' => 'Manage .htaccess file',
         ]
     ],
     'components' => [
