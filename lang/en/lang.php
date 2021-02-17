@@ -60,6 +60,7 @@
             'schemas_label' => 'Write the schemas for this page',
             'og_type_label' => 'OG:type',
             'og_type_placeholder' => 'website article video etc...',
+            'og_card_label' => 'OG:card',
             'og_ref_image_label' => 'OG:image',
             'og_ref_image_comment' => 'This will take priority over OG:image',
             'og_ref_image_placeholder' => 'Path to image',

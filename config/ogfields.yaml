@@ -21,6 +21,18 @@ og_type:
     span: auto
     placeholder: initbiz.seostorm::lang.form.general.og_type_placeholder
 
+og_card:
+    label: initbiz.seostorm::lang.form.general.og_card_label
+    tab: initbiz.seostorm::lang.form.general.tab_open_graph
+    type: dropdown
+    options:
+        summary-large-image: summary-large-image
+        summary: summary
+        app: app
+        player: player
+    default: summary-large-image
+    span: left
+
 og_image:
     label: initbiz.seostorm::lang.form.general.og_image_label
     type: mediafinder
