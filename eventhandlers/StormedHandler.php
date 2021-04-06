@@ -8,6 +8,7 @@ use BackendAuth;
 use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Models\SeoOptions;
+use RainLab\Translate\Behaviors\TranslatableModel;
 
 class StormedHandler
 {
@@ -38,6 +39,7 @@ class StormedHandler
                     $model->extendClassWith('Initbiz.SeoStorm.Behaviors.SeoStormed');
                 }
 
+
                 if (!isset($model->morphOne)) {
                     $model->addDynamicProperty('morphOne');
                 }
@@ -56,9 +58,23 @@ class StormedHandler
                     if (!$model->propertyExists('translatable')) {
                         $model->addDynamicProperty('translatable', []);
                     }
-                    $model->translatable = array_merge($model->translatable, $this->seoFieldsToTranslate());
-                }
+                    $model->attributes['translatable'] = array_merge($model->attributes['translatable'], $this->seoFieldsToTranslate());
 
+                    if (!$model->implement) {
+                        $model->implement = [];
+                    }
+
+                    if (!$model->isClassExtendedWith('October\Rain\Database\Behaviors\Purgeable')) {
+                        $model->extendClassWith('October\Rain\Database\Behaviors\Purgeable');
+                    }
+                    if (!$model->isClassExtendedWith('RainLab\Translate\Behaviors\TranslatableModel')) {
+                        $model->extendClassWith('RainLab\Translate\Behaviors\TranslatableModel');
+                    }
+
+                    // if (!in_array('@RainLab.Translate.Behaviors.TranslatableModel', $model->implement)) {
+                    //     $model->extendClassWith('RainLab\Translate\Behaviors\TranslatableModel');
+                    // }
+                }
             });
 
             // Define reverse of the relation in the SeoOptions model
