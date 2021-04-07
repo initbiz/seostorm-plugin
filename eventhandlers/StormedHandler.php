@@ -54,16 +54,23 @@ class StormedHandler
                 $model->morphOne = $morphOne;
 
                 if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
+
                     if (!$model->propertyExists('translatable')) {
                         $model->addDynamicProperty('translatable', []);
                     }
                     $model->translatable = array_merge($model->translatable, $this->seoFieldsToTranslate());
 
+                    /*
+                    * Add translation support to database models
+                    */
                     if (get_parent_class($model) === 'October\Rain\Database\Model') {
                         if (!$model->isClassExtendedWith('October\Rain\Database\Behaviors\Purgeable')) {
                             $model->extendClassWith('October\Rain\Database\Behaviors\Purgeable');
                         }
 
+                        /**
+                         * Check if the model implements, if not, add
+                         */
                         if (isset($model->implement['@RainLab.Translate.Behaviors.TranslatableModel'])) {
                             $model->extendClassWith('RainLab\Translate\Behaviors\TranslatableModel');
                         }
