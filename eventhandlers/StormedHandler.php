@@ -8,7 +8,6 @@ use BackendAuth;
 use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Models\SeoOptions;
-use RainLab\Translate\Behaviors\TranslatableModel;
 
 class StormedHandler
 {
@@ -58,22 +57,17 @@ class StormedHandler
                     if (!$model->propertyExists('translatable')) {
                         $model->addDynamicProperty('translatable', []);
                     }
-                    $model->attributes['translatable'] = array_merge($model->attributes['translatable'], $this->seoFieldsToTranslate());
+                    $model->translatable = array_merge($model->translatable, $this->seoFieldsToTranslate());
 
-                    if (!$model->implement) {
-                        $model->implement = [];
-                    }
+                    if (get_parent_class($model) === 'October\Rain\Database\Model') {
+                        if (!$model->isClassExtendedWith('October\Rain\Database\Behaviors\Purgeable')) {
+                            $model->extendClassWith('October\Rain\Database\Behaviors\Purgeable');
+                        }
 
-                    if (!$model->isClassExtendedWith('October\Rain\Database\Behaviors\Purgeable')) {
-                        $model->extendClassWith('October\Rain\Database\Behaviors\Purgeable');
+                        if (isset($model->implement['@RainLab.Translate.Behaviors.TranslatableModel'])) {
+                            $model->extendClassWith('RainLab\Translate\Behaviors\TranslatableModel');
+                        }
                     }
-                    if (!$model->isClassExtendedWith('RainLab\Translate\Behaviors\TranslatableModel')) {
-                        $model->extendClassWith('RainLab\Translate\Behaviors\TranslatableModel');
-                    }
-
-                    // if (!in_array('@RainLab.Translate.Behaviors.TranslatableModel', $model->implement)) {
-                    //     $model->extendClassWith('RainLab\Translate\Behaviors\TranslatableModel');
-                    // }
                 }
             });
 
