@@ -5,6 +5,7 @@ namespace Initbiz\SeoStorm\EventHandlers;
 use App;
 use Yaml;
 use BackendAuth;
+use October\Rain\Database\Model;
 use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Models\SeoOptions;
@@ -34,10 +35,7 @@ class StormedHandler
             }
 
             $stormedModelClass::extend(function ($model) {
-                if (!$model->isClassExtendedWith('Initbiz.SeoStorm.Behaviors.SeoStormed')) {
-                    $model->extendClassWith('Initbiz.SeoStorm.Behaviors.SeoStormed');
-                }
-
+                $model->extendClassWith('Initbiz.SeoStorm.Behaviors.SeoStormed');
 
                 if (!isset($model->morphOne)) {
                     $model->addDynamicProperty('morphOne');
@@ -54,25 +52,38 @@ class StormedHandler
                 $model->morphOne = $morphOne;
 
                 if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
-
                     if (!$model->propertyExists('translatable')) {
                         $model->addDynamicProperty('translatable', []);
                     }
                     $model->translatable = array_merge($model->translatable, $this->seoFieldsToTranslate());
 
                     /*
-                    * Add translation support to database models
-                    */
-                    if (get_parent_class($model) === 'October\Rain\Database\Model') {
-                        if (!$model->isClassExtendedWith('October\Rain\Database\Behaviors\Purgeable')) {
-                            $model->extendClassWith('October\Rain\Database\Behaviors\Purgeable');
+                     * Add translation support to database models
+                     * We need to check if the database models implement all the
+                     * required behaviors
+                     */
+                    if ($model instanceof Model) {
+                        $requiredBehaviors = [
+                            'RainLab\Translate\Behaviors\TranslatableModel',
+                            'October\Rain\Database\Behaviors\Purgeable',
+                        ];
+
+                        if (!isset($model->implement)) {
+                            $model->implement = [];
                         }
 
-                        /**
-                         * Check if the model implements, if not, add
-                         */
-                        if (isset($model->implement['@RainLab.Translate.Behaviors.TranslatableModel'])) {
-                            $model->extendClassWith('RainLab\Translate\Behaviors\TranslatableModel');
+                        foreach ($requiredBehaviors as $behavior) {
+                            $behaviorFound = false;
+                            foreach ($model->implement as $use) {
+                                $use = str_replace('.', '\\', trim($use));
+                                if ('@' . $behavior === $use || $behavior === $use) {
+                                    $behaviorFound = true;
+                                    break;
+                                }
+                            }
+                            if (!$behaviorFound) {
+                                $model->implement[] = $behavior;
+                            }
                         }
                     }
                 }
