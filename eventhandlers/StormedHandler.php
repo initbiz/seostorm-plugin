@@ -5,6 +5,7 @@ namespace Initbiz\SeoStorm\EventHandlers;
 use App;
 use Yaml;
 use BackendAuth;
+use October\Rain\Database\Model;
 use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Models\SeoOptions;
@@ -34,9 +35,7 @@ class StormedHandler
             }
 
             $stormedModelClass::extend(function ($model) {
-                if (!$model->isClassExtendedWith('Initbiz.SeoStorm.Behaviors.SeoStormed')) {
-                    $model->extendClassWith('Initbiz.SeoStorm.Behaviors.SeoStormed');
-                }
+                $model->extendClassWith('Initbiz.SeoStorm.Behaviors.SeoStormed');
 
                 if (!isset($model->morphOne)) {
                     $model->addDynamicProperty('morphOne');
@@ -57,8 +56,37 @@ class StormedHandler
                         $model->addDynamicProperty('translatable', []);
                     }
                     $model->translatable = array_merge($model->translatable, $this->seoFieldsToTranslate());
-                }
 
+                    /*
+                     * Add translation support to database models
+                     * We need to check if the database models implement all the
+                     * required behaviors
+                     */
+                    if ($model instanceof Model) {
+                        $requiredBehaviors = [
+                            'RainLab\Translate\Behaviors\TranslatableModel',
+                            'October\Rain\Database\Behaviors\Purgeable',
+                        ];
+
+                        if (!isset($model->implement)) {
+                            $model->implement = [];
+                        }
+
+                        foreach ($requiredBehaviors as $behavior) {
+                            $behaviorFound = false;
+                            foreach ($model->implement as $use) {
+                                $use = str_replace('.', '\\', trim($use));
+                                if ('@' . $behavior === $use || $behavior === $use) {
+                                    $behaviorFound = true;
+                                    break;
+                                }
+                            }
+                            if (!$behaviorFound) {
+                                $model->implement[] = $behavior;
+                            }
+                        }
+                    }
+                }
             });
 
             // Define reverse of the relation in the SeoOptions model
