@@ -11,6 +11,8 @@
         "schema"
     ],
     "require": {
+        "php": ">=7.0",
+        "composer/installers": "~1.0",
         "spatie/schema-org": "^2.0",
         "voku/html-min": "^3.1"
     }
