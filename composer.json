@@ -1,5 +1,5 @@
 {
-    "name": "initbiz/oc-seo-storm-plugin",
+    "name": "initbiz/seostorm-plugin",
     "type": "october-plugin",
     "description": "Total SEO page control in October",
     "keywords": ["october", "cms", "seo", "plugin", "schema"],
