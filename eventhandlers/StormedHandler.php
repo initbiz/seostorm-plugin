@@ -102,6 +102,10 @@ class StormedHandler
 
     protected function extendFormWidgets($event)
     {
+        /**
+         * This applies to the new version of octobercms
+         * Adds a button in the page toolbar editor
+         */
         $event->listen('cms.template.getTemplateToolbarSettingsButtons', function ($extension, $dataHolder) {
             if ($dataHolder->templateType === 'page') {
                 $prefix = $stormedModelDef['prefix'] ?? 'seo_options';
