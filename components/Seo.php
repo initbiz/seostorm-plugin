@@ -77,7 +77,8 @@ class Seo extends ComponentBase
             );
         } else {
             $properties = array_merge(
-                $this->page['viewBag']->getProperties(), $this->page->settings
+                $this->page['viewBag']->getProperties(),
+                $this->page->settings
             );
 
             $this->viewBagProperties = $properties;
@@ -99,11 +100,6 @@ class Seo extends ComponentBase
     public function getTitle()
     {
         $title = $this->getTitleRaw();
-        $title = $this->getPropertyTranslated('seo_storm_meta_title');
-
-        if (!$title) {
-            $title = $this->getPropertyTranslated('meta_title');
-        }
 
         if (!$title) {
             $title = $this->viewBagProperties['title'];
@@ -128,11 +124,7 @@ class Seo extends ComponentBase
      */
     public function getDescription()
     {
-        $description = $this->getPropertyTranslated('seo_storm_meta_description');
-
-        if (!$description) {
-            $description = $this->getPropertyTranslated('meta_description');
-        }
+        $description = $this->getPropertyTranslated('meta_description');
 
         if (!$description) {
             $description = $this->viewBagProperties['description'] ?? null;
@@ -246,7 +238,7 @@ class Seo extends ComponentBase
     public function getPropertyTranslated(string $viewBagProperty)
     {
         $locale = App::getLocale();
-        $localizedKey = 'Locale' . $viewBagProperty . '['. $locale . ']';
+        $localizedKey = 'Locale' . $viewBagProperty . '[' . $locale . ']';
         return $this->viewBagProperties[$localizedKey] ?? $this->viewBagProperties[$viewBagProperty] ?? null;
     }
 }
