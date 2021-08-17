@@ -101,10 +101,6 @@ class Seo extends ComponentBase
     {
         $title = $this->getTitleRaw();
 
-        if (!$title) {
-            $title = $this->viewBagProperties['title'];
-        }
-
         $settings = Settings::instance();
 
         if ($settings->site_name_position == 'prefix') {
