@@ -108,18 +108,25 @@ class StormedHandler
                 $excludeFields = $stormedModelDef['excludeFields'] ?? [];
                 $fields = $this->getSeoFieldsDefinitions($prefix, $excludeFields);
 
-                foreach($fields as &$val){
+                foreach ($fields as &$val) {
                     $val['title'] = $val['label'];
                     if (isset($val['commentAbove'])) {
                         $val['description'] = $val['commentAbove'];
                     }
 
-                    if (!isset($val['type']) || $val['type'] === 'textarea' || $val['type'] === 'codeeditor') {
+                    if (!isset($val['type'])) {
                         $val['type'] = 'text';
                     }
 
-                    if ($val['type'] === 'balloon-selector') {
-                        $val['type'] = 'dropdown';
+                    switch ($val['type']) {
+                        case 'textarea':
+                        case 'codeeditor':
+                        case 'datepicker':
+                            $val['type'] = 'text';
+                            break;
+                        case 'balloon-selector':
+                            $val['type'] = 'dropdown';
+                            break;
                     }
                 }
 
