@@ -2,7 +2,6 @@ og_title:
     property: og_title
     type: text
     label: initbiz.seostorm::lang.form.general.og_title_label
-    title: initbiz.seostorm::lang.form.general.og_title_label
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
     span: auto
     trans: true
@@ -11,7 +10,6 @@ og_title:
 og_description:
     property: og_description
     label: initbiz.seostorm::lang.form.general.og_description_label
-    title: initbiz.seostorm::lang.form.general.og_description_label
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
     type: textarea
     size: tiny
@@ -23,7 +21,6 @@ og_description:
 og_type:
     property: og_type
     label: initbiz.seostorm::lang.form.general.og_type_label
-    title: initbiz.seostorm::lang.form.general.og_type_label
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
     span: auto
     placeholder: initbiz.seostorm::lang.form.general.og_type_placeholder
@@ -31,7 +28,6 @@ og_type:
 og_card:
     property: og_card
     label: initbiz.seostorm::lang.form.general.og_card_label
-    title: initbiz.seostorm::lang.form.general.og_card_label
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
     type: dropdown
     options:
@@ -45,7 +41,6 @@ og_card:
 og_image:
     property: og_image
     label: initbiz.seostorm::lang.form.general.og_image_label
-    title: initbiz.seostorm::lang.form.general.og_image_label
     type: mediafinder
     mode: image
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
@@ -55,7 +50,6 @@ og_image:
 og_ref_image:
     property: og_ref_image
     label: initbiz.seostorm::lang.form.general.og_ref_image_label
-    title: initbiz.seostorm::lang.form.general.og_ref_image_label
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
     span: auto
     placeholder: initbiz.seostorm::lang.form.general.og_ref_image_placeholder

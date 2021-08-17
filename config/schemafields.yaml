@@ -1,7 +1,6 @@
 schemas:
     property: schemas
     label: initbiz.seostorm::lang.form.general.schemas_label
-    title: initbiz.seostorm::lang.form.general.schemas_label
     type: codeeditor
     size: giant
     stretch: true
