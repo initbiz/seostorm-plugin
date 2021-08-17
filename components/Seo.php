@@ -91,7 +91,15 @@ class Seo extends ComponentBase
      */
     public function getTitle()
     {
-        $title = $this->getPropertyTranslated('meta_title') ?? $this->viewBagProperties['title'];
+        $title = $this->getPropertyTranslated('seo_storm_meta_title');
+
+        if (!$title) {
+            $title = $this->getPropertyTranslated('meta_title');
+        }
+
+        if (!$title) {
+            $title = $this->viewBagProperties['title'];
+        }
 
         $settings = Settings::instance();
         if ($settings->site_name_position == 'prefix') {
@@ -111,7 +119,11 @@ class Seo extends ComponentBase
      */
     public function getDescription()
     {
-        $description = $this->getPropertyTranslated('meta_description');
+        $description = $this->getPropertyTranslated('seo_storm_meta_description');
+
+        if (!$description) {
+            $description = $this->getPropertyTranslated('meta_description');
+        }
 
         if (!$description) {
             $description = $this->viewBagProperties['description'];
