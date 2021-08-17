@@ -14,8 +14,8 @@ class CreateSeoOptionsTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->text('options');
-            $table->integer('stormed_id');
-            $table->string('stormed_type');
+            $table->integer('stormed_id')->nullable();
+            $table->string('stormed_type')->nullable();
             $table->index(['stormed_id', 'stormed_type'], 'initbiz_seostorm_options_stormed_index');
         });
     }

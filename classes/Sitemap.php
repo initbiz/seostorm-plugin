@@ -2,8 +2,12 @@
 
 namespace Initbiz\SeoStorm\Classes;
 
+use Event;
+use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
+use System\Classes\PluginManager;
+use Initbiz\SeoStorm\Classes\SitemapItem;
 
 class  Sitemap
 {
@@ -22,61 +26,103 @@ class  Sitemap
      */
     protected $urlCount = 0;
 
-    private $xml;
-    private $urlSet;
+    protected $xml;
 
-    function generate()
+    protected $urlSet;
+
+    public function generate()
     {
         // get all pages of the current theme
         $pages = Page::listInTheme(Theme::getEditTheme());
         $models = [];
 
-        foreach ($pages as $page) {
-            if (!$page->enabled_in_sitemap) continue;
+        $pages = $pages
+            ->filter(function ($page) {
+                return $page->enabled_in_sitemap;
+            })->sortByDesc('priority');
 
+        foreach ($pages as $page) {
+            // $page = Event::fire('initbiz.seostorm.generateSitemapCmsPage', [$page]);
             $modelClass = $page->model_class;
+
+            $loc = $page->url;
+
+            $sitemapItem = new SitemapItem();
+            $sitemapItem->priority = $page->priority;
+            $sitemapItem->changefreq = $page->changefreq;
+            $sitemapItem->loc = $loc;
+            $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
 
             // if page has model class
             if (class_exists($modelClass)) {
-                $models = $modelClass::all();
+                $scope = $page->model_scope;
+                if (empty($scope)) {
+                    $models = $modelClass::all();
+                } else {
+                    $models = $modelClass::$scope()->get();
+                }
 
+                // TODO: make it backward compatible with RainLab.BlogPost
+                //       Proposition: add components to Plugin.php with pair with the registered models
+                // TODO: refactor the code, it works but is ugly
                 foreach ($models as $model) {
-                    if ($page->hasComponent('blogPost')) {
-                        if (!(int)$model->seo_options['enabled_in_sitemap']) {
-                             continue;
+                    $modelParams = $page->model_params;
+                    $loc = $page->url;
+
+                    if (!empty($modelParams)) {
+                        $modelParams = explode('|', $modelParams);
+                        foreach ($modelParams as $modelParam) {
+                            list($urlParam, $modelParam) = explode(':', $modelParam);
+
+                            $pattern = '/:' . $urlParam . '\??/i';
+                            $replacement = '';
+                            if (strpos($modelParam, '.') === false) {
+                                $replacement = $model->$modelParam;
+                            } else {
+                                // parameter with dot -> try to find by relation
+                                list($relationMethod, $relatedAttribute) = explode('.', $modelParam);
+                                if ($relatedObject = $model->$relationMethod()->first()) {
+                                    $replacement = $relatedObject->$relatedAttribute ?? 'default';
+                                }
+                                $replacement = empty($replacement) ? 'default' : $replacement;
+                            }
+                            $loc = preg_replace($pattern, $replacement, $loc);
                         }
-                        $this->addItemToSet(SitemapItem::asPost($page, $model));
-                    } else {
-                        $this->addItemToSet(SitemapItem::asCmsPage($page, $model));
                     }
+
+                    $sitemapItem->loc = $loc;
+
+                    if ($page->use_updated_at && isset($model->updated_at)) {
+                        $sitemapItem->lastmod = $model->updated_at->format('c');
+                    }
+
+                    $this->addItemToSet($sitemapItem);
                 }
             } else {
-                $this->addItemToSet(SitemapItem::asCmsPage($page));
+                $this->addItemToSet($sitemapItem);
             }
         }
 
-        // if RainLab.Pages is installed
-        if (Helper::rainlabPagesExists()) {
+        if (PluginManager::instance()->hasPlugin('RainLab.Pages')) {
             $staticPages = \RainLab\Pages\Classes\Page::listInTheme(Theme::getActiveTheme());
             foreach ($staticPages as $staticPage) {
-                if (!$staticPage->getViewBag()->property('enabled_in_sitemap')) continue;
-                $this->addItemToSet(SitemapItem::asStaticPage($staticPage));
+                $viewBag = $staticPage->getViewBag();
+                if (!$viewBag->property('enabled_in_sitemap')) {
+                    continue;
+                }
+
+                $sitemapItem = new SitemapItem();
+                $sitemapItem->loc = url($staticPage->url);
+                $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->updated_at;
+                $sitemapItem->priority = $viewBag->property('priority');
+                $sitemapItem->changefreq = $viewBag->property('changefreq');
+
+                $this->addItemToSet($sitemapItem);
             }
         }
 
-        return $this->make();
-    }
-
-    protected function makeRoot()
-    {
-        if ($this->xml !== null) {
-            return $this->xml;
-        }
-
-        $xml = new \DOMDocument;
-        $xml->encoding = 'UTF-8';
-
-        return $this->xml = $xml;
+        $this->makeUrlSet();
+        return $this->xml->saveXML();
     }
 
     protected function makeUrlSet()
@@ -94,15 +140,33 @@ class  Sitemap
         return $this->urlSet = $urlSet;
     }
 
-    protected function addItemToSet(SitemapItem $item, $url = null, $mtime = null)
+    protected function makeRoot()
+    {
+        if ($this->xml !== null) {
+            return $this->xml;
+        }
+
+        $xml = new \DOMDocument;
+        $xml->encoding = 'UTF-8';
+
+        return $this->xml = $xml;
+    }
+
+    protected function addItemToSet(SitemapItem $item)
     {
         $xml = $this->makeRoot();
         $urlSet = $this->makeUrlSet();
 
+        try {
+            $lastmod = new Carbon($item->lastmod);
+        } catch (\Throwable $th) {
+            $lastmod = new Carbon();
+        }
+
         $urlElement = $this->makeUrlElement(
             $xml,
             url($item->loc), // make sure output is a valid url
-            Helper::w3cDatetime($item->lastmod), // make sure output is  a valid datetime
+            $lastmod->format('c'),
             $item->changefreq,
             $item->priority
         );
@@ -129,11 +193,5 @@ class  Sitemap
         $priority && $url->appendChild($xml->createElement('priority', $priority));
 
         return $url;
-    }
-
-    protected function make()
-    {
-        $this->makeUrlSet();
-        return $this->xml->saveXML();
     }
 }

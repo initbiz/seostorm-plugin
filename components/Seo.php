@@ -59,17 +59,20 @@ class Seo extends ComponentBase
         }
 
         if ($this->page->page->hasComponent('blogPost')) {
-            $post = $this->page['post'];
-            $properties = array_merge(
-                $this->page["viewBag"]->getProperties(),
-                $post->attributes,
-                $post->seo_options ?: []
-            );
-            $this->viewBagProperties = $properties;
-            $this->page['viewBag']->setProperties($properties);
+            $blogPostComponent = $this->page->page->components['blogPost'];
+            $blogPostComponent->onRender();
+            if ($post = $blogPostComponent->post) {
+                $properties = array_merge(
+                    $this->page["viewBag"]->getProperties(),
+                    $post->attributes,
+                    $post->seo_options ?: []
+                );
+                $this->viewBagProperties = $properties;
+                $this->page['viewBag']->setProperties($properties);
+            }
         } elseif (isset($this->page->apiBag['staticPage'])) {
             $this->viewBagProperties = $this->page['viewBag'] = array_merge(
-                $this->page->controller->vars['page']->viewBag,
+                $this->page->apiBag['staticPage']->viewBag,
                 $this->page->attributes
             );
         } else {
@@ -81,7 +84,11 @@ class Seo extends ComponentBase
             $this->page['viewBag']->setProperties($properties);
         }
         $this->disable_schema = $this->property('disable_schema');
-        // dd($this->viewBagProperties);
+    }
+
+    public function getTitleRaw()
+    {
+        return $this->getPropertyTranslated('meta_title') ?: $this->viewBagProperties['title'] ?: null;
     }
 
     /**
@@ -91,6 +98,7 @@ class Seo extends ComponentBase
      */
     public function getTitle()
     {
+        $title = $this->getTitleRaw();
         $title = $this->getPropertyTranslated('seo_storm_meta_title');
 
         if (!$title) {
@@ -102,6 +110,7 @@ class Seo extends ComponentBase
         }
 
         $settings = Settings::instance();
+
         if ($settings->site_name_position == 'prefix') {
             $title = "{$settings->site_name} {$settings->site_name_separator} {$title}";
         } elseif ($settings->site_name_position == 'suffix') {
@@ -126,7 +135,7 @@ class Seo extends ComponentBase
         }
 
         if (!$description) {
-            $description = $this->viewBagProperties['description'];
+            $description = $this->viewBagProperties['description'] ?? null;
         }
 
         if (!$description) {
@@ -159,13 +168,18 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Returns og_image if set in the viewBag
-     * otherwise fallback to getSiteImageFromSettings()
+     * Returns og_ref_image if set
+     * else og_image if set
+     * else fallback to getSiteImageFromSettings()
      *
      * @return string
      */
     public function getOgImage()
     {
+        if ($ogImage = $this->getPropertyTranslated('og_ref_image')) {
+            return $ogImage;
+        }
+
         if ($ogImage = $this->getPropertyTranslated('og_image')) {
             return MediaLibrary::instance()->getPathUrl($ogImage);
         }
@@ -192,6 +206,17 @@ class Seo extends ComponentBase
     public function getOgType()
     {
         return $this->viewBagProperties['og_type'] ?? 'website';
+    }
+
+    /**
+     * Returns og_card if set in the viewBag
+     * otherwise returns string 'summary_large_image'
+     *
+     * @return string default 'summary_large_image'
+     */
+    public function getOgCard()
+    {
+        return $this->viewBagProperties['og_card'] ?? 'summary_large_image';
     }
 
     /**

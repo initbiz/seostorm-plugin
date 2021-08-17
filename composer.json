@@ -1,12 +1,19 @@
 {
-    "name": "initbiz/oc-seo-storm-plugin",
+    "name": "initbiz/seostorm-plugin",
     "type": "october-plugin",
     "description": "Total SEO page control in October",
-    "keywords": ["october", "cms", "seo", "plugin", "schema"],
+  "license": "MIT",
+    "keywords": [
+        "october",
+        "cms",
+        "seo",
+        "plugin",
+        "schema"
+    ],
     "require": {
+        "php": ">=7.0",
+        "composer/installers": "~1.0",
         "spatie/schema-org": "^2.0",
-        "tedivm/jshrink": "^1.3",
-        "tubalmartin/cssmin": "^4.1",
         "voku/html-min": "^3.1"
     }
 }

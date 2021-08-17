@@ -16,20 +16,14 @@ class SeoStormed extends ModelBehavior
         parent::__construct($model);
 
         $this->model = $model;
-
-        $model->extend(function ($model) {
-            if (!isset($model->morphOne)) {
-                $model->addDynamicProperty('morphOne');
-            }
-
-            $model->morphOne['seostorm_options'] = [
-                'Initbiz\SeoStorm\Models\SeoOptions',
-                'name' => 'stormed',
-                'table' => 'initbiz_seostorm_seo_options'
-            ];
-        });
     }
 
+    /**
+     * Accessor to seo_options attribute which will get the value from
+     * the related by seostorm_options morph relation
+     *
+     * @return void
+     */
     public function getSeoOptionsAttribute()
     {
         if ($this->model->seostorm_options) {
@@ -37,13 +31,29 @@ class SeoStormed extends ModelBehavior
         }
     }
 
+    /**
+     * Mutator for the seo_options attribute which will
+     * save the value to the related morph
+     *
+     * @param array $value
+     * @return void
+     */
     public function setSeoOptionsAttribute($value)
     {
         $seoOptions = $this->model->seostorm_options;
-        if (!$seoOptions) {
+
+        if ($seoOptions) {
+            $seoOptions->options = $value;
+            $this->model->seostorm_options()->add($seoOptions);
+        } else {
+            /* If the parent model doesn't exist
+             * we have to save the child and defer the binding
+             */
             $seoOptions = new SeoOptions();
+            $seoOptions->options = $value;
+            $seoOptions->save();
+            $this->model->seostorm_options()->add($seoOptions, post('_session_key'));
         }
-        $seoOptions->options = $value;
-        $this->model->seostorm_options()->add($seoOptions);
+        unset($this->model->attributes['seo_options']);
     }
 }
