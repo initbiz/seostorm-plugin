@@ -3,22 +3,10 @@ og_title:
     type: text
     label: initbiz.seostorm::lang.form.general.og_title_label
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
-    span: full
+    span: auto
     trans: true
     commentAbove: initbiz.seostorm::lang.form.general.og_title_comment
     placeholder: initbiz.seostorm::lang.form.general.og_title_placeholder
-meta_title2:
-    property: meta_title
-    label: initbiz.seostorm::lang.form.general.meta_title_label
-    type: text
-    span: full
-    tab: initbiz.seostorm::lang.form.general.tab_meta
-    trans: true
-    attributes:
-        data-counter: 1
-        data-min: 30
-        data-max: 60
-        data-seo: title
 og_description:
     property: og_description
     label: initbiz.seostorm::lang.form.general.og_description_label
