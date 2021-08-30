@@ -77,7 +77,8 @@ class Seo extends ComponentBase
             );
         } else {
             $properties = array_merge(
-                $this->page['viewBag']->getProperties(), $this->page->settings
+                $this->page['viewBag']->getProperties(),
+                $this->page->settings
             );
 
             $this->viewBagProperties = $properties;
@@ -233,7 +234,7 @@ class Seo extends ComponentBase
     public function getPropertyTranslated(string $viewBagProperty)
     {
         $locale = App::getLocale();
-        $localizedKey = 'Locale' . $viewBagProperty . '['. $locale . ']';
+        $localizedKey = 'Locale' . $viewBagProperty . '[' . $locale . ']';
         return $this->viewBagProperties[$localizedKey] ?? $this->viewBagProperties[$viewBagProperty] ?? null;
     }
 }

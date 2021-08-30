@@ -102,6 +102,50 @@ class StormedHandler
 
     protected function extendFormWidgets($event)
     {
+        /**
+         * This applies to the new version of octobercms
+         * Adds a button in the page toolbar editor
+         */
+        $event->listen('cms.template.getTemplateToolbarSettingsButtons', function ($extension, $dataHolder) {
+            if ($dataHolder->templateType === 'page') {
+                $prefix = $stormedModelDef['prefix'] ?? 'seo_options';
+                $excludeFields = $stormedModelDef['excludeFields'] ?? [];
+                $fields = $this->getSeoFieldsDefinitions($prefix, $excludeFields);
+
+                foreach ($fields as &$val) {
+                    $val['title'] = $val['label'];
+                    if (isset($val['commentAbove'])) {
+                        $val['description'] = $val['commentAbove'];
+                    }
+
+                    if (!isset($val['type'])) {
+                        $val['type'] = 'text';
+                    }
+
+                    switch ($val['type']) {
+                        case 'textarea':
+                        case 'codeeditor':
+                        case 'datepicker':
+                            $val['type'] = 'text';
+                            break;
+                        case 'balloon-selector':
+                            $val['type'] = 'dropdown';
+                            break;
+                    }
+                }
+
+                $fields = array_values($fields);
+
+                $dataHolder->buttons[] = [
+                    'button' => 'initbiz.seostorm::lang.plugin.name',
+                    'icon' => 'icon-search',
+                    'popupTitle' => 'initbiz.seostorm::lang.plugin.name',
+                    'useViewBag' => false,
+                    'properties' => $fields
+                ];
+            }
+        });
+
         $event->listen('backend.form.extendFieldsBefore', function ($widget) {
             foreach ($this->getStormedModels() as $stormedModelClass => $stormedModelDef) {
                 if ($widget->isNested === false && $widget->model instanceof $stormedModelClass) {
