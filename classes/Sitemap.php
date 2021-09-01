@@ -66,6 +66,9 @@ class  Sitemap
                 //       Proposition: add components to Plugin.php with pair with the registered models
                 // TODO: refactor the code, it works but is ugly
                 foreach ($models as $model) {
+                    if (($model->seo_options['enabled_in_sitemap'] ?? null) === "0") {
+                        continue;
+                    }
                     $modelParams = $page->model_params;
                     $loc = $page->url;
 
