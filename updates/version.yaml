@@ -1,3 +1,4 @@
 1.0.0:
     - 'First version of the plugin'
     - 1_0_0_create_seo_options_table.php
+2.0.0: "!!! Deleted support for automatically set meta seo if in the page is a component rainlab blog and add compatibility for inspector in the october 2. And fixed another bugs"

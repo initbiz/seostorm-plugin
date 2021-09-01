@@ -58,27 +58,7 @@ class Seo extends ComponentBase
             $this->page['viewBag'] = new ViewBag();
         }
 
-        if ($this->page->page->hasComponent('blogPost')) {
-            $blogPostComponent = $this->page->page->components['blogPost'];
-            $blogPostComponent->onRender();
-            $seoOptions = [];
-            if ($post = $blogPostComponent->post) {
-                foreach ($post->seo_options as $key => $option) {
-                    if (!empty($option)) {
-                        $seoOptions[$key] = $option;
-                    }
-                }
-
-                $properties = array_merge(
-                    $this->page["viewBag"]->getProperties(),
-                    $this->page->settings,
-                    $post->attributes,
-                    $seoOptions
-                );
-                $this->viewBagProperties = $properties;
-                $this->page['viewBag']->setProperties($properties);
-            }
-        } elseif (isset($this->page->apiBag['staticPage'])) {
+        if (isset($this->page->apiBag['staticPage'])) {
             $this->viewBagProperties = $this->page['viewBag'] = array_merge(
                 $this->page->apiBag['staticPage']->viewBag,
                 $this->page->attributes
