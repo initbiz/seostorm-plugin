@@ -7,7 +7,6 @@
             if (!$helpBlock.length) {
                 $target.after('<div class="help-block"</div>');
                 $helpBlock = $target.next(".help-block");
-                console.log($helpBlock);
             }
             let isTwig = /\{{2}.*\}{2}/.test($target.val());
             let count = isTwig ? "unrechable" : $target.val().length;
@@ -20,7 +19,6 @@
         |
         recommended: ${min} - ${max}
       `);
-      console.log($helpBlock.html());
 
             let $number = $helpBlock.find("b");
 
