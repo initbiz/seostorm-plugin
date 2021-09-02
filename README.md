@@ -33,7 +33,7 @@ To automatically generate the sitemap.xml, follow the steps below:
 
     ![enable sitemap.xml in settings page screenshot](https://i.ibb.co/bgX91G0/e2008635-0938-4cb8-83c8-33180a7144f4.jpg)
 
-2. Go to the editor page of your CMS, static or blog post page, and on the "SEO" tab check the `Enable in the sitemap.xml` checkbox.
+2. Go to the editor page of your CMS, static or to a model that has been registered as Storomed Models, and on the "SEO" tab check the `Enable in the sitemap.xml` checkbox.
 
     ![sitemap checkbox screenshot](https://i.ibb.co/vVDyPjZ/download.jpg)
 
@@ -124,7 +124,7 @@ Add the `registerStormedModels()` method in your `Plugin.php` file, for example:
 
 This will make the models automatically extended and form widgets to automatically have the required fields.
 
-SEO Storm automatically takes care of `CMS page`, `Static pages` and `RainLab.Blog Post` models.
+SEO Storm automatically takes care of `CMS page` and `Static pages` models.
 
 `seo_options` are stored in the automatically binded polymorphic relation beetween the model and `SeoOptions` model.
 This feature frees you from defining the attributes in your models, tables and `fields.yaml`.
