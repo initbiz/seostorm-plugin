@@ -5,7 +5,8 @@ namespace Initbiz\SeoStorm\Components;
 use App;
 use Cms\Components\ViewBag;
 use Cms\Classes\ComponentBase;
-use System\Classes\MediaLibrary;
+use Media\Classes\MediaLibrary;
+use System\Classes\MediaLibrary as OldMediaLibrary;
 use Initbiz\SeoStorm\Models\Settings;
 
 class Seo extends ComponentBase
@@ -169,7 +170,11 @@ class Seo extends ComponentBase
         }
 
         if ($ogImage = $this->getPropertyTranslated('og_image')) {
-            return MediaLibrary::instance()->getPathUrl($ogImage);
+            if (class_exists(MediaLibrary::class)) {
+                return $ogImage;
+            }
+
+            return OldMediaLibrary::instance()->getPathUrl($ogImage);
         }
 
         return $this->getSiteImageFromSettings();
