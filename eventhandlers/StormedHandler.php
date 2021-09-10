@@ -112,7 +112,8 @@ class StormedHandler
                 $excludeFields = $stormedModelDef['excludeFields'] ?? [];
                 $fields = $this->getSeoFieldsDefinitions($prefix, $excludeFields);
 
-                foreach ($fields as &$val) {
+                foreach ($fields as $key => &$val) {
+                    $val['property'] = $key;
                     $val['title'] = $val['label'];
                     if (isset($val['commentAbove'])) {
                         $val['description'] = $val['commentAbove'];
@@ -134,14 +135,25 @@ class StormedHandler
                     }
                 }
 
+                // We have to drop the keys for October 2.0+
                 $fields = array_values($fields);
 
                 $dataHolder->buttons[] = [
                     'button' => 'initbiz.seostorm::lang.plugin.name',
                     'icon' => 'icon-search',
                     'popupTitle' => 'initbiz.seostorm::lang.plugin.name',
-                    'useViewBag' => false,
+                    'useViewBag' => true,
                     'properties' => $fields
+                ];
+            }
+        });
+
+        $event->listen('cms.template.extendTemplateSettingsFields', function ($extension, $dataHolder) {
+            if ($dataHolder->templateType === 'page') {
+                $dataHolder->settings[] = [
+                    'property' => 'header_image',
+                    'title' => 'Header Image',
+                    'type' => 'mediafinder'
                 ];
             }
         });
