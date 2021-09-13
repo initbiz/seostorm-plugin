@@ -1,5 +1,4 @@
 enabled_in_sitemap:
-    property: enabled_in_sitemap
     label: initbiz.seostorm::lang.form.general.enabled_in_sitemap_label
     commentAbove: initbiz.seostorm::lang.form.general.enabled_in_sitemap_comment
     type: checkbox
@@ -8,7 +7,6 @@ enabled_in_sitemap:
     default: true
 
 use_updated_at:
-    property: use_updated_at
     label: initbiz.seostorm::lang.form.general.use_updated_at_label
     commentHtml: true
     span: left
@@ -22,7 +20,6 @@ use_updated_at:
         condition: checked
 
 lastmod:
-    property: lastmod
     label: initbiz.seostorm::lang.form.general.lastmod_label
     type: datepicker
     mode: datetime
@@ -35,7 +32,6 @@ lastmod:
     commentAbove: initbiz.seostorm::lang.form.general.lastmod_comment
 
 changefreq:
-    property: changefreq
     label: initbiz.seostorm::lang.form.general.changefreq_label
     type: dropdown
     tab: initbiz.seostorm::lang.form.general.tab_sitemap
@@ -54,7 +50,6 @@ changefreq:
         condition: checked
 
 priority:
-    property: priority
     label: initbiz.seostorm::lang.form.general.priority_label
     type: dropdown
     tab: initbiz.seostorm::lang.form.general.tab_sitemap
@@ -77,7 +72,6 @@ priority:
         condition: checked
 
 model_class:
-    property: model_class
     label: initbiz.seostorm::lang.form.general.model_class_label
     type: text
     span: left
@@ -90,7 +84,6 @@ model_class:
         condition: checked
 
 model_scope:
-    property: model_scope
     label: initbiz.seostorm::lang.form.general.model_scope_label
     type: text
     span: right
@@ -103,7 +96,6 @@ model_scope:
         condition: checked
 
 model_params:
-    property: model_params
     label: initbiz.seostorm::lang.form.general.model_params_label
     commentAbove: initbiz.seostorm::lang.form.general.model_params_comment
     placeholder: initbiz.seostorm::lang.form.general.model_params_placeholder
