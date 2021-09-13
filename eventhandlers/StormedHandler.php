@@ -148,16 +148,6 @@ class StormedHandler
             }
         });
 
-        $event->listen('cms.template.extendTemplateSettingsFields', function ($extension, $dataHolder) {
-            if ($dataHolder->templateType === 'page') {
-                $dataHolder->settings[] = [
-                    'property' => 'header_image',
-                    'title' => 'Header Image',
-                    'type' => 'mediafinder'
-                ];
-            }
-        });
-
         $event->listen('backend.form.extendFieldsBefore', function ($widget) {
             foreach ($this->getStormedModels() as $stormedModelClass => $stormedModelDef) {
                 if ($widget->isNested === false && $widget->model instanceof $stormedModelClass) {

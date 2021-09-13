@@ -75,9 +75,15 @@ class Seo extends ComponentBase
         $this->disable_schema = $this->property('disable_schema');
     }
 
+
+    public function getSeoAttribute($seoAttribute)
+    {
+        return $this->seoAttributes['seo_options'][$seoAttribute] ?? $this->seoAttributes[$seoAttribute] ?? null;
+    }
+
     public function getTitleRaw()
     {
-        return $this->getPropertyTranslated('meta_title') ?: $this->seoAttributes['title'] ?: null;
+        return $this->getPropertyTranslated('meta_title') ?: $this->getSeoAttribute('title') ?: null;
     }
 
     /**
@@ -111,7 +117,7 @@ class Seo extends ComponentBase
         $description = $this->getPropertyTranslated('meta_description');
 
         if (!$description) {
-            $description = $this->seoAttributes['description'] ?? null;
+            $description = $this->getSeoAttribute('description') ?? null;
         }
 
         if (!$description) {
@@ -174,7 +180,7 @@ class Seo extends ComponentBase
      */
     public function getOgVideo()
     {
-        return $this->seoAttributes['og_video'] ?? null;
+        return $this->getSeoAttribute('og_video') ?? null;
     }
 
     /**
@@ -185,7 +191,7 @@ class Seo extends ComponentBase
      */
     public function getOgType()
     {
-        return $this->seoAttributes['og_type'] ?? 'website';
+        return $this->getSeoAttribute('og_type') ?? 'website';
     }
 
     /**
@@ -196,7 +202,7 @@ class Seo extends ComponentBase
      */
     public function getOgCard()
     {
-        return $this->seoAttributes['og_card'] ?? 'summary_large_image';
+        return $this->getSeoAttribute('og_card') ?? 'summary_large_image';
     }
 
     /**
@@ -227,6 +233,6 @@ class Seo extends ComponentBase
     {
         $locale = App::getLocale();
         $localizedKey = 'Locale' . $viewBagProperty . '[' . $locale . ']';
-        return $this->seoAttributes[$localizedKey] ?? $this->seoAttributes[$viewBagProperty] ?? null;
+        return $this->getSeoAttribute($localizedKey) ?? $this->getSeoAttribute($viewBagProperty) ?? null;
     }
 }
