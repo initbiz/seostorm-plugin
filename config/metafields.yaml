@@ -39,6 +39,7 @@ robot_index:
     options:
         index: index
         noindex: noindex
+        '': non set
     commentAbove: initbiz.seostorm::lang.form.general.robot_index_comment
     span: left
     default: index
@@ -50,6 +51,7 @@ robot_follow:
     options:
         follow: follow
         nofollow: nofollow
+        '': non set
     commentAbove: initbiz.seostorm::lang.form.general.robot_follow_comment
     span: right
     default: follow

@@ -232,7 +232,7 @@ class Seo extends ComponentBase
     public function getPropertyTranslated(string $viewBagProperty)
     {
         $locale = App::getLocale();
-        $localizedKey = 'Locale' . $viewBagProperty . '[' . $locale . ']';
-        return $this->getSeoAttribute($localizedKey) ?? $this->getSeoAttribute($viewBagProperty) ?? null;
+        $localizedKey = 'locale' . strtolower($viewBagProperty);
+        return $this->getSeoAttribute($localizedKey)[$locale] ?? $this->getSeoAttribute($viewBagProperty) ?? null;
     }
 }
