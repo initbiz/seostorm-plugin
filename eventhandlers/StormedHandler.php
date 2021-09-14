@@ -108,12 +108,12 @@ class StormedHandler
          */
         $event->listen('cms.template.getTemplateToolbarSettingsButtons', function ($extension, $dataHolder) {
             if ($dataHolder->templateType === 'page') {
-                $prefix = $stormedModelDef['prefix'] ?? 'seo_options';
+                $prefix = $stormedModelDef['prefix'] ?? '';
                 $excludeFields = $stormedModelDef['excludeFields'] ?? [];
                 $fields = $this->getSeoFieldsDefinitions($prefix, $excludeFields);
 
                 foreach ($fields as $key => &$val) {
-                    $val['property'] = $key;
+                    $val['property'] = preg_replace('/\[|\]/', '', $key);
                     $val['title'] = $val['label'];
                     if (isset($val['commentAbove'])) {
                         $val['description'] = $val['commentAbove'];

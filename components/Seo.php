@@ -66,8 +66,8 @@ class Seo extends ComponentBase
             );
         } else {
             $properties = array_merge(
-                $this->page['viewBag']->getProperties(),
-                $this->page->settings
+                $this->page->settings,
+                $this->page['viewBag']->getProperties()
             );
 
             $this->seoAttributes = $properties;
@@ -78,7 +78,7 @@ class Seo extends ComponentBase
 
     public function getSeoAttribute($seoAttribute)
     {
-        return $this->seoAttributes['seo_options'][$seoAttribute] ?? $this->seoAttributes[$seoAttribute] ?? null;
+        return $this->seoAttributes[$seoAttribute] ?? null;
     }
 
     public function getTitleRaw()
