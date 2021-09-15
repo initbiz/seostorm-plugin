@@ -3,9 +3,9 @@
     initbiz.seostorm = {
         charCountHandler: function (target) {
             $target = $(target);
-            let $helpBlock = $target.next(".help-block");
+            let $helpBlock = $('#seostorm-' + $target.data("seo"));
             if (!$helpBlock.length) {
-                $target.after('<div class="help-block"</div>');
+                $target.after('<div id="seostorm-' + $target.data("seo") + '" class="help-block"</div>');
                 $helpBlock = $target.next(".help-block");
             }
             let isTwig = /\{{2}.*\}{2}/.test($target.val());

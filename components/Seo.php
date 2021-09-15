@@ -5,7 +5,8 @@ namespace Initbiz\SeoStorm\Components;
 use App;
 use Cms\Components\ViewBag;
 use Cms\Classes\ComponentBase;
-use System\Classes\MediaLibrary;
+use Media\Classes\MediaLibrary;
+use System\Classes\MediaLibrary as OldMediaLibrary;
 use Initbiz\SeoStorm\Models\Settings;
 
 class Seo extends ComponentBase
@@ -29,7 +30,7 @@ class Seo extends ComponentBase
      *
      * @var Array
      */
-    public $viewBagProperties;
+    public $seoAttributes;
 
     public function componentDetails()
     {
@@ -59,25 +60,30 @@ class Seo extends ComponentBase
         }
 
         if (isset($this->page->apiBag['staticPage'])) {
-            $this->viewBagProperties = $this->page['viewBag'] = array_merge(
+            $this->seoAttributes = $this->page['viewBag'] = array_merge(
                 $this->page->apiBag['staticPage']->viewBag,
                 $this->page->attributes
             );
         } else {
             $properties = array_merge(
-                $this->page['viewBag']->getProperties(),
-                $this->page->settings
+                $this->page->settings,
+                $this->page['viewBag']->getProperties()
             );
 
-            $this->viewBagProperties = $properties;
-            $this->page['viewBag']->setProperties($properties);
+            $this->seoAttributes = $properties;
         }
         $this->disable_schema = $this->property('disable_schema');
     }
 
+
+    public function getSeoAttribute($seoAttribute)
+    {
+        return $this->seoAttributes[$seoAttribute] ?? null;
+    }
+
     public function getTitleRaw()
     {
-        return $this->getPropertyTranslated('meta_title') ?: $this->viewBagProperties['title'] ?: null;
+        return $this->getPropertyTranslated('meta_title') ?: $this->getSeoAttribute('title') ?: null;
     }
 
     /**
@@ -111,7 +117,7 @@ class Seo extends ComponentBase
         $description = $this->getPropertyTranslated('meta_description');
 
         if (!$description) {
-            $description = $this->viewBagProperties['description'] ?? null;
+            $description = $this->getSeoAttribute('description') ?? null;
         }
 
         if (!$description) {
@@ -157,7 +163,11 @@ class Seo extends ComponentBase
         }
 
         if ($ogImage = $this->getPropertyTranslated('og_image')) {
-            return MediaLibrary::instance()->getPathUrl($ogImage);
+            if (class_exists(MediaLibrary::class)) {
+                return $ogImage;
+            }
+
+            return OldMediaLibrary::instance()->getPathUrl($ogImage);
         }
 
         return $this->getSiteImageFromSettings();
@@ -170,7 +180,7 @@ class Seo extends ComponentBase
      */
     public function getOgVideo()
     {
-        return $this->viewBagProperties['og_video'] ?? null;
+        return $this->getSeoAttribute('og_video') ?? null;
     }
 
     /**
@@ -181,7 +191,7 @@ class Seo extends ComponentBase
      */
     public function getOgType()
     {
-        return $this->viewBagProperties['og_type'] ?? 'website';
+        return $this->getSeoAttribute('og_type') ?? 'website';
     }
 
     /**
@@ -192,7 +202,7 @@ class Seo extends ComponentBase
      */
     public function getOgCard()
     {
-        return $this->viewBagProperties['og_card'] ?? 'summary_large_image';
+        return $this->getSeoAttribute('og_card') ?? 'summary_large_image';
     }
 
     /**
@@ -222,7 +232,7 @@ class Seo extends ComponentBase
     public function getPropertyTranslated(string $viewBagProperty)
     {
         $locale = App::getLocale();
-        $localizedKey = 'Locale' . $viewBagProperty . '[' . $locale . ']';
-        return $this->viewBagProperties[$localizedKey] ?? $this->viewBagProperties[$viewBagProperty] ?? null;
+        $localizedKey = 'locale' . strtolower($viewBagProperty);
+        return $this->getSeoAttribute($localizedKey)[$locale] ?? $this->getSeoAttribute($viewBagProperty) ?? null;
     }
 }
