@@ -1,15 +1,15 @@
 {% set settings = __SELF__.settings %}
 {% set robots = [
-    viewBag.robot_index,
-    viewBag.robot_follow,
-    include(template_from_string(viewBag.robot_advanced))
+    __SELF__.getSeoAttribute('robot_index'),
+    __SELF__.getSeoAttribute('robot_follow'),
+    include(template_from_string(__SELF__.getSeoAttribute('robot_advanced')))
    ]
 %}
 
 {%- if settings.enable_site_meta -%}
     <title>{{ include(template_from_string(__SELF__.getTitle)) }}</title>
     <meta name="description" content="{{ include(template_from_string(__SELF__.getDescription())) }}" />
-    <link rel="canonical" href="{{ include(template_from_string(viewBag.canonical_url))|url }}">
+    <link rel="canonical" href="{{ include(template_from_string(__SELF__getSeoAttribute.canonical_url))|url }}">
 {% endif %}
 
 {%- if settings.enable_robots_meta -%}
@@ -17,11 +17,11 @@
 {% endif %}
 
 {% if not __SELF__.disable_schema %}
-    {% for schema in viewBag.schemas %}
+    {% for schema in __SELF__.getSeoAttribute('schemas') %}
         {{ include(template_from_string(schema.script))|raw }}
     {% endfor %}
 
-    {{ include(template_from_string(viewBag.schemas|initbiz_seostorm_schema))|raw }}
+    {{ include(template_from_string(__SELF__.getSeoAttribute('schemas')|initbiz_seostorm_schema))|raw }}
 {% endif %}
 
 {% if settings.favicon_enabled %}

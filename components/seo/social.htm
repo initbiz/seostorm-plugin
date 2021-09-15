@@ -4,7 +4,7 @@
 
 <meta property="og:description" content="{{ include(template_from_string(__SELF__.getOgDescription())) }}" />
 <meta property="og:image" content="{{ include(template_from_string(__SELF__.getOgImage())) }}" />
-<meta property="og:url" content="{{ include(template_from_string(viewBag.canonical_url|url)) }}" />
+<meta property="og:url" content="{{ include(template_from_string(__SELF__.getSeoAttribute(canonical_url)|url)) }}" />
 <meta property="og:locale" content="{{ settings.og_locale }}" />
 <meta property="og:video" content="{{ include(template_from_string(__SELF__.getOgVideo())) }}" />
 <meta property="og:locale:alternate" content="{{ settings.og_locale_alternate }}" />
