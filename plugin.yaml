@@ -17,6 +17,3 @@ permissions:
     initbiz.seostorm.meta:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
         label: 'initbiz.seostorm::lang.permissions.meta'
-    initbiz.seostorm.schema:
-        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.schema'

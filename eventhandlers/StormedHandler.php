@@ -233,11 +233,6 @@ class StormedHandler
             }
         }
 
-        if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.schema")) {
-            $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/schemafields.yaml'));
-            $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
-        }
-
         // Inverted excluding
         if (in_array('*', $excludeFields)) {
             $newExcludeFields = [];

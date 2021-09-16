@@ -19,13 +19,6 @@ class Seo extends ComponentBase
     public $settings;
 
     /**
-     * Is schema disabled
-     *
-     * @var Boolean
-     */
-    public $disable_schema;
-
-    /**
      * Current viewBag set in the current pages
      *
      * @var Array
@@ -37,17 +30,6 @@ class Seo extends ComponentBase
         return [
             'name'        => 'initbiz.seostorm::lang.components.seo.name',
             'description' => 'initbiz.seostorm::lang.components.seo.description'
-        ];
-    }
-
-    public function defineProperties()
-    {
-        return [
-            'disable_schema' => [
-                'title' => 'initbiz.seostorm::lang.components.seo.properties.disable_schema.title',
-                'description' => 'initbiz.seostorm::lang.components.seo.properties.disable_schema.description',
-                'type' => 'checkbox'
-            ]
         ];
     }
 
@@ -72,7 +54,6 @@ class Seo extends ComponentBase
 
             $this->seoAttributes = $properties;
         }
-        $this->disable_schema = $this->property('disable_schema');
     }
 
 

@@ -2,9 +2,11 @@
 
 namespace Initbiz\SeoStorm;
 
+use Event;
 use System\Classes\PluginBase;
-use System\Classes\SettingsManager;
 use Initbiz\SeoStorm\Classes\Helper;
+use Initbiz\SeoStorm\Models\Htaccess;
+use Initbiz\SeoStorm\Models\Settings;
 use Twig\Extension\StringLoaderExtension;
 
 /**
@@ -16,10 +18,13 @@ class Plugin extends PluginBase
     {
         return [
             'Initbiz\SeoStorm\Components\Seo' => 'seo',
-            'Initbiz\SeoStorm\Components\SchemaVideo' => 'schemaVideo',
-            'Initbiz\SeoStorm\Components\SchemaArticle' => 'schemaArticle',
-            'Initbiz\SeoStorm\Components\SchemaProduct' => 'schemaProduct',
         ];
+    }
+
+    public function boot()
+    {
+        Event::subscribe(\Initbiz\SeoStorm\EventHandlers\BackendHandler::class);
+        Event::subscribe(\Initbiz\SeoStorm\EventHandlers\StormedHandler::class);
     }
 
     public function registerSettings()
@@ -29,8 +34,8 @@ class Plugin extends PluginBase
                 'label'       => 'initbiz.seostorm::lang.form.settings.label',
                 'description' => 'initbiz.seostorm::lang.form.settings.description',
                 'icon'        => 'icon-search',
-                'category'    => 'initbiz.seostorm::lang.form.settings.category_label', 
-                'class'       => 'Initbiz\SeoStorm\Models\Settings',
+                'category'    => 'initbiz.seostorm::lang.form.settings.category_label',
+                'class'       => Settings::class,
                 'order'       => 100,
                 'permissions' => ['initbiz.manage_seo'],
             ],
@@ -38,8 +43,8 @@ class Plugin extends PluginBase
                 'label'       => 'initbiz.seostorm::lang.form.htaccess.label',
                 'description' => 'initbiz.seostorm::lang.form.htaccess.description',
                 'icon'        => 'icon-file-text-o',
-                'category'    => 'initbiz.seostorm::lang.form.settings.category_label', 
-                'class'       => 'Initbiz\SeoStorm\Models\Htaccess',
+                'category'    => 'initbiz.seostorm::lang.form.settings.category_label',
+                'class'       => Htaccess::class,
                 'order'       => 200,
                 'permissions' => ['initbiz.manage_seo'],
             ]
@@ -48,19 +53,11 @@ class Plugin extends PluginBase
 
     public function registerMarkupTags()
     {
-        $helper = new Helper();
-        $minifier = \Initbiz\SeoStorm\Classes\Minifier::class;
-        $schema = \Initbiz\SeoStorm\Classes\Schema::class;
         return [
             'filters' => [
-                'minifyjs' => [$minifier, 'minifyJs'],
-                'minifycss' => [$minifier, 'minifyCss'],
-                // TODO: Backward compatibility, to be removed soon
-                'arcane_seo_schema' => [$schema, 'toScript'],
-                'initbiz_seostorm_schema' => [$schema, 'toScript'],
-                'removenulls' => [$helper, 'removeNullsFromArray'],
-                'fillparams'  => ['Initbiz\SeoStorm\Classes\Helper', 'replaceUrlPlaceholders'],
-                'url' => [$helper, 'url'],
+                'removenulls' => [Helper::class, 'removeNullsFromArray'],
+                'fillparams'  => [Helper::class, 'replaceUrlPlaceholders'],
+                'url' => [Helper::class, 'url'],
             ],
             'functions' => [
                 'template_from_string' => [$this, 'templateFromString'],
@@ -68,6 +65,12 @@ class Plugin extends PluginBase
         ];
     }
 
+    /**
+     * Extend twig to parse twig from twig with StringLoaderExtension
+     *
+     * @param string $template
+     * @return string
+     */
     public function templateFromString($template)
     {
         $twig = $this->app->make('twig.environment');
@@ -80,20 +83,11 @@ class Plugin extends PluginBase
         return twig_template_from_string($twig, $template);
     }
 
-    public function registerPageSnippets()
-    {
-        return [
-            '\Initbiz\SeoStorm\Components\SchemaVideo' => 'schemaVideo',
-            '\Initbiz\SeoStorm\Components\SchemaArticle' => 'schemaArticle',
-            '\Initbiz\SeoStorm\Components\SchemaProduct' => 'schemaProduct',
-        ];
-    }
-
-    public function register()
-    {
-        $this->registerConsoleCommand('migrate:arcane', 'Initbiz\SeoStorm\Console\MigrateArcane');
-    }
-
+    /**
+     * Register models that are stormed by default
+     *
+     * @return array
+     */
     public function registerStormedModels()
     {
         return [
@@ -125,5 +119,4 @@ class Plugin extends PluginBase
             ],
         ];
     }
-
 }

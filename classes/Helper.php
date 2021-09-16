@@ -8,7 +8,7 @@ use October\Rain\Exception\ApplicationException;
 // TODO: the class is to be removed soon
 class Helper
 {
-    public function removeNullsFromArray($array)
+    public static function removeNullsFromArray($array)
     {
         if (!is_array($array)) throw new ApplicationException("removenulls can only accept an array as argument");
 
@@ -31,7 +31,7 @@ class Helper
         return $replacedUrl;
     }
 
-    public function url($str)
+    public static function url($str)
     {
         return $str ? url($str) : \Request::url();
     }

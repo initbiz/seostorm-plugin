@@ -16,14 +16,6 @@
     <meta name="robots" content="{{ robots|removenulls|join(', ') }}" />
 {% endif %}
 
-{% if not __SELF__.disable_schema %}
-    {% for schema in __SELF__.getSeoAttribute('schemas') %}
-        {{ include(template_from_string(schema.script))|raw }}
-    {% endfor %}
-
-    {{ include(template_from_string(__SELF__.getSeoAttribute('schemas')|initbiz_seostorm_schema))|raw }}
-{% endif %}
-
 {% if settings.favicon_enabled %}
     <link rel="shortcut icon" href="{{ 'favicon.ico'|app }}" type="image/x-icon">
     <link rel="icon" type="image/x-icon" href="{{ 'favicon.ico'|app }}" />

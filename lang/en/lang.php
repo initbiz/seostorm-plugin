@@ -9,25 +9,14 @@
         'og' => 'Access Open Graph tab',
         'sitemap' => 'Accsss Sitemap tab',
         'meta' => 'Access Meta tab',
-        'schema' => 'Access Schema tab',
     ],
     'form_widgets' => [
-        'cache_cleared' => 'Cache cleared',
-        'clear_cache' => 'Clear cache',
-        'clearing' => 'Clearing',
         'migrate' => 'Migrate',
         'migrating' => 'Migrating',
         'migrate_head' => 'Arcane.SEO migrator',
         'migrate_comment' => 'To migrate from Arcane.SEO plugin, click the button below. It will override your current configuration.',
         'migrate_confirm' => 'Are you sure you want to migrate the settings from Arcane.SEO?',
         'successfully_migrated' => 'The migration was successfull',
-    ],
-    'schemas' => [
-        'id' => 'ID',
-        'name' => 'Name',
-        'created_at' => 'Created',
-        'updated_at' => 'Updated',
-        'template' => 'Template',
     ],
     'form' => [
         'general' => [
@@ -57,7 +46,6 @@
             'changefreq_comment' => 'Tell search engines how frequently this page changes',
             'priority_label' => 'Priority',
             'priority_comment' => 'Rank the importance of the page to search engines',
-            'schemas_label' => 'Write the schemas for this page',
             'og_type_label' => 'OG:type',
             'og_type_placeholder' => 'website article video etc...',
             'og_card_label' => 'OG:card',
@@ -68,7 +56,6 @@
             'og_image_comment' => 'OG:image from media library',
             'tab_meta' => 'Meta',
             'tab_sitemap' => 'Sitemap',
-            'tab_schemas' => 'Schemas',
             'tab_open_graph' => 'Open Graph',
             'model_class_label' => 'Model class',
             'model_class_comment' => 'Associate this page with a model links will be generated from it\'s records',
@@ -158,108 +145,6 @@
         'seo' => [
             'name' => 'Seo',
             'description' => 'Renders SEO meta tags in place',
-            'properties' => [
-                'disable_schema' => [
-                    'title' => 'Disable schemas',
-                    'description' => 'Enable this if you do not want to output schema scripts from the seo component',
-                ]
-            ],
-        ],
-        'schema_article' => [
-            'name' => 'Article (schema.org)',
-            'description' => 'Interts a schema.org article in JSON-LD',
-            'properties' => [
-                'headline' => [
-                    'title' => 'Headline',
-                    'description' => '',
-                    'group' => 'Properties',
-                ],
-                'image' => [
-                    'title' => 'Image',
-                    'description' => '',
-                    'group' => 'Properties',
-                ]
-            ],
-        ],
-        'schema_product' => [
-            'name' => 'Product (schema.org)',
-            'description' => 'Defines a schema.org product',
-            'properties' => [
-                'name' => [
-                    'title' => 'Name',
-                    'description' => '',
-                ],
-                'description' => [
-                    'title' => 'Description',
-                    'description' => '',
-                ],
-                'image' => [
-                    'title' => 'Image',
-                    'description' => '',
-                ],
-                'sku' => [
-                    'title' => 'SKU',
-                    'description' => '',
-                ],
-                'brand' => [
-                    'title' => 'Brand',
-                    'description' => '',
-                ],
-                'price_currency' => [
-                    'title' => 'Price currency',
-                    'description' => 'The currency used to describe the product price, in three-letter ISO 4217 format.',
-                ],
-                'price' => [
-                    'title' => 'Price',
-                    'description' => 'The price of the product. Follow schema.org/price usage guidelines.',
-                ],
-                'availability' => [
-                    'title' => 'Availability',
-                    'description' => 'Value is taken from a constrained list of options, expressed in markup using URL links. Google also understands their short names (for example InStock or OutOfStock, without the full URL scope.) Example: http://schema.org/InStock',
-                ],
-                'offerUrl' => [
-                    'title' => 'URL',
-                    'description' => '',
-                ],
-                'rating_value' => [
-                    'title' => 'Rating value',
-                    'description' => 'Rating of the product: 0-5, can accept decimals',
-                ],
-                'review_count' => [
-                    'title' => 'Review count',
-                    'description' => 'Indicate how many people have voted for the product',
-                ],
-            ],
-        ],
-        'schema_video' => [
-            'name' => 'Video (schema.org)',
-            'description' => 'Inserts an schema.org VideoObject',
-            'properties' => [
-                'name' => [
-                    'title' => 'Name',
-                    'description' => 'Name of the video',
-                ],
-                'description' => [
-                    'title' => 'Description',
-                    'description' => 'Description of the video',
-                ],
-                'thumbnail_url' => [
-                    'title' => 'Thumbnail URL',
-                    'description' => 'Thumnail of the video',
-                ],
-                'upload_date' => [
-                    'title' => 'Upload Date',
-                    'description' => 'Upload date of the video',
-                ],
-                'duration' => [
-                    'title' => 'Duration',
-                    'description' => 'Duration of the video',
-                ],
-                'interaction_count' => [
-                    'title' => 'Interaction count',
-                    'description' => 'Number of times the video has been viewed',
-                ],
-            ],
         ],
     ]
 ];

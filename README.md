@@ -140,4 +140,4 @@ To make it more clear:
 ## The differences between Arcane.SEO and inIT SEO Storm
 
 1. Dropped schema components support,
-1. Dropped minify JS and CSS features as they are built in October core,
+1. Dropped minify JS and CSS features as they are built in October core or other plugins,
