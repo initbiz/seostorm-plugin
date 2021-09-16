@@ -90,7 +90,7 @@ class Plugin extends PluginBase
      */
     public function registerStormedModels()
     {
-        return [
+        $modelDefs = [
             'Cms\Classes\Page' => [
                 'prefix' => 'settings',
                 'placement' => 'tabs',
@@ -118,5 +118,13 @@ class Plugin extends PluginBase
                 'placement' => 'tabs',
             ],
         ];
+
+        if (env('APP_ENV') === 'testing') {
+            $modelDefs['\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel'] = [
+                'placement' => 'tabs',
+            ];
+        }
+
+        return $modelDefs;
     }
 }

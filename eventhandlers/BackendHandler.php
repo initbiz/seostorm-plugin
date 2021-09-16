@@ -2,7 +2,7 @@
 
 namespace Initbiz\SeoStorm\EventHandlers;
 
-class BackenStormedHandler
+class BackendHandler
 {
     public function subscribe($event)
     {
