@@ -15,13 +15,11 @@ use Initbiz\SeoStorm\Tests\Classes\FakeModelDetailsComponent;
 
 class SeoTest extends StormedTestCase
 {
-
     public function setUp():void
     {
         parent::setUp();
         $componentManager = ComponentManager::instance();
         $componentManager->registerComponent(Seo::class, 'seo');
-        $componentManager->registerComponent(ViewBag::class, 'viewBag');
         $componentManager->registerComponent(FakeModelDetailsComponent::class, 'fakeModelDetails');
     }
 
@@ -67,60 +65,28 @@ class SeoTest extends StormedTestCase
 
         $this->assertStringContainsString('<title>test</title>', $result);
 
-        // See if properties set in viewBag works and have highest priority
-        $viewBag = $controller->findComponentByName('viewBag');
-        $viewBag->setProperty('meta_title', '{{ model.seo_options.meta_title }}');
+        $page->settings['seo_options_meta_title'] = '{{ model.name }} - {{ model.name }}';
         $result = $controller->runPage($page);
 
-        $this->assertStringContainsString('<title>Test title seo_options</title>', $result);
+        $this->assertStringContainsString('<title>test - test</title>', $result);
     }
 
-    public function testViewBagHasHigherPriority()
-    {
-        $theme = Theme::load('test');
-        $page = Page::load($theme, 'with-fake-model-viewbag.htm');
-        $controller = new Controller($theme);
-        $result = $controller->runPage($page);
+    // public function testRobots()
+    // {
+    //     $theme = Theme::load('test');
+    //     $controller = new Controller($theme);
+    //     $page = Page::load($theme, 'with-fake-model.htm');
+    //     $result = $controller->runPage($page);
+    //     $component = $controller->findComponentByName('seo');
 
-        $component = $controller->findComponentByName('seo');
+    //     $settings = Settings::instance();
+    //     $settings->enable_robots_meta = true;
 
-        $settings = Settings::instance();
-        $settings->enable_site_meta = true;
+    //     $component->setSettings($settings);
+    //     $result = $controller->runPage($page);
 
-        $component->setSettings($settings);
-        $result = $controller->runPage($page);
+    //     dd($result);
 
-        $model = new FakeStormedModel();
-        $model->name = 'test';
-        $model->save();
-
-        $model->seo_options = [
-            'meta_title' => 'Test title seo_options',
-        ];
-        $model->save();
-
-        $viewBag = $controller->findComponentByName('viewBag');
-        $result = $controller->runPage($page);
-
-        $this->assertStringContainsString('<title>Test title seo_options</title>', $result);
-    }
-
-    public function testRobots()
-    {
-        $theme = Theme::load('test');
-        $controller = new Controller($theme);
-        $page = Page::load($theme, 'with-fake-model.htm');
-        $result = $controller->runPage($page);
-        $component = $controller->findComponentByName('seo');
-
-        $settings = Settings::instance();
-        $settings->enable_robots_meta = true;
-
-        $component->setSettings($settings);
-        $result = $controller->runPage($page);
-
-        dd($result);
-
-        $this->assertStringContainsString('<title>test</title>', $result);
-    }
+    //     $this->assertStringContainsString('<title>test</title>', $result);
+    // }
 }
