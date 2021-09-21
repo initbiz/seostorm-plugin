@@ -120,9 +120,6 @@ tabs:
             comment: initbiz.seostorm::lang.form.settings.no_minify_for_dev_comment
             type: checkbox
             tab: initbiz.seostorm::lang.form.settings.tab_minify
-        _btn_clear_cache:
-            type: Initbiz\SeoStorm\FormWidgets\ClearCache
-            tab: initbiz.seostorm::lang.form.settings.tab_minify
 
         #----------------------------------------------------------------------
         # Favicon

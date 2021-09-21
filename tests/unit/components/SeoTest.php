@@ -6,6 +6,7 @@ use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Cms\Classes\Controller;
 use Cms\Classes\ComponentManager;
+use Cms\Components\ViewBag;
 use Initbiz\SeoStorm\Components\Seo;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
@@ -20,6 +21,7 @@ class SeoTest extends StormedTestCase
         parent::setUp();
         $componentManager = ComponentManager::instance();
         $componentManager->registerComponent(Seo::class, 'seo');
+        $componentManager->registerComponent(ViewBag::class, 'viewBag');
         $componentManager->registerComponent(FakeModelDetailsComponent::class, 'fakeModelDetails');
     }
 
@@ -47,7 +49,7 @@ class SeoTest extends StormedTestCase
         $model->save();
 
         $model->seo_options = [
-            'meta_title' => 'Test title',
+            'meta_title' => 'Test title seo_options',
         ];
         $model->save();
 
@@ -62,6 +64,32 @@ class SeoTest extends StormedTestCase
 
         $component->setSettings($settings);
         $result = $controller->runPage($page);
+
+        $this->assertStringContainsString('<title>test</title>', $result);
+
+        // See if properties set in viewBag works and have highest priority
+        $viewBag = $controller->findComponentByName('viewBag');
+        $viewBag->setProperty('meta_title', '{{ model.seo_options.meta_title }}');
+        $result = $controller->runPage($page);
+
+        $this->assertStringContainsString('<title>Test title seo_options</title>', $result);
+    }
+
+    public function testRobots()
+    {
+        $theme = Theme::load('test');
+        $controller = new Controller($theme);
+        $page = Page::load($theme, 'with-fake-model.htm');
+        $result = $controller->runPage($page);
+        $component = $controller->findComponentByName('seo');
+
+        $settings = Settings::instance();
+        $settings->enable_robots_meta = true;
+
+        $component->setSettings($settings);
+        $result = $controller->runPage($page);
+
+        dd($result);
 
         $this->assertStringContainsString('<title>test</title>', $result);
     }
