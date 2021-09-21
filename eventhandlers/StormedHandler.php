@@ -9,6 +9,7 @@ use October\Rain\Database\Model;
 use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Models\SeoOptions;
+use Initbiz\SeoStorm\Classes\StormedManager;
 
 class StormedHandler
 {
@@ -29,13 +30,17 @@ class StormedHandler
 
     protected function extendModels($event)
     {
-        foreach ($this->getStormedModels() as $stormedModelClass => $stormedModelDef) {
+        $stormedManager = StormedManager::instance();
+        foreach ($stormedManager->getStormedModels() as $stormedModelClass => $stormedModelDef) {
             if (!class_exists($stormedModelClass)) {
                 continue;
             }
 
-            $stormedModelClass::extend(function ($model) {
-                $model->extendClassWith('Initbiz.SeoStorm.Behaviors.SeoStormed');
+            $stormedModelClass::extend(function ($model) use ($stormedManager) {
+                $behaviorName = 'Initbiz.SeoStorm.Behaviors.SeoStormed';
+                if (!$model->isClassExtendedWith($behaviorName)) {
+                    $model->extendClassWith($behaviorName);
+                }
 
                 if (!isset($model->morphOne)) {
                     $model->addDynamicProperty('morphOne');
@@ -55,7 +60,7 @@ class StormedHandler
                     if (!$model->propertyExists('translatable')) {
                         $model->addDynamicProperty('translatable', []);
                     }
-                    $model->translatable = array_merge($model->translatable, $this->seoFieldsToTranslate());
+                    $model->translatable = array_merge($model->translatable, $stormedManager->seoFieldsToTranslate());
 
                     /*
                      * Add translation support to database models
@@ -108,9 +113,8 @@ class StormedHandler
          */
         $event->listen('cms.template.getTemplateToolbarSettingsButtons', function ($extension, $dataHolder) {
             if ($dataHolder->templateType === 'page') {
-                $prefix = $stormedModelDef['prefix'] ?? '';
-                $excludeFields = $stormedModelDef['excludeFields'] ?? [];
-                $fields = $this->getSeoFieldsDefinitions($prefix, $excludeFields);
+                $stormedManager = StormedManager::instance();
+                $fields = $stormedManager->getSeoFieldsDefinitions('');
 
                 foreach ($fields as $key => &$val) {
                     $val['property'] = preg_replace('/\[|\]/', '', $key);
@@ -149,13 +153,14 @@ class StormedHandler
         });
 
         $event->listen('backend.form.extendFieldsBefore', function ($widget) {
-            foreach ($this->getStormedModels() as $stormedModelClass => $stormedModelDef) {
+            $stormedManager = StormedManager::instance();
+            foreach ($stormedManager->getStormedModels() as $stormedModelClass => $stormedModelDef) {
                 if ($widget->isNested === false && $widget->model instanceof $stormedModelClass) {
                     $placement = $stormedModelDef['placement'] ?? 'fields';
                     $prefix = $stormedModelDef['prefix'] ?? 'seo_options';
                     $excludeFields = $stormedModelDef['excludeFields'] ?? [];
 
-                    $fields = $this->getSeoFieldsDefinitions($prefix, $excludeFields);
+                    $fields = $stormedManager->getSeoFieldsDefinitions($prefix, $excludeFields);
 
                     if ($placement === 'fields') {
                         $widget->fields = array_replace($widget->fields ?? [], $fields);
@@ -168,94 +173,5 @@ class StormedHandler
                 }
             }
         });
-    }
-
-    // helpers
-
-    protected function getStormedModels()
-    {
-        if ($this->modelClasses) {
-            return $this->modelClasses;
-        }
-
-        $methodName = 'registerStormedModels';
-
-        $pluginManager = PluginManager::instance();
-        $plugins = $pluginManager->getPlugins();
-
-        $result = [];
-
-        foreach ($plugins as $plugin) {
-            if (method_exists($plugin, $methodName)) {
-                $methodResult = $plugin->$methodName() ?? [];
-                $result = array_merge($result, $methodResult);
-            }
-        }
-
-        $this->modelClasses = $result;
-        return $this->modelClasses;
-    }
-
-    protected function seoFieldsToTranslate()
-    {
-        $toTrans = [];
-        foreach ($this->getSeoFieldsDefinitions() as $fieldKey => $fieldValue) {
-            if (isset($fieldValue['trans']) && $fieldValue['trans'] === true) {
-                $toTrans[] = $fieldKey;
-            }
-        }
-        return $toTrans;
-    }
-
-    protected function getSeoFieldsDefinitions(string $prefix = 'seo_options', array $excludeFields = [])
-    {
-        $runningInFrontend = !App::runningInBackend();
-        $user = BackendAuth::getUser();
-
-        $fieldsDefinitions = [];
-
-        if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.meta")) {
-            $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/metafields.yaml'));
-            $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
-        }
-
-        if (Settings::get('enable_og')) {
-            if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.og")) {
-                $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/ogfields.yaml'));
-                $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
-            }
-        }
-
-        if (Settings::get('enable_sitemap')) {
-            if ($runningInFrontend || $user->hasAccess("initbiz.seostorm.sitemap")) {
-                $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/sitemapfields.yaml'));
-                $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
-            }
-        }
-
-        // Inverted excluding
-        if (in_array('*', $excludeFields)) {
-            $newExcludeFields = [];
-            foreach ($fieldsDefinitions as $key => $fieldDef) {
-                if (!in_array($key, $excludeFields)) {
-                    $newExcludeFields[] = $key;
-                }
-            }
-            $excludeFields = $newExcludeFields;
-        }
-
-        $readyFieldsDefs = [];
-        foreach ($fieldsDefinitions as $key => $fieldDef) {
-            if (!in_array($key, $excludeFields)) {
-                $newKey = $prefix . "[" . $key . "]";
-                // Make javascript trigger work with the prefixed fields
-                if (isset($fieldDef['trigger'])) {
-                    $fieldDef['trigger']['field'] = $prefix . "[" . $fieldDef['trigger']['field'] . "]";
-                }
-                $readyFieldsDefs[$newKey] = $fieldDef;
-            }
-        }
-
-        return $readyFieldsDefs;
     }
 }

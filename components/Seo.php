@@ -12,18 +12,18 @@ use Initbiz\SeoStorm\Models\Settings;
 class Seo extends ComponentBase
 {
     /**
-     * Plugin settings
-     *
-     * @var Collection
-     */
-    public $settings;
-
-    /**
      * Current viewBag set in the current pages
      *
      * @var Array
      */
     public $seoAttributes;
+
+    /**
+     * Plugin settings
+     *
+     * @var Model
+     */
+    protected $settings;
 
     public function componentDetails()
     {
@@ -33,10 +33,18 @@ class Seo extends ComponentBase
         ];
     }
 
+    public function setSettings($settings)
+    {
+        $this->settings = $settings;
+    }
+
+    public function getSettings()
+    {
+        return $this->settings ?? Settings::instance();
+    }
+
     public function onRun()
     {
-        $this->settings = Settings::instance();
-
         if (!$this->page['viewBag']) {
             $this->page['viewBag'] = new ViewBag();
         }
@@ -55,7 +63,6 @@ class Seo extends ComponentBase
             $this->seoAttributes = $properties;
         }
     }
-
 
     public function getSeoAttribute($seoAttribute)
     {
@@ -76,7 +83,7 @@ class Seo extends ComponentBase
     {
         $title = $this->getTitleRaw();
 
-        $settings = Settings::instance();
+        $settings = $this->getSettings();
 
         if ($settings->site_name_position == 'prefix') {
             $title = "{$settings->site_name} {$settings->site_name_separator} {$title}";
@@ -102,7 +109,8 @@ class Seo extends ComponentBase
         }
 
         if (!$description) {
-            $description = Settings::instance()->site_description;
+            $settings = $this->getSettings();
+            $description = $settings->site_description;
         }
 
         return $description;
@@ -193,13 +201,15 @@ class Seo extends ComponentBase
      */
     public function getSiteImageFromSettings()
     {
-        $siteImageFrom = Settings::instance()->site_image_from;
-        if ($siteImageFrom === 'media' && Settings::instance()->site_image) {
-            return MediaLibrary::instance()->getPathUrl(Settings::instance()->site_image);
+        $settings = $this->getSettings();
+        $siteImageFrom = $settings->site_image_from;
+
+        if ($siteImageFrom === 'media' && $settings->site_image) {
+            return MediaLibrary::instance()->getPathUrl($settings->site_image);
         } elseif ($siteImageFrom === "fileupload") {
-            return Settings::instance()->site_image_fileupload()->getSimpleValue();
+            return $settings->site_image_fileupload()->getSimpleValue();
         } elseif ($siteImageFrom === "url") {
-            return Settings::instance()->site_image_url;
+            return $settings->site_image_url;
         }
     }
 

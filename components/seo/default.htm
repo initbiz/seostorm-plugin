@@ -1,30 +1,25 @@
-{% set settings = __SELF__.settings %}
+{% set settings = __SELF__.getSettings() %}
 {% set robots = [
     __SELF__.getSeoAttribute('robot_index'),
     __SELF__.getSeoAttribute('robot_follow'),
     include(template_from_string(__SELF__.getSeoAttribute('robot_advanced')))
    ]
 %}
-
-{%- if settings.enable_site_meta -%}
-    <title>{{ include(template_from_string(__SELF__.getTitle)) }}</title>
-    <meta name="description" content="{{ include(template_from_string(__SELF__.getDescription())) }}" />
-    <link rel="canonical" href="{{ include(template_from_string(__SELF__getSeoAttribute.canonical_url))|url }}">
+{% if settings.enable_site_meta %}
+<title>{{ include(template_from_string(__SELF__.getTitle)) }}</title>
+<meta name="description" content="{{ include(template_from_string(__SELF__.getDescription())) }}" />
+<link rel="canonical" href="{{ include(template_from_string(__SELF__getSeoAttribute.canonical_url))|url }}">
 {% endif %}
-
-{%- if settings.enable_robots_meta -%}
-    <meta name="robots" content="{{ robots|removenulls|join(', ') }}" />
+{% if settings.enable_robots_meta %}
+<meta name="robots" content="{{ robots|removenulls|join(', ') }}" />
 {% endif %}
-
 {% if settings.favicon_enabled %}
-    <link rel="shortcut icon" href="{{ 'favicon.ico'|app }}" type="image/x-icon">
-    <link rel="icon" type="image/x-icon" href="{{ 'favicon.ico'|app }}" />
+<link rel="shortcut icon" href="{{ 'favicon.ico'|app }}" type="image/x-icon">
+<link rel="icon" type="image/x-icon" href="{{ 'favicon.ico'|app }}" />
 {% endif %}
-
 {% if settings.enable_og %}
-    {% partial '@social.htm' settings=settings %}
+{% partial '@social.htm' settings=settings %}
 {% endif %}
-
 {% if settings.extra_meta %}
-    {{ settings.extra_meta|raw }}
+{{ settings.extra_meta|raw }}
 {% endif %}
