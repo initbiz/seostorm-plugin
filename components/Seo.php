@@ -45,22 +45,13 @@ class Seo extends ComponentBase
 
     public function onRun()
     {
-        if (!$this->page['viewBag']) {
-            $this->page['viewBag'] = new ViewBag();
-        }
-
         if (isset($this->page->apiBag['staticPage'])) {
             $this->seoAttributes = $this->page['viewBag'] = array_merge(
                 $this->page->apiBag['staticPage']->viewBag,
                 $this->page->attributes
             );
         } else {
-            $properties = array_merge(
-                $this->page['viewBag']->getProperties(),
-                $this->page->settings
-            );
-
-            $this->seoAttributes = $properties;
+            $this->seoAttributes = $this->page->settings;
         }
     }
 

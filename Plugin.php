@@ -25,6 +25,8 @@ class Plugin extends PluginBase
     {
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\BackendHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\StormedHandler::class);
+        Event::subscribe(\Initbiz\SeoStorm\EventHandlers\RainlabPagesHandler::class);
+        Event::subscribe(\Initbiz\SeoStorm\EventHandlers\RainlabTranslateHandler::class);
     }
 
     public function registerSettings()
@@ -107,15 +109,6 @@ class Plugin extends PluginBase
                     'priority',
                     'enabled_in_sitemap',
                 ],
-            ],
-            '\RainLab\Pages\Classes\Page' => [
-                'excludeFields' => [
-                    'model_class',
-                    'model_scope',
-                    'model_params',
-                ],
-                'prefix' => 'viewBag',
-                'placement' => 'tabs',
             ],
         ];
 

@@ -3,11 +3,6 @@
 namespace Initbiz\SeoStorm\EventHandlers;
 
 use App;
-use Yaml;
-use BackendAuth;
-use October\Rain\Database\Model;
-use System\Classes\PluginManager;
-use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Models\SeoOptions;
 use Initbiz\SeoStorm\Classes\StormedManager;
 
@@ -55,52 +50,6 @@ class StormedHandler
                 ];
 
                 $model->morphOne = $morphOne;
-
-                if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
-                    if (!$model->propertyExists('translatable')) {
-                        $model->addDynamicProperty('translatable', []);
-                    }
-                    $model->translatable = array_merge($model->translatable, $stormedManager->seoFieldsToTranslate());
-
-                    /*
-                     * Add translation support to database models
-                     * We need to check if the database models implement all the
-                     * required behaviors
-                     */
-                    if ($model instanceof Model) {
-                        $requiredBehaviors = [
-                            'RainLab\Translate\Behaviors\TranslatableModel',
-                            'October\Rain\Database\Behaviors\Purgeable',
-                        ];
-
-                        if (!isset($model->implement)) {
-                            $model->implement = [];
-                        }
-
-                        foreach ($requiredBehaviors as $behavior) {
-                            $behaviorFound = false;
-                            foreach ($model->implement as $use) {
-                                $use = str_replace('.', '\\', trim($use));
-                                if ('@' . $behavior === $use || $behavior === $use) {
-                                    $behaviorFound = true;
-                                    break;
-                                }
-                            }
-                            if (!$behaviorFound) {
-                                $model->implement[] = $behavior;
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Define reverse of the relation in the SeoOptions model
-            SeoOptions::extend(function ($model) use ($stormedModelClass) {
-                $model->morphTo['stormed_models'][] = [
-                    $stormedModelClass,
-                    'name' => 'stormed',
-                    'table' => 'initbiz_seostorm_seo_options',
-                ];
             });
         }
     }
@@ -114,44 +63,20 @@ class StormedHandler
         $event->listen('cms.template.getTemplateToolbarSettingsButtons', function ($extension, $dataHolder) {
             if ($dataHolder->templateType === 'page') {
                 $stormedManager = StormedManager::instance();
-                $fields = $stormedManager->getSeoFieldsDefinitions('');
-
-                foreach ($fields as $key => &$val) {
-                    $val['property'] = preg_replace('/\[|\]/', '', $key);
-                    $val['title'] = $val['label'];
-                    if (isset($val['commentAbove'])) {
-                        $val['description'] = $val['commentAbove'];
-                    }
-
-                    if (!isset($val['type'])) {
-                        $val['type'] = 'text';
-                    }
-
-                    switch ($val['type']) {
-                        case 'textarea':
-                        case 'codeeditor':
-                        case 'datepicker':
-                            $val['type'] = 'text';
-                            break;
-                        case 'balloon-selector':
-                            $val['type'] = 'dropdown';
-                            break;
-                    }
-                }
-
-                // We have to drop the keys for October 2.0+
-                $fields = array_values($fields);
 
                 $dataHolder->buttons[] = [
                     'button' => 'initbiz.seostorm::lang.plugin.name',
                     'icon' => 'icon-search',
                     'popupTitle' => 'initbiz.seostorm::lang.plugin.name',
-                    'useViewBag' => true,
-                    'properties' => $fields
+                    'useViewBag' => false,
+                    'properties' => $stormedManager->getSeoFieldsDefsForEditor()
                 ];
             }
         });
 
+        /**
+         * This applies to all other seostormed models
+         */
         $event->listen('backend.form.extendFieldsBefore', function ($widget) {
             $stormedManager = StormedManager::instance();
             foreach ($stormedManager->getStormedModels() as $stormedModelClass => $stormedModelDef) {
@@ -160,7 +85,8 @@ class StormedHandler
                     $prefix = $stormedModelDef['prefix'] ?? 'seo_options';
                     $excludeFields = $stormedModelDef['excludeFields'] ?? [];
 
-                    $fields = $stormedManager->getSeoFieldsDefinitions($prefix, $excludeFields);
+                    $fields = $stormedManager->getSeoFieldsDefs($excludeFields);
+                    $fields = $stormedManager->addPrefix($fields, $prefix);
 
                     if ($placement === 'fields') {
                         $widget->fields = array_replace($widget->fields ?? [], $fields);

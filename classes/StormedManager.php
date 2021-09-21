@@ -76,34 +76,21 @@ class StormedManager extends Singleton
      * @param array $excludeFields
      * @return array
      */
-    public function getSeoFieldsDefinitions(string $prefix = 'seo_options', array $excludeFields = [])
+    public function getSeoFieldsDefs(array $excludeFields = [])
     {
-        // TODO: this method is heavy, difficult to understand and definitely to refactor
-        $runningInFrontend = true;
-        if (App::runningInBackend()) {
-            $runningInFrontend = false;
-            $user = BackendAuth::getUser();
-        }
-
         $fieldsDefinitions = [];
 
-        if ($runningInFrontend || $user->hasAccess('initbiz.seostorm.meta')) {
-            $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/metafields.yaml'));
+        $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/metafields.yaml'));
+        $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
+
+        if (Settings::get('enable_og')) {
+            $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/ogfields.yaml'));
             $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
         }
 
-        if (Settings::get('enable_og')) {
-            if ($runningInFrontend || $user->hasAccess('initbiz.seostorm.og')) {
-                $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/ogfields.yaml'));
-                $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
-            }
-        }
-
         if (Settings::get('enable_sitemap')) {
-            if ($runningInFrontend || $user->hasAccess('initbiz.seostorm.sitemap')) {
-                $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/sitemapfields.yaml'));
-                $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
-            }
+            $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/sitemapfields.yaml'));
+            $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
         }
 
         // Inverted excluding
@@ -117,15 +104,11 @@ class StormedManager extends Singleton
             $excludeFields = $newExcludeFields;
         }
 
+        // Exclude fields
         $readyFieldsDefs = [];
         foreach ($fieldsDefinitions as $key => $fieldDef) {
             if (!in_array($key, $excludeFields)) {
-                $newKey = $prefix . '[' . $key . ']';
-                // Make javascript trigger work with the prefixed fields
-                if (isset($fieldDef['trigger'])) {
-                    $fieldDef['trigger']['field'] = $prefix . '[' . $fieldDef['trigger']['field'] . ']';
-                }
-                $readyFieldsDefs[$newKey] = $fieldDef;
+                $readyFieldsDefs[$key] = $fieldDef;
             }
         }
 
@@ -135,11 +118,70 @@ class StormedManager extends Singleton
     public function seoFieldsToTranslate()
     {
         $toTrans = [];
-        foreach ($this->getSeoFieldsDefinitions() as $fieldKey => $fieldValue) {
+        $fieldsDefinitions = $this->getSeoFieldsDefs();
+
+        foreach ($this->addPrefix($fieldsDefinitions) as $fieldKey => $fieldValue) {
             if (isset($fieldValue['trans']) && $fieldValue['trans'] === true) {
                 $toTrans[] = $fieldKey;
             }
         }
+
         return $toTrans;
+    }
+
+    public function getSeoFieldsDefsForEditor()
+    {
+        $fields = $this->addPrefix($this->getSeoFieldsDefs(), 'seo_options', '%s_%s');
+
+        foreach ($fields as $key => &$val) {
+            // $val['property'] = preg_replace('/\[|\]/', '', $key);
+            $val['property'] = $key;
+            $val['title'] = $val['label'];
+            if (isset($val['commentAbove'])) {
+                $val['description'] = $val['commentAbove'];
+            }
+
+            if (!isset($val['type'])) {
+                $val['type'] = 'text';
+            }
+
+            switch ($val['type']) {
+                case 'textarea':
+                case 'datepicker':
+                    $val['type'] = 'text';
+                    break;
+                case 'balloon-selector':
+                    $val['type'] = 'dropdown';
+                    break;
+            }
+        }
+
+        // We have to drop the keys for October 2.0+
+        $fields = array_values($fields);
+
+        return $fields;
+    }
+
+    /**
+     * Walk on the array of fields and add prefix
+     *
+     * @param array $fieldsDefinitions
+     * @param string $prefix
+     * @param string $format
+     * @return array
+     */
+    public function addPrefix($fieldsDefinitions, $prefix = 'seo_options', $format = '%s[%s]')
+    {
+        $readyFieldsDefs = [];
+        foreach ($fieldsDefinitions as $key => $fieldDef) {
+            $newKey = sprintf($format, $prefix, $key);
+            // Make javascript trigger work with the prefixed fields
+            if (isset($fieldDef['trigger'])) {
+                $fieldDef['trigger']['field'] = sprintf($format, $prefix, $fieldDef['trigger']['field']);
+            }
+            $readyFieldsDefs[$newKey] = $fieldDef;
+        }
+
+        return $readyFieldsDefs;
     }
 }

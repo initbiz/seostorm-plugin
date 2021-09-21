@@ -6,9 +6,6 @@
     'permissions' => [
         'settings_tab' => 'SEO Storm',
         'config' => 'Access SEO Storm configuration',
-        'og' => 'Access Open Graph tab',
-        'sitemap' => 'Accsss Sitemap tab',
-        'meta' => 'Access Meta tab',
     ],
     'form_widgets' => [
         'migrate' => 'Migrate',

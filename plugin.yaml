@@ -8,12 +8,3 @@ permissions:
     initbiz.seostorm.config:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
         label: 'initbiz.seostorm::lang.permissions.config'
-    initbiz.seostorm.og:
-        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.og'
-    initbiz.seostorm.sitemap:
-        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.sitemap'
-    initbiz.seostorm.meta:
-        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.meta'
