@@ -56,8 +56,8 @@ class Seo extends ComponentBase
             );
         } else {
             $properties = array_merge(
-                $this->page->settings,
-                $this->page['viewBag']->getProperties()
+                $this->page['viewBag']->getProperties(),
+                $this->page->settings
             );
 
             $this->seoAttributes = $properties;

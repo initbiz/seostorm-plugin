@@ -6,5 +6,8 @@ layout = "default"
 slug = "{{ :slug }}"
 
 [seo]
+
+[viewBag]
+meta_title='{{ model.seo_options.meta_title }}'
 ==
 {% component 'seo' %}

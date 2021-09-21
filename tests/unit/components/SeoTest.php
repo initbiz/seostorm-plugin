@@ -75,6 +75,36 @@ class SeoTest extends StormedTestCase
         $this->assertStringContainsString('<title>Test title seo_options</title>', $result);
     }
 
+    public function testViewBagHasHigherPriority()
+    {
+        $theme = Theme::load('test');
+        $page = Page::load($theme, 'with-fake-model-viewbag.htm');
+        $controller = new Controller($theme);
+        $result = $controller->runPage($page);
+
+        $component = $controller->findComponentByName('seo');
+
+        $settings = Settings::instance();
+        $settings->enable_site_meta = true;
+
+        $component->setSettings($settings);
+        $result = $controller->runPage($page);
+
+        $model = new FakeStormedModel();
+        $model->name = 'test';
+        $model->save();
+
+        $model->seo_options = [
+            'meta_title' => 'Test title seo_options',
+        ];
+        $model->save();
+
+        $viewBag = $controller->findComponentByName('viewBag');
+        $result = $controller->runPage($page);
+
+        $this->assertStringContainsString('<title>Test title seo_options</title>', $result);
+    }
+
     public function testRobots()
     {
         $theme = Theme::load('test');
