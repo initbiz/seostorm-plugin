@@ -93,10 +93,6 @@ class Plugin extends PluginBase
     public function registerStormedModels()
     {
         $modelDefs = [
-            'Cms\Classes\Page' => [
-                'prefix' => 'settings',
-                'placement' => 'tabs',
-            ],
             'Rainlab\Blog\Models\Post' => [
                 'placement' => 'secondaryTabs',
                 'excludeFields' => [

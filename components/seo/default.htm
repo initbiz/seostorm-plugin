@@ -6,7 +6,7 @@
    ]
 %}
 {% if settings.enable_site_meta %}
-<title>{{ include(template_from_string(__SELF__.getTitle)) }}</title>
+<title>{{ include(template_from_string(__SELF__.getTitle())) }}</title>
 <meta name="description" content="{{ include(template_from_string(__SELF__.getDescription())) }}" />
 <link rel="canonical" href="{{ include(template_from_string(__SELF__getSeoAttribute.canonical_url))|url }}">
 {% endif %}

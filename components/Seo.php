@@ -57,7 +57,7 @@ class Seo extends ComponentBase
 
     public function getSeoAttribute($seoAttribute)
     {
-        return $this->seoAttributes[$seoAttribute] ?? null;
+        return $this->seoAttributes['seo_options_' . $seoAttribute] ?? $this->seoAttributes[$seoAttribute] ?? null;
     }
 
     public function getTitleRaw()
