@@ -3,7 +3,6 @@
 namespace Initbiz\SeoStorm\Components;
 
 use App;
-use Cms\Components\ViewBag;
 use Cms\Classes\ComponentBase;
 use Media\Classes\MediaLibrary;
 use System\Classes\MediaLibrary as OldMediaLibrary;
@@ -12,7 +11,7 @@ use Initbiz\SeoStorm\Models\Settings;
 class Seo extends ComponentBase
 {
     /**
-     * Current viewBag set in the current pages
+     * Current attributes parsed from settings or viewBag (in static pages)
      *
      * @var Array
      */
@@ -53,6 +52,20 @@ class Seo extends ComponentBase
         } else {
             $this->seoAttributes = $this->page->settings;
         }
+    }
+
+    public function getRobots()
+    {
+        $robots = [];
+        if (!empty($index = $this->getSeoAttribute('robot_index'))) {
+            $robots[] = $index;
+        }
+
+        if (!empty($follow = $this->getSeoAttribute('robot_follow'))) {
+            $robots[] = $follow;
+        }
+
+        return implode(',', $robots);
     }
 
     public function getSeoAttribute($seoAttribute)

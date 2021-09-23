@@ -57,7 +57,6 @@ class Plugin extends PluginBase
     {
         return [
             'filters' => [
-                'removenulls' => [Helper::class, 'removeNullsFromArray'],
                 'fillparams'  => [Helper::class, 'replaceUrlPlaceholders'],
                 'url' => [Helper::class, 'url'],
             ],

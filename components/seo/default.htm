@@ -11,7 +11,7 @@
 <link rel="canonical" href="{{ include(template_from_string(__SELF__getSeoAttribute.canonical_url))|url }}">
 {% endif %}
 {% if settings.enable_robots_meta %}
-<meta name="robots" content="{{ robots|removenulls|join(', ') }}" />
+<meta name="robots" content="{{ __SELF__.getRobots() }}" />
 {% endif %}
 {% if settings.favicon_enabled %}
 <link rel="shortcut icon" href="{{ 'favicon.ico'|app }}" type="image/x-icon">

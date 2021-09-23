@@ -6,7 +6,6 @@ use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Cms\Classes\Controller;
 use Cms\Classes\ComponentManager;
-use Cms\Components\ViewBag;
 use Initbiz\SeoStorm\Components\Seo;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
@@ -71,22 +70,28 @@ class SeoTest extends StormedTestCase
         $this->assertStringContainsString('<title>test - test</title>', $result);
     }
 
-    // public function testRobots()
-    // {
-    //     $theme = Theme::load('test');
-    //     $controller = new Controller($theme);
-    //     $page = Page::load($theme, 'with-fake-model.htm');
-    //     $result = $controller->runPage($page);
-    //     $component = $controller->findComponentByName('seo');
+    public function testRobots()
+    {
+        $theme = Theme::load('test');
+        $controller = new Controller($theme);
+        $page = Page::load($theme, 'with-fake-model.htm');
+        $page->settings['seo_options_robot_index'] = 'index';
+        $result = $controller->runPage($page);
+        $component = $controller->findComponentByName('seo');
 
-    //     $settings = Settings::instance();
-    //     $settings->enable_robots_meta = true;
+        $this->assertEquals('index', $component->getRobots());
 
-    //     $component->setSettings($settings);
-    //     $result = $controller->runPage($page);
+        $page->settings['seo_options_robot_index'] = '';
+        $result = $controller->runPage($page);
+        $component = $controller->findComponentByName('seo');
 
-    //     dd($result);
+        $this->assertEquals('', $component->getRobots());
 
-    //     $this->assertStringContainsString('<title>test</title>', $result);
-    // }
+        $page->settings['seo_options_robot_index'] = 'noindex';
+        $page->settings['seo_options_robot_follow'] = 'follow';
+        $result = $controller->runPage($page);
+        $component = $controller->findComponentByName('seo');
+
+        $this->assertEquals('noindex,follow', $component->getRobots());
+    }
 }

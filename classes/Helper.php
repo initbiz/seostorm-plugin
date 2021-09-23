@@ -8,13 +8,6 @@ use October\Rain\Exception\ApplicationException;
 // TODO: the class is to be removed soon
 class Helper
 {
-    public static function removeNullsFromArray($array)
-    {
-        if (!is_array($array)) throw new ApplicationException("removenulls can only accept an array as argument");
-
-        return array_filter($array);
-    }
-
     public static function replaceUrlPlaceholders($url, $model)
     {
         if (!is_string($url)) throw new ApplicationException("Parameter \$url must be a string");
