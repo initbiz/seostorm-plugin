@@ -75,7 +75,7 @@ class Plugin extends PluginBase
      */
     public function templateFromString($template)
     {
-        $twig = $this->app->make('twig.environment');
+        $twig = app()->get('twig.environment');
 
         if (!$twig->hasExtension(StringLoaderExtension::class)) {
             $stringLoader = new StringLoaderExtension();

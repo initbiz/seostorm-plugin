@@ -5,6 +5,7 @@ namespace Initbiz\SeoStorm\Tests\Classes;
 use Schema;
 use PluginTestCase;
 use October\Rain\Database\Model;
+use System\Classes\MarkupManager;
 use System\Classes\PluginManager;
 use System\Classes\UpdateManager;
 use System\Classes\VersionManager;
@@ -31,9 +32,13 @@ abstract class StormedTestCase extends PluginTestCase
         // Boot all the plugins to test with dependencies of this plugin
         $pluginManager->bootAll(true);
 
+        $markupManager = MarkupManager::instance();
+        $markupManager->listFunctions();
+
         Schema::create('initbiz_fake_stormed_model', function ($table) {
             $table->increments('id')->unsigned();
             $table->string('name');
+            $table->text('description')->nullable();
         });
     }
 
