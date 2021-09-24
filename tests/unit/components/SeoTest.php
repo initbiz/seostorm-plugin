@@ -93,5 +93,57 @@ class SeoTest extends StormedTestCase
         $component = $controller->findComponentByName('seo');
 
         $this->assertEquals('noindex,follow', $component->getRobots());
+
+        $model = new FakeStormedModel();
+        $model->name = 'test';
+        $model->save();
+
+        $page->settings['seo_options_robot_index'] = 'noindex';
+        $page->settings['seo_options_robot_follow'] = 'follow';
+        $page->settings['seo_options_robot_advanced'] = '{{ model.name }}';
+        $result = $controller->runPage($page);
+
+        $settings = Settings::instance();
+        $settings->enable_robots_meta = true;
+
+        $component->setSettings($settings);
+        $result = $controller->runPage($page);
+
+        $this->assertStringContainsString('noindex,follow,test', $result);
+    }
+
+    // Open graph
+
+    public function testGetOgTitle()
+    {
+        $theme = Theme::load('test');
+        $controller = new Controller($theme);
+        $page = Page::load($theme, 'with-fake-model.htm');
+        $result = $controller->runPage($page);
+        $component = $controller->findComponentByName('seo');
+
+        $model = new FakeStormedModel();
+        $model->name = 'test';
+        $model->description = 'test description';
+        $model->save();
+
+        $model->seo_options = [
+            'meta_title' => 'Test title seo_options',
+        ];
+        $model->save();
+
+        // Assert that seo_options has even higher priority
+        $page = Page::load($theme, 'with-fake-model.htm');
+        $page->settings['meta_title'] = '{{ model.name }}';
+        $result = $controller->runPage($page);
+        $component = $controller->findComponentByName('seo');
+
+        $settings = Settings::instance();
+        $settings->enable_site_meta = true;
+
+        $component->setSettings($settings);
+        $result = $controller->runPage($page);
+
+        $this->assertStringContainsString('<title>test</title>', $result);
     }
 }

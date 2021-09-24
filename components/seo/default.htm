@@ -1,17 +1,14 @@
 {% set settings = __SELF__.getSettings() %}
-{% set robots = [
-    __SELF__.getSeoAttribute('robot_index'),
-    __SELF__.getSeoAttribute('robot_follow'),
-    include(template_from_string(__SELF__.getSeoAttribute('robot_advanced')))
-   ]
-%}
+
 {% if settings.enable_site_meta %}
 <title>{{ include(template_from_string(__SELF__.getTitle())) }}</title>
 <meta name="description" content="{{ include(template_from_string(__SELF__.getDescription())) }}" />
 <link rel="canonical" href="{{ include(template_from_string(__SELF__getSeoAttribute.canonical_url))|url }}">
 {% endif %}
 {% if settings.enable_robots_meta %}
-<meta name="robots" content="{{ __SELF__.getRobots() }}" />
+{% set advancedRobots = include(template_from_string(__SELF__.getSeoAttribute('robot_advanced'))) %}
+{{ __SELF__.getSeoAttribute('robot_advanced') }}
+<meta name="robots" content="{{ __SELF__.getRobots(advancedRobots) }}" />
 {% endif %}
 {% if settings.favicon_enabled %}
 <link rel="shortcut icon" href="{{ 'favicon.ico'|app }}" type="image/x-icon">

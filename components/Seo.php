@@ -54,7 +54,7 @@ class Seo extends ComponentBase
         }
     }
 
-    public function getRobots()
+    public function getRobots($advancedRobots = '')
     {
         $robots = [];
         if (!empty($index = $this->getSeoAttribute('robot_index'))) {
@@ -63,6 +63,10 @@ class Seo extends ComponentBase
 
         if (!empty($follow = $this->getSeoAttribute('robot_follow'))) {
             $robots[] = $follow;
+        }
+
+        if (!empty($advancedRobots)) {
+            $robots[] = $advancedRobots;
         }
 
         return implode(',', $robots);
