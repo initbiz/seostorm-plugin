@@ -112,6 +112,38 @@ class SeoTest extends StormedTestCase
         $this->assertStringContainsString('noindex,follow,test', $result);
     }
 
+
+    public function testCanonical()
+    {
+        $theme = Theme::load('test');
+        $controller = new Controller($theme);
+        $page = Page::load($theme, 'with-fake-model.htm');
+
+        // Test if canonical is <app_url>/model/default if nothing is set
+
+        $page->settings['seo_options_canonical_url'] = '';
+        $result = $controller->runPage($page);
+        $component = $controller->findComponentByName('seo');
+
+        $this->assertEquals(env('APP_URL') . '/model/default', $component->getCanonicalUrl());
+
+        // Test if canonical is <app_url>/model/test when properly set
+
+        $model = new FakeStormedModel();
+        $model->name = 'test';
+        $model->save();
+
+        $page->settings['seo_options_canonical_url'] = '/model/{{ model.name }}';
+
+        $settings = Settings::instance();
+        $settings->enable_site_meta = true;
+
+        $component->setSettings($settings);
+        $result = $controller->runPage($page);
+
+        $this->assertStringContainsString(env('APP_URL') . '/model/test', $result);
+    }
+
     // Open graph
 
     public function testGetOgTitle()

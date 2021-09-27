@@ -4,7 +4,6 @@ namespace Initbiz\SeoStorm;
 
 use Event;
 use System\Classes\PluginBase;
-use Initbiz\SeoStorm\Classes\Helper;
 use Initbiz\SeoStorm\Models\Htaccess;
 use Initbiz\SeoStorm\Models\Settings;
 use Twig\Extension\StringLoaderExtension;
@@ -56,10 +55,6 @@ class Plugin extends PluginBase
     public function registerMarkupTags()
     {
         return [
-            'filters' => [
-                'fillparams'  => [Helper::class, 'replaceUrlPlaceholders'],
-                'url' => [Helper::class, 'url'],
-            ],
             'functions' => [
                 'template_from_string' => [$this, 'templateFromString'],
             ]

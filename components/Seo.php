@@ -3,10 +3,11 @@
 namespace Initbiz\SeoStorm\Components;
 
 use App;
+use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
 use Media\Classes\MediaLibrary;
-use System\Classes\MediaLibrary as OldMediaLibrary;
 use Initbiz\SeoStorm\Models\Settings;
+use System\Classes\MediaLibrary as OldMediaLibrary;
 
 class Seo extends ComponentBase
 {
@@ -54,6 +55,8 @@ class Seo extends ComponentBase
         }
     }
 
+    // Site meta getters
+
     public function getRobots($advancedRobots = '')
     {
         $robots = [];
@@ -72,11 +75,21 @@ class Seo extends ComponentBase
         return implode(',', $robots);
     }
 
-    public function getSeoAttribute($seoAttribute)
+    public function getCanonicalUrl($parsedTwig = '')
     {
-        return $this->seoAttributes['seo_options_' . $seoAttribute] ?? $this->seoAttributes[$seoAttribute] ?? null;
+        // If nothing set in the parameter - return this page URL
+        if (empty($parsedTwig)) {
+            return Page::url($this->page->id);
+        }
+
+        return url($parsedTwig);
     }
 
+    /**
+     * Get the title of the page without suffix/prefix from the settings
+     *
+     * @return string
+     */
     public function getTitleRaw()
     {
         return $this->getPropertyTranslated('meta_title') ?: $this->getSeoAttribute('title') ?: null;
@@ -123,6 +136,8 @@ class Seo extends ComponentBase
 
         return $description;
     }
+
+    // Open Graph parameter getters
 
     /**
      * Returns og_title if set in the viewBag
@@ -220,6 +235,20 @@ class Seo extends ComponentBase
             return $settings->site_image_url;
         }
     }
+
+    // Global helpers
+
+    /**
+     * Getter for attributes set in the page's settings
+     *
+     * @param string $seoAttribute name of the seo attribute e.g. canonical_url
+     * @return string
+     */
+    public function getSeoAttribute($seoAttribute)
+    {
+        return $this->seoAttributes['seo_options_' . $seoAttribute] ?? $this->seoAttributes[$seoAttribute] ?? null;
+    }
+
 
     /**
      * Returns the property from the viewBag
