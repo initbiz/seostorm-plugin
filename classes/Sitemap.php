@@ -38,8 +38,8 @@ class  Sitemap
 
         $pages = $pages
             ->filter(function ($page) {
-                return $page->enabled_in_sitemap;
-            })->sortByDesc('priority');
+                return $page->seo_options_enabled_in_sitemap;
+            })->sortByDesc('seo_options_priority');
 
         foreach ($pages as $page) {
             // $page = Event::fire('initbiz.seostorm.generateSitemapCmsPage', [$page]);
@@ -62,9 +62,6 @@ class  Sitemap
                     $models = $modelClass::$scope()->get();
                 }
 
-                // TODO: make it backward compatible with RainLab.BlogPost
-                //       Proposition: add components to Plugin.php with pair with the registered models
-                // TODO: refactor the code, it works but is ugly
                 foreach ($models as $model) {
                     if (($model->seo_options['enabled_in_sitemap'] ?? null) === "0") {
                         continue;
