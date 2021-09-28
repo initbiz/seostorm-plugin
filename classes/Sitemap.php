@@ -30,10 +30,13 @@ class  Sitemap
 
     protected $urlSet;
 
-    public function generate()
+    public function generate($pages = [])
     {
-        // get all pages of the current theme
-        $pages = Page::listInTheme(Theme::getEditTheme());
+        if (empty($pages)) {
+            // get all pages of the current theme
+            $pages = Page::listInTheme(Theme::getEditTheme());
+        }
+
         $models = [];
 
         $pages = $pages
