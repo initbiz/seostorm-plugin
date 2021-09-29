@@ -1,42 +1,90 @@
-# inIT SEO Storm
-## Note
-The plugin is a fork of the Arcane.SEO plugin. Since then it has changed a lot. See the differences below.
+SEO Storm
+===
 
-> **The plugin is still under development. Keep in mind that installing this version may cause unintended side effects. Once ready, it will be published in the marketplace**
+[//]: # (Introduction)
+Here's where serious SEO in OctoberCMS is starting.
 
-## Installation
+Originally forked from `Arcane.SEO` plugin but since then it has changed a lot.
 
-The current version of the plugin is under development. Once ready it will be pushed to the OctoberCMS's marketplace.
+## Set of features
 
-To install it you have to use git method:
-
-```bash
-$ cd /path/to/project-root/
-$ git clone git@github.com:initbiz/oc-seo-storm-plugin.git plugins/initbiz/seostorm
-$ php artisan october:up
-```
+* automatically generate titles and other meta tags on the pages,
+* manage custom meta tags from the backend,
+* manage robots tags in an easy way,
+* set favicon from mediafinder,
+* manage Open Graph parameters,
+* edit `.htaccess` without leaving backend,
+* partially migrate from `Arcane.SEO` with a single click of a button,
+* generate `sitemap.xml` automatically with parameters in URLs,
+* support `RainLab.Pages`,
+* easily extend custom models to display SEO parameters in the backend,
+* use Twig parameters to fill meta tags,
+* some smaller features you will probably like :)
 
 [//]: # (Documentation)
 
-## Meta tags (SEO component)
-Embed the seo component in your layout or page in the `head` section. The component will render all the meta tags defined in the page.
+## Using SEO Storm
 
-### Dynamic meta tags
-SEO meta tag fields support twig syntax, this makes them more flexible when you have a website with many records and you need to use their attribute values for search results, or generate the title and description of the page from a model field.
+Install the plugin and drop `SEO` component in your `<head>` section of the page, whether it's page or layout.
 
-![seo fields screenshot](https://i.ibb.co/7JJvNgr/download.png)
+Go to `Settings` -> `SEO Storm` -> `General settings` and set whatever settings you'd like to have.
 
-##  Automating the `sitemap.xml` generation
+## Common use-cases
+
+### Global prefix/suffix in the page's title
+
+1. Go to `Settings` -> `SEO Storm` -> `General settings` and set `Enable title and description meta tags` to `on`.
+1. Fill the `Site name` and `Site name separator` fields.
+1. Select if you want to have the `Site name` added to the beginning or to the end (prefix or suffix).
+
+![Global prefix/suffix in the page's title](docs/common-global-prefix-suffix-title.png)
+
+### Automatically set title of the page basing on a model (like blog post)
+
+The following instructions will work for any other field that is accessible from the page. The only thing you have to know is under what variable is the title you would like to set it by. I this example we'll use `Question` model which is used on [our page here](https://init.biz/faqs/what-is-octobercms).
+
+Go to `Editor` -> `Pages` -> Select the page -> click `SEO Storm` button
+
+![Automatically set meta attribute basing on model values](docs/common-auto-meta-parameter.png)
+
+The same approach will work for most of the other parameters. See `Dynamic meta tags` section for more information.
+
+### Generating `sitemap.xml`
+
+1. Go to `Settings` -> `SEO Storm` -> `General settings` and set `Enable sitemap.xml` to `on`.
+
+## Dynamic meta tags
+
+In many situations we want to have meta attributes set dynamically basing on the variables on the page. In most typical case it may be a blog post which may be available using `{{ post }}` variable. Using `Dynamic meta tags` we may set the attributes basing on such variables.
+
+Tags that are currently using Twig syntax:
+* `meta title`
+* `meta description`
+* `canonical URL`
+* `advanced robots`
+* `OG type`
+* `OG title`
+* `OG description`
+* `OG image`
+* `OG video`
+* `Twitter card`
+* `Twitter title`
+* `Twitter description`
+* `Twitter image`
+
+### Fallback values
+
+Keep in mind that you can fill those fields with basically everything that is accepted by Twig. This includes conditionals in case of empty values. Let's say you have some model that has two fields: `name` and `meta_title`. You want to set title using the `meta_title` field but if it's not present, use `name` instead. You may easily build the logic like this:
+
+```twig
+    {{ model.meta_title ?: model.name }}
+```
+
+## Advanced sitemap
 To automatically generate the sitemap.xml, follow the steps below:
 
 1. Make sure you have the sitemap.xml enabled in the settings page.
-
-    ![enable sitemap.xml in settings page screenshot](https://i.ibb.co/bgX91G0/e2008635-0938-4cb8-83c8-33180a7144f4.jpg)
-
 2. Go to the editor page of your CMS, static or to a model that has been registered as Storomed Models, and on the "SEO" tab check the `Enable in the sitemap.xml` checkbox.
-
-    ![sitemap checkbox screenshot](https://i.ibb.co/vVDyPjZ/download.jpg)
-
 3. Visit: http(s)://yourdomain.tld/sitemap.xml
 
 ### Dynamic URLs based on the models
@@ -136,8 +184,3 @@ To make it more clear:
 * `excludeFields` will exclude the fields from the form
 
 `excludeFields` can also define the inverse by `*`, so in the second example we will have all the fields excluded except those defined later.
-
-## The differences between Arcane.SEO and inIT SEO Storm
-
-1. Dropped schema components support,
-1. Dropped minify JS and CSS features as they are built in October core or other plugins,

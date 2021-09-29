@@ -10,18 +10,16 @@ tabs:
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_meta
             default: true
-        enable_sitemap:
-            label: initbiz.seostorm::lang.form.settings.enable_sitemap
-            span: auto
-            type: switch
-            tab: initbiz.seostorm::lang.form.settings.tab_meta
-            default: true
         site_name:
             label: initbiz.seostorm::lang.form.settings.site_name
             span: left
             placeholder: initbiz.seostorm::lang.form.settings.site_name_placeholder
             type: text
             tab: initbiz.seostorm::lang.form.settings.tab_meta
+            trigger:
+                action: show
+                field: enable_site_meta
+                condition: checked
         site_name_position:
             label: initbiz.seostorm::lang.form.settings.site_name_position
             options:
@@ -32,6 +30,11 @@ tabs:
             type: radio
             commentAbove: initbiz.seostorm::lang.form.settings.site_name_position
             tab: initbiz.seostorm::lang.form.settings.tab_meta
+            default: nowhere
+            trigger:
+                action: show
+                field: enable_site_meta
+                condition: checked
         site_name_separator:
             label: initbiz.seostorm::lang.form.settings.site_name_separator
             span: auto
@@ -39,6 +42,10 @@ tabs:
             comment: initbiz.seostorm::lang.form.settings.site_name_separator_comment
             placeholder: initbiz.seostorm::lang.form.settings.site_name_separator_placeholder
             tab: initbiz.seostorm::lang.form.settings.tab_meta
+            trigger:
+                action: show
+                field: enable_site_meta
+                condition: checked
         site_description:
             label: initbiz.seostorm::lang.form.settings.site_description
             size: tiny
@@ -46,11 +53,25 @@ tabs:
             placeholder: initbiz.seostorm::lang.form.settings.site_description_placeholder
             type: textarea
             tab: initbiz.seostorm::lang.form.settings.tab_meta
-            comment: initbiz.seostorm::lang.form.settings.site_description_comment
+            trigger:
+                action: show
+                field: enable_site_meta
+                condition: checked
             attributes:
                 data-counter: 1
                 data-min: 100
                 data-max: 160
+
+        #----------------------------------------------------------------------
+        # Sitemap Tab
+        #----------------------------------------------------------------------
+
+        enable_sitemap:
+            label: initbiz.seostorm::lang.form.settings.enable_sitemap
+            span: auto
+            type: switch
+            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
+            default: true
 
         #----------------------------------------------------------------------
         # <head> Tab
@@ -89,37 +110,6 @@ tabs:
             type: codeeditor
             tab: initbiz.seostorm::lang.form.settings.tab_robots
             default: "User-agent: *\r\nAllow: /"
-
-        #----------------------------------------------------------------------
-        # Minify Tab
-        #----------------------------------------------------------------------
-        minify_hint:
-            type: hint
-            path: $/initbiz/seostorm/models/settings/_minify_hint.htm
-            tab: initbiz.seostorm::lang.form.settings.tab_minify
-        minify_html:
-            label: initbiz.seostorm::lang.form.settings.minify_html
-            comment: initbiz.seostorm::lang.form.settings.minify_html_comment
-            type: switch
-            tab: initbiz.seostorm::lang.form.settings.tab_minify
-            default: false
-        minify_css:
-            label: initbiz.seostorm::lang.form.settings.minify_css
-            comment: initbiz.seostorm::lang.form.settings.minify_css_comment
-            type: switch
-            tab: initbiz.seostorm::lang.form.settings.tab_minify
-            default: false
-        minify_js:
-            label: initbiz.seostorm::lang.form.settings.minify_js
-            comment: initbiz.seostorm::lang.form.settings.minify_js_comment
-            type: switch
-            tab: initbiz.seostorm::lang.form.settings.tab_minify
-            default: false
-        no_minify_for_dev:
-            label: initbiz.seostorm::lang.form.settings.no_minify_for_dev
-            comment: initbiz.seostorm::lang.form.settings.no_minify_for_dev_comment
-            type: checkbox
-            tab: initbiz.seostorm::lang.form.settings.tab_minify
 
         #----------------------------------------------------------------------
         # Favicon
