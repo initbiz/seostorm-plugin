@@ -95,7 +95,7 @@ class  Sitemap
 
                     $sitemapItem->loc = $loc;
 
-                    if ($page->use_updated_at && isset($model->updated_at)) {
+                    if ($page->seo_options_use_updated_at && isset($model->updated_at)) {
                         $sitemapItem->lastmod = $model->updated_at->format('c');
                     }
 
