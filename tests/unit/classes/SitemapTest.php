@@ -11,22 +11,20 @@ class SitemapTest extends StormedTestCase
 {
     public function testEnabledInSitemap()
     {
-        $pages = Page::listInTheme(Theme::getEditTheme());
+        $page1 = Page::where('url', '/')->first();
+        $page1->mtime = 1632857872;
+        $page2 = Page::where('url', '/model/:slug')->first();
+        $page2->mtime = 1632858273;
+        $pages = collect([$page1, $page2]);
 
-        $sitemap = new Sitemap();
-        $xml = $sitemap->generate($pages);
-
+        $xml = (new Sitemap())->generate($pages);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-1-page.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
 
-        foreach ($pages as $page) {
-            if ($page->url === '/') {
-                $page->settings['seo_options_enabled_in_sitemap'] = "true";
-            }
-        }
+        $page1->settings['seo_options_enabled_in_sitemap'] = "true";
+        $pages = collect([$page1, $page2]);
 
-        $sitemap = new Sitemap();
-        $xml = $sitemap->generate($pages);
+        $xml = (new Sitemap)->generate($pages);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-2-pages.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
     }
