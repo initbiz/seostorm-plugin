@@ -213,3 +213,8 @@ Note: By default, SEO Storm takes care of `CMS pages` and `Static pages` so you 
 ### Cards look bad when pasting link on social media
 
 Open Graph is not enabled or it's configured improperly. See [the guide for Open Graph from Facebook](https://developers.facebook.com/docs/sharing/webmasters) and [the guide for Twitter cards from Twitter](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html) to get better understanding on the parameters.
+
+## Future plans/features
+
+1. Order `sitemap.xml` urls using models' priorities,
+1. Take all SEO attributes of the models into consideration while generating `sitemap.xml`
