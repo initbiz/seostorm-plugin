@@ -46,19 +46,19 @@ class  Sitemap
 
         foreach ($pages as $page) {
             // $page = Event::fire('initbiz.seostorm.generateSitemapCmsPage', [$page]);
-            $modelClass = $page->model_class;
+            $modelClass = $page->seo_options_model_class;
 
             $loc = $page->url;
 
             $sitemapItem = new SitemapItem();
-            $sitemapItem->priority = $page->priority;
-            $sitemapItem->changefreq = $page->changefreq;
+            $sitemapItem->priority = $page->seo_options_priority;
+            $sitemapItem->changefreq = $page->seo_options_changefreq;
             $sitemapItem->loc = $loc;
             $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
 
             // if page has model class
             if (class_exists($modelClass)) {
-                $scope = $page->model_scope;
+                $scope = $page->seo_options_model_scope;
                 if (empty($scope)) {
                     $models = $modelClass::all();
                 } else {
@@ -69,7 +69,7 @@ class  Sitemap
                     if (($model->seo_options['enabled_in_sitemap'] ?? null) === "0") {
                         continue;
                     }
-                    $modelParams = $page->model_params;
+                    $modelParams = $page->seo_options_model_params;
                     $loc = $page->url;
 
                     if (!empty($modelParams)) {

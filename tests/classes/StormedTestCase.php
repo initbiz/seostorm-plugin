@@ -38,7 +38,10 @@ abstract class StormedTestCase extends PluginTestCase
         Schema::create('initbiz_fake_stormed_model', function ($table) {
             $table->increments('id')->unsigned();
             $table->string('name');
+            $table->string('slug')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->text('description')->nullable();
+            $table->timestamps();
         });
     }
 

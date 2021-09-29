@@ -11,7 +11,5 @@ class FakeStormedModel extends Model
      */
     public $table = 'initbiz_fake_stormed_model';
 
-    public $timestamps = false;
-
     protected $guarded = ['*'];
 }
