@@ -35,12 +35,21 @@ abstract class StormedTestCase extends PluginTestCase
         $markupManager = MarkupManager::instance();
         $markupManager->listFunctions();
 
-        Schema::create('initbiz_fake_stormed_model', function ($table) {
+        Schema::create('initbiz_fake_stormed_models', function ($table) {
             $table->increments('id')->unsigned();
             $table->string('name');
             $table->string('slug')->nullable();
             $table->boolean('is_active')->default(true);
             $table->text('description')->nullable();
+            $table->integer('category_id')->unsigned()->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('initbiz_fake_stormed_categories', function ($table) {
+            $table->increments('id')->unsigned();
+            $table->string('name');
+            $table->string('slug')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

@@ -4,6 +4,7 @@ namespace Initbiz\SeoStorm\Tests\Unit\Components;
 
 use Cms\Classes\Page;
 use Initbiz\SeoStorm\Classes\Sitemap;
+use Initbiz\SeoStorm\Tests\Classes\FakeStormedCategory;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 
@@ -39,6 +40,8 @@ class SitemapTest extends StormedTestCase
         $pages = collect();
         $pages = $pages->push($page);
 
+        // Test if sitemap has two elements basing on the models' slugs
+
         $model = new FakeStormedModel();
         $model->name = 'test-name';
         $model->slug = 'test-slug';
@@ -51,6 +54,46 @@ class SitemapTest extends StormedTestCase
 
         $xml = (new Sitemap)->generate($pages);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs.xml');
+        $this->assertXmlStringEqualsXmlFile($filePath, $xml);
+
+        // Test if sitemap has filtered record using the active scope
+
+        $model2->is_active = false;
+        $model2->save();
+
+        $page->settings['seo_options_model_scope'] = "active";
+        $pages = collect();
+        $pages = $pages->push($page);
+
+        $xml = (new Sitemap)->generate($pages);
+        $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs-filtered.xml');
+        $this->assertXmlStringEqualsXmlFile($filePath, $xml);
+    }
+
+    public function testParamsWithRelation()
+    {
+        $page = Page::where('url', '/model/:category/:slug?')->first();
+        $page->mtime = 1632858273;
+        $page->settings['seo_options_model_class'] = "\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel";
+        $page->settings['seo_options_model_params'] = "slug:slug|category:category.slug";
+        $pages = collect();
+        $pages = $pages->push($page);
+
+        // Test if sitemap has two elements basing on the models' slugs
+
+        $category = new FakeStormedCategory();
+        $category->name = 'cat-test-name';
+        $category->slug = 'cat-test-slug';
+        $category->save();
+
+        $model = new FakeStormedModel();
+        $model->name = 'test-name';
+        $model->slug = 'test-slug';
+        $model->category_id = $category->id;
+        $model->save();
+
+        $xml = (new Sitemap)->generate($pages);
+        $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs-relation.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
     }
 }
