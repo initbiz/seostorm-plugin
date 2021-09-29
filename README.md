@@ -43,7 +43,7 @@ Go to `Settings` -> `SEO Storm` -> `General settings` and set whatever settings 
 
 The following instructions will work for any other field that is accessible from the page. The only thing you have to know is under what variable is the title you would like to set it by. I this example we'll use `Question` model which is used on [our page here](https://init.biz/faqs/what-is-octobercms).
 
-Go to `Editor` -> `Pages` -> Select the page -> click `SEO Storm` button
+Go to `Editor` -> `Pages` -> Select the page -> click `SEO Storm` button. Fill the field using Twig syntax as shown in the screenshot below:
 
 ![Automatically set meta attribute basing on model values](docs/common-auto-meta-parameter.png)
 
@@ -51,7 +51,13 @@ The same approach will work for most of the other parameters. See `Dynamic meta 
 
 ### Generating `sitemap.xml`
 
-1. Go to `Settings` -> `SEO Storm` -> `General settings` and set `Enable sitemap.xml` to `on`.
+Go to `Settings` -> `SEO Storm` -> `General settings` and set `Enable sitemap.xml` to `on`.
+
+That's basically everything you need. **Just make sure that all the pages you want to be included in the `sitemap.xml` have `Enable in sitemap.xml` option checked**
+
+![Enable in sitemap.xml checkbox](docs/enable-in-sitemap.png)
+
+If you want to handle more advanced customizations, see `Advanced sitemap.xml` section.
 
 ## Dynamic meta tags
 
@@ -80,55 +86,55 @@ Keep in mind that you can fill those fields with basically everything that is ac
     {{ model.meta_title ?: model.name }}
 ```
 
-## Advanced sitemap
-To automatically generate the sitemap.xml, follow the steps below:
+## Advanced `sitemap.xml`
 
-1. Make sure you have the sitemap.xml enabled in the settings page.
-2. Go to the editor page of your CMS, static or to a model that has been registered as Storomed Models, and on the "SEO" tab check the `Enable in the sitemap.xml` checkbox.
-3. Visit: http(s)://yourdomain.tld/sitemap.xml
-
-### Dynamic URLs based on the models
-If you have a model that you want to generate the links from in the sitemap you can use those three parameters to accomplish that:
+You may want to fill parameters in you URLs basing on the models in the page (e.g. blog post's slug). To achieve that, you can set the following parameters in your page's settings:
 
 1. Model class
-2. Model scope
-3. Model params
+1. Model params
+1. Model scope
 
-To make it work you will have to enter both:
+In the following example we have model `Question`, but you may easily use `Post` or any other one this page is displaying.
+
+![Advanced sitemap.xml configuration](docs/advanced-sitemap-xml-params.png)
+
+Take a closer look at those two parameters:
 
 1. the class (e.g. `Author\Plugin\Models\ModelClass`) to the `model_class` field, and
 1. model parameters that match the parameters in the URL (e.g. `slug:slug`).
 
-If you want to filter the objects of the model, use the `model_scope` (more about scopes [here](https://octobercms.com/docs/database/model#query-scopes)).
-For example `isPublished`.
+The first one will say SEO Storm, which model it should use for this page to generate URLs in the sitemap. The second one is pairing between the URL parameter and model attribute (which match which).
 
-#### Model params
-First parameter of the definition is the URL parameter while the second one is the corresponding model attribute.
+### Model params
+As describer above, first parameter of the definition is the URL parameter while the second one is the corresponding model attribute.
 
 > For example: `post:slug` means we have a `post` parameter in the URL and `slug` attribute in the model.
 
 If you want to add more attributes, split them by pipe character (`|`). For example: `date:date|slug:slug`.
 
-Model parameters adds a nice feature to pull the parameter from the related objects.
+There may sometimes be a need to fill URL like `/blog/:category/:postslug`. There's a way to solve it using SEO Storm as well. Use the dot syntax to fetch the attribute from the related object, like in the example:
 
-For example:
+    postslug:slug|category:categories.slug
 
-    slug:slug|category:categories.slug
+It will work for all relation types but if it's one to many, keep in mind that only the first one will be used.
 
-> Note: The relation attribute will always take the first element of the relation.
+### Model scopes
+
+Sometimes you may want to filter the records listed in the `sitemap.xml`. You may define a scope in your model and provide its name in the third parameter. It will then be used by SEO Storm to filter the records. More about scopes [here](https://octobercms.com/docs/database/model#query-scopes).
+
+For `Post`s from `RainLab.Blog` you may use `isPublished` to get only the ones that are published. Otherwise, all of the posts will be listed in the `sitemap.xml`.
 
 ## Open Graph & Twitter cards
-The configuration is done via the `Open Graph` tab.
 
-> If you don't know what these are take a look at [the guide for Open Graph from Facebook](https://developers.facebook.com/docs/sharing/webmasters) and [the guide for Twitter cards from Twitter](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html).
+You may set Open Graph and Twitter cards attributes using SEO Storm, as well. Keep in mind, that both are filled using `OG` fields (SEO Storm doesn't support different texts for Twitter and different for Open Graph).
 
-> **Note:** Twitter cards are automatically set from the OG fields.
+If you don't know what these are take a look at [the guide for Open Graph from Facebook](https://developers.facebook.com/docs/sharing/webmasters) and [the guide for Twitter cards from Twitter](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html).
 
-![open graph tab screenshot](https://i.ibb.co/C1wPvhv/download.png)
+![Open Graph and Twitter attributes](docs/open-graph-twitter-attributes.png)
 
 Currently supported tags are:
 - `og:title` defaults to page's `meta_title` or `title`,
-- `og:description` defaults to page's `meta_description`, `viewBag['description']`, `site_description` from the `Settings`,
+- `og:description` defaults to page's `meta_description`, or `site_description` from the `Settings`,
 - `og:image` defaults to `site_image` from the `Settings`,
 - `og:type` defaults to `website`,
 - `twitter:title` got from `og:title`,
@@ -137,17 +143,40 @@ Currently supported tags are:
 
 **Note:** read the guidelines from Facebook and Twitter linked above for recommended values on these tags.
 
-## Registering SEO Stormed Models
-The most awesome feature in the SEO Storm is dynamic extending models to have the `seo_options` attributes.
+Take a look at `Dynamic meta tags` section to see which of those support Twig syntax.
 
-To make it work you have to register your models as `stormed`.
+## Custom models with SEO parameters
+
+SEO Storm let you easily define which models you'd like to have SEO parameters dynamically attached.
+
+> You don't have to make any other customizations - SEO Storm is taking care of extending the models and storing the attributes in the DB.
+
+We call such models `Stormed`. To register a model as `Stormed` implement a `registerStormedModels` method in your plugin's registration file (`Plugin.php`).
+
 Add the `registerStormedModels()` method in your `Plugin.php` file, for example:
 
+```php
     public function registerStormedModels()
     {
         return [
             '\Author\Plugin\Models\ExampleModel' => [
-                'prefix' => 'viewBag',
+                'placement' => 'tabs',
+            ],
+        ];
+    }
+```
+
+Using this definition SEO Storm will take care of extending the model and form widgets in backend controllers. The above example will add SEO fields to the `ExampleModel` as in the following example (the example uses `Question` model):
+
+![Example stormed model registration](docs/example-stormed-model.png)
+
+There may be a need to customize the fields displayed in the backend. To do it you can use `excludeFields` attribute in the registration method. You may also use inverted syntax, so that all the fields are removed except the ones listed. See the example below:
+
+```php
+    public function registerStormedModels()
+    {
+        return [
+            '\Author\Plugin\Models\ExampleModel' => [
                 'placement' => 'tabs',
                 'excludeFields' => [
                     'model_class',
@@ -169,18 +198,18 @@ Add the `registerStormedModels()` method in your `Plugin.php` file, for example:
             ],
         ];
     }
+```
 
-This will make the models automatically extended and form widgets to automatically have the required fields.
+The following parameters are supported in the `registerStormedModels` method:
 
-SEO Storm automatically takes care of `CMS page` and `Static pages` models.
+* `placement` defines where the fields are going to be rendered. It's either: `fields`, `tabs` and `secondaryTabs`,
+* `prefix` defines the relation prefix to automatically add to the fields definition, by default `seo_options` - you have to know what you're doing before changing it,
+* `excludeFields` will exclude the fields from the form as described above
 
-`seo_options` are stored in the automatically binded polymorphic relation beetween the model and `SeoOptions` model.
-This feature frees you from defining the attributes in your models, tables and `fields.yaml`.
+Note: By default, SEO Storm takes care of `CMS pages` and `Static pages` so you don't have to define them yourself.
 
-To make it more clear:
+## Troubleshooting
 
-* `placement` defines where the fields are going to be rendered. Possible options are: `fields`, `tabs` and `secondaryTabs`,
-* `prefix` defines the relation prefix to automatically add to the fields definition, by default `seo_options` - you probably won't want to change it,
-* `excludeFields` will exclude the fields from the form
+### Cards look bad when pasting link on social media
 
-`excludeFields` can also define the inverse by `*`, so in the second example we will have all the fields excluded except those defined later.
+Open Graph is not enabled or it's configured improperly. See [the guide for Open Graph from Facebook](https://developers.facebook.com/docs/sharing/webmasters) and [the guide for Twitter cards from Twitter](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html) to get better understanding on the parameters.
