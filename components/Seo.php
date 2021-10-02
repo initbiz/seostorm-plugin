@@ -40,7 +40,13 @@ class Seo extends ComponentBase
 
     public function getSettings()
     {
-        return $this->settings ?? Settings::instance();
+        if (isset($this->settings)) {
+            return $this->settings;
+        }
+
+        $this->settings = Settings::instance();
+
+        return $this->settings;
     }
 
     public function onRun()

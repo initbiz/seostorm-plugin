@@ -4,4 +4,4 @@
 2.0.0:
     - "!!! Deleted automatic RainLab.Blog handler"
 3.0.0:
-    - "Dropped Schema and minify support. Provided full compatibility with October 2.0"
+    - "!!! Dropped Schema and minify support. Provided full compatibility with October 2.0"

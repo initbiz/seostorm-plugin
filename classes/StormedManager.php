@@ -27,11 +27,13 @@ class StormedManager extends Singleton
     protected $fieldsDefs;
 
     /**
-     * Initialize this singleton.
+     * Getter for stormed models
+     *
+     * @return array
      */
-    protected function init()
+    public function getStormedModels()
     {
-        if ($this->stormedModels) {
+        if (!empty($this->stormedModels)) {
             return $this->stormedModels;
         }
 
@@ -40,26 +42,18 @@ class StormedManager extends Singleton
         $pluginManager = PluginManager::instance();
         $plugins = $pluginManager->getPlugins();
 
-        $result = [];
+        $stormedModels = [];
 
         foreach ($plugins as $plugin) {
             if (method_exists($plugin, $methodName)) {
                 $methodResult = $plugin->$methodName() ?? [];
-                $result = array_merge($result, $methodResult);
+                $stormedModels = array_merge($stormedModels, $methodResult);
             }
         }
 
-        $this->stormedModels = $result;
-    }
+        $this->stormedModels = $stormedModels;
 
-    /**
-     * Getter for stormed models
-     *
-     * @return array
-     */
-    public function getStormedModels()
-    {
-        return $this->stormedModels;
+        return $stormedModels;
     }
 
     /**
@@ -172,6 +166,8 @@ class StormedManager extends Singleton
 
         return $fields;
     }
+
+    // Helpers
 
     /**
      * Walk on the array of fields and add prefix
