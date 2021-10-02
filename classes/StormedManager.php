@@ -2,9 +2,7 @@
 
 namespace Initbiz\SeoStorm\Classes;
 
-use App;
 use Yaml;
-use Backend\Facades\BackendAuth;
 use System\Classes\PluginManager;
 use October\Rain\Support\Singleton;
 use Initbiz\SeoStorm\Models\Settings;
@@ -20,6 +18,13 @@ class StormedManager extends Singleton
      * @var array
      */
     protected $stormedModels;
+
+    /**
+     * Local cache var
+     *
+     * @var array
+     */
+    protected $fieldsDefs;
 
     /**
      * Initialize this singleton.
@@ -78,6 +83,10 @@ class StormedManager extends Singleton
      */
     public function getSeoFieldsDefs(array $excludeFields = [])
     {
+        if (!empty($this->fieldsDefs)) {
+            return $this->fieldsDefs;
+        }
+
         $fieldsDefinitions = [];
 
         $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/metafields.yaml'));
@@ -111,6 +120,8 @@ class StormedManager extends Singleton
                 $readyFieldsDefs[$key] = $fieldDef;
             }
         }
+
+        $this->fieldsDefs = $readyFieldsDefs;
 
         return $readyFieldsDefs;
     }
