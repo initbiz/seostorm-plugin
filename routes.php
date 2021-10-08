@@ -5,12 +5,12 @@ namespace Initbiz\SeoStorm;
 use App;
 use File;
 use Route;
+use Resizer;
 use Response;
 use Cms\Classes\Controller;
 use Initbiz\SeoStorm\Classes\Robots;
 use Initbiz\SeoStorm\Classes\Sitemap;
 use Initbiz\SeoStorm\Models\Settings;
-use October\Rain\Database\Attach\Resizer;
 
 Route::get('robots.txt', function () {
     return Robots::response();

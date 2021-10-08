@@ -1,38 +1,22 @@
-{% set settings = __SELF__.settings %}
-{% set robots = [
-    __SELF__.getSeoAttribute('robot_index'),
-    __SELF__.getSeoAttribute('robot_follow'),
-    include(template_from_string(__SELF__.getSeoAttribute('robot_advanced')))
-   ]
-%}
+{% set settings = __SELF__.getSettings() %}
 
-{%- if settings.enable_site_meta -%}
-    <title>{{ include(template_from_string(__SELF__.getTitle)) }}</title>
-    <meta name="description" content="{{ include(template_from_string(__SELF__.getDescription())) }}" />
-    <link rel="canonical" href="{{ include(template_from_string(__SELF__getSeoAttribute.canonical_url))|url }}">
+{% if settings.enable_site_meta %}
+<title>{{ include(template_from_string(__SELF__.getTitle())) }}</title>
+<meta name="description" content="{{ include(template_from_string(__SELF__.getDescription())) }}" />
+{% set canonical = include(template_from_string(__SELF__.getSeoAttribute('canonical_url'))) %}
+<link rel="canonical" href="{{ __SELF__.getCanonicalUrl(canonical) }}">
 {% endif %}
-
-{%- if settings.enable_robots_meta -%}
-    <meta name="robots" content="{{ robots|removenulls|join(', ') }}" />
+{% if settings.enable_robots_meta %}
+{% set advancedRobots = include(template_from_string(__SELF__.getSeoAttribute('robot_advanced'))) %}
+<meta name="robots" content="{{ __SELF__.getRobots(advancedRobots) }}" />
 {% endif %}
-
-{% if not __SELF__.disable_schema %}
-    {% for schema in __SELF__.getSeoAttribute('schemas') %}
-        {{ include(template_from_string(schema.script))|raw }}
-    {% endfor %}
-
-    {{ include(template_from_string(__SELF__.getSeoAttribute('schemas')|initbiz_seostorm_schema))|raw }}
-{% endif %}
-
 {% if settings.favicon_enabled %}
-    <link rel="shortcut icon" href="{{ 'favicon.ico'|app }}" type="image/x-icon">
-    <link rel="icon" type="image/x-icon" href="{{ 'favicon.ico'|app }}" />
+<link rel="shortcut icon" href="{{ 'favicon.ico'|app }}" type="image/x-icon">
+<link rel="icon" type="image/x-icon" href="{{ 'favicon.ico'|app }}" />
 {% endif %}
-
 {% if settings.enable_og %}
-    {% partial '@social.htm' settings=settings %}
+{% partial '@social.htm' settings=settings %}
 {% endif %}
-
 {% if settings.extra_meta %}
-    {{ settings.extra_meta|raw }}
+{{ settings.extra_meta|raw }}
 {% endif %}

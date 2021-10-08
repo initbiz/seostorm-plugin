@@ -46,7 +46,8 @@ class SeoStormed extends ModelBehavior
             $seoOptions->options = $value;
             $this->model->seostorm_options()->add($seoOptions);
         } else {
-            /* If the parent model doesn't exist
+            /*
+             * If the parent model doesn't exist
              * we have to save the child and defer the binding
              */
             $seoOptions = new SeoOptions();
@@ -54,6 +55,7 @@ class SeoStormed extends ModelBehavior
             $seoOptions->save();
             $this->model->seostorm_options()->add($seoOptions, post('_session_key'));
         }
+
         unset($this->model->attributes['seo_options']);
     }
 }

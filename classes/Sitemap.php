@@ -30,46 +30,46 @@ class  Sitemap
 
     protected $urlSet;
 
-    public function generate()
+    public function generate($pages = [])
     {
-        // get all pages of the current theme
-        $pages = Page::listInTheme(Theme::getEditTheme());
+        if (empty($pages)) {
+            // get all pages of the current theme
+            $pages = Page::listInTheme(Theme::getEditTheme());
+        }
+
         $models = [];
 
         $pages = $pages
             ->filter(function ($page) {
-                return $page->enabled_in_sitemap;
-            })->sortByDesc('priority');
+                return $page->seo_options_enabled_in_sitemap;
+            })->sortByDesc('seo_options_priority');
 
         foreach ($pages as $page) {
             // $page = Event::fire('initbiz.seostorm.generateSitemapCmsPage', [$page]);
-            $modelClass = $page->model_class;
+            $modelClass = $page->seo_options_model_class;
 
             $loc = $page->url;
 
             $sitemapItem = new SitemapItem();
-            $sitemapItem->priority = $page->priority;
-            $sitemapItem->changefreq = $page->changefreq;
+            $sitemapItem->priority = $page->seo_options_priority;
+            $sitemapItem->changefreq = $page->seo_options_changefreq;
             $sitemapItem->loc = $loc;
             $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
 
             // if page has model class
             if (class_exists($modelClass)) {
-                $scope = $page->model_scope;
+                $scope = $page->seo_options_model_scope;
                 if (empty($scope)) {
                     $models = $modelClass::all();
                 } else {
                     $models = $modelClass::$scope()->get();
                 }
 
-                // TODO: make it backward compatible with RainLab.BlogPost
-                //       Proposition: add components to Plugin.php with pair with the registered models
-                // TODO: refactor the code, it works but is ugly
                 foreach ($models as $model) {
                     if (($model->seo_options['enabled_in_sitemap'] ?? null) === "0") {
                         continue;
                     }
-                    $modelParams = $page->model_params;
+                    $modelParams = $page->seo_options_model_params;
                     $loc = $page->url;
 
                     if (!empty($modelParams)) {
@@ -95,7 +95,7 @@ class  Sitemap
 
                     $sitemapItem->loc = $loc;
 
-                    if ($page->use_updated_at && isset($model->updated_at)) {
+                    if ($page->seo_options_use_updated_at && isset($model->updated_at)) {
                         $sitemapItem->lastmod = $model->updated_at->format('c');
                     }
 

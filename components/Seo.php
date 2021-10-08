@@ -3,34 +3,27 @@
 namespace Initbiz\SeoStorm\Components;
 
 use App;
-use Cms\Components\ViewBag;
+use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
 use Media\Classes\MediaLibrary;
-use System\Classes\MediaLibrary as OldMediaLibrary;
 use Initbiz\SeoStorm\Models\Settings;
+use System\Classes\MediaLibrary as OldMediaLibrary;
 
 class Seo extends ComponentBase
 {
     /**
-     * Plugin settings
-     *
-     * @var Collection
-     */
-    public $settings;
-
-    /**
-     * Is schema disabled
-     *
-     * @var Boolean
-     */
-    public $disable_schema;
-
-    /**
-     * Current viewBag set in the current pages
+     * Current attributes parsed from settings or viewBag (in static pages)
      *
      * @var Array
      */
     public $seoAttributes;
+
+    /**
+     * Plugin settings
+     *
+     * @var Model
+     */
+    protected $settings;
 
     public function componentDetails()
     {
@@ -40,47 +33,69 @@ class Seo extends ComponentBase
         ];
     }
 
-    public function defineProperties()
+    public function setSettings($settings)
     {
-        return [
-            'disable_schema' => [
-                'title' => 'initbiz.seostorm::lang.components.seo.properties.disable_schema.title',
-                'description' => 'initbiz.seostorm::lang.components.seo.properties.disable_schema.description',
-                'type' => 'checkbox'
-            ]
-        ];
+        $this->settings = $settings;
+    }
+
+    public function getSettings()
+    {
+        if (isset($this->settings)) {
+            return $this->settings;
+        }
+
+        $this->settings = Settings::instance();
+
+        return $this->settings;
     }
 
     public function onRun()
     {
-        $this->settings = Settings::instance();
-
-        if (!$this->page['viewBag']) {
-            $this->page['viewBag'] = new ViewBag();
-        }
-
         if (isset($this->page->apiBag['staticPage'])) {
             $this->seoAttributes = $this->page['viewBag'] = array_merge(
                 $this->page->apiBag['staticPage']->viewBag,
                 $this->page->attributes
             );
         } else {
-            $properties = array_merge(
-                $this->page->settings,
-                $this->page['viewBag']->getProperties()
-            );
-
-            $this->seoAttributes = $properties;
+            $this->seoAttributes = $this->page->settings;
         }
-        $this->disable_schema = $this->property('disable_schema');
     }
 
+    // Site meta getters
 
-    public function getSeoAttribute($seoAttribute)
+    public function getRobots($advancedRobots = '')
     {
-        return $this->seoAttributes[$seoAttribute] ?? null;
+        $robots = [];
+        if (!empty($index = $this->getSeoAttribute('robot_index'))) {
+            $robots[] = $index;
+        }
+
+        if (!empty($follow = $this->getSeoAttribute('robot_follow'))) {
+            $robots[] = $follow;
+        }
+
+        if (!empty($advancedRobots)) {
+            $robots[] = $advancedRobots;
+        }
+
+        return implode(',', $robots);
     }
 
+    public function getCanonicalUrl($parsedTwig = '')
+    {
+        // If nothing set in the parameter - return this page URL
+        if (empty($parsedTwig)) {
+            return Page::url($this->page->id);
+        }
+
+        return url($parsedTwig);
+    }
+
+    /**
+     * Get the title of the page without suffix/prefix from the settings
+     *
+     * @return string
+     */
     public function getTitleRaw()
     {
         return $this->getPropertyTranslated('meta_title') ?: $this->getSeoAttribute('title') ?: null;
@@ -95,7 +110,7 @@ class Seo extends ComponentBase
     {
         $title = $this->getTitleRaw();
 
-        $settings = Settings::instance();
+        $settings = $this->getSettings();
 
         if ($settings->site_name_position == 'prefix') {
             $title = "{$settings->site_name} {$settings->site_name_separator} {$title}";
@@ -121,11 +136,14 @@ class Seo extends ComponentBase
         }
 
         if (!$description) {
-            $description = Settings::instance()->site_description;
+            $settings = $this->getSettings();
+            $description = $settings->site_description;
         }
 
         return $description;
     }
+
+    // Open Graph parameter getters
 
     /**
      * Returns og_title if set in the viewBag
@@ -212,15 +230,31 @@ class Seo extends ComponentBase
      */
     public function getSiteImageFromSettings()
     {
-        $siteImageFrom = Settings::instance()->site_image_from;
-        if ($siteImageFrom === 'media' && Settings::instance()->site_image) {
-            return MediaLibrary::instance()->getPathUrl(Settings::instance()->site_image);
+        $settings = $this->getSettings();
+        $siteImageFrom = $settings->site_image_from;
+
+        if ($siteImageFrom === 'media' && $settings->site_image) {
+            return MediaLibrary::instance()->getPathUrl($settings->site_image);
         } elseif ($siteImageFrom === "fileupload") {
-            return Settings::instance()->site_image_fileupload()->getSimpleValue();
+            return $settings->site_image_fileupload()->getSimpleValue();
         } elseif ($siteImageFrom === "url") {
-            return Settings::instance()->site_image_url;
+            return $settings->site_image_url;
         }
     }
+
+    // Global helpers
+
+    /**
+     * Getter for attributes set in the page's settings
+     *
+     * @param string $seoAttribute name of the seo attribute e.g. canonical_url
+     * @return string
+     */
+    public function getSeoAttribute($seoAttribute)
+    {
+        return $this->seoAttributes['seo_options_' . $seoAttribute] ?? $this->seoAttributes[$seoAttribute] ?? null;
+    }
+
 
     /**
      * Returns the property from the viewBag
