@@ -1,8 +1,9 @@
-SEO Storm
+SEO Storm - ultimate SEO tool for OctoberCMS!
 ===
 
 [//]: # (Introduction)
-Serious SEO within the OctoberCMS starts here!
+
+![SEO Storm - ultimate SEO tool for OctoberCMS](docs/seo-storm.png)
 
 Originally forked from the abandoned `Arcane.SEO` plugin we have made numerous improvements and added many new features.
 
