@@ -1,3 +1,27 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [SEO Storm](#seo-storm)
+    - [Key Features](#key-features)
+    - [Using SEO Storm](#using-seo-storm)
+    - [Common use-cases](#common-use-cases)
+        - [Global prefix/suffix in the page's title](#global-prefixsuffix-in-the-pages-title)
+        - [Automatically set the title of the page based on a model (such as a blog post)](#automatically-set-the-title-of-the-page-based-on-a-model-such-as-a-blog-post)
+        - [Generating your `sitemap.xml`](#generating-your-sitemapxml)
+    - [Dynamic meta tags](#dynamic-meta-tags)
+        - [Fallback values](#fallback-values)
+    - [Advanced `sitemap.xml`](#advanced-sitemapxml)
+        - [Model params](#model-params)
+        - [Model scopes](#model-scopes)
+    - [Open Graph & Twitter cards](#open-graph-&-twitter-cards)
+    - [Custom models with SEO parameters](#custom-models-with-seo-parameters)
+    - [Troubleshooting](#troubleshooting)
+        - [Problem: Cards looking bad when pasting a link on social media](#problem-cards-looking-bad-when-pasting-a-link-on-social-media)
+    - [Future plans/features](#future-plansfeatures)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 SEO Storm
 ===
 
