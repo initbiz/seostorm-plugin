@@ -30,4 +30,17 @@ class Settings extends Model
 
     // Reference to field configuration
     public $settingsFields = 'fields.yaml';
+
+    public function initSettingsData()
+    {
+        $this->enable_site_meta = true;
+        $this->site_name_position = 'nowhere';
+        $this->enable_sitemap = true;
+        $this->enable_robots_txt = true;
+        $this->enable_robots_meta = true;
+        $this->enable_robots_txt = 'User-agent: *\r\nAllow: /';
+        $this->favicon_enabled = false;
+        $this->favicon_16 = false;
+        $this->enable_og = true;
+    }
 }

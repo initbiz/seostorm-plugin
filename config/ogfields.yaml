@@ -1,50 +1,50 @@
 og_title:
-    type: text
     label: initbiz.seostorm::lang.form.general.og_title_label
-    tab: initbiz.seostorm::lang.form.general.tab_open_graph
-    span: auto
-    trans: true
     commentAbove: initbiz.seostorm::lang.form.general.og_title_comment
+    tab: initbiz.seostorm::lang.form.general.tab_open_graph
     placeholder: initbiz.seostorm::lang.form.general.og_title_placeholder
+    span: auto
+    type: text
+    trans: true
 og_description:
     label: initbiz.seostorm::lang.form.general.og_description_label
+    commentAbove: initbiz.seostorm::lang.form.general.og_description_comment
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
+    placeholder: initbiz.seostorm::lang.form.general.og_description_placeholder
     type: textarea
     size: tiny
     span: auto
     trans: true
-    commentAbove: initbiz.seostorm::lang.form.general.og_description_comment
-    placeholder: initbiz.seostorm::lang.form.general.og_description_placeholder
 
 og_type:
     label: initbiz.seostorm::lang.form.general.og_type_label
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
-    span: auto
     placeholder: initbiz.seostorm::lang.form.general.og_type_placeholder
+    span: auto
 
 og_card:
     label: initbiz.seostorm::lang.form.general.og_card_label
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
     type: dropdown
+    default: summary-large-image
+    span: left
     options:
         summary-large-image: summary-large-image
         summary: summary
         app: app
         player: player
-    default: summary-large-image
-    span: left
 
 og_image:
     label: initbiz.seostorm::lang.form.general.og_image_label
+    commentAbove: initbiz.seostorm::lang.form.general.og_image_comment
     type: mediafinder
     mode: image
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
     span: auto
-    commentAbove: initbiz.seostorm::lang.form.general.og_image_comment
 
 og_ref_image:
     label: initbiz.seostorm::lang.form.general.og_ref_image_label
-    tab: initbiz.seostorm::lang.form.general.tab_open_graph
-    span: auto
-    placeholder: initbiz.seostorm::lang.form.general.og_ref_image_placeholder
     commentAbove: initbiz.seostorm::lang.form.general.og_ref_image_comment
+    tab: initbiz.seostorm::lang.form.general.tab_open_graph
+    placeholder: initbiz.seostorm::lang.form.general.og_ref_image_placeholder
+    span: auto

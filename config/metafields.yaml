@@ -26,38 +26,39 @@ meta_description:
 
 canonical_url:
     label: initbiz.seostorm::lang.form.general.canonical_url_label
-    type: text
+    commentAbove: initbiz.seostorm::lang.form.general.canonical_url_comment
     tab: initbiz.seostorm::lang.form.general.tab_meta
+    type: text
     span: full
     trans: true
     commentAbove: initbiz.seostorm::lang.form.general.canonical_url_comment
 
 robot_index:
     label: initbiz.seostorm::lang.form.general.robot_index_label
-    type: balloon-selector
-    tab: initbiz.seostorm::lang.form.general.tab_meta
-    options:
-        index: index
-        noindex: noindex
-        '': non set
     commentAbove: initbiz.seostorm::lang.form.general.robot_index_comment
+    tab: initbiz.seostorm::lang.form.general.tab_meta
+    type: balloon-selector
+    options:
+        index: Index
+        noindex: Noindex
+        '': initbiz.seostorm::lang.form.general.robot_empty
     span: left
     default: index
 
 robot_follow:
     label: initbiz.seostorm::lang.form.general.robot_follow_label
-    type: balloon-selector
-    tab: initbiz.seostorm::lang.form.general.tab_meta
-    options:
-        follow: follow
-        nofollow: nofollow
-        '': non set
     commentAbove: initbiz.seostorm::lang.form.general.robot_follow_comment
+    tab: initbiz.seostorm::lang.form.general.tab_meta
+    type: balloon-selector
+    options:
+        follow: Follow
+        nofollow: Nofollow
+        '': initbiz.seostorm::lang.form.general.robot_empty
     span: right
     default: follow
 
 robot_advanced:
     label: initbiz.seostorm::lang.form.general.robot_advanced_label
-    tab: initbiz.seostorm::lang.form.general.tab_meta
     commentAbove: initbiz.seostorm::lang.form.general.robot_advanced_comment
+    tab: initbiz.seostorm::lang.form.general.tab_meta
     span: left

@@ -6,28 +6,14 @@
     'permissions' => [
         'settings_tab' => 'SEO Storm',
         'config' => 'Access SEO Storm configuration',
-        'og' => 'Access Open Graph tab',
-        'sitemap' => 'Accsss Sitemap tab',
-        'meta' => 'Access Meta tab',
-        'schema' => 'Access Schema tab',
     ],
     'form_widgets' => [
-        'cache_cleared' => 'Cache cleared',
-        'clear_cache' => 'Clear cache',
-        'clearing' => 'Clearing',
         'migrate' => 'Migrate',
         'migrating' => 'Migrating',
         'migrate_head' => 'Arcane.SEO migrator',
         'migrate_comment' => 'To migrate from Arcane.SEO plugin, click the button below. It will override your current configuration.',
         'migrate_confirm' => 'Are you sure you want to migrate the settings from Arcane.SEO?',
         'successfully_migrated' => 'The migration was successfull',
-    ],
-    'schemas' => [
-        'id' => 'ID',
-        'name' => 'Name',
-        'created_at' => 'Created',
-        'updated_at' => 'Updated',
-        'template' => 'Template',
     ],
     'form' => [
         'general' => [
@@ -40,13 +26,14 @@
             'og_description_comment' => 'The optimal length is 155',
             'og_description_placeholder' => 'Description of the page',
             'canonical_url_label' => 'Canonical URL',
-            'canonical_url_comment' => 'The canonical URL this page should point to defaults to current URL',
-            'robot_index_label' => 'robots index',
+            'canonical_url_comment' => 'The canonical URL this page should point to. You can use twig syntax here',
+            'robot_index_label' => 'Robots index',
             'robot_index_comment' => 'Specify if search engines should index this page',
-            'robot_follow_label' => 'robots follow',
+            'robot_follow_label' => 'Robots follow',
             'robot_follow_comment' => 'Specify if search engines should follow the links on this page',
             'robot_advanced_label' => 'Advanced robots',
-            'robot_advanced_comment' => 'Add aditional directives to the robots meta tag separated by commas',
+            'robot_advanced_comment' => 'Add aditional directives to the robots meta tag, you can also use twig syntax here',
+            'robot_empty' => 'Don\'t set',
             'enabled_in_sitemap_label' => 'Enable in the sitemap.xml',
             'enabled_in_sitemap_comment' => 'Page will appear in the sitemap.xml',
             'use_updated_at_label' => 'Use "updated_at" from the model as "Last time modified"',
@@ -57,8 +44,8 @@
             'changefreq_comment' => 'Tell search engines how frequently this page changes',
             'priority_label' => 'Priority',
             'priority_comment' => 'Rank the importance of the page to search engines',
-            'schemas_label' => 'Write the schemas for this page',
             'og_type_label' => 'OG:type',
+            'og_type_comment' => 'Defaults to website',
             'og_type_placeholder' => 'website article video etc...',
             'og_card_label' => 'OG:card',
             'og_ref_image_label' => 'OG:image',
@@ -68,7 +55,6 @@
             'og_image_comment' => 'OG:image from media library',
             'tab_meta' => 'Meta',
             'tab_sitemap' => 'Sitemap',
-            'tab_schemas' => 'Schemas',
             'tab_open_graph' => 'Open Graph',
             'model_class_label' => 'Model class',
             'model_class_comment' => 'Associate this page with a model links will be generated from it\'s records',
@@ -85,9 +71,9 @@
             'label' => 'General settings',
             'description' => 'Configure SEO Storm',
             'tab_meta' => 'Meta',
+            'tab_sitemap' => 'Sitemap',
             'tab_head' => '<head>',
             'tab_robots' => 'Robots',
-            'tab_minify' => 'Minify',
             'tab_favicon' => 'Favicon',
             'tab_htaccess' => '.htaccess',
             'tab_social_media' => 'Social Media',
@@ -106,17 +92,12 @@
             'site_name_separator_comment' => 'Character to separate site name from title, eg: Page Title|SiteName',
             'site_name_position' => 'Site name display',
             'site_description' => 'Default description',
-            'site_description_comment' => '[data-counter]',
             'site_description_placeholder' => 'Your site description',
             'extra_meta' => 'Additional <head> content',
             'extra_meta_comment' => 'Additional meta tags',
             'enable_robots_txt' => 'Enable robots.txt',
             'enable_robots_meta' => 'Enable robots meta tags',
             'robots_txt' => 'robots.txt',
-            'minify_html' => 'Minify HTML automatically',
-            'minify_html_comment' => 'Front-end HTML will be minimized. Clear the cache whenever you make a change',
-            'no_minify_for_dev' => 'Disable minification when ENV=dev',
-            'no_minify_for_dev_comment' => 'Change the ENV variable in your .env file',
             'favicon_enabled' => 'Enable favicon.ico',
             'favicon_enabled_comment' => 'This will generate a route to /favicon.ico',
             'favicon_16' => 'Resize favicon to 16x16',
@@ -136,9 +117,6 @@
             'og_locale_comment' => 'Set the locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>',
             'og_locale_alternate' => 'OG:locale:alternate',
             'og_locale_alternate_comment' => 'Set the alternate locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>',
-            'minify_hint_title' => 'HTML and Cache',
-            'minify_hint_line_one' => 'Ajax requests with the same URL will return the first cached HTML.',
-            'minify_hint_line_two' => 'This will break components that use the ajax framework from October. A workaround will be implemented soon.',
             'site_image_hint' => 'Recommended resolution of the image is 1200px x 627px',
             'og_site_name' => 'OG:site_name',
             'og_site_name_comment' => 'If your object is part of a larger web site, the name which should be displayed for the overall site. e.g., "Init".',
@@ -158,108 +136,6 @@
         'seo' => [
             'name' => 'Seo',
             'description' => 'Renders SEO meta tags in place',
-            'properties' => [
-                'disable_schema' => [
-                    'title' => 'Disable schemas',
-                    'description' => 'Enable this if you do not want to output schema scripts from the seo component',
-                ]
-            ],
-        ],
-        'schema_article' => [
-            'name' => 'Article (schema.org)',
-            'description' => 'Interts a schema.org article in JSON-LD',
-            'properties' => [
-                'headline' => [
-                    'title' => 'Headline',
-                    'description' => '',
-                    'group' => 'Properties',
-                ],
-                'image' => [
-                    'title' => 'Image',
-                    'description' => '',
-                    'group' => 'Properties',
-                ]
-            ],
-        ],
-        'schema_product' => [
-            'name' => 'Product (schema.org)',
-            'description' => 'Defines a schema.org product',
-            'properties' => [
-                'name' => [
-                    'title' => 'Name',
-                    'description' => '',
-                ],
-                'description' => [
-                    'title' => 'Description',
-                    'description' => '',
-                ],
-                'image' => [
-                    'title' => 'Image',
-                    'description' => '',
-                ],
-                'sku' => [
-                    'title' => 'SKU',
-                    'description' => '',
-                ],
-                'brand' => [
-                    'title' => 'Brand',
-                    'description' => '',
-                ],
-                'price_currency' => [
-                    'title' => 'Price currency',
-                    'description' => 'The currency used to describe the product price, in three-letter ISO 4217 format.',
-                ],
-                'price' => [
-                    'title' => 'Price',
-                    'description' => 'The price of the product. Follow schema.org/price usage guidelines.',
-                ],
-                'availability' => [
-                    'title' => 'Availability',
-                    'description' => 'Value is taken from a constrained list of options, expressed in markup using URL links. Google also understands their short names (for example InStock or OutOfStock, without the full URL scope.) Example: http://schema.org/InStock',
-                ],
-                'offerUrl' => [
-                    'title' => 'URL',
-                    'description' => '',
-                ],
-                'rating_value' => [
-                    'title' => 'Rating value',
-                    'description' => 'Rating of the product: 0-5, can accept decimals',
-                ],
-                'review_count' => [
-                    'title' => 'Review count',
-                    'description' => 'Indicate how many people have voted for the product',
-                ],
-            ],
-        ],
-        'schema_video' => [
-            'name' => 'Video (schema.org)',
-            'description' => 'Inserts an schema.org VideoObject',
-            'properties' => [
-                'name' => [
-                    'title' => 'Name',
-                    'description' => 'Name of the video',
-                ],
-                'description' => [
-                    'title' => 'Description',
-                    'description' => 'Description of the video',
-                ],
-                'thumbnail_url' => [
-                    'title' => 'Thumbnail URL',
-                    'description' => 'Thumnail of the video',
-                ],
-                'upload_date' => [
-                    'title' => 'Upload Date',
-                    'description' => 'Upload date of the video',
-                ],
-                'duration' => [
-                    'title' => 'Duration',
-                    'description' => 'Duration of the video',
-                ],
-                'interaction_count' => [
-                    'title' => 'Interaction count',
-                    'description' => 'Number of times the video has been viewed',
-                ],
-            ],
         ],
     ]
 ];

@@ -7,7 +7,6 @@ use Backend\Models\UserRole;
 use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Models\Settings;
 use October\Rain\Exception\ApplicationException;
-use Arcane\Seo\Models\Settings as ArcaneSettings;
 
 class Migrator
 {
@@ -25,7 +24,7 @@ class Migrator
 
     public static function settings()
     {
-        $arcaneSettings = ArcaneSettings::instance();
+        $arcaneSettings = \Arcane\Seo\Models\Settings\Settings::instance();
         $stormSettings = Settings::instance();
         foreach ($arcaneSettings->attributes as $key => $value) {
             if ($key === 'id' || $key === 'item') {
