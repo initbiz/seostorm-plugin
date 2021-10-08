@@ -1,3 +1,13 @@
+SEO Storm
+===
+
+[//]: # (Introduction)
+Serious SEO within the OctoberCMS starts here!
+
+Originally forked from the abandoned `Arcane.SEO` plugin we have made numerous improvements and added many new features.
+
+---
+
 - [Key Features](#key-features)
 - [Using SEO Storm](#using-seo-storm)
 - [Common use-cases](#common-use-cases)
@@ -15,13 +25,7 @@
     - [Problem: Cards looking bad when pasting a link on social media](#problem-cards-looking-bad-when-pasting-a-link-on-social-media)
 - [Future plans/features](#future-plansfeatures)
 
-SEO Storm
-===
-
-[//]: # (Introduction)
-Serious SEO within the OctoberCMS starts here!
-
-Originally forked from the abandoned `Arcane.SEO` plugin we have made numerous improvements and added many new features.
+---
 
 ## Key Features
 
