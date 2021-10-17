@@ -44,7 +44,6 @@ class BackendHandler
                 ];
             }
         });
-
     }
 
     /**
@@ -81,7 +80,7 @@ class BackendHandler
 
     protected function addFillableToPageModel($event)
     {
-        Page::extend(function($model) {
+        Page::extend(function ($model) {
             $stormedManager = StormedManager::instance();
 
             $fields = $stormedManager->getSeoFieldsDefs();

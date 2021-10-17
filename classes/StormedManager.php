@@ -138,33 +138,35 @@ class StormedManager extends Singleton
     {
         $fields = $this->addPrefix($this->getSeoFieldsDefs(), 'seo_options', '%s_%s');
 
-        foreach ($fields as $key => &$val) {
-            // $val['property'] = preg_replace('/\[|\]/', '', $key);
-            $val['property'] = $key;
-            $val['title'] = $val['label'];
-            if (isset($val['commentAbove'])) {
-                $val['description'] = $val['commentAbove'];
-            }
+        $editorFields = [];
+        foreach ($fields as $key => $fieldDef) {
+            $type = $fieldDef['type'] ?? 'text';
 
-            if (!isset($val['type'])) {
-                $val['type'] = 'text';
-            }
-
-            switch ($val['type']) {
+            switch ($type) {
                 case 'textarea':
                 case 'datepicker':
-                    $val['type'] = 'text';
+                    $type = 'text';
                     break;
                 case 'balloon-selector':
-                    $val['type'] = 'dropdown';
+                    $type = 'dropdown';
                     break;
             }
+
+            $field = [
+                'property' => $key,
+                'type' => $type,
+                'title' => $fieldDef['label'] ?? $fieldDef['title'] ?? '',
+                'tab' => $fieldDef['tab'] ?? null,
+                'placeholder' => $fieldDef['placeholder'] ?? null,
+                'default' => $fieldDef['default'] ?? null,
+                'description' => $fieldDef['comment'] ?? $fieldDef['commentAbove'] ?? null,
+                'options' => $fieldDef['options'] ?? null,
+            ];
+
+            $editorFields[] = $field;
         }
 
-        // We have to drop the keys for October 2.0+
-        $fields = array_values($fields);
-
-        return $fields;
+        return $editorFields;
     }
 
     // Helpers
