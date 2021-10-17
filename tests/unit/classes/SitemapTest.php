@@ -1,6 +1,6 @@
 <?php
 
-namespace Initbiz\SeoStorm\Tests\Unit\Components;
+namespace Initbiz\SeoStorm\Tests\Unit\Classes;
 
 use Carbon\Carbon;
 use Cms\Classes\Page;

@@ -5,3 +5,5 @@
     - "!!! Deleted automatic RainLab.Blog handler"
 3.0.0:
     - "!!! Dropped Schema and minify support. Provided full compatibility with October 2.0"
+3.0.1:
+    - "Fix bug with setting seo attributes"
