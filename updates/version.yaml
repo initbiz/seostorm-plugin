@@ -9,3 +9,6 @@
     - "Fix bug with setting seo attributes"
 4.0.0:
     - "!!! Seo attributes changed to camelCase issue initbiz/seostorm-plugin!23"
+4.0.1:
+    - "Remove unneeded handler"
+
