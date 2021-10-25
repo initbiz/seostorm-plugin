@@ -247,7 +247,9 @@ class Seo extends ComponentBase
      */
     public function getSeoAttribute($seoAttribute)
     {
-        return $this->seoAttributes['seoOptions' . studly_case($seoAttribute)] ?? $this->seoAttributes[$seoAttribute] ?? null;
+        return $this->seoAttributes['seoOptions' . studly_case($seoAttribute)]
+               ?? $this->seoAttributes[snake_case($seoAttribute)]
+               ?? null;
     }
 
 
