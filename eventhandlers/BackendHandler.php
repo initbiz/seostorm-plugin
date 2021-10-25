@@ -54,6 +54,29 @@ class BackendHandler
      */
     protected function extendFormWidgets($event)
     {
+        $event->listen('cms.template.getTemplateToolbarSettingsButtons', function ($extension, $dataHolder) {
+            if ($dataHolder->templateType === 'page') {
+                $dataHolder->buttons[] = [
+                'button' => 'My Custom Button',
+                    'icon' => 'octo-icon-text-emoticons',
+                    'popupTitle' => 'My Custom Settings',
+                    'useViewBag' => false,
+                    'properties' => [
+                        [
+                            'property' => 'facebook_page_url',
+                            'title' => 'Facebook Page URL',
+                            'type' => 'string',
+                        ],
+                        [
+                            'property' => 'facebook_page_url_2',
+                            'title' => 'Facebook Page URL 2',
+                            'type' => 'string',
+                        ]
+                    ]
+                ];
+            }
+        });
+
         $event->listen('backend.form.extendFieldsBefore', function ($widget) {
             $stormedManager = StormedManager::instance();
             foreach ($stormedManager->getStormedModels() as $stormedModelClass => $stormedModelDef) {

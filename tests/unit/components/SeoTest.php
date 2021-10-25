@@ -33,7 +33,7 @@ class SeoTest extends StormedTestCase
         $this->assertEquals('Test page title', $component->getTitle());
 
         // Assert that meta_title has higher priority
-        $page->settings['meta_title'] = 'Meta title';
+        $page->settings['metaTitle'] = 'Meta title';
         $controller->runPage($page);
         $component = $controller->findComponentByName('seo');
 
@@ -52,7 +52,7 @@ class SeoTest extends StormedTestCase
 
         // Assert that seo_options has even higher priority
         $page = Page::load($theme, 'with-fake-model.htm');
-        $page->settings['meta_title'] = '{{ model.name }}';
+        $page->settings['metaTitle'] = '{{ model.name }}';
         $result = $controller->runPage($page);
         $component = $controller->findComponentByName('seo');
 
@@ -64,7 +64,7 @@ class SeoTest extends StormedTestCase
 
         $this->assertStringContainsString('<title>test</title>', $result);
 
-        $page->settings['seo_options_meta_title'] = '{{ model.name }} - {{ model.name }}';
+        $page->settings['seoOptionsMetaTitle'] = '{{ model.name }} - {{ model.name }}';
         $result = $controller->runPage($page);
 
         $this->assertStringContainsString('<title>test - test</title>', $result);
@@ -75,20 +75,20 @@ class SeoTest extends StormedTestCase
         $theme = Theme::load('test');
         $controller = new Controller($theme);
         $page = Page::load($theme, 'with-fake-model.htm');
-        $page->settings['seo_options_robot_index'] = 'index';
+        $page->settings['seoOptionsRobotIndex'] = 'index';
         $result = $controller->runPage($page);
         $component = $controller->findComponentByName('seo');
 
         $this->assertEquals('index', $component->getRobots());
 
-        $page->settings['seo_options_robot_index'] = '';
+        $page->settings['seoOptionsRobotIndex'] = '';
         $result = $controller->runPage($page);
         $component = $controller->findComponentByName('seo');
 
         $this->assertEquals('', $component->getRobots());
 
-        $page->settings['seo_options_robot_index'] = 'noindex';
-        $page->settings['seo_options_robot_follow'] = 'follow';
+        $page->settings['seoOptionsRobotIndex'] = 'noindex';
+        $page->settings['seoOptionsRobotFollow'] = 'follow';
         $result = $controller->runPage($page);
         $component = $controller->findComponentByName('seo');
 
@@ -98,9 +98,9 @@ class SeoTest extends StormedTestCase
         $model->name = 'test';
         $model->save();
 
-        $page->settings['seo_options_robot_index'] = 'noindex';
-        $page->settings['seo_options_robot_follow'] = 'follow';
-        $page->settings['seo_options_robot_advanced'] = '{{ model.name }}';
+        $page->settings['seoOptionsRobotIndex'] = 'noindex';
+        $page->settings['seoOptionsRobotFollow'] = 'follow';
+        $page->settings['seoOptionsRobotAdvanced'] = '{{ model.name }}';
         $result = $controller->runPage($page);
 
         $settings = Settings::instance();
@@ -121,7 +121,7 @@ class SeoTest extends StormedTestCase
 
         // Test if canonical is <app_url>/model/default if nothing is set
 
-        $page->settings['seo_options_canonical_url'] = '';
+        $page->settings['seoOptionsCanonicalUrl'] = '';
         $result = $controller->runPage($page);
         $component = $controller->findComponentByName('seo');
 
@@ -133,7 +133,7 @@ class SeoTest extends StormedTestCase
         $model->name = 'test';
         $model->save();
 
-        $page->settings['seo_options_canonical_url'] = '/model/{{ model.name }}';
+        $page->settings['seoOptionsCanonicalUrl'] = '/model/{{ model.name }}';
 
         $settings = Settings::instance();
         $settings->enable_site_meta = true;
@@ -166,7 +166,7 @@ class SeoTest extends StormedTestCase
 
         // Assert that seo_options has even higher priority
         $page = Page::load($theme, 'with-fake-model.htm');
-        $page->settings['meta_title'] = '{{ model.name }}';
+        $page->settings['metaTitle'] = '{{ model.name }}';
         $result = $controller->runPage($page);
         $component = $controller->findComponentByName('seo');
 

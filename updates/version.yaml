@@ -7,3 +7,5 @@
     - "!!! Dropped Schema and minify support. Provided full compatibility with October 2.0"
 3.0.1:
     - "Fix bug with setting seo attributes"
+4.0.0:
+    - "!!! Seo attributes changed to camelCase issue initbiz/seostorm-plugin!23"
