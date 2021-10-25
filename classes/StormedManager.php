@@ -140,12 +140,13 @@ class StormedManager extends Singleton
 
         $editorFields = [];
         foreach ($fields as $key => $fieldDef) {
-            $type = $fieldDef['type'] ?? 'text';
+            $type = $fieldDef['type'] ?? 'string';
 
             switch ($type) {
+                case 'text':
                 case 'textarea':
                 case 'datepicker':
-                    $type = 'text';
+                    $type = 'string';
                     break;
                 case 'balloon-selector':
                     $type = 'dropdown';
@@ -153,17 +154,25 @@ class StormedManager extends Singleton
             }
 
             $field = [
-                'property' => $key,
+                'property' => camel_case($key),
                 'type' => $type,
                 'title' => $fieldDef['label'] ?? $fieldDef['title'] ?? '',
-                'tab' => $fieldDef['tab'] ?? null,
-                'placeholder' => $fieldDef['placeholder'] ?? null,
-                'default' => $fieldDef['default'] ?? null,
-                'description' => $fieldDef['comment'] ?? $fieldDef['commentAbove'] ?? null,
-                'options' => $fieldDef['options'] ?? null,
+                'tab' => $fieldDef['tab'] ?? '',
+                'placeholder' => $fieldDef['placeholder'] ?? '',
+                'default' => $fieldDef['default'] ?? '',
+                'description' => $fieldDef['comment'] ?? $fieldDef['commentAbove'] ?? '',
+                'options' => $fieldDef['options'] ?? [],
             ];
 
-            $editorFields[] = $field;
+            $newField = [];
+
+            foreach ($field as $key => $property) {
+                if (!empty($property)) {
+                    $newField[$key] = $property;
+                }
+            }
+
+            $editorFields[] = $newField;
         }
 
         return $editorFields;

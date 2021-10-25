@@ -7,7 +7,6 @@ use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
 use Media\Classes\MediaLibrary;
 use Initbiz\SeoStorm\Models\Settings;
-use System\Classes\MediaLibrary as OldMediaLibrary;
 
 class Seo extends ComponentBase
 {
@@ -66,11 +65,11 @@ class Seo extends ComponentBase
     public function getRobots($advancedRobots = '')
     {
         $robots = [];
-        if (!empty($index = $this->getSeoAttribute('robot_index'))) {
+        if (!empty($index = $this->getSeoAttribute('robotIndex'))) {
             $robots[] = $index;
         }
 
-        if (!empty($follow = $this->getSeoAttribute('robot_follow'))) {
+        if (!empty($follow = $this->getSeoAttribute('robotFollow'))) {
             $robots[] = $follow;
         }
 
@@ -98,7 +97,7 @@ class Seo extends ComponentBase
      */
     public function getTitleRaw()
     {
-        return $this->getPropertyTranslated('meta_title') ?: $this->getSeoAttribute('title') ?: null;
+        return $this->getPropertyTranslated('metaTitle') ?: $this->getSeoAttribute('title') ?: null;
     }
 
     /**
@@ -129,7 +128,7 @@ class Seo extends ComponentBase
      */
     public function getDescription()
     {
-        $description = $this->getPropertyTranslated('meta_description');
+        $description = $this->getPropertyTranslated('metaDescription');
 
         if (!$description) {
             $description = $this->getSeoAttribute('description') ?? null;
@@ -153,74 +152,70 @@ class Seo extends ComponentBase
      */
     public function getOgTitle()
     {
-        return $this->getPropertyTranslated('og_title') ?? $this->getTitle();
+        return $this->getPropertyTranslated('ogTitle') ?? $this->getTitle();
     }
 
     /**
-     * Returns og_description if is set in the ViewBag
+     * Returns ogDescription if is set in the ViewBag
      * otherwise fallback to getDescription
      *
      * @return string social media description
      */
     public function getOgDescription()
     {
-        return $this->getPropertyTranslated('og_description') ?? $this->getDescription();
+        return $this->getPropertyTranslated('ogDescription') ?? $this->getDescription();
     }
 
     /**
-     * Returns og_ref_image if set
-     * else og_image if set
+     * Returns ogRefImage if set
+     * else ogImage if set
      * else fallback to getSiteImageFromSettings()
      *
      * @return string
      */
     public function getOgImage()
     {
-        if ($ogImage = $this->getPropertyTranslated('og_ref_image')) {
+        if ($ogImage = $this->getPropertyTranslated('ogRefImage')) {
             return $ogImage;
         }
 
-        if ($ogImage = $this->getPropertyTranslated('og_image')) {
-            if (class_exists(MediaLibrary::class)) {
-                return $ogImage;
-            }
-
-            return OldMediaLibrary::instance()->getPathUrl($ogImage);
+        if ($ogImage = $this->getPropertyTranslated('ogImage')) {
+            return $ogImage;
         }
 
         return $this->getSiteImageFromSettings();
     }
 
     /**
-     * Returns og_video if set in the viewBag
+     * Returns ogVideo if set in the viewBag
      *
      * @return string
      */
     public function getOgVideo()
     {
-        return $this->getSeoAttribute('og_video') ?? null;
+        return $this->getSeoAttribute('ogVideo') ?? null;
     }
 
     /**
-     * Returns og_type if set in the viewBag
+     * Returns ogType if set in the viewBag
      * otherwise returns string 'website'
      *
      * @return string default 'website'
      */
     public function getOgType()
     {
-        return $this->getSeoAttribute('og_type') ?? 'website';
+        return $this->getSeoAttribute('ogType') ?? 'website';
     }
 
     /**
-     * Returns og_card if set in the viewBag
+     * Returns ogCard if set in the viewBag
      * otherwise returns string 'summary_large_image'
      *
      * @return string default 'summary_large_image'
      */
     public function getOgCard()
     {
-        return $this->getSeoAttribute('og_card') ?? 'summary_large_image';
+        return $this->getSeoAttribute('ogCard') ?? 'summary_large_image';
     }
 
     /**
@@ -247,12 +242,12 @@ class Seo extends ComponentBase
     /**
      * Getter for attributes set in the page's settings
      *
-     * @param string $seoAttribute name of the seo attribute e.g. canonical_url
+     * @param string $seoAttribute name of the seo attribute e.g. canonicalUrl
      * @return string
      */
     public function getSeoAttribute($seoAttribute)
     {
-        return $this->seoAttributes['seo_options_' . $seoAttribute] ?? $this->seoAttributes[$seoAttribute] ?? null;
+        return $this->seoAttributes['seoOptions' . studly_case($seoAttribute)] ?? $this->seoAttributes[$seoAttribute] ?? null;
     }
 
 
