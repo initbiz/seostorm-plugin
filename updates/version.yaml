@@ -11,4 +11,6 @@
     - "!!! Seo attributes changed to camelCase issue initbiz/seostorm-plugin!23"
 4.0.1:
     - "Remove unneeded handler"
+4.0.2:
+    - "Fix seo storm attribute"
 
