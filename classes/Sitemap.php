@@ -41,24 +41,24 @@ class  Sitemap
 
         $pages = $pages
             ->filter(function ($page) {
-                return $page->seo_options_enabled_in_sitemap;
-            })->sortByDesc('seo_options_priority');
+                return $page->seoOptionsEnabledInSitemap;
+            })->sortByDesc('seoOptionsPriority');
 
         foreach ($pages as $page) {
             // $page = Event::fire('initbiz.seostorm.generateSitemapCmsPage', [$page]);
-            $modelClass = $page->seo_options_model_class;
+            $modelClass = $page->seoOptionsModelClass;
 
             $loc = $page->url;
 
             $sitemapItem = new SitemapItem();
-            $sitemapItem->priority = $page->seo_options_priority;
-            $sitemapItem->changefreq = $page->seo_options_changefreq;
+            $sitemapItem->priority = $page->seoOptionsPriority;
+            $sitemapItem->changefreq = $page->seoOptionsChangefreq;
             $sitemapItem->loc = $loc;
             $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
 
             // if page has model class
             if (class_exists($modelClass)) {
-                $scope = $page->seo_options_model_scope;
+                $scope = $page->seoOptionsModelScope;
                 if (empty($scope)) {
                     $models = $modelClass::all();
                 } else {
@@ -69,7 +69,7 @@ class  Sitemap
                     if (($model->seo_options['enabled_in_sitemap'] ?? null) === "0") {
                         continue;
                     }
-                    $modelParams = $page->seo_options_model_params;
+                    $modelParams = $page->seoOptionsModelParams;
                     $loc = $page->url;
 
                     if (!empty($modelParams)) {
@@ -95,7 +95,7 @@ class  Sitemap
 
                     $sitemapItem->loc = $loc;
 
-                    if ($page->seo_options_use_updated_at && isset($model->updated_at)) {
+                    if ($page->seoOptionsUseUpdatedAt && isset($model->updated_at)) {
                         $sitemapItem->lastmod = $model->updated_at->format('c');
                     }
 

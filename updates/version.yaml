@@ -13,4 +13,5 @@
     - "Remove unneeded handler"
 4.0.2:
     - "Fix seo storm attribute"
-
+4.0.3:
+    - "Fix sitemap after changing to camelCase"
