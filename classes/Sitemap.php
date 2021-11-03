@@ -116,7 +116,7 @@ class  Sitemap
 
                 $sitemapItem = new SitemapItem();
                 $sitemapItem->loc = url($staticPage->url);
-                $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->updated_at;
+                $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->mtime;
                 $sitemapItem->priority = $viewBag->property('priority');
                 $sitemapItem->changefreq = $viewBag->property('changefreq');
 
