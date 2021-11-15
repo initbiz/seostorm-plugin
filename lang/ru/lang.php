@@ -118,7 +118,7 @@
             'og_locale_alternate_comment' => 'Установите альтернативный язык вашего сайта для социальных сетей (например, en_US). <a target="__blank" href="http://ogp.me/#optional">Узнать подробнее.</a>',
             'site_image_hint' => 'Рекомендовано разрешение изображения 1200px x 627px',
             'og_site_name' => 'OG:site_name',
-            'og_site_name_comment' => 'If your object is part of a larger web site, the name which should be displayed for the overall site. e.g., "Init".',
+            'og_site_name_comment' => 'Название вашего сайта',
         ],
         'htaccess' => [
             'label' => '.htaccess',
