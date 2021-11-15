@@ -90,7 +90,6 @@
             'site_name_separator' => 'Site name separator',
             'site_name_separator_placeholder' => '|',
             'site_name_separator_comment' => 'Character to separate site name from title, eg: Page Title|SiteName',
-            'site_name_position' => 'Site name display',
             'site_description' => 'Default description',
             'site_description_placeholder' => 'Your site description',
             'extra_meta' => 'Additional <head> content',
