@@ -31,7 +31,6 @@ canonical_url:
     type: text
     span: full
     trans: true
-    commentAbove: initbiz.seostorm::lang.form.general.canonical_url_comment
 
 robot_index:
     label: initbiz.seostorm::lang.form.general.robot_index_label

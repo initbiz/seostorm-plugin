@@ -28,7 +28,7 @@ tabs:
                 nowhere: initbiz.seostorm::lang.form.settings.site_name_position_nowhere
             span: auto
             type: radio
-            commentAbove: initbiz.seostorm::lang.form.settings.site_name_position
+            commentAbove: initbiz.seostorm::lang.form.settings.site_name_position_commentAbove
             tab: initbiz.seostorm::lang.form.settings.tab_meta
             default: nowhere
             trigger:
