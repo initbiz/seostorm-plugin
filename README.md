@@ -105,7 +105,7 @@ Tags that are currently using Twig syntax:
 Keep in mind that you can basically fill those fields with anything that is accepted by Twig. This includes conditionals in the case of empty values. For example let's say you have a model that has two fields: `name` and `meta_title`. You want to set the title using the `meta_title` field but if it's not present, you want SEO Storm to use `name` instead. You can build the logic like this:
 
 ```twig
-    {{ model.meta_title ?: model.name }}
+    {{ model.seo_options.meta_title ?: model.name }}
 ```
 
 ## Advanced `sitemap.xml`
