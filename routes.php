@@ -56,3 +56,13 @@ Route::get('favicon.ico', function () {
         'Content-Type' => 'image/x-icon',
     ]);
 });
+
+Route::get('manifest.webmanifest', function () {
+    return ['test'=> 'test'];
+    $sitemap = new Sitemap();
+    if (!Settings::get('enable_sitemap')) {
+        return App::make(Controller::class)->setStatusCode(404)->run('/404');
+    } else {
+        return Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
+    }
+});

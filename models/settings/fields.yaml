@@ -120,21 +120,34 @@ tabs:
             type: switch
             default: false
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
-        favicon_16:
-            label: initbiz.seostorm::lang.form.settings.favicon_16
-            type: checkbox
-            default: false
-            tab: initbiz.seostorm::lang.form.settings.tab_favicon
         favicon:
             label: initbiz.seostorm::lang.form.settings.favicon
-            type: mediafinder
-            mode: image
-            prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
+            commentAbove: initbiz.seostorm::lang.form.settings.favicon_comment
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
-
-        #----------------------------------------------------------------------
-        # HTTP Headers
-        #----------------------------------------------------------------------
+            span: left
+            type: fileupload
+            mode: image
+            imageHeight: 32
+            imageWidth: 32
+            fileTypes: svg,png,ico,jpg,jpeg,webm
+            trigger:
+                action: show
+                field: favicon_enabled
+                condition: checked
+        favicon_svg:
+            label: initbiz.seostorm::lang.form.settings.favicon_svg
+            commentAbove: initbiz.seostorm::lang.form.settings.favicon_svg_comment
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            span: right
+            type: fileupload
+            mode: image
+            imageHeight: 32
+            imageWidth: 32
+            fileTypes: svg
+            trigger:
+                action: show
+                field: favicon_enabled
+                condition: checked
 
         #----------------------------------------------------------------------
         # Social Media Tab

@@ -11,11 +11,10 @@
 <meta name="robots" content="{{ __SELF__.getRobots(advancedRobots) }}" />
 {% endif %}
 {% if settings.favicon_enabled %}
-<link rel="shortcut icon" href="{{ 'favicon.ico'|app }}" type="image/x-icon">
-<link rel="icon" type="image/x-icon" href="{{ 'favicon.ico'|app }}" />
+{% partial __SELF__ ~ '::favicon' settings=settings %}
 {% endif %}
 {% if settings.enable_og %}
-{% partial '@social.htm' settings=settings %}
+{% partial __SELF__ ~ '::social' settings=settings %}
 {% endif %}
 {% if settings.extra_meta %}
 {{ settings.extra_meta|raw }}

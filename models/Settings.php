@@ -23,6 +23,12 @@ class Settings extends Model
         'site_image_fileupload' => [
             '\System\Models\File',
         ],
+        'favicon' => [
+            '\System\Models\File',
+        ],
+        'favicon_svg' => [
+            '\System\Models\File',
+        ],
     ];
 
     // A unique code
@@ -40,7 +46,6 @@ class Settings extends Model
         $this->enable_robots_meta = true;
         $this->enable_robots_txt = 'User-agent: *\r\nAllow: /';
         $this->favicon_enabled = false;
-        $this->favicon_16 = false;
         $this->enable_og = true;
     }
 }
