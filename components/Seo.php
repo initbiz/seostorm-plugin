@@ -82,7 +82,11 @@ class Seo extends ComponentBase
 
     public function getCanonicalUrl($parsedTwig = '')
     {
-        $url = url($this->seoAttributes['url']);
+        $url = Page::url($this->page->id);
+
+        if (isset($this->page->apiBag['staticPage'])) {
+            $url = url($this->seoAttributes['url']);
+        }
 
         if (!empty($parsedTwig)) {
             $url = url($parsedTwig);
