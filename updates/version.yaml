@@ -15,8 +15,10 @@
     - "Fix seo storm attribute"
 4.0.3:
     - "Fix sitemap after changing to camelCase"
-4.0.4
+4.0.4:
     - "Added Russian localization"
     - "Minor errors in the configuration of fields have been fixed"
-4.0.5
+4.0.5:
     - "Fix canonical URL default value"
+4.0.6:
+    - "Fix colons"
