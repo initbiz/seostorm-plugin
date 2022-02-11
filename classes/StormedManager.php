@@ -77,6 +77,20 @@ class StormedManager extends Singleton
      */
     public function getSeoFieldsDefs(array $excludeFields = [])
     {
+        $fieldsDefs = $this->getFieldsDefs();
+
+        $readyFieldsDefs = $this->excludeFields($fieldsDefs, $excludeFields);
+
+        return $readyFieldsDefs;
+    }
+
+    /**
+     * Get SEO fields definitions
+     *
+     * @return array
+     */
+    public function getFieldsDefs()
+    {
         if (!empty($this->fieldsDefs)) {
             return $this->fieldsDefs;
         }
@@ -96,6 +110,20 @@ class StormedManager extends Singleton
             $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
         }
 
+        $this->fieldsDefs = $fieldsDefinitions;
+
+        return $fieldsDefinitions;
+    }
+
+    /**
+     * Filter exclude fields from the provided fields
+     *
+     * @param array $fieldsDefinitions
+     * @param array $excludeFields
+     * @return array
+     */
+    public function excludeFields($fieldsDefinitions, $excludeFields)
+    {
         // Inverted excluding
         if (in_array('*', $excludeFields)) {
             $newExcludeFields = [];
@@ -115,11 +143,14 @@ class StormedManager extends Singleton
             }
         }
 
-        $this->fieldsDefs = $readyFieldsDefs;
-
         return $readyFieldsDefs;
     }
 
+    /**
+     * Return all the fields that are translatable
+     *
+     * @return array
+     */
     public function seoFieldsToTranslate()
     {
         $toTrans = [];

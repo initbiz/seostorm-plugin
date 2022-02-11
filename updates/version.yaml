@@ -24,3 +24,5 @@
     - "Fix colons"
 4.0.7:
     - "Canonical URL for static pages"
+4.0.8:
+    - "Fix excluding fields and deprecation message"
