@@ -12,7 +12,9 @@ class RainlabTranslateHandler
     public function subscribe($event)
     {
         if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
-            $this->addTranslatableSeoFields($event);
+            $event->listen('cms.beforeRoute', function () use ($event) {
+                $this->addTranslatableSeoFields($event);
+            });
         }
     }
 
@@ -39,7 +41,7 @@ class RainlabTranslateHandler
                 if ($model instanceof Model) {
                     $requiredBehaviors = [
                         'RainLab\Translate\Behaviors\TranslatableModel',
-                        'October\Rain\Database\Behaviors\Purgeable',
+                        'Initbiz\SeoStorm\Behaviors\Purgeable',
                     ];
 
                     if (!isset($model->implement)) {

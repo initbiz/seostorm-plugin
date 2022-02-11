@@ -105,6 +105,9 @@ class Plugin extends PluginBase
         if (env('APP_ENV') === 'testing') {
             $modelDefs['\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel'] = [
                 'placement' => 'tabs',
+                'excludeFields' => [
+                    'changefreq',
+                ],
             ];
         }
 
