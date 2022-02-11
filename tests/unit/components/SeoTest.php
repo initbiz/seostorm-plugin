@@ -33,7 +33,7 @@ class SeoTest extends StormedTestCase
         $this->assertEquals('Test page title', $component->getTitle());
 
         // Assert that meta_title has higher priority
-        $page->settings['metaTitle'] = 'Meta title';
+        $page->settings['seoOptionsTitle'] = 'Meta title';
         $controller->runPage($page);
         $component = $controller->findComponentByName('seo');
 
@@ -52,7 +52,7 @@ class SeoTest extends StormedTestCase
 
         // Assert that seo_options has even higher priority
         $page = Page::load($theme, 'with-fake-model.htm');
-        $page->settings['metaTitle'] = '{{ model.name }}';
+        $page->settings['seoOptionsTitle'] = '{{ model.name }}';
         $result = $controller->runPage($page);
         $component = $controller->findComponentByName('seo');
 
@@ -64,7 +64,7 @@ class SeoTest extends StormedTestCase
 
         $this->assertStringContainsString('<title>test</title>', $result);
 
-        $page->settings['seoOptionsMetaTitle'] = '{{ model.name }} - {{ model.name }}';
+        $page->settings['seoOptionsTitle'] = '{{ model.name }} - {{ model.name }}';
         $result = $controller->runPage($page);
 
         $this->assertStringContainsString('<title>test - test</title>', $result);
@@ -166,7 +166,7 @@ class SeoTest extends StormedTestCase
 
         // Assert that seo_options has even higher priority
         $page = Page::load($theme, 'with-fake-model.htm');
-        $page->settings['metaTitle'] = '{{ model.name }}';
+        $page->settings['seoOptionsTitle'] = '{{ model.name }}';
         $result = $controller->runPage($page);
         $component = $controller->findComponentByName('seo');
 
