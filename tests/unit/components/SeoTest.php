@@ -14,7 +14,7 @@ use Initbiz\SeoStorm\Tests\Classes\FakeModelDetailsComponent;
 
 class SeoTest extends StormedTestCase
 {
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
         $componentManager = ComponentManager::instance();
@@ -177,5 +177,30 @@ class SeoTest extends StormedTestCase
         $result = $controller->runPage($page);
 
         $this->assertStringContainsString('<title>test</title>', $result);
+    }
+
+    public function testGetTitleTranslate()
+    {
+        $theme = Theme::load('test');
+        $page = Page::load($theme, 'empty.htm');
+        $controller = new Controller($theme);
+        $controller->runPage($page);
+        $component = $controller->findComponentByName('seo');
+
+        $controller->runPage($page);
+        $this->assertEquals('Test page title', $component->getTitle());
+
+        // Assert that meta_title has higher priority
+        $page->settings['seoOptionsMetaTitle'] = 'Meta title';
+        $viewBag = $controller->findComponentByName('viewBag');
+        $viewBag->setExternalPropertyName('localeSeoOptionsMetaTitle["pl"]', 'Meta title 2');
+
+        $controller->runPage($page);
+        $component = $controller->findComponentByName('seo');
+
+        $this->assertEquals('Meta title', $component->getTitle());
+        $page->rewriteTranslatablePageAttributes('pl');
+        $controller->runPage($page);
+        $this->assertEquals('Meta title 2', $component->getTitle());
     }
 }
