@@ -89,9 +89,14 @@ class  Sitemap
                                 }
                                 $replacement = empty($replacement) ? 'default' : $replacement;
                             }
+                            // Fill with parameters
                             $loc = preg_replace($pattern, $replacement, $loc);
                         }
                     }
+
+                    // Remove empty optional parameters that have left unchanged
+                    $pattern = '/\:.+\?/i';
+                    $loc = preg_replace($pattern, '', $loc);
 
                     $sitemapItem->loc = $loc;
 
