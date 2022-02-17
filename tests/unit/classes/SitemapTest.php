@@ -159,4 +159,23 @@ class SitemapTest extends StormedTestCase
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs-filtered.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
     }
+
+    public function testOptionalParameterEmpty()
+    {
+        $model = new FakeStormedModel();
+        $model->name = 'test-name';
+        $model->slug = 'test-slug';
+        $model->save();
+
+        $page = Page::where('url', '/model/:category/:slug?')->first();
+        $page->mtime = 1632858273;
+        $page->settings['seoOptionsModelClass'] = "\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel";
+        $page->settings['seoOptionsModelParams'] = "category:slug";
+        $pages = collect();
+        $pages = $pages->push($page);
+        $xml = (new Sitemap)->generate($pages);
+        $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
+        $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param.xml');
+        $this->assertXmlStringEqualsXmlFile($filePath, $xml);
+    }
 }
