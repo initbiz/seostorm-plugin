@@ -39,6 +39,7 @@ changefreq:
     options:
         always: always
         hourly: hourly
+        daily: daily
         weekly: weekly
         monthly: monthly
         yearly: yearly

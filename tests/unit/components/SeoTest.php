@@ -5,21 +5,25 @@ namespace Initbiz\SeoStorm\Tests\Unit\Components;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Cms\Classes\Controller;
+use Cms\Components\ViewBag;
 use Cms\Classes\ComponentManager;
 use Initbiz\SeoStorm\Components\Seo;
+use RainLab\Translate\Models\Locale;
 use Initbiz\SeoStorm\Models\Settings;
+use RainLab\Translate\Classes\Translator;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Tests\Classes\FakeModelDetailsComponent;
 
 class SeoTest extends StormedTestCase
 {
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
         $componentManager = ComponentManager::instance();
         $componentManager->registerComponent(Seo::class, 'seo');
         $componentManager->registerComponent(FakeModelDetailsComponent::class, 'fakeModelDetails');
+        $componentManager->registerComponent(ViewBag::class, 'viewBag');
     }
 
     public function testGetTitle()
@@ -177,5 +181,31 @@ class SeoTest extends StormedTestCase
         $result = $controller->runPage($page);
 
         $this->assertStringContainsString('<title>test</title>', $result);
+    }
+
+    public function testGetTitleTranslated()
+    {
+        $theme = Theme::load('test');
+        $controller = new Controller($theme);
+        $page = Page::load($theme, 'with-fake-model.htm');
+        $result = $controller->runPage($page);
+        $this->assertStringContainsString('<title>Test page title</title>', $result);
+        $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurl">', $result);
+
+        $locale = new Locale();
+        $locale->code = 'pl';
+        $locale->name = 'Polish';
+        $locale->is_enabled = 1;
+        $locale->save();
+
+        Locale::clearCache();
+        $translator = Translator::instance();
+        $translator->setLocale('pl');
+
+        $page = Page::load($theme, 'with-fake-model.htm');
+        $page->rewriteTranslatablePageAttributes('pl');
+        $result = $controller->runPage($page);
+        $this->assertStringContainsString('<title>Test page title PL</title>', $result);
+        $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurlpl">', $result);
     }
 }
