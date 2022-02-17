@@ -4,6 +4,8 @@ namespace Initbiz\SeoStorm\EventHandlers;
 
 use App;
 use Cms\Classes\Page;
+use System\Classes\PluginManager;
+use RainLab\Translate\Models\Locale;
 use Initbiz\SeoStorm\Classes\StormedManager;
 
 class BackendHandler
@@ -42,6 +44,31 @@ class BackendHandler
                     'useViewBag' => false,
                     'properties' => $stormedManager->getSeoFieldsDefsForEditor()
                 ];
+
+                $pluginManager = PluginManager::instance();
+
+                if ($pluginManager->hasPlugin('RainLab.Translate') && !$pluginManager->isDisabled('RainLab.Translate')) {
+                    if (Locale::isAvailable()) {
+                        $locales = Locale::listAvailable();
+                        $defaultLocale = Locale::getDefault()->code ?? null;
+
+                        $properties = [];
+                        foreach ($locales as $locale => $label) {
+                            if ($locale === $defaultLocale) {
+                                continue;
+                            }
+                            $properties = array_merge($stormedManager->getTranslateSeoFieldsDefsForEditor($label, $locale), $properties);
+                        }
+
+                        $dataHolder->buttons[] = [
+                            'button' => 'initbiz.seostorm::lang.editor.translate',
+                            'icon' => 'octo-icon-globe',
+                            'popupTitle' => 'initbiz.seostorm::lang.editor.translate',
+                            'useViewBag' => true,
+                            'properties' => $properties
+                        ];
+                    }
+                }
             }
         });
     }
