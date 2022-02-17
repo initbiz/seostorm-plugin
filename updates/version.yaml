@@ -26,3 +26,5 @@
     - "Canonical URL for static pages"
 4.0.8:
     - "Fix excluding fields and deprecation message"
+4.1.0:
+    - "Add translatable fields for CMS pages"

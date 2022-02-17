@@ -8,6 +8,7 @@ use Cms\Classes\Controller;
 use Cms\Components\ViewBag;
 use Cms\Classes\ComponentManager;
 use Initbiz\SeoStorm\Components\Seo;
+use RainLab\Translate\Models\Locale;
 use Initbiz\SeoStorm\Models\Settings;
 use RainLab\Translate\Classes\Translator;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
@@ -182,18 +183,29 @@ class SeoTest extends StormedTestCase
         $this->assertStringContainsString('<title>test</title>', $result);
     }
 
-    public function testGetTitleTranslate()
+    public function testGetTitleTranslated()
     {
-        $translator = Translator::instance();
-        $translator->setLocale('pl');
-
         $theme = Theme::load('test');
         $controller = new Controller($theme);
         $page = Page::load($theme, 'with-fake-model.htm');
-        $page->translateContext('pl');
-        $controller->runPage($page);
-        $component = $controller->findComponentByName('seo');
+        $result = $controller->runPage($page);
+        $this->assertStringContainsString('<title>Test page title</title>', $result);
+        $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurl">', $result);
 
-        $this->assertEquals('', $component->getTitle());
+        $locale = new Locale();
+        $locale->code = 'pl';
+        $locale->name = 'Polish';
+        $locale->is_enabled = 1;
+        $locale->save();
+
+        Locale::clearCache();
+        $translator = Translator::instance();
+        $translator->setLocale('pl');
+
+        $page = Page::load($theme, 'with-fake-model.htm');
+        $page->rewriteTranslatablePageAttributes('pl');
+        $result = $controller->runPage($page);
+        $this->assertStringContainsString('<title>Test page title PL</title>', $result);
+        $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurlpl">', $result);
     }
 }
