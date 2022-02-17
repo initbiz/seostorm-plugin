@@ -5,9 +5,11 @@ namespace Initbiz\SeoStorm\Tests\Unit\Components;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Cms\Classes\Controller;
+use Cms\Components\ViewBag;
 use Cms\Classes\ComponentManager;
 use Initbiz\SeoStorm\Components\Seo;
 use Initbiz\SeoStorm\Models\Settings;
+use RainLab\Translate\Classes\Translator;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Tests\Classes\FakeModelDetailsComponent;
@@ -20,6 +22,7 @@ class SeoTest extends StormedTestCase
         $componentManager = ComponentManager::instance();
         $componentManager->registerComponent(Seo::class, 'seo');
         $componentManager->registerComponent(FakeModelDetailsComponent::class, 'fakeModelDetails');
+        $componentManager->registerComponent(ViewBag::class, 'viewBag');
     }
 
     public function testGetTitle()
@@ -181,26 +184,16 @@ class SeoTest extends StormedTestCase
 
     public function testGetTitleTranslate()
     {
+        $translator = Translator::instance();
+        $translator->setLocale('pl');
+
         $theme = Theme::load('test');
-        $page = Page::load($theme, 'empty.htm');
         $controller = new Controller($theme);
+        $page = Page::load($theme, 'with-fake-model.htm');
+        $page->translateContext('pl');
         $controller->runPage($page);
         $component = $controller->findComponentByName('seo');
 
-        $controller->runPage($page);
-        $this->assertEquals('Test page title', $component->getTitle());
-
-        // Assert that meta_title has higher priority
-        $page->settings['seoOptionsMetaTitle'] = 'Meta title';
-        $viewBag = $controller->findComponentByName('viewBag');
-        $viewBag->setExternalPropertyName('localeSeoOptionsMetaTitle["pl"]', 'Meta title 2');
-
-        $controller->runPage($page);
-        $component = $controller->findComponentByName('seo');
-
-        $this->assertEquals('Meta title', $component->getTitle());
-        $page->rewriteTranslatablePageAttributes('pl');
-        $controller->runPage($page);
-        $this->assertEquals('Meta title 2', $component->getTitle());
+        $this->assertEquals('', $component->getTitle());
     }
 }
