@@ -59,10 +59,12 @@ class  Sitemap
             // if page has model class
             if (class_exists($modelClass)) {
                 $scope = $page->seoOptionsModelScope;
+
                 if (empty($scope)) {
                     $models = $modelClass::all();
                 } else {
-                    $models = $modelClass::$scope()->get();
+                    $params = explode(':', $scope);
+                    $models = $modelClass::{$params[0]}($params[1] ?? null)->get();
                 }
 
                 foreach ($models as $model) {

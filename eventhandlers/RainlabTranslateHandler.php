@@ -31,9 +31,9 @@ class RainlabTranslateHandler
                 if (!$model->propertyExists('translatable')) {
                     $model->addDynamicProperty('translatable', []);
                 }
-                $translatableFields = array_keys($stormedManager->getTranslatableSeoFieldsDefs());
+                $translatableFields = $stormedManager->addPrefix($stormedManager->getTranslatableSeoFieldsDefs(), 'seo_options', '%s[%s]');
 
-                $model->translatable = array_merge($model->translatable, $translatableFields);
+                $model->translatable = array_merge($model->translatable, array_keys($translatableFields));
 
                 /*
                 * Add translation support to database models
