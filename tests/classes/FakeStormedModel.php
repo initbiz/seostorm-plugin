@@ -22,4 +22,11 @@ class FakeStormedModel extends Model
     {
         return $query->where('is_active', true);
     }
+
+    public function scopeIsPublished($query, $when)
+    {
+        $time = \Carbon\Carbon::parse($when);
+
+        return $query->where('created_at', '>', $time);
+    }
 }
