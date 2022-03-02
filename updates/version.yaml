@@ -32,3 +32,5 @@
     - "Remove optional parameters from sitemap #41"
 4.2.0:
     - "Add support for scope parameters and fix translatable fields in models"
+4.2.1:
+    - "Fix optional parameters #44"
