@@ -177,6 +177,15 @@ class SitemapTest extends StormedTestCase
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
+
+        $page = Page::where('url', '/model/:slug?')->first();
+        $page->mtime = 1632858273;
+        $pages = collect();
+        $pages = $pages->push($page);
+        $xml = (new Sitemap)->generate($pages);
+        $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
+        $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param-2.xml');
+        $this->assertXmlStringEqualsXmlFile($filePath, $xml);
     }
 
     public function testOptionalScopeParameter()
