@@ -34,3 +34,5 @@
     - "Add support for scope parameters and fix translatable fields in models"
 4.2.1:
     - "Fix optional parameters #44"
+4.2.2:
+    - "Update to October 2.2"
