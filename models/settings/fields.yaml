@@ -245,6 +245,5 @@ tabs:
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
 
         _btn_migrate:
-            type: Initbiz\SeoStorm\FormWidgets\Migrate
+            type: seo_migrate
             tab: initbiz.seostorm::lang.form.settings.tab_migrate
-

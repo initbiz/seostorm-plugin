@@ -113,4 +113,11 @@ class Plugin extends PluginBase
 
         return $modelDefs;
     }
+
+    public function registerFormWidgets()
+    {
+        return [
+            '\Initbiz\SeoStorm\FormWidgets\Migrate' => 'seo_migrate'
+        ];
+    }
 }
