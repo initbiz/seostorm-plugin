@@ -26,7 +26,7 @@ class Migrator
 
     public static function settings()
     {
-        $arcaneSettings = \Arcane\Seo\Models\Settings\Settings::instance();
+        $arcaneSettings = \Arcane\Seo\Models\Settings::instance();
         $stormSettings = Settings::instance();
         foreach ($arcaneSettings->attributes as $key => $value) {
             if ($key === 'id' || $key === 'item') {
