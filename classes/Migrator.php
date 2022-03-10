@@ -97,7 +97,7 @@ class Migrator
             $fields = array_keys($stormedManager->getSeoFieldsDefs());
             $newSettings = [];
             foreach ($fields as $field) {
-                if ($field === 'meta_title'|| $field === 'meta_description') {
+                if ($field === 'meta_title' || $field === 'meta_description') {
                     continue;
                 }
 
