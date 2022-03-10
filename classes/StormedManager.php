@@ -151,14 +151,14 @@ class StormedManager extends Singleton
      *
      * @return array
      */
-    public function seoFieldsToTranslate()
+    public function getTranslatableSeoFieldsDefs()
     {
         $toTrans = [];
         $fieldsDefinitions = $this->getSeoFieldsDefs();
 
-        foreach ($this->addPrefix($fieldsDefinitions) as $fieldKey => $fieldValue) {
+        foreach ($fieldsDefinitions as $fieldKey => $fieldValue) {
             if (isset($fieldValue['trans']) && $fieldValue['trans'] === true) {
-                $toTrans[] = $fieldKey;
+                $toTrans[$fieldKey] = $fieldValue;
             }
         }
 
@@ -171,42 +171,62 @@ class StormedManager extends Singleton
 
         $editorFields = [];
         foreach ($fields as $key => $fieldDef) {
-            $type = $fieldDef['type'] ?? 'string';
-
-            switch ($type) {
-                case 'text':
-                case 'textarea':
-                case 'datepicker':
-                    $type = 'string';
-                    break;
-                case 'balloon-selector':
-                    $type = 'dropdown';
-                    break;
-            }
-
-            $field = [
-                'property' => camel_case($key),
-                'type' => $type,
-                'title' => $fieldDef['label'] ?? $fieldDef['title'] ?? '',
-                'tab' => $fieldDef['tab'] ?? '',
-                'placeholder' => $fieldDef['placeholder'] ?? '',
-                'default' => $fieldDef['default'] ?? '',
-                'description' => $fieldDef['comment'] ?? $fieldDef['commentAbove'] ?? '',
-                'options' => $fieldDef['options'] ?? [],
-            ];
-
-            $newField = [];
-
-            foreach ($field as $key => $property) {
-                if (!empty($property)) {
-                    $newField[$key] = $property;
-                }
-            }
-
-            $editorFields[] = $newField;
+            $editorFields[] = $this->makeField($key, $fieldDef);
         }
 
         return $editorFields;
+    }
+
+    public function getTranslateSeoFieldsDefsForEditor(string $langName, string $langCode)
+    {
+        $fields = $this->addPrefix($this->getTranslatableSeoFieldsDefs(), 'locale_seo_options', '%s_%s');
+
+        $editorFields = [];
+        foreach ($fields as $key => $fieldDef) {
+            $newFieldKey = $key . '.' . $langCode;
+            $editorFields[] = $this->makeField($newFieldKey, $fieldDef, $langName);
+        }
+
+        return $editorFields;
+    }
+
+    public function makeField($key, $fieldDef, $customTab = null)
+    {
+        $type = $fieldDef['type'] ?? 'string';
+
+        switch ($type) {
+            case 'text':
+            case 'textarea':
+            case 'datepicker':
+                $type = 'string';
+                break;
+            case 'balloon-selector':
+                $type = 'dropdown';
+                break;
+        }
+
+        $tab = $customTab ?? $fieldDef['tab'] ?? '';
+
+        $field = [
+            'property' => camel_case($key),
+            'type' => $type,
+            'title' => $fieldDef['label'] ?? $fieldDef['title'] ?? '',
+            'tab' => $tab,
+            'placeholder' => $fieldDef['placeholder'] ?? '',
+            'default' => $fieldDef['default'] ?? '',
+            'description' => $fieldDef['comment'] ?? $fieldDef['commentAbove'] ?? '',
+            'options' => $fieldDef['options'] ?? [],
+        ];
+
+        $newField = [];
+
+        foreach ($field as $key => $property) {
+            if (!empty($property)) {
+                $newField[$key] = $property;
+            }
+        }
+
+        return $newField;
     }
 
     // Helpers

@@ -1,0 +1,11 @@
+title = "Test page title"
+url = "/model/:slug?"
+layout = "default"
+seoOptionsEnabledInSitemap = "true"
+
+[fakeModelDetails]
+slug = "{{ :slug }}"
+
+[seo]
+==
+{% component 'seo' %}

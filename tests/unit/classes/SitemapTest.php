@@ -159,4 +159,59 @@ class SitemapTest extends StormedTestCase
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs-filtered.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
     }
+
+    public function testOptionalParameterEmpty()
+    {
+        $model = new FakeStormedModel();
+        $model->name = 'test-name';
+        $model->slug = 'test-slug';
+        $model->save();
+
+        $page = Page::where('url', '/model/:category/:slug?')->first();
+        $page->mtime = 1632858273;
+        $page->settings['seoOptionsModelClass'] = "\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel";
+        $page->settings['seoOptionsModelParams'] = "category:slug";
+        $pages = collect();
+        $pages = $pages->push($page);
+        $xml = (new Sitemap)->generate($pages);
+        $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
+        $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param.xml');
+        $this->assertXmlStringEqualsXmlFile($filePath, $xml);
+
+        $page = Page::where('url', '/model/:slug?')->first();
+        $page->mtime = 1632858273;
+        $pages = collect();
+        $pages = $pages->push($page);
+        $xml = (new Sitemap)->generate($pages);
+        $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
+        $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param-2.xml');
+        $this->assertXmlStringEqualsXmlFile($filePath, $xml);
+    }
+
+    public function testOptionalScopeParameter()
+    {
+        $model = new FakeStormedModel();
+        $model->name = 'test-name';
+        $model->slug = 'test-slug';
+        $model->created_at = \Carbon\Carbon::parse('today');
+        $model->save();
+
+        $model = new FakeStormedModel();
+        $model->name = 'test-name2';
+        $model->slug = 'test-slug2';
+        $model->created_at = \Carbon\Carbon::parse('before yesterday');
+        $model->save();
+
+        $page = Page::where('url', '/model/:slug')->first();
+        $page->mtime = 1632858273;
+        $page->settings['seoOptionsModelClass'] = "\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel";
+        $page->settings['seoOptionsModelParams'] = "slug:slug";
+        $page->settings['seoOptionsModelScope'] = "isPublished:yesterday";
+        $pages = collect();
+        $pages = $pages->push($page);
+        $xml = (new Sitemap)->generate($pages);
+        $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
+        $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param.xml');
+        $this->assertXmlStringEqualsXmlFile($filePath, $xml);
+    }
 }

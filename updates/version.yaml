@@ -26,3 +26,13 @@
     - "Canonical URL for static pages"
 4.0.8:
     - "Fix excluding fields and deprecation message"
+4.1.0:
+    - "Add translatable fields for CMS pages"
+4.1.1:
+    - "Remove optional parameters from sitemap #41"
+4.2.0:
+    - "Add support for scope parameters and fix translatable fields in models"
+4.2.1:
+    - "Fix optional parameters #44"
+4.2.2:
+    - "Update to October 2.2"

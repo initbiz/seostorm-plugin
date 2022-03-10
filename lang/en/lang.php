@@ -136,5 +136,8 @@
             'name' => 'Seo',
             'description' => 'Renders SEO meta tags in place',
         ],
+    ],
+    'editor' => [
+        'translate' => 'Translate SEO'
     ]
 ];
