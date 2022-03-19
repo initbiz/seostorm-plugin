@@ -2,6 +2,7 @@
 
 namespace Initbiz\SeoStorm\Classes;
 
+use Cms\Classes\Page;
 use Backend\Models\User;
 use Backend\Models\UserRole;
 use System\Classes\PluginManager;
@@ -20,11 +21,12 @@ class Migrator
         self::rolesPermissions();
         self::usersPermissions();
         self::rainlabBlog();
+        self::pages();
     }
 
     public static function settings()
     {
-        $arcaneSettings = \Arcane\Seo\Models\Settings\Settings::instance();
+        $arcaneSettings = \Arcane\Seo\Models\Settings::instance();
         $stormSettings = Settings::instance();
         foreach ($arcaneSettings->attributes as $key => $value) {
             if ($key === 'id' || $key === 'item') {
@@ -83,6 +85,34 @@ class Migrator
                 $post->seo_options = $post->arcane_seo_options;
                 $post->save();
             }
+        }
+    }
+
+    public static function pages()
+    {
+        $pages = Page::all();
+        foreach ($pages as $page) {
+            $settings = $page->settings;
+            $stormedManager = StormedManager::instance();
+            $fields = array_keys($stormedManager->getSeoFieldsDefs());
+            $newSettings = [];
+            foreach ($fields as $field) {
+                if ($field === 'meta_title' || $field === 'meta_description') {
+                    continue;
+                }
+
+                if (isset($settings[$field])) {
+                    $newSettings[$field] = $settings[$field];
+                    unset($page->$field);
+                }
+            }
+
+            $newFields = $stormedManager->addPrefix($newSettings, 'seo_options', '%s_%s');
+            foreach ($newFields as $field => $fieldDef) {
+                $fieldCamelCase = camel_case($field);
+                $page->$fieldCamelCase = $fieldDef;
+            }
+            $page->save();
         }
     }
 }

@@ -15,7 +15,7 @@ class Seo extends ComponentBase
      *
      * @var Array
      */
-    public $seoAttributes;
+    public array $seoAttributes;
 
     /**
      * Plugin settings
@@ -248,15 +248,30 @@ class Seo extends ComponentBase
      * Getter for attributes set in the page's settings
      *
      * @param string $seoAttribute name of the seo attribute e.g. canonicalUrl
-     * @return string
+     * @return null|string
      */
-    public function getSeoAttribute($seoAttribute)
+    public function getSeoAttribute(string $seoAttribute): ?string
     {
         return $this->seoAttributes['seoOptions' . studly_case($seoAttribute)]
-               ?? $this->seoAttributes[snake_case($seoAttribute)]
-               ?? null;
+            ?? $this->seoAttributes[snake_case($seoAttribute)]
+            ?? null;
     }
 
+    /**
+     * Setter for seoAttributes. If you need to change attributes,
+     * you can do it use this method.
+     *
+     * @param string $key
+     * @param string $value
+     * @return void
+     */
+    public function setSeoAttribute(string $key, string $value): void
+    {
+        if (!is_array($this->seoAttributes)) {
+            $this->seoAttributes = [];
+        }
+        $this->seoAttributes[$key] = $value;
+    }
 
     /**
      * Returns the property from the viewBag

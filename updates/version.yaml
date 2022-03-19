@@ -36,3 +36,5 @@
     - "Fix optional parameters #44"
 4.2.2:
     - "Update to October 2.2"
+4.3.0:
+    - "Extend arcaneseo migrator by cms page and add method setSeoAttribute in seo component"
