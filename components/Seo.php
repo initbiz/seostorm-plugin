@@ -258,6 +258,9 @@ class Seo extends ComponentBase
     }
 
     /**
+     * Setter for seoAttributes. If you need to change attributes,
+     * you can do it use this method.
+     *
      * @param string $key
      * @param string $value
      * @return void
