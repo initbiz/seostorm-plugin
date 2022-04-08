@@ -224,7 +224,7 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Returns twitter_site if set in the viewBag
+     * Returns twitter_site if set in the viewBag or settings
      *
      * @return ?string
      */
@@ -240,7 +240,7 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Returns twitter_creator if set in the viewBag
+     * Returns twitter_creator if set in the viewBag or settings
      *
      * @return ?string
      */
