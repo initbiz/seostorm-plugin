@@ -112,8 +112,6 @@
             'site_image_prompt' => 'Drag files or click here',
             'fb_app_id' => 'Facebook App ID',
             'fb_app_id_comment' => 'The fb:app_id OG tag',
-            'fb_app_id' => 'Facebook App ID',
-            'fb_app_id_comment' => 'The fb:app_id OG tag',
             'twitter_site' => 'Twitter:site',
             'twitter_site_comment' => '@username for the website used in the card footer.',
             'twitter_creator' => 'Twitter:creator',
