@@ -13,3 +13,9 @@
 <meta name="twitter:title" content="{{ include(template_from_string(__SELF__.getOgTitle())) }}">
 <meta name="twitter:description" content="{{ include(template_from_string(__SELF__.getOgDescription())) }}">
 <meta name="twitter:image" content="{{ include(template_from_string(__SELF__.getOgImage())) }}" />
+{% if __SELF__.getTwitterSite() %}
+<meta name="twitter:site" content="{{ include(template_from_string(__SELF__.getTwitterSite())) }}">
+{% endif %}
+{% if __SELF__.getTwitterCreator() %}
+<meta name="twitter:creator" content="{{ include(template_from_string(__SELF__.getTwitterCreator())) }}" />
+{% endif %}
