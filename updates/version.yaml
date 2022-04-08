@@ -39,4 +39,4 @@
 4.3.0:
     - "Extend arcaneseo migrator by cms page and add method setSeoAttribute in seo component"
 4.4.0:
-    - "Add twitter:site, twitter:creator and fix summary_large_image"
+    - "Add twitter:site, twitter:creator and fix OG:card"
