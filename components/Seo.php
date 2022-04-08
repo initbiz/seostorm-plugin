@@ -230,7 +230,7 @@ class Seo extends ComponentBase
      */
     public function getTwitterSite(): ?string
     {
-        $twitterSite = $this->getSeoAttribute('twitter_site') ?? null;
+        $twitterSite = $this->getSeoAttribute('twitterSite') ?? null;
 
         if (!$twitterSite) {
             $twitterSite = $this->getSettings()->twitter_site;
@@ -246,7 +246,7 @@ class Seo extends ComponentBase
      */
     public function getTwitterCreator(): ?string
     {
-        $twitterCreator = $this->getSeoAttribute('twitter_creator') ?? null;
+        $twitterCreator = $this->getSeoAttribute('twitterCreator') ?? null;
 
         if (!$twitterCreator) {
             $twitterCreator = $this->getSettings()->twitter_creator;
