@@ -38,3 +38,5 @@
     - "Update to October 2.2"
 4.3.0:
     - "Extend arcaneseo migrator by cms page and add method setSeoAttribute in seo component"
+4.4.0:
+    - "Add twitter:site, twitter:creator and fix OG:card"

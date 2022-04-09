@@ -220,7 +220,39 @@ class Seo extends ComponentBase
      */
     public function getOgCard()
     {
-        return $this->getSeoAttribute('ogCard') ?? 'summary_large_image';
+        return snake_case($this->getSeoAttribute('ogCard') ?? 'summary_large_image');
+    }
+
+    /**
+     * Returns twitter_site if set in the viewBag or settings
+     *
+     * @return ?string
+     */
+    public function getTwitterSite(): ?string
+    {
+        $twitterSite = $this->getSeoAttribute('twitterSite') ?? null;
+
+        if (!$twitterSite) {
+            $twitterSite = $this->getSettings()->twitter_site;
+        }
+
+        return $twitterSite;
+    }
+
+    /**
+     * Returns twitter_creator if set in the viewBag or settings
+     *
+     * @return ?string
+     */
+    public function getTwitterCreator(): ?string
+    {
+        $twitterCreator = $this->getSeoAttribute('twitterCreator') ?? null;
+
+        if (!$twitterCreator) {
+            $twitterCreator = $this->getSettings()->twitter_creator;
+        }
+
+        return $twitterCreator;
     }
 
     /**
