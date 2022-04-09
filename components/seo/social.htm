@@ -13,10 +13,8 @@
 {% if __SELF__.getOgImage() %}
 <meta property="og:image" content="{{ include(template_from_string(__SELF__.getOgImage())) }}" />
 {% endif %}
-
 {% set canonical = include(template_from_string(__SELF__.getSeoAttribute('canonical_url'))) %}
-
-{% if __SELF__.getCanonicalUrl(canonical) %}
+{% if canonical %}
 <meta property="og:url" content="{{ __SELF__.getCanonicalUrl(canonical) }}" />
 {% endif %}
 {% if __SELF__.og_locale %}

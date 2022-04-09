@@ -6,7 +6,7 @@
 <meta name="description" content="{{ include(template_from_string(__SELF__.getDescription())) }}" />
 {% endif %}
 {% set canonical = include(template_from_string(__SELF__.getSeoAttribute('canonical_url'))) %}
-{% if __SELF__.canonical %}
+{% if canonical %}
 <link rel="canonical" href="{{ __SELF__.getCanonicalUrl(canonical) }}">
 {% endif %}
 {% endif %}
