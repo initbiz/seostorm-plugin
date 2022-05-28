@@ -221,6 +221,28 @@ tabs:
             span: left
             comment: initbiz.seostorm::lang.form.settings.fb_app_id_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
+        twitter_site:
+            label: initbiz.seostorm::lang.form.settings.twitter_site
+            type: text
+            disabled: 0
+            span: left
+            trigger:
+                action: enable
+                field: enable_og
+                condition: checked
+            comment: initbiz.seostorm::lang.form.settings.twitter_site_comment
+            tab: initbiz.seostorm::lang.form.settings.tab_social_media
+        twitter_creator:
+            label: initbiz.seostorm::lang.form.settings.twitter_creator
+            type: text
+            disabled: 0
+            span: left
+            trigger:
+                action: enable
+                field: enable_og
+                condition: checked
+            comment: initbiz.seostorm::lang.form.settings.twitter_creator_comment
+            tab: initbiz.seostorm::lang.form.settings.tab_social_media
         og_locale:
             label: initbiz.seostorm::lang.form.settings.og_locale
             trigger:
@@ -245,6 +267,5 @@ tabs:
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
 
         _btn_migrate:
-            type: Initbiz\SeoStorm\FormWidgets\Migrate
+            type: seo_migrate
             tab: initbiz.seostorm::lang.form.settings.tab_migrate
-

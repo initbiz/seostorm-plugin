@@ -15,7 +15,7 @@ class Seo extends ComponentBase
      *
      * @var Array
      */
-    public $seoAttributes;
+    public array $seoAttributes;
 
     /**
      * Plugin settings
@@ -82,12 +82,17 @@ class Seo extends ComponentBase
 
     public function getCanonicalUrl($parsedTwig = '')
     {
-        // If nothing set in the parameter - return this page URL
-        if (empty($parsedTwig)) {
-            return Page::url($this->page->id);
+        $url = Page::url($this->page->id);
+
+        if (isset($this->page->apiBag['staticPage'])) {
+            $url = url($this->seoAttributes['url']);
         }
 
-        return url($parsedTwig);
+        if (!empty($parsedTwig)) {
+            $url = url($parsedTwig);
+        }
+
+        return $url;
     }
 
     /**
@@ -215,7 +220,39 @@ class Seo extends ComponentBase
      */
     public function getOgCard()
     {
-        return $this->getSeoAttribute('ogCard') ?? 'summary_large_image';
+        return snake_case($this->getSeoAttribute('ogCard') ?? 'summary_large_image');
+    }
+
+    /**
+     * Returns twitter_site if set in the viewBag or settings
+     *
+     * @return ?string
+     */
+    public function getTwitterSite(): ?string
+    {
+        $twitterSite = $this->getSeoAttribute('twitterSite') ?? null;
+
+        if (!$twitterSite) {
+            $twitterSite = $this->getSettings()->twitter_site;
+        }
+
+        return $twitterSite;
+    }
+
+    /**
+     * Returns twitter_creator if set in the viewBag or settings
+     *
+     * @return ?string
+     */
+    public function getTwitterCreator(): ?string
+    {
+        $twitterCreator = $this->getSeoAttribute('twitterCreator') ?? null;
+
+        if (!$twitterCreator) {
+            $twitterCreator = $this->getSettings()->twitter_creator;
+        }
+
+        return $twitterCreator;
     }
 
     /**
@@ -243,15 +280,30 @@ class Seo extends ComponentBase
      * Getter for attributes set in the page's settings
      *
      * @param string $seoAttribute name of the seo attribute e.g. canonicalUrl
-     * @return string
+     * @return null|string
      */
-    public function getSeoAttribute($seoAttribute)
+    public function getSeoAttribute(string $seoAttribute): ?string
     {
         return $this->seoAttributes['seoOptions' . studly_case($seoAttribute)]
-               ?? $this->seoAttributes[snake_case($seoAttribute)]
-               ?? null;
+            ?? $this->seoAttributes[snake_case($seoAttribute)]
+            ?? null;
     }
 
+    /**
+     * Setter for seoAttributes. If you need to change attributes,
+     * you can do it use this method.
+     *
+     * @param string $key
+     * @param string $value
+     * @return void
+     */
+    public function setSeoAttribute(string $key, string $value): void
+    {
+        if (!is_array($this->seoAttributes)) {
+            $this->seoAttributes = [];
+        }
+        $this->seoAttributes[$key] = $value;
+    }
 
     /**
      * Returns the property from the viewBag

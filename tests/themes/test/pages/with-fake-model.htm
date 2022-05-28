@@ -1,7 +1,12 @@
 title = "Test page title"
 url = "/model/:slug"
 layout = "default"
-seo_options_enabled_in_sitemap = "true"
+seoOptionsEnabledInSitemap = "true"
+seoOptionsCanonicalUrl = "modelurl"
+
+[viewBag]
+localeSeoOptionsMetaTitle[pl] = "Test page title PL"
+localeSeoOptionsCanonicalUrl[pl] = "modelurlpl"
 
 [fakeModelDetails]
 slug = "{{ :slug }}"

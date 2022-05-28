@@ -77,6 +77,20 @@ class StormedManager extends Singleton
      */
     public function getSeoFieldsDefs(array $excludeFields = [])
     {
+        $fieldsDefs = $this->getFieldsDefs();
+
+        $readyFieldsDefs = $this->excludeFields($fieldsDefs, $excludeFields);
+
+        return $readyFieldsDefs;
+    }
+
+    /**
+     * Get SEO fields definitions
+     *
+     * @return array
+     */
+    public function getFieldsDefs()
+    {
         if (!empty($this->fieldsDefs)) {
             return $this->fieldsDefs;
         }
@@ -96,6 +110,20 @@ class StormedManager extends Singleton
             $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
         }
 
+        $this->fieldsDefs = $fieldsDefinitions;
+
+        return $fieldsDefinitions;
+    }
+
+    /**
+     * Filter exclude fields from the provided fields
+     *
+     * @param array $fieldsDefinitions
+     * @param array $excludeFields
+     * @return array
+     */
+    public function excludeFields($fieldsDefinitions, $excludeFields)
+    {
         // Inverted excluding
         if (in_array('*', $excludeFields)) {
             $newExcludeFields = [];
@@ -115,19 +143,22 @@ class StormedManager extends Singleton
             }
         }
 
-        $this->fieldsDefs = $readyFieldsDefs;
-
         return $readyFieldsDefs;
     }
 
-    public function seoFieldsToTranslate()
+    /**
+     * Return all the fields that are translatable
+     *
+     * @return array
+     */
+    public function getTranslatableSeoFieldsDefs()
     {
         $toTrans = [];
         $fieldsDefinitions = $this->getSeoFieldsDefs();
 
-        foreach ($this->addPrefix($fieldsDefinitions) as $fieldKey => $fieldValue) {
+        foreach ($fieldsDefinitions as $fieldKey => $fieldValue) {
             if (isset($fieldValue['trans']) && $fieldValue['trans'] === true) {
-                $toTrans[] = $fieldKey;
+                $toTrans[$fieldKey] = $fieldValue;
             }
         }
 
@@ -140,42 +171,62 @@ class StormedManager extends Singleton
 
         $editorFields = [];
         foreach ($fields as $key => $fieldDef) {
-            $type = $fieldDef['type'] ?? 'string';
-
-            switch ($type) {
-                case 'text':
-                case 'textarea':
-                case 'datepicker':
-                    $type = 'string';
-                    break;
-                case 'balloon-selector':
-                    $type = 'dropdown';
-                    break;
-            }
-
-            $field = [
-                'property' => camel_case($key),
-                'type' => $type,
-                'title' => $fieldDef['label'] ?? $fieldDef['title'] ?? '',
-                'tab' => $fieldDef['tab'] ?? '',
-                'placeholder' => $fieldDef['placeholder'] ?? '',
-                'default' => $fieldDef['default'] ?? '',
-                'description' => $fieldDef['comment'] ?? $fieldDef['commentAbove'] ?? '',
-                'options' => $fieldDef['options'] ?? [],
-            ];
-
-            $newField = [];
-
-            foreach ($field as $key => $property) {
-                if (!empty($property)) {
-                    $newField[$key] = $property;
-                }
-            }
-
-            $editorFields[] = $newField;
+            $editorFields[] = $this->makeField($key, $fieldDef);
         }
 
         return $editorFields;
+    }
+
+    public function getTranslateSeoFieldsDefsForEditor(string $langName, string $langCode)
+    {
+        $fields = $this->addPrefix($this->getTranslatableSeoFieldsDefs(), 'locale_seo_options', '%s_%s');
+
+        $editorFields = [];
+        foreach ($fields as $key => $fieldDef) {
+            $newFieldKey = $key . '.' . $langCode;
+            $editorFields[] = $this->makeField($newFieldKey, $fieldDef, $langName);
+        }
+
+        return $editorFields;
+    }
+
+    public function makeField($key, $fieldDef, $customTab = null)
+    {
+        $type = $fieldDef['type'] ?? 'string';
+
+        switch ($type) {
+            case 'text':
+            case 'textarea':
+            case 'datepicker':
+                $type = 'string';
+                break;
+            case 'balloon-selector':
+                $type = 'dropdown';
+                break;
+        }
+
+        $tab = $customTab ?? $fieldDef['tab'] ?? '';
+
+        $field = [
+            'property' => camel_case($key),
+            'type' => $type,
+            'title' => $fieldDef['label'] ?? $fieldDef['title'] ?? '',
+            'tab' => $tab,
+            'placeholder' => $fieldDef['placeholder'] ?? '',
+            'default' => $fieldDef['default'] ?? '',
+            'description' => $fieldDef['comment'] ?? $fieldDef['commentAbove'] ?? '',
+            'options' => $fieldDef['options'] ?? [],
+        ];
+
+        $newField = [];
+
+        foreach ($field as $key => $property) {
+            if (!empty($property)) {
+                $newField[$key] = $property;
+            }
+        }
+
+        return $newField;
     }
 
     // Helpers
