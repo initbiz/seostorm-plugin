@@ -22,13 +22,16 @@ class SeoStormed extends ModelBehavior
      * Accessor to seo_options attribute which will get the value from
      * the related by seostorm_options morph relation
      *
-     * @return void
+     * @return array|null
      */
-    public function getSeoOptionsAttribute()
+
+    public function getSeoOptionsAttribute(): ?array
     {
         if ($this->model->seostorm_options) {
             return $this->model->seostorm_options->options;
         }
+
+        return null;
     }
 
     /**
@@ -38,9 +41,9 @@ class SeoStormed extends ModelBehavior
      * @param array $value
      * @return void
      */
-    public function setSeoOptionsAttribute($value)
+    public function setSeoOptionsAttribute($value): void
     {
-        $seoOptions = $this->model->seostorm_options;
+        $seoOptions = $this->model->seostorm_options()->withDeferred(post('_session_key'))->first();
 
         if ($seoOptions) {
             $seoOptions->options = $value;
