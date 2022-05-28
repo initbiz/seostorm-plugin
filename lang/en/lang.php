@@ -112,6 +112,10 @@
             'site_image_prompt' => 'Drag files or click here',
             'fb_app_id' => 'Facebook App ID',
             'fb_app_id_comment' => 'The fb:app_id OG tag',
+            'twitter_site' => 'Twitter:site',
+            'twitter_site_comment' => '@username for the website used in the card footer.',
+            'twitter_creator' => 'Twitter:creator',
+            'twitter_creator_comment' => '@username for the content creator / author.',
             'og_locale' => 'OG:locale',
             'og_locale_comment' => 'Set the locale of your site for social media (e.g. en_US). <a target="__blank" href="http://ogp.me/#optional">Click here for more info.</a>',
             'og_locale_alternate' => 'OG:locale:alternate',
@@ -136,5 +140,8 @@
             'name' => 'Seo',
             'description' => 'Renders SEO meta tags in place',
         ],
+    ],
+    'editor' => [
+        'translate' => 'Translate SEO'
     ]
 ];

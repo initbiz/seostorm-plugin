@@ -59,10 +59,12 @@ class  Sitemap
             // if page has model class
             if (class_exists($modelClass)) {
                 $scope = $page->seoOptionsModelScope;
+
                 if (empty($scope)) {
                     $models = $modelClass::all();
                 } else {
-                    $models = $modelClass::$scope()->get();
+                    $params = explode(':', $scope);
+                    $models = $modelClass::{$params[0]}($params[1] ?? null)->get();
                 }
 
                 foreach ($models as $model) {
@@ -89,11 +91,12 @@ class  Sitemap
                                 }
                                 $replacement = empty($replacement) ? 'default' : $replacement;
                             }
+                            // Fill with parameters
                             $loc = preg_replace($pattern, $replacement, $loc);
                         }
                     }
 
-                    $sitemapItem->loc = $loc;
+                    $sitemapItem->loc = $this->trimOptionalParameters($loc);
 
                     if ($page->seoOptionsUseUpdatedAt && isset($model->updated_at)) {
                         $sitemapItem->lastmod = $model->updated_at->format('c');
@@ -102,6 +105,7 @@ class  Sitemap
                     $this->addItemToSet($sitemapItem);
                 }
             } else {
+                $sitemapItem->loc = $this->trimOptionalParameters($loc);
                 $this->addItemToSet($sitemapItem);
             }
         }
@@ -196,5 +200,21 @@ class  Sitemap
         $priority && $url->appendChild($xml->createElement('priority', $priority));
 
         return $url;
+    }
+
+    /**
+     * Remove optional parameters from URL - this method is used for last check
+     * if the sitemap has an optional parameter left in the URL
+     *
+     * @param string $loc
+     * @return string
+     */
+    protected function trimOptionalParameters(string $loc): string
+    {
+        // Remove empty optional parameters that don't have any models
+        $pattern = '/\:.+\?/i';
+        $loc = preg_replace($pattern, '', $loc);
+
+        return $loc;
     }
 }
