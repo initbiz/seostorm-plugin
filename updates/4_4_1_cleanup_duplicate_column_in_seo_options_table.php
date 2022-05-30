@@ -11,8 +11,9 @@ class CleanupDuplicateColumnInSeoOptionsTable extends Migration
 {
     public function up()
     {
-        $seoOptions = SeoOptions::select("id", DB::raw("CONCAT(initbiz_seostorm_seo_options.stormed_type,'-',initbiz_seostorm_seo_options.stormed_id) AS unique_id"))
-            ->get()->groupBy('unique_id');
+        $seoOptions = SeoOptions::all()->groupBy(function ($option) {
+            return $option->stormed_type . $option->stormed_id;
+        });
 
         foreach ($seoOptions as $seoOptionGroup) {
             if ($seoOptionGroup->count() > 1) {

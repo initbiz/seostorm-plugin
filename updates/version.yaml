@@ -43,3 +43,5 @@
 4.4.1:
     - "Fix duplicate relation model in seo option table"
     - 4_4_1_cleanup_duplicate_column_in_seo_options_table.php
+4.4.2:
+    - "Fix for old MYSQL"
