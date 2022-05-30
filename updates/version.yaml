@@ -45,3 +45,5 @@
     - 4_4_1_cleanup_duplicate_column_in_seo_options_table.php
 4.4.2:
     - "Fix for old MYSQL"
+4.4.3:
+    - "Fix run 404 page"
