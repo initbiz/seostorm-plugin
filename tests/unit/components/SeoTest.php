@@ -135,8 +135,6 @@ class SeoTest extends StormedTestCase
         $model = new FakeStormedModel();
         $model->name = 'test';
         $model->save();
-        $model->seoOptions = ['canonical_url' => 'custom/canonical'];
-        $model->save();
 
         $page->settings['seoOptionsCanonicalUrl'] = '/model/{{ model.name }}';
 
