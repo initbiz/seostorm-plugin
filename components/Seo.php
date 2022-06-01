@@ -3,6 +3,7 @@
 namespace Initbiz\SeoStorm\Components;
 
 use App;
+use Cms\Facades\Cms;
 use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
 use Media\Classes\MediaLibrary;
@@ -82,7 +83,11 @@ class Seo extends ComponentBase
 
     public function getCanonicalUrl($parsedTwig = '')
     {
-        $url = Page::url($this->page->id);
+        if (empty($parsedTwig)) {
+            $url = Page::url('');
+        } else {
+            $url = Cms::url($parsedTwig);
+        }
 
         if (isset($this->page->apiBag['staticPage'])) {
             $url = url($this->seoAttributes['url']);

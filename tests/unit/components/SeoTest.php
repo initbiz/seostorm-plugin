@@ -116,7 +116,6 @@ class SeoTest extends StormedTestCase
         $this->assertStringContainsString('noindex,follow,test', $result);
     }
 
-
     public function testCanonical()
     {
         $theme = Theme::load('test');
@@ -136,6 +135,8 @@ class SeoTest extends StormedTestCase
         $model = new FakeStormedModel();
         $model->name = 'test';
         $model->save();
+        $model->seoOptions = ['canonical_url' => 'custom/canonical'];
+        $model->save();
 
         $page->settings['seoOptionsCanonicalUrl'] = '/model/{{ model.name }}';
 
@@ -146,6 +147,13 @@ class SeoTest extends StormedTestCase
         $result = $controller->runPage($page);
 
         $this->assertStringContainsString(env('APP_URL') . '/model/test', $result);
+
+        $model->seoOptions = ['canonical_url' => 'custom/canonical'];
+        $model->save();
+        $page->settings['seoOptionsCanonicalUrl'] = '{{ model.seo_options.canonical_url }}';
+        $result = $controller->runPage($page);
+
+        $this->assertStringContainsString(env('APP_URL') . '/custom/canonical', $result);
     }
 
     // Open graph
