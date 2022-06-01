@@ -28,7 +28,10 @@ class Robots
     public static function response()
     {
         if (!Settings::get('enable_robots_txt')) {
-            return \App::make(Controller::class)->setStatusCode(404)->run('/404');
+            $controller = new Controller();
+            $controller->setStatusCode(404);
+
+            return $controller->run('/404');;
         } else {
             return \Response::make(self::generate())->header("Content-Type", "text/plain");
         }

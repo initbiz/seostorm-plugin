@@ -25,6 +25,7 @@
             'og_description_label' => 'OG:description',
             'og_description_comment' => 'The optimal length is 155',
             'og_description_placeholder' => 'Description of the page',
+            'og_url_label' => 'OG:url',
             'canonical_url_label' => 'Canonical URL',
             'canonical_url_comment' => 'The canonical URL this page should point to. You can use twig syntax here',
             'robot_index_label' => 'Robots index',
