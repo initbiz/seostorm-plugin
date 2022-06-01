@@ -83,21 +83,7 @@ class Seo extends ComponentBase
 
     public function getCanonicalUrl($parsedTwig = '')
     {
-        if (empty($parsedTwig)) {
-            $url = Page::url('');
-        } else {
-            $url = Cms::url($parsedTwig);
-        }
-
-        if (isset($this->page->apiBag['staticPage'])) {
-            $url = url($this->seoAttributes['url']);
-        }
-
-        if (!empty($parsedTwig)) {
-            $url = url($parsedTwig);
-        }
-
-        return $url;
+        return $this->makeUrl($parsedTwig);
     }
 
     /**
@@ -245,6 +231,28 @@ class Seo extends ComponentBase
     }
 
     /**
+     * Returns og url or canonical if set in the viewBag
+     *
+     * @param string|null $ogUrl
+     * @param string|null $canonicalUrl
+     * @return string
+     */
+    public function getOgUrl(?string $ogUrl = null, ?string $canonicalUrl = null): string
+    {
+        $url = '';
+
+        if (!empty($canonicalUrl)) {
+            $url = $this->getCanonicalUrl($canonicalUrl);
+        }
+
+        if (!empty($ogUrl)) {
+            $url = $this->makeUrl($ogUrl);
+        }
+
+        return $url;
+    }
+
+    /**
      * Returns twitter_creator if set in the viewBag or settings
      *
      * @return ?string
@@ -322,5 +330,31 @@ class Seo extends ComponentBase
         $locale = App::getLocale();
         $localizedKey = 'locale' . strtolower($viewBagProperty);
         return $this->getSeoAttribute($localizedKey)[$locale] ?? $this->getSeoAttribute($viewBagProperty) ?? null;
+    }
+
+    /**
+     * Helper for make url
+     *
+     * @param string $parsedTwig
+     * @return string
+     */
+    private function makeUrl($parsedTwig = ''): string
+    {
+        $url = '';
+        if (empty($parsedTwig)) {
+            $url = Page::url('');
+        } else {
+            $url = Cms::url($parsedTwig);
+        }
+
+        if (isset($this->page->apiBag['staticPage'])) {
+            $url = url($this->seoAttributes['url']);
+        }
+
+        if (!empty($parsedTwig)) {
+            $url = url($parsedTwig);
+        }
+
+        return $url;
     }
 }

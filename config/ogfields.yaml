@@ -15,6 +15,12 @@ og_description:
     size: tiny
     span: auto
     trans: true
+og_url:
+    label: initbiz.seostorm::lang.form.general.og_url_label
+    tab: initbiz.seostorm::lang.form.general.tab_open_graph
+    span: auto
+    type: text
+    trans: true
 og_type:
     label: initbiz.seostorm::lang.form.general.og_type_label
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
@@ -50,12 +56,12 @@ og_ref_image:
 twitter_site:
     label: initbiz.seostorm::lang.form.settings.twitter_site
     type: text
-    span: left
+    span: auto
     comment: initbiz.seostorm::lang.form.settings.twitter_site_comment
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
 twitter_creator:
     label: initbiz.seostorm::lang.form.settings.twitter_creator
     type: text
-    span: left
+    span: auto
     comment: initbiz.seostorm::lang.form.settings.twitter_creator_comment
     tab: initbiz.seostorm::lang.form.general.tab_open_graph
