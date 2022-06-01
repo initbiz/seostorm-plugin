@@ -3,6 +3,8 @@
 namespace Initbiz\SeoStorm;
 
 use Event;
+use Cms\Twig\Extension;
+use Cms\Classes\Controller;
 use System\Classes\PluginBase;
 use Initbiz\SeoStorm\Models\Htaccess;
 use Initbiz\SeoStorm\Models\Settings;
@@ -74,6 +76,12 @@ class Plugin extends PluginBase
         if (!$twig->hasExtension(StringLoaderExtension::class)) {
             $stringLoader = new StringLoaderExtension();
             $twig->addExtension($stringLoader);
+        }
+
+        if (!$twig->hasExtension(Extension::class)) {
+            $controller = Controller::getController() ?? new Controller();
+            $octoberExtensions = new Extension($controller);
+            $twig->addExtension($octoberExtensions);
         }
 
         return twig_template_from_string($twig, $template);

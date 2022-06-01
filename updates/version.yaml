@@ -47,3 +47,5 @@
     - "Fix for old MYSQL"
 4.4.3:
     - "Fix run 404 page"
+4.5.0:
+    - "Add twig october extensions to templateFromString(can now be used in seo storm) and small fix canonical url"
