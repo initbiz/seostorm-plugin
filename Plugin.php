@@ -22,12 +22,34 @@ class Plugin extends PluginBase
         ];
     }
 
+    public function register()
+    {
+    }
+
     public function boot()
     {
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\BackendHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\StormedHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\RainlabPagesHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\RainlabTranslateHandler::class);
+
+        // Load Twig extensions
+
+        /**
+         * @see \Modules\System\ServiceProvider to method registerTwigParser for more info
+         */
+        $twig = app()->get('twig.environment');
+
+        if (!$twig->hasExtension(StringLoaderExtension::class)) {
+            $stringLoader = new StringLoaderExtension();
+            $twig->addExtension($stringLoader);
+        }
+
+        if (!$twig->hasExtension(Extension::class)) {
+            $controller = Controller::getController() ?? new Controller();
+            $octoberExtensions = new Extension($controller);
+            $twig->addExtension($octoberExtensions);
+        }
     }
 
     public function registerSettings()
@@ -72,18 +94,6 @@ class Plugin extends PluginBase
     public function templateFromString($template)
     {
         $twig = app()->get('twig.environment');
-
-        if (!$twig->hasExtension(StringLoaderExtension::class)) {
-            $stringLoader = new StringLoaderExtension();
-            $twig->addExtension($stringLoader);
-        }
-
-        if (!$twig->hasExtension(Extension::class)) {
-            $controller = Controller::getController() ?? new Controller();
-            $octoberExtensions = new Extension($controller);
-            $twig->addExtension($octoberExtensions);
-        }
-
         return twig_template_from_string($twig, $template);
     }
 
