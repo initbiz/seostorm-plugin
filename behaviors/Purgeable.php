@@ -77,7 +77,7 @@ class Purgeable extends \October\Rain\Extension\ExtensionBase
         if ($attributesToPurge !== null) {
             $purgeable = is_array($attributesToPurge) ? $attributesToPurge : [$attributesToPurge];
         } else {
-            $purgeable = $this->getPurgeableAttributes() ?? [];
+            $purgeable = $this->getPurgeableAttributes();
         }
 
         $attributes = $this->model->getAttributes();
@@ -96,9 +96,9 @@ class Purgeable extends \October\Rain\Extension\ExtensionBase
     /**
      * Returns a collection of fields that will be hashed.
      */
-    public function getPurgeableAttributes()
+    public function getPurgeableAttributes(): array
     {
-        return $this->model->purgeable;
+        return $this->model->purgeable ?? [];
     }
 
     /**
