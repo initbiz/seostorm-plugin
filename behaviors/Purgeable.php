@@ -77,7 +77,7 @@ class Purgeable extends \October\Rain\Extension\ExtensionBase
         if ($attributesToPurge !== null) {
             $purgeable = is_array($attributesToPurge) ? $attributesToPurge : [$attributesToPurge];
         } else {
-            $purgeable = $this->getPurgeableAttributes();
+            $purgeable = $this->getPurgeableAttributes() ?? [];
         }
 
         $attributes = $this->model->getAttributes();
