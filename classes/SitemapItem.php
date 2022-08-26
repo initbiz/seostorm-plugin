@@ -11,4 +11,6 @@ class SitemapItem
     public $priority;
 
     public $changefreq;
+
+    public $links = [];
 }

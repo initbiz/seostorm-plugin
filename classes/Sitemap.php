@@ -39,6 +39,14 @@ class  Sitemap
 
         $models = [];
 
+        // initialise locale related vars, if available
+        $translationsEnabled = (PluginManager::instance())->hasPlugin('RainLab.Translate');
+        if ($translationsEnabled) {
+            $locales = \RainLab\Translate\Models\Locale::listEnabled();
+            unset($locales[\RainLab\Translate\Models\Locale::getDefault()->code]); // remove the default so we can skip checks later
+            $router = new \October\Rain\Router\Router;
+        }
+
         $pages = $pages
             ->filter(function ($page) {
                 return $page->seoOptionsEnabledInSitemap;
@@ -98,6 +106,17 @@ class  Sitemap
 
                     $sitemapItem->loc = $this->trimOptionalParameters($loc);
 
+                    if ($translationsEnabled) {
+                        foreach ($locales as $locale => $label) {
+                            $model->rewriteTranslatablePageUrl($locale);
+                            $sitemapItem->links[] = [
+                                'rel' => 'alternate',
+                                'hreflang' => 'en',
+                                'href' => url($router->urlFromPattern(sprintf("/%s%s", $locale, $model->url))),
+                            ];
+                        }
+                    }
+
                     if ($page->seoOptionsUseUpdatedAt && isset($model->updated_at)) {
                         $sitemapItem->lastmod = $model->updated_at->format('c');
                     }
@@ -124,6 +143,18 @@ class  Sitemap
                 $sitemapItem->priority = $viewBag->property('priority');
                 $sitemapItem->changefreq = $viewBag->property('changefreq');
 
+                if ($translationsEnabled) {
+                    $localeUrls = $viewBag->property('localeUrl');
+                    foreach ($locales as $locale => $label) {
+                        $url = is_array($localeUrls) && array_key_exists($locale, $localeUrls) ? $localeUrls[$locale] : $staticPage->url;
+                        $sitemapItem->links[] = [
+                            'rel' => 'alternate',
+                            'hreflang' => $locale,
+                            'href' => url($router->urlFromPattern(sprintf("/%s%s", $locale, $url))),
+                        ];
+                    }
+                }
+
                 $this->addItemToSet($sitemapItem);
             }
         }
@@ -142,6 +173,7 @@ class  Sitemap
         $urlSet = $xml->createElement('urlset');
         $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $urlSet->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+        $urlSet->setAttribute('xmlns:xhtml', 'http://www.w3.org/1999/xhtml');
         $urlSet->setAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd');
         $xml->appendChild($urlSet);
         return $this->urlSet = $urlSet;
@@ -153,8 +185,7 @@ class  Sitemap
             return $this->xml;
         }
 
-        $xml = new \DOMDocument;
-        $xml->encoding = 'UTF-8';
+        $xml = new \DOMDocument('1.0', 'UTF-8');
 
         return $this->xml = $xml;
     }
@@ -175,7 +206,8 @@ class  Sitemap
             url($item->loc), // make sure output is a valid url
             $lastmod->format('c'),
             $item->changefreq,
-            $item->priority
+            $item->priority,
+            $item->links
         );
 
         if ($urlElement) {
@@ -185,7 +217,7 @@ class  Sitemap
         return $urlSet;
     }
 
-    protected function makeUrlElement($xml, $pageUrl, $lastModified, $frequency, $priority)
+    protected function makeUrlElement($xml, $pageUrl, $lastModified, $frequency, $priority, $links)
     {
         if ($this->urlCount >= self::MAX_URLS) {
             return false;
@@ -198,6 +230,16 @@ class  Sitemap
         $lastModified && $url->appendChild($xml->createElement('lastmod', $lastModified));
         $frequency && $url->appendChild($xml->createElement('changefreq', $frequency));
         $priority && $url->appendChild($xml->createElement('priority', $priority));
+
+        if (is_array($links) && count($links) > 0) {
+            foreach ($links as $link) {
+                $linkEl = $xml->createElementNS('http://www.w3.org/1999/xhtml', 'xhtml:link');
+                foreach ($link as $attr => $attrValue) {
+                    $linkEl->setAttribute($attr, $attrValue);
+                }
+                $url->appendChild($linkEl);
+            }
+        }
 
         return $url;
     }
