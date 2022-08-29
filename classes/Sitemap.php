@@ -43,7 +43,6 @@ class  Sitemap
         $translationsEnabled = (PluginManager::instance())->hasPlugin('RainLab.Translate');
         if ($translationsEnabled) {
             $locales = \RainLab\Translate\Models\Locale::listEnabled();
-            unset($locales[\RainLab\Translate\Models\Locale::getDefault()->code]); // remove the default so we can skip checks later
             $router = new \October\Rain\Router\Router;
         }
 
@@ -144,9 +143,9 @@ class  Sitemap
                 $sitemapItem->changefreq = $viewBag->property('changefreq');
 
                 if ($translationsEnabled) {
-                    $localeUrls = $viewBag->property('localeUrl');
+                    $localeUrls = $viewBag->property('localeUrl', []);
                     foreach ($locales as $locale => $label) {
-                        $url = is_array($localeUrls) && array_key_exists($locale, $localeUrls) ? $localeUrls[$locale] : $staticPage->url;
+                        $url = array_key_exists($locale, $localeUrls) ? $localeUrls[$locale] : $staticPage->url;
                         $sitemapItem->links[] = [
                             'rel' => 'alternate',
                             'hreflang' => $locale,
@@ -233,7 +232,7 @@ class  Sitemap
 
         if (is_array($links) && count($links) > 0) {
             foreach ($links as $link) {
-                $linkEl = $xml->createElementNS('http://www.w3.org/1999/xhtml', 'xhtml:link');
+                $linkEl = $xml->createElement('xhtml:link');
                 foreach ($link as $attr => $attrValue) {
                     $linkEl->setAttribute($attr, $attrValue);
                 }
