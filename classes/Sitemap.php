@@ -43,6 +43,7 @@ class  Sitemap
         $translationsEnabled = (PluginManager::instance())->hasPlugin('RainLab.Translate');
         if ($translationsEnabled) {
             $locales = \RainLab\Translate\Models\Locale::listEnabled();
+            $defaultLocale = \RainLab\Translate\Models\Locale::getDefault()->code;
             $router = new \October\Rain\Router\Router;
         }
 
@@ -55,13 +56,28 @@ class  Sitemap
             // $page = Event::fire('initbiz.seostorm.generateSitemapCmsPage', [$page]);
             $modelClass = $page->seoOptionsModelClass;
 
-            $loc = $page->url;
+            if($translationsEnabled) {
+                $page->rewriteTranslatablePageUrl($defaultLocale);
+                $loc = url($router->urlFromPattern(sprintf("/%s%s", $locale, $page->url)));
+            } else {
+                $loc = $page->url;
+            }
 
             $sitemapItem = new SitemapItem();
             $sitemapItem->priority = $page->seoOptionsPriority;
             $sitemapItem->changefreq = $page->seoOptionsChangefreq;
             $sitemapItem->loc = $loc;
             $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
+
+            if ($translationsEnabled) {
+                foreach ($locales as $locale => $label) {
+                    $sitemapItem->links[] = [
+                        'rel' => 'alternate',
+                        'hreflang' => $locale,
+                        'href' => url($router->urlFromPattern(sprintf("/%s%s", $locale, $page->url)))
+                    ];
+                }
+            }
 
             // if page has model class
             if (class_exists($modelClass)) {
@@ -79,7 +95,6 @@ class  Sitemap
                         continue;
                     }
                     $modelParams = $page->seoOptionsModelParams;
-                    $loc = $page->url;
 
                     if (!empty($modelParams)) {
                         $modelParams = explode('|', $modelParams);
@@ -105,17 +120,6 @@ class  Sitemap
 
                     $sitemapItem->loc = $this->trimOptionalParameters($loc);
 
-                    if ($translationsEnabled) {
-                        foreach ($locales as $locale => $label) {
-                            $model->rewriteTranslatablePageUrl($locale);
-                            $sitemapItem->links[] = [
-                                'rel' => 'alternate',
-                                'hreflang' => 'en',
-                                'href' => url($router->urlFromPattern(sprintf("/%s%s", $locale, $model->url))),
-                            ];
-                        }
-                    }
-
                     if ($page->seoOptionsUseUpdatedAt && isset($model->updated_at)) {
                         $sitemapItem->lastmod = $model->updated_at->format('c');
                     }
@@ -137,7 +141,7 @@ class  Sitemap
                 }
 
                 $sitemapItem = new SitemapItem();
-                $sitemapItem->loc = url($staticPage->url);
+                $sitemapItem->loc = url($router->urlFromPattern(sprintf("/%s%s", $defaultLocale, $staticPage->url)));
                 $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->mtime;
                 $sitemapItem->priority = $viewBag->property('priority');
                 $sitemapItem->changefreq = $viewBag->property('changefreq');
