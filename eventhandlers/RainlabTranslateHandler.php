@@ -14,8 +14,8 @@ class RainlabTranslateHandler
         if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
             $event->listen('cms.beforeRoute', function () use ($event) {
                 $this->addTranslatableSeoFields($event);
-                $this->addTranslatableSeoFieldsToEditor();
             });
+            $this->addTranslatableSeoFieldsToEditor();
         }
     }
 

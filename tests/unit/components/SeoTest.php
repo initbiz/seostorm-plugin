@@ -7,13 +7,15 @@ use Cms\Classes\Theme;
 use Cms\Classes\Controller;
 use Cms\Components\ViewBag;
 use Cms\Classes\ComponentManager;
+use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Components\Seo;
-use RainLab\Translate\Models\Locale;
 use Initbiz\SeoStorm\Models\Settings;
 use RainLab\Translate\Classes\Translator;
+use RainLab\Translate\Models\Locale as OldLocale;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Tests\Classes\FakeModelDetailsComponent;
+use RainLab\Translate\Classes\Locale;
 
 class SeoTest extends StormedTestCase
 {
@@ -198,13 +200,29 @@ class SeoTest extends StormedTestCase
         $this->assertStringContainsString('<title>Test page title</title>', $result);
         $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurl">', $result);
 
-        $locale = new Locale();
-        $locale->code = 'pl';
-        $locale->name = 'Polish';
-        $locale->is_enabled = 1;
-        $locale->save();
 
-        Locale::clearCache();
+        if (!class_exists(\RainLab\Translate\Models\Locale::class)) {
+            //October 3.1+
+            $site = new SiteDefinition();
+            $site->name = 'Test Site';
+            $site->code = 'test';
+            $site->is_primary = false;
+            $site->is_enabled = true;
+            $site->is_enabled_edit = true;
+            $site->locale = 'pl';
+            $site->save();
+
+            Locale::clearCache();
+        } else {
+            //October under 3.1
+            $locale = new Locale();
+            $locale->code = 'pl';
+            $locale->name = 'Polish';
+            $locale->is_enabled = 1;
+            $locale->save();
+
+            OldLocale::clearCache();
+        }
         $translator = Translator::instance();
         $translator->setLocale('pl');
 
