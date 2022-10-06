@@ -215,7 +215,7 @@ class SeoTest extends StormedTestCase
             Locale::clearCache();
         } else {
             //October under 3.1
-            $locale = new Locale();
+            $locale = new OldLocale();
             $locale->code = 'pl';
             $locale->name = 'Polish';
             $locale->is_enabled = 1;
