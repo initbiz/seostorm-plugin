@@ -93,7 +93,7 @@ class Seo extends ComponentBase
      */
     public function getTitleRaw()
     {
-        return $this->getPropertyTranslated('metaTitle') ?: $this->getSeoAttribute('title') ?: null;
+        return $this->getSeoAttribute('metaTitle') ?: $this->getSeoAttribute('title') ?: null;
     }
 
     /**
@@ -124,7 +124,7 @@ class Seo extends ComponentBase
      */
     public function getDescription()
     {
-        $description = $this->getPropertyTranslated('metaDescription');
+        $description = $this->getSeoAttribute('metaDescription');
 
         if (!$description) {
             $description = $this->getSeoAttribute('description') ?? null;
@@ -148,7 +148,7 @@ class Seo extends ComponentBase
      */
     public function getOgTitle()
     {
-        return $this->getPropertyTranslated('ogTitle') ?? $this->getTitle();
+        return $this->getSeoAttribute('ogTitle') ?? $this->getTitle();
     }
 
     /**
@@ -159,7 +159,7 @@ class Seo extends ComponentBase
      */
     public function getOgDescription()
     {
-        return $this->getPropertyTranslated('ogDescription') ?? $this->getDescription();
+        return $this->getSeoAttribute('ogDescription') ?? $this->getDescription();
     }
 
     /**
@@ -171,11 +171,11 @@ class Seo extends ComponentBase
      */
     public function getOgImage()
     {
-        if ($ogImage = $this->getPropertyTranslated('ogRefImage')) {
+        if ($ogImage = $this->getSeoAttribute('ogRefImage')) {
             return $ogImage;
         }
 
-        if ($ogImage = $this->getPropertyTranslated('ogImage')) {
+        if ($ogImage = $this->getSeoAttribute('ogImage')) {
             return $ogImage;
         }
 
@@ -316,20 +316,6 @@ class Seo extends ComponentBase
             $this->seoAttributes = [];
         }
         $this->seoAttributes[$key] = $value;
-    }
-
-    /**
-     * Returns the property from the viewBag
-     * taking translated version into consideration
-     *
-     * @param string $viewBagProperty
-     * @return string|null
-     */
-    public function getPropertyTranslated(string $viewBagProperty)
-    {
-        $locale = App::getLocale();
-        $localizedKey = 'locale' . strtolower($viewBagProperty);
-        return $this->getSeoAttribute($localizedKey)[$locale] ?? $this->getSeoAttribute($viewBagProperty) ?? null;
     }
 
     /**

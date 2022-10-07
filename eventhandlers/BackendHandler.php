@@ -6,7 +6,7 @@ use App;
 use Site;
 use Cms\Classes\Page;
 use System\Classes\PluginManager;
-use RainLab\Translate\Models\Locale;
+use RainLab\Translate\Classes\Locale;
 use Initbiz\SeoStorm\Classes\StormedManager;
 
 class BackendHandler
@@ -46,26 +46,26 @@ class BackendHandler
                     'properties' => $stormedManager->getSeoFieldsDefsForEditor()
                 ];
 
+                // Handle translated fields
+
                 $pluginManager = PluginManager::instance();
+                if (!$pluginManager->exists('RainLab.Translate')) {
+                    return;
+                }
 
-                if ($pluginManager->hasPlugin('RainLab.Translate') && !$pluginManager->isDisabled('RainLab.Translate')) {
-                    if ($this->hasRainLabTranslateV2()) {
-                        if (Site::hasMultiSite()) {
-                            $locales = Site::listEnabled();
-                            $defaultLocale = Site::getPrimarySite()->code ?? null;
+                // RainLab.Translate v.1 compatibility
+                if (class_exists(\RainLab\Translate\Models\Locale::class)) {
+                    $localeClass = \RainLab\Translate\Models\Locale::class;
+                } else {
+                    $localeClass = Locale::class;
+                }
 
-                            $properties = $this->createLocaleProperties($locales, $defaultLocale, $stormedManager);
-                            $dataHolder->buttons[] = $this->createLocaleButtonConfig($properties);
-                        }
-                    } else {
-                        if (Locale::isAvailable()) {
-                            $locales = Locale::listAvailable();
-                            $defaultLocale = Locale::getDefault()->code ?? null;
+                if ($localeClass::isAvailable()) {
+                    $locales = $localeClass::listAvailable();
+                    $defaultLocale = $localeClass::getDefault()->code ?? null;
 
-                            $properties = $this->createLocaleProperties($locales, $defaultLocale, $stormedManager);
-                            $dataHolder->buttons[] = $this->createLocaleButtonConfig($properties);
-                        }
-                    }
+                    $properties = $this->createLocaleProperties($locales, $defaultLocale, $stormedManager);
+                    $dataHolder->buttons[] = $this->createLocaleButtonConfig($properties);
                 }
             }
         });
@@ -115,11 +115,6 @@ class BackendHandler
         });
     }
 
-    private function hasRainLabTranslateV2(): bool
-    {
-        return ! class_exists(RainLab\Translate\Models\Locale::class);
-    }
-
     private function createLocaleButtonConfig(array $properties): array
     {
         return [
@@ -133,18 +128,18 @@ class BackendHandler
 
     private function createLocaleProperties(
         iterable $locales,
-        string $defaultLocale,
+        ?string $defaultLocale,
         StormedManager $stormedManager
     ): array {
         $properties = [];
 
-        foreach ($locales as $locale) {
+        foreach ($locales as $locale => $label) {
             if ($locale === $defaultLocale) {
                 continue;
             }
 
             $properties = array_merge(
-                $stormedManager->getTranslateSeoFieldsDefsForEditor($locale->name, $locale->code),
+                $stormedManager->getTranslateSeoFieldsDefsForEditor($label, $locale),
                 $properties
             );
         }
