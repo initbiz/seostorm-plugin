@@ -8,7 +8,6 @@ use Cms\Classes\Page;
 use System\Classes\PluginManager;
 use RainLab\Translate\Classes\Locale;
 use Initbiz\SeoStorm\Classes\StormedManager;
-use RainLab\Translate\Models\Locale as OldLocale;
 
 class BackendHandler
 {
@@ -47,22 +46,26 @@ class BackendHandler
                     'properties' => $stormedManager->getSeoFieldsDefsForEditor()
                 ];
 
+                // Handle translated fields
+
                 $pluginManager = PluginManager::instance();
+                if (!$pluginManager->exists('RainLab.Translate')) {
+                    return;
+                }
 
-                if ($pluginManager->hasPlugin('RainLab.Translate') && !$pluginManager->isDisabled('RainLab.Translate')) {
-                    if ($this->hasRainLabTranslateV2()) {
-                        $localeObj = new Locale();
-                    } else {
-                        $localeObj = new OldLocale();
-                    }
+                // RainLab.Translate v.1 compatibility
+                if (class_exists(\RainLab\Translate\Models\Locale::class)) {
+                    $localeClass = \RainLab\Translate\Models\Locale::class;
+                } else {
+                    $localeClass = Locale::class;
+                }
 
-                    if ($localeObj::isAvailable()) {
-                        $locales = $localeObj::listAvailable();
-                        $defaultLocale = $localeObj::getDefault()->code ?? null;
+                if ($localeClass::isAvailable()) {
+                    $locales = $localeClass::listAvailable();
+                    $defaultLocale = $localeClass::getDefault()->code ?? null;
 
-                        $properties = $this->createLocaleProperties($locales, $defaultLocale, $stormedManager);
-                        $dataHolder->buttons[] = $this->createLocaleButtonConfig($properties);
-                    }
+                    $properties = $this->createLocaleProperties($locales, $defaultLocale, $stormedManager);
+                    $dataHolder->buttons[] = $this->createLocaleButtonConfig($properties);
                 }
             }
         });
@@ -110,11 +113,6 @@ class BackendHandler
 
             $model->addFillable(array_keys($fields));
         });
-    }
-
-    private function hasRainLabTranslateV2(): bool
-    {
-        return !class_exists(\RainLab\Translate\Models\Locale::class);
     }
 
     private function createLocaleButtonConfig(array $properties): array
