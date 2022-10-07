@@ -53,3 +53,5 @@
     - "Fix problem with loading extensions after they already were initialized"
 4.5.2:
     - "Fix purgeable with default array"
+4.6.0:
+    - "Added compatibility with october 3.1"
