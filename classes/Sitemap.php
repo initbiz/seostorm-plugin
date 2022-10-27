@@ -43,8 +43,13 @@ class  Sitemap
         // initialise locale related vars, if available
         $translationsEnabled = (PluginManager::instance())->hasPlugin('RainLab.Translate');
         if ($translationsEnabled) {
-            $locales = \RainLab\Translate\Models\Locale::listEnabled();
-            $defaultLocale = \RainLab\Translate\Models\Locale::getDefault()->code;
+            if(class_exists('RainLab\Translate\Models\Locale')) {
+                $localeClass = '\RainLab\Translate\Models\Locale';
+            } elseif(class_exists('RainLab\Translate\Classes\Locale')) {
+                $localeClass = '\RainLab\Translate\Classes\Locale';
+            }
+            $locales = $localeClass::listEnabled();
+            $defaultLocale = ($localeClass::getDefault())->code;
             $router = new \October\Rain\Router\Router;
         }
 
