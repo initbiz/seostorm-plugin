@@ -32,6 +32,7 @@ class  Sitemap
 
     public function generate($pages = [])
     {
+
         if (empty($pages)) {
             // get all pages of the current theme
             $pages = Page::listInTheme(Theme::getEditTheme());
@@ -58,7 +59,7 @@ class  Sitemap
 
             if($translationsEnabled) {
                 $page->rewriteTranslatablePageUrl($defaultLocale);
-                $loc = url($router->urlFromPattern(sprintf("/%s%s", $locale, $page->url)));
+                $loc = url($router->urlFromPattern(sprintf("/%s%s", $defaultLocale, $page->url)));
             } else {
                 $loc = $page->url;
             }
@@ -71,10 +72,11 @@ class  Sitemap
 
             if ($translationsEnabled) {
                 foreach ($locales as $locale => $label) {
+                    $page->rewriteTranslatablePageUrl($locale);
                     $sitemapItem->links[] = [
                         'rel' => 'alternate',
                         'hreflang' => $locale,
-                        'href' => url($router->urlFromPattern(sprintf("/%s%s", $locale, $page->url)))
+                        'href' => url($router->urlFromPattern(sprintf("/%s%s/", $locale, $page->url)))
                     ];
                 }
             }
@@ -141,7 +143,11 @@ class  Sitemap
                 }
 
                 $sitemapItem = new SitemapItem();
-                $sitemapItem->loc = url($router->urlFromPattern(sprintf("/%s%s", $defaultLocale, $staticPage->url)));
+                if($translationsEnabled) {
+                    $sitemapItem->loc = url($router->urlFromPattern(sprintf("/%s%s", $defaultLocale, $staticPage->url)));
+                } else {
+                    $sitemapItem->loc = url($staticPage->url);
+                }
                 $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->mtime;
                 $sitemapItem->priority = $viewBag->property('priority');
                 $sitemapItem->changefreq = $viewBag->property('changefreq');
