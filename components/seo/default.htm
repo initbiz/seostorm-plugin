@@ -6,7 +6,7 @@
 <meta name="description" content="{{ include(template_from_string(__SELF__.getDescription())) }}" />
 {% endif %}
 {% set canonical = include(template_from_string(__SELF__.getSeoAttribute('canonical_url'))) %}
-<link rel="canonical" href="{{ __SELF__.getCanonicalUrl(canonical)|default(''|page) }}">
+<link rel="canonical" href="{{ __SELF__.getCanonicalUrl(canonical) }}">
 {% endif %}
 {% if settings.enable_robots_meta %}
 {% set advancedRobots = include(template_from_string(__SELF__.getSeoAttribute('robot_advanced'))) %}

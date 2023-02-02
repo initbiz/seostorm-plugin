@@ -2,13 +2,13 @@
     - "First version of the plugin"
     - 1_0_0_create_seo_options_table.php
 2.0.0:
-    - "!!! Deleted automatic RainLab.Blog handler"
+    - "Deleted automatic RainLab.Blog handler"
 3.0.0:
-    - "!!! Dropped Schema and minify support. Provided full compatibility with October 2.0"
+    - "Dropped Schema and minify support. Provided full compatibility with October 2.0"
 3.0.1:
     - "Fix bug with setting seo attributes"
 4.0.0:
-    - "!!! Seo attributes changed to camelCase issue initbiz/seostorm-plugin!23"
+    - "Seo attributes changed to camelCase issue initbiz/seostorm-plugin!23"
 4.0.1:
     - "Remove unneeded handler"
 4.0.2:
@@ -55,3 +55,5 @@
     - "Fix purgeable with default array"
 4.6.0:
     - "Added compatibility with october 3.1"
+4.6.1:
+    - "Fix overwritten sitemap and the canonical tag is always added with the url of the current page"
