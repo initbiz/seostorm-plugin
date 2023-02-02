@@ -12,12 +12,7 @@ class SitemapController
     {
         $sitemap = new Sitemap();
 
-        if (!Settings::get('enable_sitemap')) {
-            $controller = new Controller();
-            $controller->setStatusCode(404);
-
-            return $controller->run('/404');
-        } else {
+        if (Settings::get('enable_sitemap')) {
             return Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
         }
     }
