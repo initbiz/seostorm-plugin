@@ -42,5 +42,6 @@ class Settings extends Model
         $this->favicon_enabled = false;
         $this->favicon_16 = false;
         $this->enable_og = true;
+        $this->publisher_type = 'Organization';
     }
 }

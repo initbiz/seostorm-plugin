@@ -1,0 +1,29 @@
+{{ dump(__SELF__) }}
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ page.url|app }}"
+    },
+    "headline": "{{ include(template_from_string(page.viewBag.meta_title)) }}",
+    "image": "{{ 'assets/images/hero/new-online-slots-md.webp'|theme }}",
+    "dateModified": "{{  getPageUpdatedDate(page)|date('c') }}",
+    "author": {
+        "@type": "Person",
+        "name": "{{ author.full_name }}",
+        "url": "{{ 'author' |page({slug: author.slug})}}",
+        "jobTitle": "{{ author.sc_position }}"
+    },
+    "publisher": {
+        "@type": "{{ __SELF__.publisher.type }}",
+        "name": "{{ __SELF__.publisher.name }}",
+        "url": "{{ __SELF__.publisher.url }}",
+        "logo": "{{ __SELF__.publisher.logo }}"
+        "sameAs": [
+        {% for url in  __SELF__.publisher.same_as %}
+            "{{ url.same_as_url }}",
+        {% endfor %}
+        ]
+    }
+}

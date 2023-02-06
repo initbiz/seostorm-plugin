@@ -19,6 +19,7 @@ class Plugin extends PluginBase
     {
         return [
             'Initbiz\SeoStorm\Components\Seo' => 'seo',
+            'Initbiz\SeoStorm\Components\Schema' => 'schema',
         ];
     }
 

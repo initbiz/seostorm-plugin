@@ -79,6 +79,7 @@
             'tab_htaccess' => '.htaccess',
             'tab_social_media' => 'Social Media',
             'tab_migrate' => 'Migrate',
+            'tab_schema' => 'Schema',
             'enable_site_meta' => 'Enable title and description meta tags',
             'enable_sitemap' => 'Enable sitemap.xml',
             'site_name' => 'Site name',
@@ -124,6 +125,17 @@
             'site_image_hint' => 'Recommended resolution of the image is 1200px x 627px',
             'og_site_name' => 'OG:site_name',
             'og_site_name_comment' => 'If your object is part of a larger web site, the name which should be displayed for the overall site. e.g., "Init".',
+            'publisher_type' => '@type',
+            'publisher_type_comment' => 'Publisher @type value',
+            'publisher_name' => 'Publisher name',
+            'publisher_url' => 'Publisher URL',
+            'publisher_same_as' => 'Same as',
+            'publisher_same_as_url' => 'Same as URL',
+            'publisher_hint' => 'Publisher',
+            'publisher_hint_comment' => 'Provide all information about publisher that will be included in schema markup.',
+            'publisher_logo_url' => 'Logo',
+            'publisher_logo_url_comment' => 'Publisher logo URL',
+
         ],
         'htaccess' => [
             'label' => '.htaccess',
@@ -140,6 +152,10 @@
         'seo' => [
             'name' => 'Seo',
             'description' => 'Renders SEO meta tags in place',
+        ],
+        'schema' => [
+            'name' => 'Schema markup',
+            'description' => 'Renders schema markup',
         ],
     ],
     'editor' => [
