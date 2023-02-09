@@ -135,7 +135,6 @@
             'publisher_hint_comment' => 'Provide all information about publisher that will be included in schema markup.',
             'publisher_logo_url' => 'Logo',
             'publisher_logo_url_comment' => 'Publisher logo URL',
-
         ],
         'htaccess' => [
             'label' => '.htaccess',
@@ -156,6 +155,14 @@
         'schema' => [
             'name' => 'Schema markup',
             'description' => 'Renders schema markup',
+            'type' => [
+                'title' => 'Schema type',
+                'description' => 'Select schema type'
+            ],
+            'image' => [
+                'title' => 'Image URL',
+                'description' => 'Image URL'
+            ],
         ],
     ],
     'editor' => [

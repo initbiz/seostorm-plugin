@@ -279,8 +279,6 @@ tabs:
             mode: info
             type: hint
             tab: initbiz.seostorm::lang.form.settings.tab_schema
-        ruler1:
-            type: ruler
         publisher_type:
             label: initbiz.seostorm::lang.form.settings.publisher_type
             comment: initbiz.seostorm::lang.form.settings.publisher_type_comment
@@ -317,3 +315,5 @@ tabs:
             type: text
             span: left
             tab: initbiz.seostorm::lang.form.settings.tab_schema
+        _ruler1:
+            type: ruler

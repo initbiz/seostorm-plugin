@@ -1,29 +1,34 @@
-{{ dump(__SELF__) }}
+{# <script type="application/ld+json"> #}
 {
-    "@context": "http://schema.org",
-    "@type": "Article",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "{{ page.url|app }}"
-    },
-    "headline": "{{ include(template_from_string(page.viewBag.meta_title)) }}",
-    "image": "{{ 'assets/images/hero/new-online-slots-md.webp'|theme }}",
-    "dateModified": "{{  getPageUpdatedDate(page)|date('c') }}",
-    "author": {
-        "@type": "Person",
-        "name": "{{ author.full_name }}",
-        "url": "{{ 'author' |page({slug: author.slug})}}",
-        "jobTitle": "{{ author.sc_position }}"
-    },
-    "publisher": {
-        "@type": "{{ __SELF__.publisher.type }}",
-        "name": "{{ __SELF__.publisher.name }}",
-        "url": "{{ __SELF__.publisher.url }}",
-        "logo": "{{ __SELF__.publisher.logo }}"
-        "sameAs": [
-        {% for url in  __SELF__.publisher.same_as %}
-            "{{ url.same_as_url }}",
-        {% endfor %}
-        ]
-    }
+"@context": "http://schema.org",
+{% if schema_type %}
+"@type": "{{ schema_type }}",
+{% endif %}
+{% if __SELF__.publisher %}
+"publisher": {
+{% if __SELF__.publisher.type %}
+    "@type": "{{ __SELF__.publisher.type }}"
+{% endif %}
+{% if __SELF__.publisher.name %}
+, "name": "{{ __SELF__.publisher.name }}"
+{% endif %}
+{% if __SELF__.publisher.url %}
+, "url": "{{ __SELF__.publisher.url }}"
+{% endif %}
+{% if __SELF__.publisher.logo %}
+, "logo": "{{ __SELF__.publisher.logo }}"
+{% endif %}
+{% if __SELF__.publisher.same_as %}
+, "sameAs": [
+{% for url in  __SELF__.publisher.same_as %}
+"{{ url.same_as_url }}"
+{% if not loop.last %}
+,
+{% endif %}
+{% endfor %}
+]
+{% endif %}
 }
+{% endif %}
+}
+</script>
