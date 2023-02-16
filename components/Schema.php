@@ -3,12 +3,9 @@
 namespace Initbiz\SeoStorm\Components;
 
 use Initbiz\SeoStorm\Components\Seo;
-use Initbiz\SeoStorm\Models\Settings;
 
 class Schema extends Seo
 {
-    public $publisher;
-
     public function componentDetails()
     {
         return [
@@ -20,14 +17,25 @@ class Schema extends Seo
     public function onRun()
     {
         parent::onRun();
-        $this->getPublisher();
     }
 
+    /**
+     * Return schema type
+     *
+     * @return string
+     */
     public function getSchemaType()
     {
         return $this->getSeoAttribute('schemaType') ?? '';
     }
 
+    /**
+     * Returns schemaRefImage if set
+     * else schemaImage if set
+     * else fallback to getSchemaImageFromSettings()
+     *
+     * @return string
+     */
     public function getSchemaImage()
     {
         if ($schemaImage = $this->getSeoAttribute('schemaRefImage')) {
