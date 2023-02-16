@@ -9,8 +9,6 @@ class Schema extends Seo
 {
     public $publisher;
 
-    public $schemaImage;
-
     public function componentDetails()
     {
         return [
@@ -19,76 +17,68 @@ class Schema extends Seo
         ];
     }
 
-    public function defineProperties()
-    {
-        return [
-            'type' => [
-                'title'             => 'initbiz.seostorm::lang.components.schema.type.title',
-                'description'       => 'initbiz.seostorm::lang.components.schema.type.description',
-                'type'              => 'dropdown',
-            ],
-            'image' => [
-                'title'             => 'initbiz.seostorm::lang.components.schema.image.title',
-                'description'       => 'initbiz.seostorm::lang.components.schema.image.description',
-            ]
-        ];
-    }
-
-    public function getMainEntityTypeOptions()
-    {
-        return $this->getTypeOptions();
-    }
-
-    public function getTypeOptions()
-    {
-        return [
-            '' => '- Select @type -',
-            'WebPage' => 'Web Page',
-            'Article' => 'Article',
-            'Book' => 'Book',
-            'BreadcrumbList' => 'Breadcrumb List',
-            'ItemList' => 'Item List',
-            'Course' => 'Course',
-            'SpecialAnnouncement' => 'Covid 19',
-            'Dataset' => 'Dataset',
-            'Quiz' => 'Quiz',
-            'EmployerAggregateRating' => 'Employer Aggregate Rating',
-            'Occupation' => 'Occupation',
-            'Event' => 'Event',
-            'ClaimReview' => 'ClaimReview',
-            'FAQPage' => 'FAQ Page',
-            'HowTo' => 'How To',
-            'ImageObject' => 'Image Object',
-            'JobPosting' => 'Job Posting',
-            'LearningResource' => 'Learning Resource',
-            'VideoObject' => 'Video Object',
-            'LocalBusiness' => 'Local Business',
-            'Organization' => 'Logo(Organization)',
-            'MathSolver' => 'Math Solver',
-            'Movie' => 'Movie',
-            'Product' => 'Product',
-            'Review' => 'Review',
-            'Offer' => 'Offer',
-            'QAPage' => 'QA Page',
-            'Recipe' => 'Recipe',
-            'AggregateRating' => 'Aggregate Rating',
-            'SoftwareApplication' => 'Software Application',
-            'CreativeWork' => 'Creative Work',
-            'Clip' => 'Clip',
-            'BroadcastEvent' => 'Broadcast Event',
-        ];
-    }
-
     public function onRun()
     {
-        $this->prepareVars();
+        parent::onRun();
+        $this->getPublisher();
     }
 
-    public function prepareVars()
+    public function getSchemaType()
     {
-        $this->type = $this->page['schema_type'] = $this->property('type');
-        $this->schemaImage = $this->page['schema_image'] = $this->property('image');
-        $this->getPublisher();
+        $schemaType = '';
+        if ($schemaType = $this->getSeoAttribute('schemaType')) {
+            return $schemaType;
+        }
+
+        return $schemaType;
+    }
+
+    public function getSchemaImage()
+    {
+        if ($schemaImage = $this->getSeoAttribute('schemaRefImage')) {
+            return $schemaImage;
+        }
+
+        if ($schemaImage = $this->getSeoAttribute('schemaImage')) {
+            return $schemaImage;
+        }
+
+        return $this->getSchemaImageFromSettings();
+    }
+
+    public function getSchemaMainEntity()
+    {
+        $mainEntity = [];
+        if ($this->getSeoAttribute('schemaMainEntity')) {
+            if ($entityId = $this->getSeoAttribute('schemaMainEntityId')) {
+                $mainEntity['id'] = $entityId;
+            }
+
+            if ($entityType = $this->getSeoAttribute('schemaMainEntityType')) {
+                $mainEntity['type'] = $entityType;
+            }
+        }
+
+        return $mainEntity;
+    }
+
+    /**
+     * Returns the URL of the schema image
+     *
+     * @return string schema image url
+     */
+    public function getSchemaImageFromSettings()
+    {
+        $settings = $this->getSettings();
+        $schemaImage = $settings->schema_image;
+
+        if ($schemaImage === 'media' && $settings->schema_image) {
+            return MediaLibrary::instance()->getPathUrl($settings->schema_image);
+        } elseif ($schemaImage === "fileupload") {
+            return $settings->site_image_fileupload()->getSimpleValue();
+        } elseif ($schemaImage === "url") {
+            return $settings->schema_image_url;
+        }
     }
 
     public function getPublisher()

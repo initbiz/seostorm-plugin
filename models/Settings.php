@@ -23,6 +23,10 @@ class Settings extends Model
         'site_image_fileupload' => [
             '\System\Models\File',
         ],
+
+        'schema_image_fileupload' => [
+            '\System\Models\File',
+        ],
     ];
 
     // A unique code
