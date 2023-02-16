@@ -25,12 +25,7 @@ class Schema extends Seo
 
     public function getSchemaType()
     {
-        $schemaType = '';
-        if ($schemaType = $this->getSeoAttribute('schemaType')) {
-            return $schemaType;
-        }
-
-        return $schemaType;
+        return $this->getSeoAttribute('schemaType') ?? '';
     }
 
     public function getSchemaImage()
@@ -44,22 +39,6 @@ class Schema extends Seo
         }
 
         return $this->getSchemaImageFromSettings();
-    }
-
-    public function getSchemaMainEntity()
-    {
-        $mainEntity = [];
-        if ($this->getSeoAttribute('schemaMainEntity')) {
-            if ($entityId = $this->getSeoAttribute('schemaMainEntityId')) {
-                $mainEntity['id'] = $entityId;
-            }
-
-            if ($entityType = $this->getSeoAttribute('schemaMainEntityType')) {
-                $mainEntity['type'] = $entityType;
-            }
-        }
-
-        return $mainEntity;
     }
 
     /**
@@ -81,15 +60,43 @@ class Schema extends Seo
         }
     }
 
+    /**
+     * Return schema mainEntityPage
+     *
+     * @return array
+     */
+    public function getSchemaMainEntity()
+    {
+        $mainEntity = [];
+        if ($this->getSeoAttribute('schemaMainEntity')) {
+            if ($entityId = $this->getSeoAttribute('schemaMainEntityId')) {
+                $mainEntity['id'] = $entityId;
+            }
+
+            if ($entityType = $this->getSeoAttribute('schemaMainEntityType')) {
+                $mainEntity['type'] = $entityType;
+            }
+        }
+
+        return $mainEntity;
+    }
+
+    /**
+     * Return schema publisher
+     *
+     * @return array
+     */
     public function getPublisher()
     {
         $settings = $this->getSettings();
-        $this->publisher = [
-            'type' => $settings['publisher_type'],
-            'name' => $settings['publisher_name'],
-            'url' => $settings['publisher_url'],
-            'logo_url' => $settings['publisher_logo_url'],
-            'same_as' => $settings['publisher_same_as'],
+        $publisher = [
+            'type' => $settings['publisher_type'] ?? '',
+            'name' => $settings['publisher_name'] ?? '',
+            'url' => $settings['publisher_url'] ?? '',
+            'logo_url' => $settings['publisher_logo_url'] ?? '',
+            'same_as' => $settings['publisher_same_as'] ?? '',
         ];
+
+        return $publisher;
     }
 }

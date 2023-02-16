@@ -1,32 +1,50 @@
-{# <script type="application/ld+json"> #}
+<script type="application/ld+json">
 {
-"@context": "http://schema.org",
-{% if schema_type %}
-"@type": "{{ schema_type }}",
+    "@context": "http://schema.org",
+{% if __SELF__.getSchemaType() %}
+    "@type": "{{ __SELF__.getSchemaType() }}",
 {% endif %}
-{% if __SELF__.publisher %}
-"publisher": {
-{% if __SELF__.publisher.type %}
-    "@type": "{{ __SELF__.publisher.type }}"
+{% set schemaEntity = __SELF__.getSchemaMainEntity() %}
+{% if schemaEntity %}
+    "mainEntityOfPage":
+    {
+    {% if schemaEntity.type %}
+    "@type": "{{ schemaEntity.type }}"
+    {% endif %}
+    {% if schemaEntity.id %}
+    ,"@id": "{{ include(template_from_string(schemaEntity.id)) }}"
+    {% endif %}
+    },
 {% endif %}
-{% if __SELF__.publisher.name %}
-, "name": "{{ __SELF__.publisher.name }}"
+{% if __SELF__.getSchemaImage() %}
+    "image": "{{ include(template_from_string(__SELF__.getSchemaImage())) }}",
 {% endif %}
-{% if __SELF__.publisher.url %}
-, "url": "{{ __SELF__.publisher.url }}"
+
+{% set publisher = __SELF__.getPublisher() %}
+{% if publisher %}
+    "publisher":
+    {
+{% if publisher.type %}
+    "@type": "{{ publisher.type }}"
 {% endif %}
-{% if __SELF__.publisher.logo %}
-, "logo": "{{ __SELF__.publisher.logo }}"
+{% if publisher.name %}
+,   "name": "{{ publisher.name }}"
 {% endif %}
-{% if __SELF__.publisher.same_as %}
-, "sameAs": [
-{% for url in  __SELF__.publisher.same_as %}
-"{{ url.same_as_url }}"
-{% if not loop.last %}
-,
+{% if publisher.url %}
+,   "url": "{{ publisher.url }}"
 {% endif %}
-{% endfor %}
-]
+{% if publisher.logo %}
+,   "logo": "{{ publisher.logo }}"
+{% endif %}
+{% if publisher.same_as %}
+,   "sameAs": [
+    {% for url in publisher.same_as %}
+    "{{ url.same_as_url }}"
+    {% if not loop.last %}
+    ,
+    {% endif %}
+    {% endfor %}
+    ]
 {% endif %}
 }
 {% endif %}
