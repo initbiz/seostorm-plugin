@@ -14,11 +14,6 @@ class Schema extends Seo
         ];
     }
 
-    public function onRun()
-    {
-        parent::onRun();
-    }
-
     /**
      * Return schema type
      *
