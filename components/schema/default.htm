@@ -40,9 +40,7 @@
 ,   "sameAs": [
     {% for url in publisher.same_as %}
     "{{ url.same_as_url }}"
-    {% if not loop.last %}
-    ,
-    {% endif %}
+    {{ (loop.last) ? '', ',' }}
     {% endfor %}
     ]
 {% endif %}
