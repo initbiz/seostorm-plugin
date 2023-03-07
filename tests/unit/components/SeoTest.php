@@ -2,14 +2,18 @@
 
 namespace Initbiz\SeoStorm\Tests\Unit\Components;
 
+use Site;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
+use Cms\Classes\Router;
 use Cms\Classes\Controller;
 use Cms\Components\ViewBag;
+use System\Classes\SiteManager;
 use Cms\Classes\ComponentManager;
+use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Components\Seo;
-use RainLab\Translate\Models\Locale;
 use Initbiz\SeoStorm\Models\Settings;
+use RainLab\Translate\Classes\Locale;
 use RainLab\Translate\Classes\Translator;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
@@ -189,8 +193,13 @@ class SeoTest extends StormedTestCase
         $this->assertStringContainsString('<title>test</title>', $result);
     }
 
-    public function testGetTitleTranslated()
+    public function testGetTitleTranslatedOctoberV2()
     {
+        if (!class_exists(\RainLab\Translate\Models\Locale::class)) {
+            $this->assertTrue(true);
+            return;
+        }
+
         $theme = Theme::load('test');
         $controller = new Controller($theme);
         $page = Page::load($theme, 'with-fake-model.htm');
@@ -198,18 +207,53 @@ class SeoTest extends StormedTestCase
         $this->assertStringContainsString('<title>Test page title</title>', $result);
         $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurl">', $result);
 
-        $locale = new Locale();
+        $locale = new \RainLab\Translate\Models\Locale();
         $locale->code = 'pl';
         $locale->name = 'Polish';
         $locale->is_enabled = 1;
         $locale->save();
 
-        Locale::clearCache();
+        \RainLab\Translate\Models\Locale::clearCache();
+
         $translator = Translator::instance();
         $translator->setLocale('pl');
 
         $page = Page::load($theme, 'with-fake-model.htm');
         $page->rewriteTranslatablePageAttributes('pl');
+        $result = $controller->runPage($page);
+        $this->assertStringContainsString('<title>Test page title PL</title>', $result);
+        $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurlpl">', $result);
+    }
+
+    public function testGetTitleTranslated()
+    {
+        // October 3.1+ check
+        if (class_exists(\RainLab\Translate\Models\Locale::class)) {
+            $this->assertTrue(true);
+            return;
+        }
+
+        Site::resetCache();
+
+        $site = new SiteDefinition();
+        $site->name = 'Test Site';
+        $site->code = 'test';
+        $site->is_primary = false;
+        $site->is_enabled = true;
+        $site->is_enabled_edit = true;
+        $site->locale = 'pl';
+        $site->theme = 'test';
+        $site->save();
+
+        Site::setActiveSite($site);
+        Site::applyActiveSite($site);
+
+        Translator::forgetInstance();
+
+        $theme = Theme::load('test');
+        $controller = new Controller($theme);
+        $page = Page::find('with-fake-model.htm');
+
         $result = $controller->runPage($page);
         $this->assertStringContainsString('<title>Test page title PL</title>', $result);
         $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurlpl">', $result);

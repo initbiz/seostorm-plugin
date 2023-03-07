@@ -1,0 +1,113 @@
+schema_type:
+    label: initbiz.seostorm::lang.form.general.schema_type_label
+    commentAbove: initbiz.seostorm::lang.form.general.schema_type_comment
+    type: dropdown
+    span: full
+    tab: initbiz.seostorm::lang.form.general.tab_schema
+    trans: true
+    options:
+        '': 'Select type'
+        'WebPage': 'Web Page'
+        'Article': 'Article'
+        'Book': 'Book'
+        'BreadcrumbList': 'Breadcrumb List'
+        'ItemList': 'Item List'
+        'Course': 'Course'
+        'SpecialAnnouncement': 'Covid 19'
+        'Dataset': 'Dataset'
+        'Quiz': 'Quiz'
+        'EmployerAggregateRating': 'Employer Aggregate Rating'
+        'Occupation': 'Occupation'
+        'Event': 'Event'
+        'ClaimReview': 'ClaimReview'
+        'FAQPage': 'FAQ Page'
+        'HowTo': 'How To'
+        'ImageObject': 'Image Object'
+        'JobPosting': 'Job Posting'
+        'LearningResource': 'Learning Resource'
+        'VideoObject': 'Video Object'
+        'LocalBusiness': 'Local Business'
+        'Organization': 'Logo(Organization)'
+        'MathSolver': 'Math Solver'
+        'Movie': 'Movie'
+        'Product': 'Product'
+        'Review': 'Review'
+        'Offer': 'Offer'
+        'QAPage': 'QA Page'
+        'Recipe': 'Recipe'
+        'AggregateRating': 'Aggregate Rating'
+        'SoftwareApplication': 'Software Application'
+        'CreativeWork': 'Creative Work'
+        'Clip': 'Clip'
+        'BroadcastEvent': 'Broadcast Event'
+
+schema_image:
+    label: initbiz.seostorm::lang.form.general.schema_image_label
+    commentAbove: initbiz.seostorm::lang.form.general.schema_image_comment
+    type: mediafinder
+    mode: image
+    tab: initbiz.seostorm::lang.form.general.tab_schema
+    span: auto
+
+schema_ref_image:
+    label: initbiz.seostorm::lang.form.general.schema_ref_image_label
+    commentAbove: initbiz.seostorm::lang.form.general.schema_ref_image_comment
+    tab: initbiz.seostorm::lang.form.general.tab_schema
+    placeholder: initbiz.seostorm::lang.form.general.og_ref_image_placeholder
+    span: auto
+
+schema_main_entity:
+    label: initbiz.seostorm::lang.form.general.schema_main_entity_label
+    commentAbove: initbiz.seostorm::lang.form.general.schema_main_entity_comment
+    tab: initbiz.seostorm::lang.form.general.tab_schema
+    type: checkbox
+    span: auto
+
+schema_main_entity_type:
+    label: initbiz.seostorm::lang.form.general.schema_main_entity_type_label
+    commentAbove: initbiz.seostorm::lang.form.general.schema_main_entity_type_comment
+    tab: initbiz.seostorm::lang.form.general.tab_schema
+    type: dropdown
+    span: left
+    options:
+        '': 'Select type'
+        'WebPage': 'Web Page'
+        'Article': 'Article'
+        'Book': 'Book'
+        'BreadcrumbList': 'Breadcrumb List'
+        'ItemList': 'Item List'
+        'Course': 'Course'
+        'SpecialAnnouncement': 'Covid 19'
+        'Dataset': 'Dataset'
+        'Quiz': 'Quiz'
+        'EmployerAggregateRating': 'Employer Aggregate Rating'
+        'Occupation': 'Occupation'
+        'Event': 'Event'
+        'ClaimReview': 'ClaimReview'
+        'FAQPage': 'FAQ Page'
+        'HowTo': 'How To'
+        'ImageObject': 'Image Object'
+        'JobPosting': 'Job Posting'
+        'LearningResource': 'Learning Resource'
+        'VideoObject': 'Video Object'
+        'LocalBusiness': 'Local Business'
+        'Organization': 'Logo(Organization)'
+        'MathSolver': 'Math Solver'
+        'Movie': 'Movie'
+        'Product': 'Product'
+        'Review': 'Review'
+        'Offer': 'Offer'
+        'QAPage': 'QA Page'
+        'Recipe': 'Recipe'
+        'AggregateRating': 'Aggregate Rating'
+        'SoftwareApplication': 'Software Application'
+        'CreativeWork': 'Creative Work'
+        'Clip': 'Clip'
+        'BroadcastEvent': 'Broadcast Event'
+
+schema_main_entity_id:
+    label: initbiz.seostorm::lang.form.general.schema_main_entity_id_label
+    commentAbove: initbiz.seostorm::lang.form.general.schema_main_entity_id_comment
+    tab: initbiz.seostorm::lang.form.general.tab_schema
+    type: text
+    span: auto

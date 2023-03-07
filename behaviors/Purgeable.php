@@ -96,9 +96,9 @@ class Purgeable extends \October\Rain\Extension\ExtensionBase
     /**
      * Returns a collection of fields that will be hashed.
      */
-    public function getPurgeableAttributes()
+    public function getPurgeableAttributes(): array
     {
-        return $this->model->purgeable;
+        return $this->model->purgeable ?? [];
     }
 
     /**

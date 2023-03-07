@@ -1,0 +1,50 @@
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+{% if __SELF__.getSchemaType() %}
+    "@type": "{{ __SELF__.getSchemaType() }}",
+{% endif %}
+{% set schemaEntity = __SELF__.getSchemaMainEntity() %}
+{% if schemaEntity %}
+    "mainEntityOfPage":
+    {
+    {% if schemaEntity.type %}
+    "@type": "{{ schemaEntity.type }}"
+    {% endif %}
+    {% if schemaEntity.id %}
+    ,"@id": "{{ include(template_from_string(schemaEntity.id)) }}"
+    {% endif %}
+    },
+{% endif %}
+{% if __SELF__.getSchemaImage() %}
+    "image": "{{ include(template_from_string(__SELF__.getSchemaImage())) }}",
+{% endif %}
+
+{% set publisher = __SELF__.getPublisher() %}
+{% if publisher %}
+    "publisher":
+    {
+{% if publisher.type %}
+    "@type": "{{ publisher.type }}"
+{% endif %}
+{% if publisher.name %}
+,   "name": "{{ publisher.name }}"
+{% endif %}
+{% if publisher.url %}
+,   "url": "{{ publisher.url }}"
+{% endif %}
+{% if publisher.logo %}
+,   "logo": "{{ publisher.logo }}"
+{% endif %}
+{% if publisher.same_as %}
+,   "sameAs": [
+    {% for url in publisher.same_as %}
+    "{{ url.same_as_url }}"
+    {{ (loop.last) ? '', ',' }}
+    {% endfor %}
+    ]
+{% endif %}
+}
+{% endif %}
+}
+</script>

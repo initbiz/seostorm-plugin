@@ -11,11 +11,11 @@ class RainlabTranslateHandler
 {
     public function subscribe($event)
     {
-        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
+        if (PluginManager::instance()->exists('RainLab.Translate')) {
             $event->listen('cms.beforeRoute', function () use ($event) {
                 $this->addTranslatableSeoFields($event);
-                $this->addTranslatableSeoFieldsToEditor();
             });
+            $this->addTranslatableSeoFieldsToEditor();
         }
     }
 
@@ -78,12 +78,12 @@ class RainlabTranslateHandler
             $stormedManager = StormedManager::instance();
             $fields = $stormedManager->addPrefix($stormedManager->getTranslatableSeoFieldsDefs(), 'seo_options', '%s_%s');
 
-            $editorFields = [];
             foreach ($fields as $key => $fieldDef) {
-                $editorFields[] = camel_case($key);
+                $newKey = camel_case($key);
+                if (!in_array($newKey, $model->translatable)) {
+                    $model->translatable[] = $newKey;
+                }
             }
-
-            $model->translatable = array_merge($model->translatable, $editorFields);
         });
     }
 }

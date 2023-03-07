@@ -3,9 +3,10 @@
 namespace Initbiz\SeoStorm\EventHandlers;
 
 use App;
+use Site;
 use Cms\Classes\Page;
 use System\Classes\PluginManager;
-use RainLab\Translate\Models\Locale;
+use RainLab\Translate\Classes\Locale;
 use Initbiz\SeoStorm\Classes\StormedManager;
 
 class BackendHandler
@@ -45,29 +46,26 @@ class BackendHandler
                     'properties' => $stormedManager->getSeoFieldsDefsForEditor()
                 ];
 
+                // Handle translated fields
+
                 $pluginManager = PluginManager::instance();
+                if (!$pluginManager->exists('RainLab.Translate')) {
+                    return;
+                }
 
-                if ($pluginManager->hasPlugin('RainLab.Translate') && !$pluginManager->isDisabled('RainLab.Translate')) {
-                    if (Locale::isAvailable()) {
-                        $locales = Locale::listAvailable();
-                        $defaultLocale = Locale::getDefault()->code ?? null;
+                // RainLab.Translate v.1 compatibility
+                if (class_exists(\RainLab\Translate\Models\Locale::class)) {
+                    $localeClass = \RainLab\Translate\Models\Locale::class;
+                } else {
+                    $localeClass = Locale::class;
+                }
 
-                        $properties = [];
-                        foreach ($locales as $locale => $label) {
-                            if ($locale === $defaultLocale) {
-                                continue;
-                            }
-                            $properties = array_merge($stormedManager->getTranslateSeoFieldsDefsForEditor($label, $locale), $properties);
-                        }
+                if ($localeClass::isAvailable()) {
+                    $locales = $localeClass::listAvailable();
+                    $defaultLocale = $localeClass::getDefault()->code ?? null;
 
-                        $dataHolder->buttons[] = [
-                            'button' => 'initbiz.seostorm::lang.editor.translate',
-                            'icon' => 'octo-icon-globe',
-                            'popupTitle' => 'initbiz.seostorm::lang.editor.translate',
-                            'useViewBag' => true,
-                            'properties' => $properties
-                        ];
-                    }
+                    $properties = $this->createLocaleProperties($locales, $defaultLocale, $stormedManager);
+                    $dataHolder->buttons[] = $this->createLocaleButtonConfig($properties);
                 }
             }
         });
@@ -115,5 +113,37 @@ class BackendHandler
 
             $model->addFillable(array_keys($fields));
         });
+    }
+
+    private function createLocaleButtonConfig(array $properties): array
+    {
+        return [
+            'button' => 'initbiz.seostorm::lang.editor.translate',
+            'icon' => 'octo-icon-globe',
+            'popupTitle' => 'initbiz.seostorm::lang.editor.translate',
+            'useViewBag' => true,
+            'properties' => $properties
+        ];
+    }
+
+    private function createLocaleProperties(
+        iterable $locales,
+        ?string $defaultLocale,
+        StormedManager $stormedManager
+    ): array {
+        $properties = [];
+
+        foreach ($locales as $locale => $label) {
+            if ($locale === $defaultLocale) {
+                continue;
+            }
+
+            $properties = array_merge(
+                $stormedManager->getTranslateSeoFieldsDefsForEditor($label, $locale),
+                $properties
+            );
+        }
+
+        return $properties;
     }
 }

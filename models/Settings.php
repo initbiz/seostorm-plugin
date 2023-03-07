@@ -23,6 +23,10 @@ class Settings extends Model
         'site_image_fileupload' => [
             '\System\Models\File',
         ],
+
+        'schema_image_fileupload' => [
+            '\System\Models\File',
+        ],
     ];
 
     // A unique code
@@ -42,5 +46,6 @@ class Settings extends Model
         $this->favicon_enabled = false;
         $this->favicon_16 = false;
         $this->enable_og = true;
+        $this->publisher_type = 'Organization';
     }
 }
