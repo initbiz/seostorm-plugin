@@ -57,3 +57,5 @@
     - "Added compatibility with october 3.1"
 4.6.1:
     - "Fix overwritten sitemap and the canonical tag is always added with the url of the current page"
+4.7.0:
+    - "Add Schema component"

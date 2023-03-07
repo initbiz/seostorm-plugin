@@ -269,3 +269,100 @@ tabs:
         _btn_migrate:
             type: seo_migrate
             tab: initbiz.seostorm::lang.form.settings.tab_migrate
+
+        #----------------------------------------------------------------------
+        # Schema
+        #----------------------------------------------------------------------
+
+        schema_image_hint:
+            label: initbiz.seostorm::lang.form.settings.schema_image_hint
+            comment: initbiz.seostorm::lang.form.settings.schema_image_hint_comment
+            mode: info
+            type: hint
+            tab: initbiz.seostorm::lang.form.settings.tab_schema
+        schema_image_from:
+            label: initbiz.seostorm::lang.form.settings.schema_image_from
+            tab: initbiz.seostorm::lang.form.settings.tab_schema
+            span: left
+            type: dropdown
+            options:
+                media: initbiz.seostorm::lang.form.settings.schema_image_from_media
+                fileupload: initbiz.seostorm::lang.form.settings.schema_image_from_fileupload
+                url: initbiz.seostorm::lang.form.settings.site_image_from_url
+        schema_image:
+            label: initbiz.seostorm::lang.form.settings.schema_image
+            mode: image
+            span: right
+            prompt: initbiz.seostorm::lang.form.settings.schema_image_prompt
+            type: mediafinder
+            tab: initbiz.seostorm::lang.form.settings.tab_schema
+            hidden: 0
+            imageHeight: 260
+            imageWidth: 260
+            trigger:
+                action: show
+                field: schema_image_from
+                condition: value[media]
+        schema_image_fileupload:
+            label: initbiz.seostorm::lang.form.settings.schema_image
+            tab: initbiz.seostorm::lang.form.settings.tab_schema
+            span: right
+            type: fileupload
+            mode: image
+            imageHeight: 260
+            imageWidth: 260
+            trigger:
+                action: show
+                field: schema_image_from
+                condition: value[fileupload]
+        schema_image_url:
+            label: initbiz.seostorm::lang.form.settings.schema_image
+            tab: initbiz.seostorm::lang.form.settings.tab_schema
+            span: right
+            type: text
+            trigger:
+                action: show
+                field: schema_image_from
+                condition: value[url]
+        publisher_hint:
+            label: initbiz.seostorm::lang.form.settings.publisher_hint
+            comment: initbiz.seostorm::lang.form.settings.publisher_hint_comment
+            mode: info
+            type: hint
+            tab: initbiz.seostorm::lang.form.settings.tab_schema
+        publisher_type:
+            label: initbiz.seostorm::lang.form.settings.publisher_type
+            comment: initbiz.seostorm::lang.form.settings.publisher_type_comment
+            type: text
+            placeholder: Organization
+            span: left
+            tab: initbiz.seostorm::lang.form.settings.tab_schema
+        publisher_same_as:
+            label: initbiz.seostorm::lang.form.settings.publisher_same_as
+            type: repeater
+            span: right
+            tab: initbiz.seostorm::lang.form.settings.tab_schema
+            form:
+                fields:
+                    same_as_url:
+                        label: initbiz.seostorm::lang.form.settings.publisher_same_as_url
+                        nameFrom: same_as
+                        descriptionFrom: ''
+                        span: auto
+                        type: text
+        publisher_name:
+            label: initbiz.seostorm::lang.form.settings.publisher_name
+            type: text
+            span: left
+            tab: initbiz.seostorm::lang.form.settings.tab_schema
+        publisher_logo_url:
+            label: initbiz.seostorm::lang.form.settings.publisher_logo_url
+            comment: initbiz.seostorm::lang.form.settings.publisher_logo_url_comment
+            type: text
+            span: left
+            tab: initbiz.seostorm::lang.form.settings.tab_schema
+        publisher_url:
+            label: initbiz.seostorm::lang.form.settings.publisher_url
+            type: text
+            span: left
+            tab: initbiz.seostorm::lang.form.settings.tab_schema
