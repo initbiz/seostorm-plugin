@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Listen for XDebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003,
+            "pathMappings": {
+                "/home/vagrant/code": "/home/jakub/code"
+            },
+            "xdebugSettings": {
+                "max_depth": 3
+            }
+        }
+    ]
+}

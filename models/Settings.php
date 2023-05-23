@@ -44,8 +44,8 @@ class Settings extends Model
         $this->enable_robots_meta = true;
         $this->enable_robots_txt = 'User-agent: *\r\nAllow: /';
         $this->favicon_enabled = false;
-        $this->favicon_16 = false;
         $this->enable_og = true;
         $this->publisher_type = 'Organization';
+        $this->favicon_repeater = true;
     }
 }

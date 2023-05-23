@@ -2,6 +2,7 @@
 
 namespace Initbiz\SeoStorm\Classes;
 
+use Storage;
 use File;
 use Resizer;
 use Cms\Classes\Controller;
@@ -14,9 +15,13 @@ class FaviconController
         $settings = Settings::instance();
         
         //import favicon
-        $files = Storage::files($Favicons);
-        
+        $favicon = Storage::files('Favicon');
+
         //resize it according to repeater prompts
+        dd($settings);
+        
+        //$favicon->resize(x, x, ['mode' => 'fit']);
+        //$favicon->save('/storage/Favicon');
 
         //return the links to the webmanifest
 

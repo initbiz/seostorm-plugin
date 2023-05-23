@@ -120,7 +120,7 @@ tabs:
             type: switch
             default: false
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
-        ico_repeater:
+        favicon_repeater:
             comment: initbiz.seostorm::lang.form.settings.favicon_comment
             label: initbiz.seostorm::lang.form.settings.favicon_label
             type: repeater
