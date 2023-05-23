@@ -12,6 +12,14 @@ class FaviconController
     public function index()
     {
         $settings = Settings::instance();
+        
+        //import favicon
+        $files = Storage::files($Favicons);
+        
+        //resize it according to repeater prompts
+
+        //return the links to the webmanifest
+
 
         if (!$settings->favicon_enabled) {
             $controller = new Controller();

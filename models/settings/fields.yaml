@@ -120,17 +120,24 @@ tabs:
             type: switch
             default: false
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
-        favicon_16:
-            label: initbiz.seostorm::lang.form.settings.favicon_16
-            type: checkbox
-            default: false
-            tab: initbiz.seostorm::lang.form.settings.tab_favicon
-        favicon:
-            label: initbiz.seostorm::lang.form.settings.favicon
-            type: mediafinder
-            mode: image
+        ico_repeater:
+            comment: initbiz.seostorm::lang.form.settings.favicon_comment
+            label: initbiz.seostorm::lang.form.settings.favicon_label
+            type: repeater
+            form:
+              fields:
+                size:
+                  type: number
+                  label: initbiz.seostorm::lang.form.settings.favicon_field_label
+                  default: 16
             prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
+        favicon:
+             label: initbiz.seostorm::lang.form.settings.favicon
+             type: mediafinder
+             mode: image
+             prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
+             tab: initbiz.seostorm::lang.form.settings.tab_favicon
 
         #----------------------------------------------------------------------
         # HTTP Headers
