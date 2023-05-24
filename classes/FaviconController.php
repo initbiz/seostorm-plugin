@@ -7,23 +7,24 @@ use File;
 use Resizer;
 use Cms\Classes\Controller;
 use Initbiz\SeoStorm\Models\Settings;
-
+echo('debugging');
 class FaviconController
 {
     public function index()
     {
         $settings = Settings::instance();
-        
+        dump($settings);
         //import favicon
-        $favicon = Storage::files('Favicon');
-
-        //resize it according to repeater prompts
-        dd($settings);
+        $favicon = ($settings->getOriginal('favicon'));
+        //resize it according to repeater promptss
+        foreach ($settings->getOriginal('favicon_repeater') as $size) {
+            $favicon->resize($size, $size, ['mode' => 'fit']);
+        }
+        die;
         
-        //$favicon->resize(x, x, ['mode' => 'fit']);
         //$favicon->save('/storage/Favicon');
 
-        //return the links to the webmanifest
+        //return to the webmanifest
 
 
         if (!$settings->favicon_enabled) {
