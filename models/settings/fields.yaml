@@ -120,6 +120,12 @@ tabs:
             type: switch
             default: false
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
+        webmanifest_enabled:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_label 
+            comment: initbiz.seostorm::lang.form.settings.webmanifest_comment
+            type: switch
+            default: false
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
         favicon_repeater:
             comment: initbiz.seostorm::lang.form.settings.favicon_comment
             label: initbiz.seostorm::lang.form.settings.favicon_label

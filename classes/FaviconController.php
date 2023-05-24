@@ -15,17 +15,41 @@ class FaviconController
         $settings = Settings::instance();
         dump($settings);
         //import favicon
-        $favicon = ($settings->getOriginal('favicon'));
-        //resize it according to repeater promptss
-        foreach ($settings->getOriginal('favicon_repeater') as $size) {
-            $favicon->resize($size, $size, ['mode' => 'fit']);
+        $favicon = (Resizer::open('storage/app/media/Favicon/icon.png'));
+        $img_path = 'storage/app/media/Favicon/icon.png';
+
+        //resize it according to repeater prompts
+        $finalPath = $inputPath = storage_path('app/media' . $settings->favicon);
+        $sizes = [];
+        foreach ($settings->getOriginal('favicon_repeater') as $size) 
+        {
+            $favicon->resize($size, $size)->save($img_path);
+            array_push($sizes, $size);
         }
-        die;
+
+        //generate and return to the webmanifest
+        $icon_paths = [];
+        $files = File::allFiles('storage/app/media/Favicon');
+        foreach ($files as $item) {
+            $icon_paths[] = $item->getFilename(); //1st component of webmanifest
+        }
+
+        $type = "image/png";
+        $types = [];
+        foreach ($icon_paths as $item) {
+            array_push($types, $type); //2nd component of webmanifest
+        }
+
+
+        $Icons = [];
         
-        //$favicon->save('/storage/Favicon');
+        
+        if (!$settings->webmanifest_enabled) {
+            $controller = new Controller();
+            $controller->setStatusCode(404);
 
-        //return to the webmanifest
-
+            return $controller->run('/404');;
+       } 
 
         if (!$settings->favicon_enabled) {
             $controller = new Controller();

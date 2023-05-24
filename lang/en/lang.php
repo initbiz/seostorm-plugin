@@ -121,6 +121,8 @@
             'favicon_label' => 'Favicon sizes',
             'favicon_field_label' => 'Favicon size',
             'favicon_prompt' => 'Add next favicon size',
+            'webmanifest_label' => 'Webmanifest',
+            'webmanifest_comment' => 'This will generate webmanifest and a route to /manifest.webmanifest',
             'enable_og' => 'Enable Open Graph',
             'enable_og_comment' => 'Display the Open Graph meta tags',
             'site_image_from' => 'Where to get default site image from',
