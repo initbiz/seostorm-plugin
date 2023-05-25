@@ -8,7 +8,7 @@ use Initbiz\SeoStorm\Models\Settings;
 
 class FaviconController
 {
-    public function index2()
+    public function index()
     {
         $settings = Settings::instance();
 

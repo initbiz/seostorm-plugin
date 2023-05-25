@@ -122,7 +122,7 @@ tabs:
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
 
         webmanifest_enabled:
-            label: initbiz.seostorm::lang.form.settings.webmanifest_label 
+            label: initbiz.seostorm::lang.form.settings.webmanifest_label
             comment: initbiz.seostorm::lang.form.settings.webmanifest_comment
             type: switch
             default: false
@@ -143,11 +143,19 @@ tabs:
             label: initbiz.seostorm::lang.form.settings.favicon_label
             type: repeater
             form:
-              fields:
-                size:
-                  type: number
-                  label: initbiz.seostorm::lang.form.settings.favicon_field_label
-                  default: 16
+                fields:
+                    size:
+                        type: number
+                        label: initbiz.seostorm::lang.form.settings.favicon_field_label
+                        span: left
+                        default: 16
+                    type:
+                        type: dropdown
+                        label: initbiz.seostorm::lang.form.settings.favicon_field_label
+                        span: right
+                        options:
+                            icon: icon
+                            apple-touch-icon: apple-touch-icon
             prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
 
@@ -170,7 +178,7 @@ tabs:
                 action: show
                 field: favicon_from
                 condition: value[fileupload]
-        
+
         favicon_url:
             label: initbiz.seostorm::lang.form.settings.favicon_url
             type: text
@@ -179,7 +187,6 @@ tabs:
                 action: show
                 field: favicon_form
                 condition: value[url]
-
 
         #----------------------------------------------------------------------
         # HTTP Headers
@@ -396,7 +403,7 @@ tabs:
                     same_as_url:
                         label: initbiz.seostorm::lang.form.settings.publisher_same_as_url
                         nameFrom: same_as
-                        descriptionFrom: ''
+                        descriptionFrom: ""
                         span: auto
                         type: text
         publisher_name:
