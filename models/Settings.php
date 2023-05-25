@@ -21,11 +21,13 @@ class Settings extends Model
 
     public $attachOne = [
         'site_image_fileupload' => [
-            '\System\Models\File',
+            \System\Models\File::class,
         ],
-
         'schema_image_fileupload' => [
-            '\System\Models\File',
+            \System\Models\File::class,
+        ],
+        'favicon_fileupload' => [
+            \System\Models\File::class,
         ],
     ];
 

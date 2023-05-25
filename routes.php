@@ -12,3 +12,4 @@ Route::get('robots.txt', [RobotsController::class, 'index']);
 Route::get('sitemap.xml', [SitemapController::class, 'index']);
 
 Route::get('favicon.ico', [FaviconController::class, 'index']);
+Route::get('manifest.webmanifest', [FaviconController::class, 'generateManifest']);

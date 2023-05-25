@@ -120,13 +120,25 @@ tabs:
             type: switch
             default: false
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
+
         webmanifest_enabled:
             label: initbiz.seostorm::lang.form.settings.webmanifest_label 
             comment: initbiz.seostorm::lang.form.settings.webmanifest_comment
             type: switch
             default: false
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
-        favicon_repeater:
+
+        favicon_from:
+            label: initbiz.seostorm::lang.form.settings.favicon_from
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            span: left
+            type: dropdown
+            options:
+                media: initbiz.seostorm::lang.form.settings.favicon_from_media
+                fileupload: initbiz.seostorm::lang.form.settings.favicon_from_fileupload
+                url: initbiz.seostorm::lang.form.settings.favicon_from_url
+
+        favicon_sizes:
             comment: initbiz.seostorm::lang.form.settings.favicon_comment
             label: initbiz.seostorm::lang.form.settings.favicon_label
             type: repeater
@@ -138,12 +150,27 @@ tabs:
                   default: 16
             prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
+
         favicon:
-             label: initbiz.seostorm::lang.form.settings.favicon
-             type: mediafinder
-             mode: image
-             prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
-             tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            label: initbiz.seostorm::lang.form.settings.favicon
+            type: mediafinder
+            mode: image
+            prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            trigger:
+                action: show
+                field: favicon_from
+                condition: value[media]
+
+        favicon_fileupload:
+            label: initbiz.seostorm::lang.form.settings.favicon
+            type: fileupload
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            trigger:
+                action: show
+                field: favicon_from
+                condition: value[fileupload]
+
 
         #----------------------------------------------------------------------
         # HTTP Headers
