@@ -49,5 +49,6 @@ class Settings extends Model
         $this->enable_og = true;
         $this->publisher_type = 'Organization';
         $this->favicon_repeater = true;
+        $this->webmanifest_enabled = true;
     }
 }

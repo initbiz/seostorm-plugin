@@ -37,20 +37,25 @@ class FaviconController
     {
         $settings = Settings::instance();
 
-        if (false) {
-            // TODO: this should work only for fileupload
+        if ($settings->webmanifest_enabled !== "1") {
+            $controller = new Controller();
+            $controller->setStatusCode(404);
+            return $controller->run('/404');
         }
 
-        $responseArray = [];
+        if ($settings->webmanifest_enabled == true) {
+            $responseArray = [];
 
-        $favicon = $settings->favicon_fileupload;
-        $sizes = array_column($settings->favicon_sizes, 'size');
-        foreach ($sizes as $size) {
-            $responseArray[] = [
-                "src" => $favicon->getThumb($size, $size),
-                "type" => "image/png",
-                "sizes" => $size . "x" . $size,
-            ];
+            $favicon = $settings->favicon_fileupload;
+            $sizes = array_column($settings->favicon_sizes, 'size');
+            foreach ($sizes as $size) {
+                $responseArray[] = [
+                    "src" => $favicon->getThumb($size, $size),
+                    "type" => "image/png",
+                    "sizes" => $size . "x" . $size,
+                ];
+            }
+            return $responseArray;
         }
 
         return Response::json(['icons' => $responseArray]);

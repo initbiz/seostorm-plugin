@@ -163,13 +163,22 @@ tabs:
                 condition: value[media]
 
         favicon_fileupload:
-            label: initbiz.seostorm::lang.form.settings.favicon
+            label: initbiz.seostorm::lang.form.settings.favicon_fileupload
             type: fileupload
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
             trigger:
                 action: show
                 field: favicon_from
                 condition: value[fileupload]
+        
+        favicon_url:
+            label: initbiz.seostorm::lang.form.settings.favicon_url
+            type: text
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            trigger:
+                action: show
+                field: favicon_form
+                condition: value[url]
 
 
         #----------------------------------------------------------------------
