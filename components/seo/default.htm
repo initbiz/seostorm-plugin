@@ -14,13 +14,13 @@
 {% if settings.favicon_enabled %}
 <link rel="shortcut icon" href="{{ 'favicon'|app }}" type="image/x-icon">
 <link rel="icon" type="image/x-icon" href="{{ 'favicon'|app }}" />
-{{ if favicon_from === 'fileupload' }}
+{# {{ dd(settings.favicon_from) }} #}
+{% if settings.favicon_from is same as("fileupload") %}
 {% for faviconSize in settings.favicon_sizes %}
 <link rel="{{ faviconSize.type }}" href="{{ settings.favicon_fileupload.getThumb(faviconSize.size, faviconSize.size) }}" type="image/png"/>
 {% endfor %}
 {% endif %}
 {% endif %}
-
 {% if settings.webmanifest_enabled %}
 <link rel="manifest" href="/manifest.webmanifest"/>
 {% endif %}

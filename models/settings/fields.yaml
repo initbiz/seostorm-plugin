@@ -149,6 +149,7 @@ tabs:
                         label: initbiz.seostorm::lang.form.settings.favicon_field_label
                         span: left
                         default: 16
+                        min: 1
                     type:
                         type: dropdown
                         label: initbiz.seostorm::lang.form.settings.favicon_field_label
