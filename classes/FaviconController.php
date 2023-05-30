@@ -43,8 +43,9 @@ class FaviconController
             return $controller->run('/404');
         }
 
+        $responseArray = [];
+
         if ($settings->webmanifest_enabled == true) {
-            $responseArray = [];
 
             $favicon = $settings->favicon_fileupload;
             $sizes = array_column($settings->favicon_sizes, 'size');
