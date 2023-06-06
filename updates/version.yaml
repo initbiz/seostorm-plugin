@@ -60,4 +60,4 @@
 4.7.0:
     - "Add Schema component"
 4.7.1:
-    - "Fix Schema syntax error"
+    - "Fix Schema syntax error and Add Webmanifest and Favicon functionality"
