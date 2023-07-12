@@ -36,16 +36,15 @@ class FaviconController
     public function generateManifest()
     {
         $settings = Settings::instance();
-
-        if ($settings->webmanifest_enabled !== "1") {
+        $responseArray = [];
+        
+        if ($settings->webmanifest_enabled !== true) {
             $controller = new Controller();
             $controller->setStatusCode(404);
             return $controller->run('/404');
         }
 
-        $responseArray = [];
-
-        if ($settings->webmanifest_enabled == true) {
+        if ($settings->webmanifest_enabled === true) {
 
             $favicon = $settings->favicon_fileupload;
             $sizes = array_column($settings->favicon_sizes, 'size');
