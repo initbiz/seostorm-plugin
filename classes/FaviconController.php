@@ -19,13 +19,6 @@ class FaviconController
             return $controller->run('/404');;
         }
 
-        if (!$settings->favicon_enabled) {
-            $controller = new Controller();
-            $controller->setStatusCode(404);
-
-            return $controller->run('/404');;
-        }
-
         $finalPath = $inputPath = storage_path('app/media' . $settings->favicon);
 
         return response()->file($finalPath, [
@@ -38,13 +31,13 @@ class FaviconController
         $settings = Settings::instance();
         $responseArray = [];
         
-        if ($settings->webmanifest_enabled !== true) {
+        if (!$settings->webmanifest_enabled) {
             $controller = new Controller();
             $controller->setStatusCode(404);
             return $controller->run('/404');
         }
 
-        if ($settings->webmanifest_enabled === true) {
+        if ($settings->webmanifest_enabled) {
 
             $favicon = $settings->favicon_fileupload;
             $sizes = array_column($settings->favicon_sizes, 'size');
