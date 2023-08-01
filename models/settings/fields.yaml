@@ -175,6 +175,7 @@ tabs:
             label: initbiz.seostorm::lang.form.settings.favicon_fileupload
             type: fileupload
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            fileTypes: png
             trigger:
                 action: show
                 field: favicon_from

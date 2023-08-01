@@ -14,8 +14,7 @@
 {% if settings.favicon_enabled %}
 <link rel="shortcut icon" href="{{ 'favicon'|app }}" type="image/x-icon">
 <link rel="icon" type="image/x-icon" href="{{ 'favicon'|app }}" />
-{# {{ dd(settings.favicon_from) }} #}
-{% if settings.favicon_from is same as("fileupload") %}
+{% if settings.favicon_from == ("fileupload") %}
 {% for faviconSize in settings.favicon_sizes %}
 <link rel="{{ faviconSize.type }}" href="{{ settings.favicon_fileupload.getThumb(faviconSize.size, faviconSize.size) }}" type="image/png"/>
 {% endfor %}
