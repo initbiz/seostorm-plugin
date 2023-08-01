@@ -17,14 +17,7 @@ class FaviconController
             $controller = new Controller();
             $controller->setStatusCode(404);
 
-            return $controller->run('/404');;
-        }
-
-        if (!$settings->favicon_enabled) {
-            $controller = new Controller();
-            $controller->setStatusCode(404);
-
-            return $controller->run('/404');;
+            return $controller->run('/404');
         }
 
         $finalPath = $inputPath = storage_path('app/media' . $settings->favicon);
