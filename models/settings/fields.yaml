@@ -133,10 +133,10 @@ tabs:
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
             span: left
             type: dropdown
+            fileTypes: 'png'
             options:
                 media: initbiz.seostorm::lang.form.settings.favicon_from_media
                 fileupload: initbiz.seostorm::lang.form.settings.favicon_from_fileupload
-                url: initbiz.seostorm::lang.form.settings.favicon_from_url
 
         favicon_sizes:
             comment: initbiz.seostorm::lang.form.settings.favicon_comment

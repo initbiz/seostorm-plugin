@@ -5,6 +5,7 @@ namespace Initbiz\SeoStorm\Classes;
 use Request;
 use Cms\Classes\Controller;
 use Initbiz\SeoStorm\Models\Settings;
+
 class Robots
 {
     public static function generate()
