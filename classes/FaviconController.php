@@ -51,7 +51,7 @@ class FaviconController
     public function generateManifest()
     {
         $settings = Settings::instance();
-        $response = [];
+        $icons = [];
 
         if (!$settings->webmanifest_enabled) {
             return;
@@ -60,12 +60,12 @@ class FaviconController
         $favicon = $settings->favicon_fileupload;
         $sizes = array_column($settings->favicon_sizes, 'size');
         foreach ($sizes as $size) {
-            $response[] = [
+            $icons[] = [
                 "src" => $favicon->getThumb($size, $size),
                 "type" => "image/png",
                 "sizes" => $size . "x" . $size,
             ];
-            return Response::json(['icons' => $response]);
+            return Response::json(['icons' => $icons]);
         }
     }
 }
