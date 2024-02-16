@@ -4,6 +4,7 @@ namespace Initbiz\SeoStorm\Classes;
 
 use File;
 use Resizer;
+use Response;
 use Cms\Classes\Controller;
 use Initbiz\SeoStorm\Models\Settings;
 
@@ -13,11 +14,13 @@ class FaviconController
     {
         $settings = Settings::instance();
 
-        if (!$settings->favicon_enabled) {
+        //favicons are part of the webmanifest
+        //If the webmanifest is disabled controller should return 404
+        if (!$settings->webmanifest_enabled) {
             $controller = new Controller();
             $controller->setStatusCode(404);
 
-            return $controller->run('/404');;
+            return $controller->run('/404');
         }
 
         $finalPath = $inputPath = storage_path('app/media' . $settings->favicon);
@@ -43,5 +46,26 @@ class FaviconController
         return response()->file($finalPath, [
             'Content-Type' => 'image/x-icon',
         ]);
+    }
+
+    public function generateManifest()
+    {
+        $settings = Settings::instance();
+        $icons = [];
+
+        if (!$settings->webmanifest_enabled) {
+            return;
+        }
+
+        $favicon = $settings->favicon_fileupload;
+        $sizes = array_column($settings->favicon_sizes, 'size');
+        foreach ($sizes as $size) {
+            $icons[] = [
+                "src" => $favicon->getThumb($size, $size),
+                "type" => "image/png",
+                "sizes" => $size . "x" . $size,
+            ];
+            return Response::json(['icons' => $icons]);
+        }
     }
 }
