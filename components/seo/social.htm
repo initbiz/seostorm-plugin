@@ -2,19 +2,19 @@
 <meta property="og:site_name" content="{{ settings.og_site_name }}">
 {% endif %}
 {% if __SELF__.getOgType() %}
-<meta property="og:type" content="{{ include(template_from_string(__SELF__.getOgType())) }}" />
+<meta property="og:type" content="{{ include(tfs(__SELF__.getOgType())) }}" />
 {% endif %}
 {% if __SELF__.getOgTitle() %}
-<meta property="og:title" content="{{ include(template_from_string(__SELF__.getOgTitle())) }}" />
+<meta property="og:title" content="{{ include(tfs(__SELF__.getOgTitle())) }}" />
 {% endif %}
 {% if __SELF__.getOgDescription() %}
-<meta property="og:description" content="{{ include(template_from_string(__SELF__.getOgDescription())) }}" />
+<meta property="og:description" content="{{ include(tfs(__SELF__.getOgDescription())) }}" />
 {% endif %}
 {% if __SELF__.getOgImage() %}
-<meta property="og:image" content="{{ include(template_from_string(__SELF__.getOgImage())) }}" />
+<meta property="og:image" content="{{ include(tfs(__SELF__.getOgImage())) }}" />
 {% endif %}
-{% set ogUrl = include(template_from_string(__SELF__.getSeoAttribute('og_url'))) %}
-{% set canonical = include(template_from_string(__SELF__.getSeoAttribute('canonical_url'))) %}
+{% set ogUrl = include(tfs(__SELF__.getSeoAttribute('og_url'))) %}
+{% set canonical = include(tfs(__SELF__.getSeoAttribute('canonical_url'))) %}
 {% if ogUrl or canonical %}
 <meta property="og:url" content="{{ __SELF__.getOgUrl(ogUrl, canonical) }}" />
 {% endif %}
@@ -22,7 +22,7 @@
 <meta property="og:locale" content="{{ settings.og_locale }}" />
 {% endif %}
 {% if __SELF__.__SELF__.getOgVideo() %}
-<meta property="og:video" content="{{ include(template_from_string(__SELF__.getOgVideo())) }}" />
+<meta property="og:video" content="{{ include(tfs(__SELF__.getOgVideo())) }}" />
 {% endif %}
 {% if __SELF__.og_locale_alternate %}
 <meta property="og:locale:alternate" content="{{ settings.og_locale_alternate }}" />
@@ -31,20 +31,20 @@
 <meta property="fb:app_id" content="{{ settings.fb_app_id }}" />
 {% endif %}
 {% if __SELF__.getOgCard() %}
-<meta name="twitter:card" content="{{ include(template_from_string(__SELF__.getOgCard())) }}">
+<meta name="twitter:card" content="{{ include(tfs(__SELF__.getOgCard())) }}">
 {% endif %}
 {% if __SELF__.getOgTitle() %}
-<meta name="twitter:title" content="{{ include(template_from_string(__SELF__.getOgTitle())) }}">
+<meta name="twitter:title" content="{{ include(tfs(__SELF__.getOgTitle())) }}">
 {% endif %}
 {% if __SELF__.getOgDescription() %}
-<meta name="twitter:description" content="{{ include(template_from_string(__SELF__.getOgDescription())) }}">
+<meta name="twitter:description" content="{{ include(tfs(__SELF__.getOgDescription())) }}">
 {% endif %}
 {% if __SELF__.getOgImage() %}
-<meta name="twitter:image" content="{{ include(template_from_string(__SELF__.getOgImage())) }}" />
+<meta name="twitter:image" content="{{ include(tfs(__SELF__.getOgImage())) }}" />
 {% endif %}
 {% if __SELF__.getTwitterSite() %}
-<meta name="twitter:site" content="{{ include(template_from_string(__SELF__.getTwitterSite())) }}">
+<meta name="twitter:site" content="{{ include(tfs(__SELF__.getTwitterSite())) }}">
 {% endif %}
 {% if __SELF__.getTwitterCreator() %}
-<meta name="twitter:creator" content="{{ include(template_from_string(__SELF__.getTwitterCreator())) }}" />
+<meta name="twitter:creator" content="{{ include(tfs(__SELF__.getTwitterCreator())) }}" />
 {% endif %}
