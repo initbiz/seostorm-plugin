@@ -37,6 +37,7 @@ robot_index:
     commentAbove: initbiz.seostorm::lang.form.general.robot_index_comment
     tab: initbiz.seostorm::lang.form.general.tab_meta
     type: balloon-selector
+    trans: true
     options:
         index: Index
         noindex: Noindex
@@ -49,6 +50,7 @@ robot_follow:
     commentAbove: initbiz.seostorm::lang.form.general.robot_follow_comment
     tab: initbiz.seostorm::lang.form.general.tab_meta
     type: balloon-selector
+    trans: true
     options:
         follow: Follow
         nofollow: Nofollow

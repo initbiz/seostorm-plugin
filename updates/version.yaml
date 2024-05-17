@@ -59,3 +59,5 @@
     - "Fix overwritten sitemap and the canonical tag is always added with the url of the current page"
 4.7.0:
     - "Add Schema component"
+4.8.0:
+    - "Add robot_index and robot_follow as translatable fields"
