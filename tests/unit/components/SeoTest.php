@@ -3,17 +3,15 @@
 namespace Initbiz\SeoStorm\Tests\Unit\Components;
 
 use Site;
+use Config;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
-use Cms\Classes\Router;
 use Cms\Classes\Controller;
 use Cms\Components\ViewBag;
-use System\Classes\SiteManager;
 use Cms\Classes\ComponentManager;
 use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Components\Seo;
 use Initbiz\SeoStorm\Models\Settings;
-use RainLab\Translate\Classes\Locale;
 use RainLab\Translate\Classes\Translator;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
@@ -28,6 +26,10 @@ class SeoTest extends StormedTestCase
         $componentManager->registerComponent(Seo::class, 'seo');
         $componentManager->registerComponent(FakeModelDetailsComponent::class, 'fakeModelDetails');
         $componentManager->registerComponent(ViewBag::class, 'viewBag');
+
+        $themesPath = 'plugins/initbiz/seostorm/tests/themes';
+        Config::set('system.themes_path', $themesPath);
+        app()->useThemesPath($themesPath);
     }
 
     public function testGetTitle()
@@ -66,6 +68,8 @@ class SeoTest extends StormedTestCase
 
         $settings = Settings::instance();
         $settings->enable_site_meta = true;
+        $settings->save();
+        Settings::clearInternalCache();
 
         $component->setSettings($settings);
         $result = $controller->runPage($page);
@@ -113,6 +117,8 @@ class SeoTest extends StormedTestCase
 
         $settings = Settings::instance();
         $settings->enable_robots_meta = true;
+        $settings->save();
+        Settings::clearInternalCache();
 
         $component->setSettings($settings);
         $result = $controller->runPage($page);
@@ -144,6 +150,8 @@ class SeoTest extends StormedTestCase
 
         $settings = Settings::instance();
         $settings->enable_site_meta = true;
+        $settings->save();
+        Settings::clearInternalCache();
 
         $component->setSettings($settings);
         $result = $controller->runPage($page);
@@ -186,6 +194,8 @@ class SeoTest extends StormedTestCase
 
         $settings = Settings::instance();
         $settings->enable_site_meta = true;
+        $settings->save();
+        Settings::clearInternalCache();
 
         $component->setSettings($settings);
         $result = $controller->runPage($page);
@@ -202,7 +212,7 @@ class SeoTest extends StormedTestCase
 
         $theme = Theme::load('test');
         $controller = new Controller($theme);
-        $page = Page::load($theme, 'with-fake-model.htm');
+        $page = Page::load($theme, 'with-fake-model');
         $result = $controller->runPage($page);
         $this->assertStringContainsString('<title>Test page title</title>', $result);
         $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurl">', $result);
@@ -218,7 +228,7 @@ class SeoTest extends StormedTestCase
         $translator = Translator::instance();
         $translator->setLocale('pl');
 
-        $page = Page::load($theme, 'with-fake-model.htm');
+        $page = Page::load($theme, 'with-fake-model');
         $page->rewriteTranslatablePageAttributes('pl');
         $result = $controller->runPage($page);
         $this->assertStringContainsString('<title>Test page title PL</title>', $result);
@@ -252,7 +262,8 @@ class SeoTest extends StormedTestCase
 
         $theme = Theme::load('test');
         $controller = new Controller($theme);
-        $page = Page::find('with-fake-model.htm');
+
+        $page = Page::load($theme, 'with-fake-model');
 
         $result = $controller->runPage($page);
         $this->assertStringContainsString('<title>Test page title PL</title>', $result);

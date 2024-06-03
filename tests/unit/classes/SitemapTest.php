@@ -2,8 +2,10 @@
 
 namespace Initbiz\SeoStorm\Tests\Unit\Classes;
 
+use Config;
 use Carbon\Carbon;
 use Cms\Classes\Page;
+use Cms\Classes\Theme;
 use Initbiz\SeoStorm\Classes\Sitemap;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
@@ -11,11 +13,21 @@ use Initbiz\SeoStorm\Tests\Classes\FakeStormedCategory;
 
 class SitemapTest extends StormedTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $themesPath = 'plugins/initbiz/seostorm/tests/themes';
+        Config::set('system.themes_path', $themesPath);
+        app()->useThemesPath($themesPath);
+    }
+
     public function testEnabledInSitemap()
     {
-        $page1 = Page::where('url', '/')->first();
+        $theme = Theme::load('test');
+        $page1 = Page::load($theme, 'empty');
         $page1->mtime = 1632857872;
-        $page2 = Page::where('url', '/model/:slug')->first();
+        $page2 = Page::load($theme, 'with-fake-model');
         $page2->mtime = 1632858273;
         $pages = collect([$page1, $page2]);
 
@@ -35,7 +47,8 @@ class SitemapTest extends StormedTestCase
 
     public function testHasModelClass()
     {
-        $page = Page::where('url', '/model/:slug')->first();
+        $theme = Theme::load('test');
+        $page = Page::load($theme, 'with-fake-model');
         $page->mtime = 1632858273;
         $page->settings['seoOptionsEnabledInSitemap'] = "true";
         $page->settings['seoOptionsModelClass'] = "\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel";
@@ -77,7 +90,8 @@ class SitemapTest extends StormedTestCase
 
     public function testParamsWithRelation()
     {
-        $page = Page::where('url', '/model/:category/:slug?')->first();
+        $theme = Theme::load('test');
+        $page = Page::load($theme, 'with-fake-model-category');
         $page->mtime = 1632858273;
         $page->settings['seoOptionsModelClass'] = "\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel";
         $page->settings['seoOptionsModelParams'] = "slug:slug|category:category.slug";
@@ -105,7 +119,8 @@ class SitemapTest extends StormedTestCase
 
     public function testUseUpdatedAt()
     {
-        $page = Page::where('url', '/model/:slug')->first();
+        $theme = Theme::load('test');
+        $page = Page::load($theme, 'with-fake-model');
         $page->mtime = 1632858273;
         $page->settings['seo_options_enabled_in_sitemap'] = "true";
         $page->settings['seoOptionsModelClass'] = "\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel";
@@ -130,7 +145,8 @@ class SitemapTest extends StormedTestCase
 
     public function testDisabledInModel()
     {
-        $page = Page::where('url', '/model/:slug')->first();
+        $theme = Theme::load('test');
+        $page = Page::load($theme, 'with-fake-model');
         $page->mtime = 1632858273;
         $page->settings['seoOptionsEnabledInSitemap'] = "true";
         $page->settings['seoOptionsModelClass'] = "\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel";
@@ -167,7 +183,8 @@ class SitemapTest extends StormedTestCase
         $model->slug = 'test-slug';
         $model->save();
 
-        $page = Page::where('url', '/model/:category/:slug?')->first();
+        $theme = Theme::load('test');
+        $page = Page::load($theme, 'with-fake-model-category');
         $page->mtime = 1632858273;
         $page->settings['seoOptionsModelClass'] = "\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel";
         $page->settings['seoOptionsModelParams'] = "category:slug";
@@ -178,7 +195,8 @@ class SitemapTest extends StormedTestCase
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
 
-        $page = Page::where('url', '/model/:slug?')->first();
+        $theme = Theme::load('test');
+        $page = Page::load($theme, 'with-fake-model-optional');
         $page->mtime = 1632858273;
         $pages = collect();
         $pages = $pages->push($page);
@@ -202,7 +220,8 @@ class SitemapTest extends StormedTestCase
         $model->created_at = \Carbon\Carbon::parse('before yesterday');
         $model->save();
 
-        $page = Page::where('url', '/model/:slug')->first();
+        $theme = Theme::load('test');
+        $page = Page::load($theme, 'with-fake-model');
         $page->mtime = 1632858273;
         $page->settings['seoOptionsModelClass'] = "\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel";
         $page->settings['seoOptionsModelParams'] = "slug:slug";

@@ -61,3 +61,5 @@
     - "Add Schema component"
 4.8.0:
     - "Add robot_index and robot_follow as translatable fields"
+4.8.1:
+    - "Fix tests in October 3.6"
