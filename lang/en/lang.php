@@ -155,6 +155,7 @@
             'schema_image_from_fileupload' => 'File upload',
             'schema_image_from_url' => 'Url',
             'schema_image' => 'Schema image',
+            'enable_image_in_sitemap' => 'Enable image in sitemap'
         ],
         'htaccess' => [
             'label' => '.htaccess',

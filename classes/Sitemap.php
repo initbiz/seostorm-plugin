@@ -2,14 +2,15 @@
 
 namespace Initbiz\SeoStorm\Classes;
 
-use Event;
 use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
+use Cms\Classes\Controller;
 use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Classes\SitemapItem;
+use Initbiz\SeoStorm\Models\Settings;
 
-class  Sitemap
+class Sitemap
 {
     /**
      * Maximum URLs allowed (Protocol limit is 50k)
@@ -36,7 +37,94 @@ class  Sitemap
             // get all pages of the current theme
             $pages = Page::listInTheme(Theme::getEditTheme());
         }
+        $this->makeItemsCmsPages($pages);
 
+        if (PluginManager::instance()->hasPlugin('RainLab.Pages')) {
+            $staticPages = \RainLab\Pages\Classes\Page::listInTheme(Theme::getActiveTheme());
+            $this->makeItemsStaticPages($staticPages);
+        }
+
+        $this->makeUrlSet();
+        return $this->xml->saveXML();
+    }
+
+    public function generateLargeSitemap()
+    {
+        $this->makeUrlSet();
+    }
+
+    protected function makeUrlSet()
+    {
+        if ($this->urlSet !== null) {
+            return $this->urlSet;
+        }
+
+        $xml = $this->makeRoot();
+        $urlSet = $xml->createElement('urlset');
+        $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+        $urlSet->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+        $urlSet->setAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd');
+
+        $settings = Settings::instance();
+        if ($settings->enable_image_in_sitemap) {
+            $urlSet->setAttribute('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
+        }
+        if ($settings->enable_video_in_sitemap) {
+            $urlSet->setAttribute('xmlns:video', 'http://www.google.com/schemas/sitemap-video/1.1');
+        }
+        $xml->appendChild($urlSet);
+        return $this->urlSet = $urlSet;
+    }
+
+    public function makeLocalesSitemap()
+    {
+
+        
+    }
+
+    public function makeRoot()
+    {
+        if ($this->xml !== null) {
+            return $this->xml;
+        }
+
+        $xml = new \DOMDocument;
+        $xml->encoding = 'UTF-8';
+
+        return $this->xml = $xml;
+    }
+
+    protected function addItemToSet(SitemapItem $item)
+    {
+        $urlSet = $this->makeUrlSet();
+
+        $urlElement = $item->makeUrlElement($this);
+
+        if ($urlElement) {
+            $urlSet->appendChild($urlElement);
+        }
+
+        return $urlSet;
+    }
+
+    /**
+     * Remove optional parameters from URL - this method is used for last check
+     * if the sitemap has an optional parameter left in the URL
+     *
+     * @param string $loc
+     * @return string
+     */
+    protected function trimOptionalParameters(string $loc): string
+    {
+        // Remove empty optional parameters that don't have any models
+        $pattern = '/\:.+\?/i';
+        $loc = preg_replace($pattern, '', $loc);
+
+        return $loc;
+    }
+
+    public function makeItemsCmsPages($pages): void
+    {
         $models = [];
 
         $pages = $pages
@@ -55,6 +143,7 @@ class  Sitemap
             $sitemapItem->changefreq = $page->seoOptionsChangefreq;
             $sitemapItem->loc = $loc;
             $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
+
 
             // if page has model class
             if (class_exists($modelClass)) {
@@ -102,119 +191,114 @@ class  Sitemap
                         $sitemapItem->lastmod = $model->updated_at->format('c');
                     }
 
+                    $this->makeItemMediaFromPage($sitemapItem);
                     $this->addItemToSet($sitemapItem);
                 }
             } else {
+                $this->makeItemMediaFromPage($sitemapItem);
                 $sitemapItem->loc = $this->trimOptionalParameters($loc);
                 $this->addItemToSet($sitemapItem);
             }
         }
+    }
 
-        if (PluginManager::instance()->hasPlugin('RainLab.Pages')) {
-            $staticPages = \RainLab\Pages\Classes\Page::listInTheme(Theme::getActiveTheme());
-            foreach ($staticPages as $staticPage) {
-                $viewBag = $staticPage->getViewBag();
-                if (!$viewBag->property('enabled_in_sitemap')) {
-                    continue;
-                }
+    public function makeItemsStaticPages($staticPages): void
+    {
+        foreach ($staticPages as $staticPage) {
+            $viewBag = $staticPage->getViewBag();
+            if (!$viewBag->property('enabled_in_sitemap')) {
+                continue;
+            }
 
-                $sitemapItem = new SitemapItem();
-                $sitemapItem->loc = url($staticPage->url);
-                $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->mtime;
-                $sitemapItem->priority = $viewBag->property('priority');
-                $sitemapItem->changefreq = $viewBag->property('changefreq');
+            $sitemapItem = new SitemapItem();
+            $sitemapItem->loc = url($staticPage->url);
+            $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->mtime;
+            $sitemapItem->priority = $viewBag->property('priority');
+            $sitemapItem->changefreq = $viewBag->property('changefreq');
 
-                $this->addItemToSet($sitemapItem);
+            $this->makeItemMediaFromPage($sitemapItem);
+            $this->addItemToSet($sitemapItem);
+        }
+    }
+
+    public function makeItemMediaFromPage(SitemapItem $sitemapItem): void
+    {
+        $settings = Settings::instance();
+        if (!$settings->enable_image_in_sitemap) {
+            return;
+        }
+        if (!$settings->enable_image_in_sitemap) {
+            return;
+        }
+
+        $controller = new Controller();
+        try {
+            $response = $controller->run($sitemapItem->loc);
+        } catch (\Throwable $th) {
+            trace_log('Problem with parsing page ' . $sitemapItem->loc);
+            return;
+        }
+        $content = $response->getContent();
+
+        $dom = new \DOMDocument();
+        $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
+        if ($settings->enable_image_in_sitemap) {
+            $sitemapItem->images = $this->getImagesLinksFromDom($dom);
+        }
+
+        if ($settings->enable_video_in_sitemap) {
+            $sitemapItem->videos = $this->getVideoItemsFromDom($dom);
+        }
+    }
+    public function getImagesLinksFromDom(\DOMDocument $dom): array
+    {
+        $links = [];
+
+        $finder = new \DomXPath($dom);
+        $nodes = $finder->query("//img");
+        foreach ($nodes as $node) {
+            $link = $node->getAttribute('src');
+            if (!blank($link)) {
+                $links[] = $link;
             }
         }
 
-        $this->makeUrlSet();
-        return $this->xml->saveXML();
+        return $links;
     }
 
-    protected function makeUrlSet()
+    protected function getVideoItemsFromDom(\DOMDocument $dom): array
     {
-        if ($this->urlSet !== null) {
-            return $this->urlSet;
+        $items = [];
+
+        $finder = new \DomXPath($dom);
+        $schemaName = "https://schema.org/VideoObject";
+        $nodes = $finder->query("//*[contains(@itemtype, '$schemaName')]");
+
+        foreach ($nodes as $node) {
+            $video = [];
+            foreach ($node->childNodes as $childNode) {
+                if (!$childNode instanceof \DOMElement) {
+                    continue;
+                }
+
+                if ($childNode->tagName !== 'meta') {
+                    continue;
+                }
+
+                $key = $childNode->getAttribute('itemprop');
+                $value = $childNode->getAttribute('content');
+
+                $video[$key] = $value;
+            }
+
+            $items[] = $video;
         }
 
-        $xml = $this->makeRoot();
-        $urlSet = $xml->createElement('urlset');
-        $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
-        $urlSet->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-        $urlSet->setAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd');
-        $xml->appendChild($urlSet);
-        return $this->urlSet = $urlSet;
+        return $items;
     }
 
-    protected function makeRoot()
+    public function getUrlsCount()
     {
-        if ($this->xml !== null) {
-            return $this->xml;
-        }
-
-        $xml = new \DOMDocument;
-        $xml->encoding = 'UTF-8';
-
-        return $this->xml = $xml;
-    }
-
-    protected function addItemToSet(SitemapItem $item)
-    {
-        $xml = $this->makeRoot();
-        $urlSet = $this->makeUrlSet();
-
-        try {
-            $lastmod = new Carbon($item->lastmod);
-        } catch (\Throwable $th) {
-            $lastmod = new Carbon();
-        }
-
-        $urlElement = $this->makeUrlElement(
-            $xml,
-            url($item->loc), // make sure output is a valid url
-            $lastmod->format('c'),
-            $item->changefreq,
-            $item->priority
-        );
-
-        if ($urlElement) {
-            $urlSet->appendChild($urlElement);
-        }
-
-        return $urlSet;
-    }
-
-    protected function makeUrlElement($xml, $pageUrl, $lastModified, $frequency, $priority)
-    {
-        if ($this->urlCount >= self::MAX_URLS) {
-            return false;
-        }
-
-        $this->urlCount++;
-
-        $url = $xml->createElement('url');
-        $pageUrl && $url->appendChild($xml->createElement('loc', $pageUrl));
-        $lastModified && $url->appendChild($xml->createElement('lastmod', $lastModified));
-        $frequency && $url->appendChild($xml->createElement('changefreq', $frequency));
-        $priority && $url->appendChild($xml->createElement('priority', $priority));
-
-        return $url;
-    }
-
-    /**
-     * Remove optional parameters from URL - this method is used for last check
-     * if the sitemap has an optional parameter left in the URL
-     *
-     * @param string $loc
-     * @return string
-     */
-    protected function trimOptionalParameters(string $loc): string
-    {
-        // Remove empty optional parameters that don't have any models
-        $pattern = '/\:.+\?/i';
-        $loc = preg_replace($pattern, '', $loc);
-
-        return $loc;
+        return $this->urlCount;
     }
 }

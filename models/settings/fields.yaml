@@ -72,6 +72,20 @@ tabs:
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
             default: true
+        enable_image_in_sitemap:
+            label: initbiz.seostorm::lang.form.settings.enable_image_in_sitemap
+            span: auto
+            type: switch
+            commentAbove: 'Adding photos from page to the sitemap see: https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps'
+            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
+            default: false
+        enable_video_in_sitemap:
+            label: initbiz.seostorm::lang.form.settings.enable_image_in_sitemap
+            span: auto
+            type: switch
+            commentAbove: 'Adding photos from page to the sitemap see: https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps'
+            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
+            default: false
 
         #----------------------------------------------------------------------
         # <head> Tab

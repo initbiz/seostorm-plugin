@@ -47,5 +47,7 @@ class Settings extends Model
         $this->favicon_16 = false;
         $this->enable_og = true;
         $this->publisher_type = 'Organization';
+        $this->enable_image_in_sitemap = false;
+        $this->enable_video_in_sitemap = false;
     }
 }

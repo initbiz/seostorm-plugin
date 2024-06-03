@@ -15,5 +15,9 @@ class SitemapController
         if (Settings::get('enable_sitemap')) {
             return Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
         }
+
+        if (Settings::get('sitemap_large_sitemap')) {
+            return Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
+        }
     }
 }
