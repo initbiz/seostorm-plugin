@@ -7,8 +7,10 @@ use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Cms\Classes\Controller;
 use System\Classes\PluginManager;
-use Initbiz\SeoStorm\Classes\SitemapItem;
 use Initbiz\SeoStorm\Models\Settings;
+use October\Rain\Support\Facades\Url;
+use October\Rain\Support\Facades\Site;
+use Initbiz\SeoStorm\Classes\SitemapItem;
 
 class Sitemap
 {
@@ -30,6 +32,7 @@ class Sitemap
     protected $xml;
 
     protected $urlSet;
+    protected $sitemapIndex;
 
     public function generate($pages = [])
     {
@@ -48,9 +51,28 @@ class Sitemap
         return $this->xml->saveXML();
     }
 
+    public function generateIndex($pages = [])
+    {
+        $localesSitemap = $this->makeSitemapIndex();
+        $activeSite = Site::getActiveSite();
+
+        Settings::get('sitemap_');
+
+        $this->makeUrlSet();
+        return $this->xml->saveXML();
+    }
+
     public function generateLargeSitemap()
     {
-        $this->makeUrlSet();
+        $xml = $this->makeRoot();
+        $localesSitemap = $this->makeSitemapIndex();
+        $sites = Site::listEnabled();
+        foreach ($sites as $site) {
+            $sitemapElement = $localesSitemap->appendChild($xml->createElement('sitemap'));
+            $sitemapElement->appendChild($xml->createElement('loc', $site->base_url . '/sitemap_index.xml'));
+        }
+
+        return $this->xml->saveXML();
     }
 
     protected function makeUrlSet()
@@ -73,13 +95,35 @@ class Sitemap
             $urlSet->setAttribute('xmlns:video', 'http://www.google.com/schemas/sitemap-video/1.1');
         }
         $xml->appendChild($urlSet);
+
         return $this->urlSet = $urlSet;
     }
 
-    public function makeLocalesSitemap()
+    public function makeSitemapIndex()
     {
+        if ($this->sitemapIndex !== null) {
+            return $this->sitemapIndex;
+        }
 
-        
+        $xml = $this->makeRoot();
+        $sitemapIndex = $xml->createElement('sitemapindex');
+        $sitemapIndex->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+
+        $xml->appendChild($sitemapIndex);
+
+        return $this->sitemapIndex = $sitemapIndex;
+    }
+
+    public static function getIndexSitemaps()
+    {
+        $sitemaps = [];
+        $sites = Site::listEnabled();
+        foreach ($sites as $site) {
+            $prefix = $site->is_prefixed ? $site->route_prefix : '';
+            $sitemaps[] = $prefix . '/sitemap_index.xml';
+        }
+
+        return $sitemaps;
     }
 
     public function makeRoot()
@@ -96,6 +140,12 @@ class Sitemap
 
     protected function addItemToSet(SitemapItem $item)
     {
+        if ($this->getUrlsCount() >= self::MAX_URLS) {
+            return false;
+        }
+
+        $this->urlCount++;
+
         $urlSet = $this->makeUrlSet();
 
         $urlElement = $item->makeUrlElement($this);

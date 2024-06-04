@@ -3,6 +3,7 @@
 namespace Initbiz\SeoStorm\Models;
 
 use Model;
+use RainLab\Translate\Classes\Locale;
 
 class Settings extends Model
 {
@@ -49,5 +50,10 @@ class Settings extends Model
         $this->publisher_type = 'Organization';
         $this->enable_image_in_sitemap = false;
         $this->enable_video_in_sitemap = false;
+    }
+
+    public function getLargeSitemapLocalesOptions()
+    {
+        return Locale::listLocales()->pluck('name', 'code')->toArray();
     }
 }

@@ -3,12 +3,17 @@
 namespace Initbiz\SeoStorm;
 
 use Event;
+use Route;
 use Cms\Twig\Extension;
 use Cms\Classes\Controller;
 use System\Classes\PluginBase;
+use Initbiz\SeoStorm\Classes\Sitemap;
 use Initbiz\SeoStorm\Models\Htaccess;
 use Initbiz\SeoStorm\Models\Settings;
 use Twig\Extension\StringLoaderExtension;
+use Initbiz\SeoStorm\Classes\RobotsController;
+use Initbiz\SeoStorm\Classes\Router;
+use Initbiz\SeoStorm\Classes\SitemapController;
 
 /**
  * Initbiz Plugin Information File
@@ -29,6 +34,8 @@ class Plugin extends PluginBase
 
     public function boot()
     {
+        Router::handle();
+        // Route::get('robots.txt', [RobotsController::class, 'index']);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\BackendHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\StormedHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\RainlabPagesHandler::class);

@@ -68,24 +68,51 @@ tabs:
 
         enable_sitemap:
             label: initbiz.seostorm::lang.form.settings.enable_sitemap
-            span: auto
+            span: left
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
             default: true
+        _sitemap_section1:
+            type: section
+            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
         enable_image_in_sitemap:
             label: initbiz.seostorm::lang.form.settings.enable_image_in_sitemap
-            span: auto
+            span: left
             type: switch
-            commentAbove: 'Adding photos from page to the sitemap see: https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps'
+            comment: initbiz.seostorm::lang.form.settings.enable_image_in_sitemap_comment
+            commentHtml: true
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
             default: false
         enable_video_in_sitemap:
-            label: initbiz.seostorm::lang.form.settings.enable_image_in_sitemap
-            span: auto
+            label: initbiz.seostorm::lang.form.settings.enable_video_in_sitemap
+            span: right
             type: switch
-            commentAbove: 'Adding photos from page to the sitemap see: https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps'
+            comment: initbiz.seostorm::lang.form.settings.enable_video_in_sitemap_comment
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
             default: false
+        _sitemap_section2:
+            type: section
+            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
+        large_sitemap:
+            label: initbiz.seostorm::lang.form.settings.enable_large_sitemap
+            span: left
+            type: switch
+            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
+        large_sitemap_video:
+            label: initbiz.seostorm::lang.form.settings.enable_large_sitemap_video
+            span: right
+            type: switch
+            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
+        large_sitemap_images:
+            label: initbiz.seostorm::lang.form.settings.enable_large_sitemap_images
+            span: left
+            type: switch
+            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
+        large_sitemap_locales:
+            label: initbiz.seostorm::lang.form.settings.large_sitemap_locales
+            span: right
+            type: checkboxlist
+            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
 
         #----------------------------------------------------------------------
         # <head> Tab

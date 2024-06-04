@@ -11,13 +11,12 @@ class SitemapController
     public function index()
     {
         $sitemap = new Sitemap();
+        return Response::make($sitemap->generateIndex())->header('Content-Type', 'application/xml');
+    }
 
-        if (Settings::get('enable_sitemap')) {
-            return Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
-        }
-
-        if (Settings::get('sitemap_large_sitemap')) {
-            return Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
-        }
+    public function sitemap()
+    {
+        $sitemap = new Sitemap();
+        return Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
     }
 }

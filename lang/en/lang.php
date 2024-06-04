@@ -155,7 +155,10 @@
             'schema_image_from_fileupload' => 'File upload',
             'schema_image_from_url' => 'Url',
             'schema_image' => 'Schema image',
-            'enable_image_in_sitemap' => 'Enable image in sitemap'
+            'enable_image_in_sitemap' => 'Enable image in sitemap',
+            'enable_image_in_sitemap_comment' => 'Adding photos from page to the sitemap see: <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps">Here</a>',
+            'enable_video_in_sitemap' => 'Enable video in sitemap',
+            'enable_video_in_sitemap_comment' => 'Adding videos from page to the sitemap see: <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/video-sitemaps">Here</a>',
         ],
         'htaccess' => [
             'label' => '.htaccess',

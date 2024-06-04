@@ -26,8 +26,6 @@ class SitemapItem
 
         $pageUrl = url($this->loc);
 
-        // $this->urlCount++;
-
         $url = $xml->createElement('url');
         $pageUrl && $url->appendChild($xml->createElement('loc', $pageUrl));
         $url->appendChild($xml->createElement('lastmod', $this->getLastModified()));
