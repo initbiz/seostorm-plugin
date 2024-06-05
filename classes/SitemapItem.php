@@ -64,4 +64,15 @@ class SitemapItem
 
         return $lastmod->format('c');
     }
+
+    public static function makeItemForCmsPage($page): self
+    {
+        $sitemapItem = new SitemapItem();
+        $sitemapItem->priority = $page->seoOptionsPriority;
+        $sitemapItem->changefreq = $page->seoOptionsChangefreq;
+        $sitemapItem->loc = $page->url;
+        $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
+
+        return $sitemapItem;
+    }
 }

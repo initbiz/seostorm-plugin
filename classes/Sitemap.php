@@ -51,28 +51,39 @@ class Sitemap
         return $this->xml->saveXML();
     }
 
-    public function generateIndex($pages = [])
+    public function generateIndex()
     {
+        $request = \Request::instance();
+        $xml = $this->makeRoot();
         $localesSitemap = $this->makeSitemapIndex();
+        $activeSite = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
+        if (Settings::get('enable_index_sitemap_videos')) {
+            $sitemapElement = $localesSitemap->appendChild($xml->createElement('sitemap'));
+            $sitemapElement->appendChild($xml->createElement('loc', $activeSite->base_url . '/sitemap_videos.xml'));
+        }
+        if (Settings::get('enable_index_sitemap_images')) {
+            $sitemapElement = $localesSitemap->appendChild($xml->createElement('sitemap'));
+            $sitemapElement->appendChild($xml->createElement('loc', $activeSite->base_url . '/sitemap_images.xml'));
+        }
+
+        $sitemapElement = $localesSitemap->appendChild($xml->createElement('sitemap'));
+        $sitemapElement->appendChild($xml->createElement('loc', $activeSite->base_url . '/sitemap.xml'));
         $activeSite = Site::getActiveSite();
 
-        Settings::get('sitemap_');
 
-        $this->makeUrlSet();
         return $this->xml->saveXML();
     }
 
-    public function generateLargeSitemap()
+    public function generateImages()
     {
         $xml = $this->makeRoot();
-        $localesSitemap = $this->makeSitemapIndex();
-        $sites = Site::listEnabled();
-        foreach ($sites as $site) {
-            $sitemapElement = $localesSitemap->appendChild($xml->createElement('sitemap'));
-            $sitemapElement->appendChild($xml->createElement('loc', $site->base_url . '/sitemap_index.xml'));
-        }
 
         return $this->xml->saveXML();
+    }
+
+    public function generateVideos()
+    {
+        $xml = $this->makeRoot();
     }
 
     protected function makeUrlSet()
@@ -183,57 +194,22 @@ class Sitemap
             })->sortByDesc('seoOptionsPriority');
 
         foreach ($pages as $page) {
-            // $page = Event::fire('initbiz.seostorm.generateSitemapCmsPage', [$page]);
-            $modelClass = $page->seoOptionsModelClass;
-
+            $sitemapItem = SitemapItem::makeItemForCmsPage($page);
             $loc = $page->url;
 
-            $sitemapItem = new SitemapItem();
-            $sitemapItem->priority = $page->seoOptionsPriority;
-            $sitemapItem->changefreq = $page->seoOptionsChangefreq;
-            $sitemapItem->loc = $loc;
-            $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
-
-
+            $modelClass = $page->seoOptionsModelClass;
             // if page has model class
             if (class_exists($modelClass)) {
                 $scope = $page->seoOptionsModelScope;
-
-                if (empty($scope)) {
-                    $models = $modelClass::all();
-                } else {
-                    $params = explode(':', $scope);
-                    $models = $modelClass::{$params[0]}($params[1] ?? null)->get();
-                }
+                $models = $this->getModels($modelClass, $scope);
 
                 foreach ($models as $model) {
                     if (($model->seo_options['enabled_in_sitemap'] ?? null) === "0") {
                         continue;
                     }
                     $modelParams = $page->seoOptionsModelParams;
-                    $loc = $page->url;
+                    $loc = $this->getLocForModel($model, $modelParams, $page->url);
 
-                    if (!empty($modelParams)) {
-                        $modelParams = explode('|', $modelParams);
-                        foreach ($modelParams as $modelParam) {
-                            list($urlParam, $modelParam) = explode(':', $modelParam);
-
-                            $pattern = '/:' . $urlParam . '\??/i';
-                            $replacement = '';
-                            if (strpos($modelParam, '.') === false) {
-                                $replacement = $model->$modelParam;
-                            } else {
-                                // parameter with dot -> try to find by relation
-                                list($relationMethod, $relatedAttribute) = explode('.', $modelParam);
-                                if ($relatedObject = $model->$relationMethod()->first()) {
-                                    $replacement = $relatedObject->$relatedAttribute ?? 'default';
-                                }
-                                $replacement = empty($replacement) ? 'default' : $replacement;
-                            }
-                            // Fill with parameters
-                            $loc = preg_replace($pattern, $replacement, $loc);
-                        }
-                    }
 
                     $sitemapItem->loc = $this->trimOptionalParameters($loc);
 
@@ -350,5 +326,40 @@ class Sitemap
     public function getUrlsCount()
     {
         return $this->urlCount;
+    }
+
+    public function getModels($modelClass, $scope)
+    {
+        if (empty($scope)) {
+            return $modelClass::all();
+        } else {
+            $params = explode(':', $scope);
+            return $modelClass::{$params[0]}($params[1] ?? null)->get();
+        }
+    }
+
+    public function getLocForModel($model, $modelParams, $loc): ?string
+    {
+        if (!empty($modelParams)) {
+            $modelParams = explode('|', $modelParams);
+            foreach ($modelParams as $modelParam) {
+                list($urlParam, $modelParam) = explode(':', $modelParam);
+
+                $pattern = '/:' . $urlParam . '\??/i';
+                $replacement = '';
+                if (strpos($modelParam, '.') === false) {
+                    $replacement = $model->$modelParam;
+                } else {
+                    // parameter with dot -> try to find by relation
+                    list($relationMethod, $relatedAttribute) = explode('.', $modelParam);
+                    if ($relatedObject = $model->$relationMethod()->first()) {
+                        $replacement = $relatedObject->$relatedAttribute ?? 'default';
+                    }
+                    $replacement = empty($replacement) ? 'default' : $replacement;
+                }
+                // Fill with parameters
+                return $loc = preg_replace($pattern, $replacement, $loc);
+            }
+        }
     }
 }

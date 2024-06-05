@@ -34,7 +34,7 @@ class Plugin extends PluginBase
 
     public function boot()
     {
-        Router::handle();
+        (new Router)->handle();
         // Route::get('robots.txt', [RobotsController::class, 'index']);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\BackendHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\StormedHandler::class);

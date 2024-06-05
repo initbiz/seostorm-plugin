@@ -52,7 +52,7 @@ class Settings extends Model
         $this->enable_video_in_sitemap = false;
     }
 
-    public function getLargeSitemapLocalesOptions()
+    public function getIndexSitemapLocalesOptions()
     {
         return Locale::listLocales()->pluck('name', 'code')->toArray();
     }

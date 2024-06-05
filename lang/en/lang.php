@@ -159,6 +159,11 @@
             'enable_image_in_sitemap_comment' => 'Adding photos from page to the sitemap see: <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps">Here</a>',
             'enable_video_in_sitemap' => 'Enable video in sitemap',
             'enable_video_in_sitemap_comment' => 'Adding videos from page to the sitemap see: <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/video-sitemaps">Here</a>',
+            'enable_index_sitemap' => 'Enable index sitemap',
+            'enable_index_sitemap_comment' => 'Enable routing /index_sitemap.xml see: <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/large-sitemaps">Here</a>',
+            'enable_index_sitemap_videos' => 'Enable index sitemap videos',
+            'enable_index_sitemap_images' => 'Enable index sitemap images',
+            'index_sitemap_locales' => 'Locales to include for the index sitemap',
         ],
         'htaccess' => [
             'label' => '.htaccess',

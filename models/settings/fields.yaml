@@ -88,29 +88,32 @@ tabs:
             span: right
             type: switch
             comment: initbiz.seostorm::lang.form.settings.enable_video_in_sitemap_comment
+            commentHtml: true
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
             default: false
         _sitemap_section2:
             type: section
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-        large_sitemap:
-            label: initbiz.seostorm::lang.form.settings.enable_large_sitemap
+        enable_index_sitemap:
+            label: initbiz.seostorm::lang.form.settings.enable_index_sitemap
+            span: left
+            type: switch
+            comment: initbiz.seostorm::lang.form.settings.enable_index_sitemap_comment 
+            commentHtml: true
+            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
+        enable_index_sitemap_videos:
+            label: initbiz.seostorm::lang.form.settings.enable_index_sitemap_videos
             span: left
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-        large_sitemap_video:
-            label: initbiz.seostorm::lang.form.settings.enable_large_sitemap_video
+        enable_index_sitemap_images:
+            label: initbiz.seostorm::lang.form.settings.enable_index_sitemap_images
             span: right
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-        large_sitemap_images:
-            label: initbiz.seostorm::lang.form.settings.enable_large_sitemap_images
+        index_sitemap_locales:
+            label: initbiz.seostorm::lang.form.settings.index_sitemap_locales
             span: left
-            type: switch
-            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-        large_sitemap_locales:
-            label: initbiz.seostorm::lang.form.settings.large_sitemap_locales
-            span: right
             type: checkboxlist
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
 
