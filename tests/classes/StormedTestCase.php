@@ -9,6 +9,7 @@ use System\Classes\MarkupManager;
 use System\Classes\PluginManager;
 use System\Classes\UpdateManager;
 use System\Classes\VersionManager;
+use October\Rain\Extension\Container;
 
 abstract class StormedTestCase extends PluginTestCase
 {
@@ -16,14 +17,10 @@ abstract class StormedTestCase extends PluginTestCase
     {
         parent::setUp();
 
-        // Version manager remembers in the databaseVersions all versions
-        // between tests even if the table in db is empty
-        VersionManager::forgetInstance();
-
         // Get the plugin manager
         $pluginManager = PluginManager::instance();
 
-        Model::clearExtendedClasses();
+        Container::clearExtensions();
         Model::clearBootedModels();
 
         // Register the plugins to make features like file configuration available
@@ -56,13 +53,13 @@ abstract class StormedTestCase extends PluginTestCase
 
     public function tearDown(): void
     {
-        parent::tearDown();
-
         // Get the plugin manager
         $pluginManager = PluginManager::instance();
 
         // Ensure that plugins are registered again for the next test
-        $pluginManager->unregisterAll();
+        $pluginManager->unloadPlugins();
+
+        parent::tearDown();
     }
 
     protected function runPluginRefreshCommand($code, $throwException = true)

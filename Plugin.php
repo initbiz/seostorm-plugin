@@ -20,6 +20,17 @@ use Initbiz\SeoStorm\Classes\SitemapController;
  */
 class Plugin extends PluginBase
 {
+    public function __construct($app)
+    {
+        $parent = parent::__construct($app);
+
+        if (app()->runningUnitTests()) {
+            $this->require = array_merge($this->require, ['RainLab.Translate']);
+        }
+
+        return $parent;
+    }
+
     public function registerComponents()
     {
         return [
