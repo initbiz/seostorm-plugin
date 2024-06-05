@@ -28,7 +28,10 @@ class SitemapItem
 
         $url = $xml->createElement('url');
         $pageUrl && $url->appendChild($xml->createElement('loc', $pageUrl));
-        $url->appendChild($xml->createElement('lastmod', $this->getLastModified()));
+
+        if ($this->lastmod) {
+            $url->appendChild($xml->createElement('lastmod', $this->getLastModified()));
+        }
 
         if ($this->changefreq) {
             $url->appendChild($xml->createElement('changefreq', $this->changefreq));

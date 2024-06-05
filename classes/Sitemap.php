@@ -210,7 +210,6 @@ class Sitemap
                     $modelParams = $page->seoOptionsModelParams;
                     $loc = $this->getLocForModel($model, $modelParams, $page->url);
 
-
                     $sitemapItem->loc = $this->trimOptionalParameters($loc);
 
                     if ($page->seoOptionsUseUpdatedAt && isset($model->updated_at)) {
@@ -338,28 +337,32 @@ class Sitemap
         }
     }
 
-    public function getLocForModel($model, $modelParams, $loc): ?string
+    public function getLocForModel($model, $modelParams, $loc): string
     {
-        if (!empty($modelParams)) {
-            $modelParams = explode('|', $modelParams);
-            foreach ($modelParams as $modelParam) {
-                list($urlParam, $modelParam) = explode(':', $modelParam);
-
-                $pattern = '/:' . $urlParam . '\??/i';
-                $replacement = '';
-                if (strpos($modelParam, '.') === false) {
-                    $replacement = $model->$modelParam;
-                } else {
-                    // parameter with dot -> try to find by relation
-                    list($relationMethod, $relatedAttribute) = explode('.', $modelParam);
-                    if ($relatedObject = $model->$relationMethod()->first()) {
-                        $replacement = $relatedObject->$relatedAttribute ?? 'default';
-                    }
-                    $replacement = empty($replacement) ? 'default' : $replacement;
-                }
-                // Fill with parameters
-                return $loc = preg_replace($pattern, $replacement, $loc);
-            }
+        if (empty($modelParams)) {
+            return $loc;
         }
+
+        $modelParams = explode('|', $modelParams);
+        foreach ($modelParams as $modelParam) {
+            list($urlParam, $modelParam) = explode(':', $modelParam);
+
+            $pattern = '/:' . $urlParam . '\??/i';
+            $replacement = '';
+            if (strpos($modelParam, '.') === false) {
+                $replacement = $model->$modelParam;
+            } else {
+                // parameter with dot -> try to find by relation
+                list($relationMethod, $relatedAttribute) = explode('.', $modelParam);
+                if ($relatedObject = $model->$relationMethod()->first()) {
+                    $replacement = $relatedObject->$relatedAttribute ?? 'default';
+                }
+                $replacement = empty($replacement) ? 'default' : $replacement;
+            }
+            // Fill with parameters
+            $loc = preg_replace($pattern, $replacement, $loc);
+        }
+
+        return $loc;
     }
 }
