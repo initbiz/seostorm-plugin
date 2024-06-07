@@ -92,7 +92,7 @@ class Plugin extends PluginBase
     {
         return [
             'functions' => [
-                'template_from_string' => [$this, 'templateFromString'],
+                'tfs' => [$this, 'templateFromString'],
             ]
         ];
     }
