@@ -2,7 +2,9 @@
 
 namespace Initbiz\SeoStorm\Models;
 
+use Site;
 use Model;
+use RainLab\Translate\Classes\Locale;
 
 class Settings extends Model
 {
@@ -47,5 +49,17 @@ class Settings extends Model
         $this->favicon_16 = false;
         $this->enable_og = true;
         $this->publisher_type = 'Organization';
+        $this->enable_image_in_sitemap = false;
+        $this->enable_video_in_sitemap = false;
+    }
+
+    public function getSitemapLocalesOptions()
+    {
+        return Locale::listLocales()->pluck('name', 'code')->toArray();
+    }
+
+    public function getLocalesForSitemap()
+    {
+        return Site::listSites()->whereIn('code', $this->sitemap_locales);
     }
 }

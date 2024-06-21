@@ -328,7 +328,7 @@ class Seo extends ComponentBase
     {
         $url = '';
         if (empty($parsedTwig)) {
-            $url = Page::url('');
+            $url = $this->controller->currentPageUrl();
         } else {
             $url = Cms::url($parsedTwig);
         }

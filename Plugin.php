@@ -6,6 +6,7 @@ use Event;
 use Cms\Twig\Extension;
 use Cms\Classes\Controller;
 use System\Classes\PluginBase;
+use Initbiz\SeoStorm\Classes\Router;
 use Initbiz\SeoStorm\Models\Htaccess;
 use Initbiz\SeoStorm\Models\Settings;
 use Twig\Extension\StringLoaderExtension;
@@ -36,14 +37,17 @@ class Plugin extends PluginBase
 
     public function register()
     {
+        $this->registerConsoleCommand('seostorm.index.sitemapitems', \Initbiz\SeoStorm\Console\IndexAllSiteMapItems::class);
     }
 
     public function boot()
     {
+        (new Router)->register();
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\BackendHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\StormedHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\RainlabPagesHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\RainlabTranslateHandler::class);
+        Event::subscribe(\Initbiz\SeoStorm\EventHandlers\SitemapHandler::class);
 
         // Load Twig extensions
 
