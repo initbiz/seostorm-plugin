@@ -3,6 +3,7 @@
 namespace Initbiz\SeoStorm\Classes;
 
 use Carbon\Carbon;
+use Initbiz\SeoStorm\Models\Settings;
 
 class SitemapItem
 {
@@ -17,13 +18,8 @@ class SitemapItem
     public array $images = [];
     public array $videos = [];
 
-    public function makeUrlElement(Sitemap $sitemap)
+    public function makeUrlElement($xml)
     {
-        if ($sitemap->getUrlsCount() >= Sitemap::MAX_URLS) {
-            return false;
-        }
-        $xml = $sitemap->makeRoot();
-
         $pageUrl = url($this->loc);
 
         $url = $xml->createElement('url');
@@ -43,7 +39,7 @@ class SitemapItem
 
         foreach ($this->images as $photoUrl) {
             $photoElement = $url->appendChild($xml->createElement('image:image'));
-            $photoElement->appendChild($xml->createElement('image', url($photoUrl)));
+            $photoElement->appendChild($xml->createElement('image', url($photoUrl['url'])));
         }
 
         foreach ($this->videos as $video) {
@@ -77,5 +73,17 @@ class SitemapItem
         $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
 
         return $sitemapItem;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'loc' => $this->loc,
+            'lastmod' => $this->lastmod,
+            'priority' => $this->priority,
+            'changefreq' => $this->changefreq,
+            'images' => $this->images,
+            'videos' => $this->videos,
+        ];
     }
 }

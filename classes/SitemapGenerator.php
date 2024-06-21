@@ -8,11 +8,12 @@ use Cms\Classes\Theme;
 use Cms\Classes\Controller;
 use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Models\Settings;
-use October\Rain\Support\Facades\Url;
 use October\Rain\Support\Facades\Site;
 use Initbiz\SeoStorm\Classes\SitemapItem;
+use RainLab\Translate\Classes\Translator;
+use RainLab\Pages\Classes\Page as StaticPage;
 
-class Sitemap
+class SitemapGenerator
 {
     /**
      * Maximum URLs allowed (Protocol limit is 50k)
@@ -34,8 +35,16 @@ class Sitemap
     protected $urlSet;
     protected $sitemapIndex;
 
+    protected $parseVideos = false;
+
+    protected $parseImages = false;
+
     public function generate($pages = [])
     {
+        $request = \Request::instance();
+        $activeSite = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
+        Site::applyActiveSite($activeSite);
+
         if (empty($pages)) {
             // get all pages of the current theme
             $pages = Page::listInTheme(Theme::getEditTheme());
@@ -53,9 +62,9 @@ class Sitemap
 
     public function generateIndex()
     {
-        $request = \Request::instance();
         $xml = $this->makeRoot();
         $localesSitemap = $this->makeSitemapIndex();
+        $request = \Request::instance();
         $activeSite = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
         if (Settings::get('enable_index_sitemap_videos')) {
             $sitemapElement = $localesSitemap->appendChild($xml->createElement('sitemap'));
@@ -70,20 +79,7 @@ class Sitemap
         $sitemapElement->appendChild($xml->createElement('loc', $activeSite->base_url . '/sitemap.xml'));
         $activeSite = Site::getActiveSite();
 
-
         return $this->xml->saveXML();
-    }
-
-    public function generateImages()
-    {
-        $xml = $this->makeRoot();
-
-        return $this->xml->saveXML();
-    }
-
-    public function generateVideos()
-    {
-        $xml = $this->makeRoot();
     }
 
     protected function makeUrlSet()
@@ -99,12 +95,16 @@ class Sitemap
         $urlSet->setAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd');
 
         $settings = Settings::instance();
-        if ($settings->enable_image_in_sitemap) {
+        if ($settings->get('enable_image_in_sitemap')) {
             $urlSet->setAttribute('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
         }
-        if ($settings->enable_video_in_sitemap) {
+        if ($settings->get('enable_video_in_sitemap')) {
             $urlSet->setAttribute('xmlns:video', 'http://www.google.com/schemas/sitemap-video/1.1');
         }
+        if ($settings->get('enable_sitemap_hreflangs')) {
+            $urlSet->setAttribute('xmlns:xhtml', 'http://www.w3.org/1999/xhtml');
+        }
+
         $xml->appendChild($urlSet);
 
         return $this->urlSet = $urlSet;
@@ -125,18 +125,6 @@ class Sitemap
         return $this->sitemapIndex = $sitemapIndex;
     }
 
-    public static function getIndexSitemaps()
-    {
-        $sitemaps = [];
-        $sites = Site::listEnabled();
-        foreach ($sites as $site) {
-            $prefix = $site->is_prefixed ? $site->route_prefix : '';
-            $sitemaps[] = $prefix . '/sitemap_index.xml';
-        }
-
-        return $sitemaps;
-    }
-
     public function makeRoot()
     {
         if ($this->xml !== null) {
@@ -155,14 +143,12 @@ class Sitemap
             return false;
         }
 
-        $this->urlCount++;
-
         $urlSet = $this->makeUrlSet();
-
-        $urlElement = $item->makeUrlElement($this);
+        $urlElement = $item->makeUrlElement($this->makeRoot());
 
         if ($urlElement) {
             $urlSet->appendChild($urlElement);
+            $this->urlCount++;
         }
 
         return $urlSet;
@@ -186,45 +172,65 @@ class Sitemap
 
     public function makeItemsCmsPages($pages): void
     {
-        $models = [];
-
         $pages = $pages
             ->filter(function ($page) {
                 return $page->seoOptionsEnabledInSitemap;
             })->sortByDesc('seoOptionsPriority');
 
         foreach ($pages as $page) {
-            $sitemapItem = SitemapItem::makeItemForCmsPage($page);
-            $loc = $page->url;
+            $this->makeItemsCmsPage($page);
+        }
+    }
 
-            $modelClass = $page->seoOptionsModelClass;
-            // if page has model class
-            if (class_exists($modelClass)) {
-                $scope = $page->seoOptionsModelScope;
-                $models = $this->getModels($modelClass, $scope);
+    public function makeItemsCmsPage($page)
+    {
+        $sitemapItems = [];
+        $sitemapItem = new SitemapItem();
+        $sitemapItem->priority = $page->seoOptionsPriority;
+        $sitemapItem->changefreq = $page->seoOptionsChangefreq;
+        $sitemapItem->loc = $page->url;
+        $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
+        $loc = $page->url;
+        $baseFileName = $page->base_file_name;
+        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
+            $translator = Translator::instance();
+            $loc = $translator->getPageInLocale($baseFileName) ?? $loc;
+        }
 
-                foreach ($models as $model) {
-                    if (($model->seo_options['enabled_in_sitemap'] ?? null) === "0") {
-                        continue;
-                    }
-                    $modelParams = $page->seoOptionsModelParams;
-                    $loc = $this->getLocForModel($model, $modelParams, $page->url);
+        $modelClass = $page->seoOptionsModelClass;
+        // if page has model class
+        if (class_exists($modelClass)) {
+            $scope = $page->seoOptionsModelScope;
+            $models = $this->getModels($modelClass, $scope);
 
-                    $sitemapItem->loc = $this->trimOptionalParameters($loc);
-
-                    if ($page->seoOptionsUseUpdatedAt && isset($model->updated_at)) {
-                        $sitemapItem->lastmod = $model->updated_at->format('c');
-                    }
-
-                    $this->makeItemMediaFromPage($sitemapItem);
-                    $this->addItemToSet($sitemapItem);
+            foreach ($models as $model) {
+                if (($model->seo_options['enabled_in_sitemap'] ?? null) === "0") {
+                    continue;
                 }
-            } else {
-                $this->makeItemMediaFromPage($sitemapItem);
+                $modelParams = $page->seoOptionsModelParams;
+
+                $loc = $this->getLocForModel($model, $modelParams, $baseFileName);
+
                 $sitemapItem->loc = $this->trimOptionalParameters($loc);
+
+                if ($page->seoOptionsUseUpdatedAt && isset($model->updated_at)) {
+                    $sitemapItem->lastmod = $model->updated_at->format('c');
+                }
+
+                $this->makeItemMediaFromPage($sitemapItem);
+
+                $sitemapItems[] = $sitemapItem->toArray();
                 $this->addItemToSet($sitemapItem);
             }
+        } else {
+            $this->makeItemMediaFromPage($sitemapItem);
+
+            $sitemapItem->loc = $this->trimOptionalParameters($loc);
+            $sitemapItems[] = $sitemapItem->toArray();
+            $this->addItemToSet($sitemapItem);
         }
+
+        return $sitemapItems;
     }
 
     public function makeItemsStaticPages($staticPages): void
@@ -236,29 +242,27 @@ class Sitemap
             }
 
             $sitemapItem = new SitemapItem();
-            $sitemapItem->loc = url($staticPage->url);
+            $sitemapItem->loc = StaticPage::url($staticPage->fileName);
             $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->mtime;
             $sitemapItem->priority = $viewBag->property('priority');
             $sitemapItem->changefreq = $viewBag->property('changefreq');
 
             $this->makeItemMediaFromPage($sitemapItem);
+
             $this->addItemToSet($sitemapItem);
         }
     }
 
     public function makeItemMediaFromPage(SitemapItem $sitemapItem): void
     {
-        $settings = Settings::instance();
-        if (!$settings->enable_image_in_sitemap) {
-            return;
-        }
-        if (!$settings->enable_image_in_sitemap) {
+        if (!$this->parseImages && !$this->parseVideos) {
             return;
         }
 
         $controller = new Controller();
         try {
-            $response = $controller->run($sitemapItem->loc);
+            $url = parse_url($sitemapItem->loc);
+            $response = $controller->run($url['path']);
         } catch (\Throwable $th) {
             trace_log('Problem with parsing page ' . $sitemapItem->loc);
             return;
@@ -267,11 +271,13 @@ class Sitemap
 
         $dom = new \DOMDocument();
         $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
-        if ($settings->enable_image_in_sitemap) {
+
+        $settings = Settings::instance();
+        if ($this->parseImages) {
             $sitemapItem->images = $this->getImagesLinksFromDom($dom);
         }
 
-        if ($settings->enable_video_in_sitemap) {
+        if ($this->parseVideos) {
             $sitemapItem->videos = $this->getVideoItemsFromDom($dom);
         }
     }
@@ -337,17 +343,17 @@ class Sitemap
         }
     }
 
-    public function getLocForModel($model, $modelParams, $loc): string
+    public function getLocForModel($model, $modelParams, $baseFileName): string
     {
         if (empty($modelParams)) {
-            return $loc;
+            return \Cms::pageUrl($baseFileName);
         }
 
+        $params = [];
         $modelParams = explode('|', $modelParams);
         foreach ($modelParams as $modelParam) {
             list($urlParam, $modelParam) = explode(':', $modelParam);
 
-            $pattern = '/:' . $urlParam . '\??/i';
             $replacement = '';
             if (strpos($modelParam, '.') === false) {
                 $replacement = $model->$modelParam;
@@ -359,8 +365,13 @@ class Sitemap
                 }
                 $replacement = empty($replacement) ? 'default' : $replacement;
             }
-            // Fill with parameters
-            $loc = preg_replace($pattern, $replacement, $loc);
+            $params[$urlParam] = $replacement;
+        }
+        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
+            $translator = Translator::instance();
+            $loc = $translator->getPageInLocale($baseFileName, null, $params);
+        } else {
+            $loc = \Cms::pageUrl($baseFileName, $params);
         }
 
         return $loc;

@@ -6,7 +6,7 @@ use Config;
 use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
-use Initbiz\SeoStorm\Classes\Sitemap;
+use Initbiz\SeoStorm\Classes\SitemapGenerator;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedCategory;
@@ -17,7 +17,7 @@ class SitemapTest extends StormedTestCase
     {
         parent::setUp();
 
-        $themesPath = 'plugins/initbiz/seostorm/tests/themes';
+        $themesPath = plugins_path('initbiz/seostorm/tests/themes');
         Config::set('system.themes_path', $themesPath);
         app()->useThemesPath($themesPath);
     }
@@ -31,7 +31,7 @@ class SitemapTest extends StormedTestCase
         $page2->mtime = 1632858273;
         $pages = collect([$page1, $page2]);
 
-        $xml = (new Sitemap())->generate($pages);
+        $xml = (new SitemapGenerator())->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-1-page.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -39,7 +39,7 @@ class SitemapTest extends StormedTestCase
         $page1->settings['seoOptionsEnabledInSitemap'] = "true";
         $pages = collect([$page1, $page2]);
 
-        $xml = (new Sitemap)->generate($pages);
+        $xml = (new SitemapGenerator)->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-2-pages.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -68,7 +68,7 @@ class SitemapTest extends StormedTestCase
         $model2->slug = 'test-slug-2';
         $model2->save();
 
-        $xml = (new Sitemap)->generate($pages);
+        $xml = (new SitemapGenerator)->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -82,7 +82,7 @@ class SitemapTest extends StormedTestCase
         $pages = collect();
         $pages = $pages->push($page);
 
-        $xml = (new Sitemap)->generate($pages);
+        $xml = (new SitemapGenerator)->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs-filtered.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -111,7 +111,7 @@ class SitemapTest extends StormedTestCase
         $model->category_id = $category->id;
         $model->save();
 
-        $xml = (new Sitemap)->generate($pages);
+        $xml = (new SitemapGenerator)->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs-relation.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -137,7 +137,7 @@ class SitemapTest extends StormedTestCase
         $model->updated_at = Carbon::parse('2021-09-21 10:00');
         $model->save();
 
-        $xml = (new Sitemap)->generate($pages);
+        $xml = (new SitemapGenerator)->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-updated-at.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -170,7 +170,7 @@ class SitemapTest extends StormedTestCase
             'enabled_in_sitemap' => "0",
         ];
 
-        $xml = (new Sitemap)->generate($pages);
+        $xml = (new SitemapGenerator)->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs-filtered.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -190,7 +190,7 @@ class SitemapTest extends StormedTestCase
         $page->settings['seoOptionsModelParams'] = "category:slug";
         $pages = collect();
         $pages = $pages->push($page);
-        $xml = (new Sitemap)->generate($pages);
+        $xml = (new SitemapGenerator)->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -200,7 +200,7 @@ class SitemapTest extends StormedTestCase
         $page->mtime = 1632858273;
         $pages = collect();
         $pages = $pages->push($page);
-        $xml = (new Sitemap)->generate($pages);
+        $xml = (new SitemapGenerator)->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param-2.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -228,7 +228,7 @@ class SitemapTest extends StormedTestCase
         $page->settings['seoOptionsModelScope'] = "isPublished:yesterday";
         $pages = collect();
         $pages = $pages->push($page);
-        $xml = (new Sitemap)->generate($pages);
+        $xml = (new SitemapGenerator)->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);

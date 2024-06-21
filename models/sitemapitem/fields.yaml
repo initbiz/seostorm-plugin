@@ -1,0 +1,19 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    id:
+        label: ID
+        disabled: true
+    loc:
+        label: loc
+        disabled: true
+    images:
+        label: images
+        type: repeater
+        form:
+            fields:
+                url:
+                    label: url
+                    type: text

@@ -164,6 +164,8 @@
             'enable_index_sitemap_videos' => 'Enable index sitemap videos',
             'enable_index_sitemap_images' => 'Enable index sitemap images',
             'index_sitemap_locales' => 'Locales to include for the index sitemap',
+            'enable_sitemap_hreflangs' => 'Enable hreflangs',
+            'enable_sitemap_hreflangs_comment' => 'Enable hreflangs in sitemap see: <a href="https://developers.google.com/search/docs/specialty/international/localized-versions">Here</a>',
         ],
         'htaccess' => [
             'label' => '.htaccess',

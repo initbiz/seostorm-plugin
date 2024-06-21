@@ -98,7 +98,7 @@ tabs:
             label: initbiz.seostorm::lang.form.settings.enable_index_sitemap
             span: left
             type: switch
-            comment: initbiz.seostorm::lang.form.settings.enable_index_sitemap_comment 
+            comment: initbiz.seostorm::lang.form.settings.enable_index_sitemap_comment
             commentHtml: true
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
         enable_index_sitemap_videos:
@@ -111,10 +111,17 @@ tabs:
             span: right
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-        index_sitemap_locales:
+        sitemap_locales:
             label: initbiz.seostorm::lang.form.settings.index_sitemap_locales
             span: left
             type: checkboxlist
+            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
+        enable_sitemap_hreflangs:
+            label: initbiz.seostorm::lang.form.settings.enable_sitemap_hreflangs
+            comment: initbiz.seostorm::lang.form.settings.enable_sitemap_hreflangs_comment
+            commentHtml: true
+            span: right
+            type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
 
         #----------------------------------------------------------------------

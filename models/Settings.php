@@ -2,6 +2,7 @@
 
 namespace Initbiz\SeoStorm\Models;
 
+use Site;
 use Model;
 use RainLab\Translate\Classes\Locale;
 
@@ -52,8 +53,13 @@ class Settings extends Model
         $this->enable_video_in_sitemap = false;
     }
 
-    public function getIndexSitemapLocalesOptions()
+    public function getSitemapLocalesOptions()
     {
         return Locale::listLocales()->pluck('name', 'code')->toArray();
+    }
+
+    public function getLocalesForSitemap()
+    {
+        return Site::listSites()->whereIn('code', $this->sitemap_locales);
     }
 }
