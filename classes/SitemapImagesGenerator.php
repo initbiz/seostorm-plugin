@@ -103,7 +103,7 @@ class SitemapImagesGenerator extends SitemapGenerator
 
     public function makeItemMediaFromPage(SitemapItem $sitemapItem): void
     {
-        $images = $this->sitemapItemModels[url($sitemapItem->loc)];
-        $sitemapItem->images = $images ?? [];
+        $images = $this->sitemapItemModels[url($sitemapItem->loc)] ?? [];
+        $sitemapItem->images = $images;
     }
 }

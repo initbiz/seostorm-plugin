@@ -5,13 +5,13 @@ namespace Initbiz\SeoStorm\Classes;
 use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
-use Cms\Classes\Controller;
 use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Models\Settings;
 use October\Rain\Support\Facades\Site;
 use Initbiz\SeoStorm\Classes\SitemapItem;
 use RainLab\Translate\Classes\Translator;
 use RainLab\Pages\Classes\Page as StaticPage;
+use Initbiz\Seostorm\Models\SitemapItem as ModelSitemapItem;
 
 class SitemapGenerator
 {
@@ -33,11 +33,10 @@ class SitemapGenerator
     protected $xml;
 
     protected $urlSet;
+
     protected $sitemapIndex;
 
-    protected $parseVideos = false;
-
-    protected $parseImages = false;
+    protected $sitemapItemModels;
 
     public function generate($pages = [])
     {
@@ -101,10 +100,6 @@ class SitemapGenerator
         if ($settings->get('enable_video_in_sitemap')) {
             $urlSet->setAttribute('xmlns:video', 'http://www.google.com/schemas/sitemap-video/1.1');
         }
-        if ($settings->get('enable_sitemap_hreflangs')) {
-            $urlSet->setAttribute('xmlns:xhtml', 'http://www.w3.org/1999/xhtml');
-        }
-
         $xml->appendChild($urlSet);
 
         return $this->urlSet = $urlSet;
@@ -176,6 +171,11 @@ class SitemapGenerator
             ->filter(function ($page) {
                 return $page->seoOptionsEnabledInSitemap;
             })->sortByDesc('seoOptionsPriority');
+
+        $settings = Settings::instance();
+        if ($settings->get('enable_image_in_sitemap') || $settings->get('enable_video_in_sitemap')) {
+            $this->sitemapItemModels = ModelSitemapItem::get(['videos', 'images', 'loc'])->keyBy('loc')->toArray();
+        }
 
         foreach ($pages as $page) {
             $this->makeItemsCmsPage($page);
@@ -255,77 +255,20 @@ class SitemapGenerator
 
     public function makeItemMediaFromPage(SitemapItem $sitemapItem): void
     {
-        if (!$this->parseImages && !$this->parseVideos) {
+        if (!isset($this->sitemapItemModels[url($sitemapItem->loc)])) {
             return;
         }
 
-        $controller = new Controller();
-        try {
-            $url = parse_url($sitemapItem->loc);
-            $response = $controller->run($url['path']);
-        } catch (\Throwable $th) {
-            trace_log('Problem with parsing page ' . $sitemapItem->loc);
-            return;
-        }
-        $content = $response->getContent();
-
-        $dom = new \DOMDocument();
-        $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
+        $modelSitemapItem = $this->sitemapItemModels[url($sitemapItem->loc)];
 
         $settings = Settings::instance();
-        if ($this->parseImages) {
-            $sitemapItem->images = $this->getImagesLinksFromDom($dom);
+        if ($settings->get('enable_image_in_sitemap')) {
+            $sitemapItem->images = $modelSitemapItem['images'] ?? [];
         }
 
-        if ($this->parseVideos) {
-            $sitemapItem->videos = $this->getVideoItemsFromDom($dom);
+        if ($settings->get('enable_video_in_sitemap')) {
+            $sitemapItem->videos = $modelSitemapItem['videos'] ?? [];
         }
-    }
-    public function getImagesLinksFromDom(\DOMDocument $dom): array
-    {
-        $links = [];
-
-        $finder = new \DomXPath($dom);
-        $nodes = $finder->query("//img");
-        foreach ($nodes as $node) {
-            $link = $node->getAttribute('src');
-            if (!blank($link)) {
-                $links[] = $link;
-            }
-        }
-
-        return $links;
-    }
-
-    protected function getVideoItemsFromDom(\DOMDocument $dom): array
-    {
-        $items = [];
-
-        $finder = new \DomXPath($dom);
-        $schemaName = "https://schema.org/VideoObject";
-        $nodes = $finder->query("//*[contains(@itemtype, '$schemaName')]");
-
-        foreach ($nodes as $node) {
-            $video = [];
-            foreach ($node->childNodes as $childNode) {
-                if (!$childNode instanceof \DOMElement) {
-                    continue;
-                }
-
-                if ($childNode->tagName !== 'meta') {
-                    continue;
-                }
-
-                $key = $childNode->getAttribute('itemprop');
-                $value = $childNode->getAttribute('content');
-
-                $video[$key] = $value;
-            }
-
-            $items[] = $video;
-        }
-
-        return $items;
     }
 
     public function getUrlsCount()

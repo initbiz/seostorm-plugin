@@ -103,7 +103,7 @@ class SitemapVideosGenerator extends SitemapGenerator
 
     public function makeItemMediaFromPage(SitemapItem $sitemapItem): void
     {
-        $videos = $this->sitemapItemModels[url($sitemapItem->loc)];
-        $sitemapItem->videos = $videos ?? [];
+        $videos = $this->sitemapItemModels[url($sitemapItem->loc)] ?? [];
+        $sitemapItem->videos = $videos;
     }
 }
