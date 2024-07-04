@@ -65,4 +65,6 @@
     - "Fix tests in October 3.6"
 4.9.0:
     - "Add external sitemap"
-    - 4_9_0_create_sitemapitems_table.php
+    - 5_0_0_create_sitemap_items_table.php
+    - 5_0_0_create_sitemap_media_table.php
+    - 5_0_0_create_sitemap_items_media.php

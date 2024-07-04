@@ -4,8 +4,8 @@ namespace Initbiz\Seostorm\Models;
 
 use Model;
 use Cms\Classes\Controller;
-use Initbiz\SeoStorm\Jobs\ParseSite;
 use Illuminate\Support\Facades\Queue;
+use Initbiz\SeoStorm\Jobs\ParseSiteJob;
 use RainLab\Pages\Classes\Page as StaticPage;
 use Initbiz\SeoStorm\Classes\SitemapGenerator;
 
@@ -31,6 +31,13 @@ class SitemapItem extends Model
     public $jsonable = [
         'images',
         'videos'
+    ];
+
+    public $belongsToMany = [
+        'media' => [
+            SitemapMedia::class,
+            'table' => 'initbiz_seostorm_sitemap_items_media'
+        ]
     ];
 
     public function parsePage(): void
@@ -122,6 +129,7 @@ class SitemapItem extends Model
             $sitemapItemModel->queueParseSite();
         }
     }
+
     public static function makeSitemapItemsForStaticPage($page): void
     {
         $sitemapItemModel = new self();
@@ -133,6 +141,6 @@ class SitemapItem extends Model
 
     public function queueParseSite(): void
     {
-        Queue::push(ParseSite::class, ['url' => $this->loc]);
+        Queue::push(ParseSiteJob::class, ['url' => $this->loc]);
     }
 }

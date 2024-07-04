@@ -23,6 +23,7 @@ class SeoTest extends StormedTestCase
     {
         parent::setUp();
         $componentManager = ComponentManager::instance();
+        $componentManager->listComponents();
         $componentManager->registerComponent(Seo::class, 'seo');
         $componentManager->registerComponent(FakeModelDetailsComponent::class, 'fakeModelDetails');
         $componentManager->registerComponent(ViewBag::class, 'viewBag');

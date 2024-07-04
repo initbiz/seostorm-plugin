@@ -17,9 +17,15 @@ navigation:
         permissions:
             - sevenseven.core.access_tags
         sideMenu:
-            questions:
+            sitemap:
                 label: sitemap
                 icon: icon-file-image-o
                 url: initbiz/seostorm/sitemapitems
+                permissions:
+                    - sevenseven.core.access_tags
+            sitemapMedia:
+                label: sitemap media
+                icon: icon-file-image-o
+                url: initbiz/seostorm/sitemapmedia
                 permissions:
                     - sevenseven.core.access_tags
