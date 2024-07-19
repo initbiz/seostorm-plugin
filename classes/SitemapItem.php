@@ -3,7 +3,6 @@
 namespace Initbiz\SeoStorm\Classes;
 
 use Carbon\Carbon;
-use Initbiz\SeoStorm\Models\Settings;
 
 class SitemapItem
 {
@@ -16,14 +15,17 @@ class SitemapItem
     public $changefreq;
 
     public array $images = [];
+
     public array $videos = [];
 
     public function makeUrlElement($xml)
     {
-        $pageUrl = url($this->loc);
-
         $url = $xml->createElement('url');
-        $pageUrl && $url->appendChild($xml->createElement('loc', $pageUrl));
+
+        $pageUrl = url($this->loc);
+        if ($pageUrl) {
+            $url->appendChild($xml->createElement('loc', $pageUrl));
+        }
 
         if ($this->lastmod) {
             $url->appendChild($xml->createElement('lastmod', $this->getLastModified()));

@@ -1,13 +1,4 @@
 <div data-control="toolbar loader-container">
-    <a
-        href="<?= Backend::url('initbiz/seostorm/sitemapitems/create') ?>"
-        class="btn btn-primary">
-        <i class="icon-plus"></i>
-        <?= __("New :name", ['name' => 'SitemapItem']) ?>
-    </a>
-
-    <div class="toolbar-divider"></div>
-
     <button
         class="btn btn-secondary"
         data-request="onDelete"
@@ -19,4 +10,10 @@
         <i class="icon-delete"></i>
         <?= __("Delete") ?>
     </button>
+
+    <a
+        href="<?= Backend::url('initbiz/seostorm/sitemapmedia') ?>"
+        class="btn btn-secondary oc-icon-clone">
+        <?= trans("initbiz.seostorm::lang.models.sitemap_item.manage_sitemap_media") ?>
+    </a>
 </div>

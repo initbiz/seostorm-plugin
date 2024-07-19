@@ -8,24 +8,3 @@ permissions:
     initbiz.seostorm.config:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
         label: 'initbiz.seostorm::lang.permissions.config'
-navigation:
-    sitemap:
-        label: sitemap
-        url: initbiz/seostorm/sitemapitems
-        icon: icon-comment-o
-        order: 500
-        permissions:
-            - sevenseven.core.access_tags
-        sideMenu:
-            sitemap:
-                label: sitemap
-                icon: icon-file-image-o
-                url: initbiz/seostorm/sitemapitems
-                permissions:
-                    - sevenseven.core.access_tags
-            sitemapMedia:
-                label: sitemap media
-                icon: icon-file-image-o
-                url: initbiz/seostorm/sitemapmedia
-                permissions:
-                    - sevenseven.core.access_tags

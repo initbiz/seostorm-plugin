@@ -170,6 +170,9 @@
         'htaccess' => [
             'label' => '.htaccess',
             'description' => 'Manage .htaccess file',
+        ],
+        'sitemap_item' => [
+            'label' => 'Sitemap Item'
         ]
     ],
     'components' => [
@@ -198,5 +201,14 @@
     ],
     'editor' => [
         'translate' => 'Translate SEO'
+    ],
+    'models' => [
+        'sitemap_item' => [
+            'manage_sitemap_media' => 'Manage Sitemap Media',
+            'loc' => 'loc',
+            'site_definition' => 'Site Definition',
+            'media' => 'Media',
+            'base_file_name' => 'Base File Name',
+        ]
     ]
 ];

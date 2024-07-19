@@ -4,6 +4,7 @@ namespace Initbiz\Seostorm\Models;
 
 use Model;
 use Cms\Classes\Controller;
+use System\Models\SiteDefinition;
 use Illuminate\Support\Facades\Queue;
 use Initbiz\SeoStorm\Jobs\ParseSiteJob;
 use RainLab\Pages\Classes\Page as StaticPage;
@@ -38,6 +39,10 @@ class SitemapItem extends Model
             SitemapMedia::class,
             'table' => 'initbiz_seostorm_sitemap_items_media'
         ]
+    ];
+
+    public $belongsTo = [
+        'siteDefinition' => SiteDefinition::class
     ];
 
     public function parsePage(): void
@@ -111,7 +116,7 @@ class SitemapItem extends Model
         return $links;
     }
 
-    public static function makeSitemapItemsForCmsPage($page): void
+    public static function makeSitemapItemsForCmsPage($page, ?SiteDefinition $site = null): void
     {
         $sitemapGenerator = new SitemapGenerator();
         $pages = $sitemapGenerator->makeItemsCmsPage($page);
@@ -119,22 +124,34 @@ class SitemapItem extends Model
         foreach ($pages as $sitemapItem) {
             $sitemapItemModel = $sitemapItemModels->where('loc', $sitemapItem['loc'])->first();
             if ($sitemapItemModel) {
-                $sitemapItemModel->save();
+                $sitemapItemModel->queueParseSite();
                 continue;
             }
             $sitemapItemModel = new self();
             $sitemapItemModel->loc = $sitemapItem['loc'];
             $sitemapItemModel->base_file_name = $page['base_file_name'];
+            if ($site) {
+                $sitemapItemModel->site_definition_id = $site->id;
+            }
             $sitemapItemModel->save();
             $sitemapItemModel->queueParseSite();
         }
     }
 
-    public static function makeSitemapItemsForStaticPage($page): void
+    public static function makeSitemapItemsForStaticPage($page, ?SiteDefinition $site = null): void
     {
+        $sitemapItemModel = self::where('loc', StaticPage::url($page->fileName))->first();
+        if ($sitemapItemModel) {
+            $sitemapItemModel->queueParseSite();
+            return;
+        }
+
         $sitemapItemModel = new self();
         $sitemapItemModel->loc = StaticPage::url($page->fileName);
         $sitemapItemModel->base_file_name = $page->fileName;
+        if ($site) {
+            $sitemapItemModel->site_definition_id = $site->id;
+        }
         $sitemapItemModel->save();
         $sitemapItemModel->queueParseSite();
     }

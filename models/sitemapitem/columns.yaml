@@ -3,12 +3,13 @@
 # ===================================
 
 columns:
-    id:
-        label: ID
-        searchable: true
     loc:
-        label: ID
+        label: initbiz.seostorm::lang.models.sitemap_item.loc
         searchable: true
     base_file_name:
-        label: ID
+        label: initbiz.seostorm::lang.models.sitemap_item.base_file_name
         searchable: true
+    site_definition:
+        label: initbiz.seostorm::lang.models.sitemap_item.site_definition
+        searchable: true
+        # select: site_definition.name

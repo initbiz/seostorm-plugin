@@ -1,20 +1,28 @@
-<?php namespace Initbiz\Seostorm\Controllers;
+<?php
+
+namespace Initbiz\Seostorm\Controllers;
 
 use BackendMenu;
 use Backend\Classes\Controller;
+use Backend\Classes\SettingsController;
 
 /**
  * SitemapItem Backend Controller
  *
  * @link https://docs.octobercms.com/3.x/extend/system/controllers.html
  */
-class SitemapItems extends Controller
+class SitemapItems extends SettingsController
 {
     public $implement = [
         \Backend\Behaviors\FormController::class,
         \Backend\Behaviors\ListController::class,
+        \Backend\Behaviors\RelationController::class,
     ];
 
+    /**
+     * @var string settingsItemCode determines the settings code
+     */
+    public $settingsItemCode = 'sitemap_item';
     /**
      * @var string formConfig file
      */
@@ -24,6 +32,8 @@ class SitemapItems extends Controller
      * @var string listConfig file
      */
     public $listConfig = 'config_list.yaml';
+
+    public $relationConfig = 'config_relation.yaml';
 
     /**
      * @var array required permissions
@@ -37,6 +47,6 @@ class SitemapItems extends Controller
     {
         parent::__construct();
 
-        BackendMenu::setContext('Initbiz.Seostorm', 'seostorm', 'sitemapitem');
+        // BackendMenu::setContext('Initbiz.Seostorm', 'seostorm', 'sitemapitem');
     }
 }

@@ -7,5 +7,9 @@ columns:
         label: ID
         searchable: true
     url:
-        label: ID
+        label: url
         searchable: true
+    type:
+        label: type
+        searchable: true
+

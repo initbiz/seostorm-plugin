@@ -44,6 +44,13 @@ class SitemapGenerator
         $activeSite = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
         Site::applyActiveSite($activeSite);
 
+        $this->makeItems($pages);
+        $this->makeUrlSet();
+        return $this->xml->saveXML();
+    }
+
+    public function makeItems($pages = []): void
+    {
         if (empty($pages)) {
             // get all pages of the current theme
             $pages = Page::listInTheme(Theme::getEditTheme());
@@ -54,9 +61,6 @@ class SitemapGenerator
             $staticPages = \RainLab\Pages\Classes\Page::listInTheme(Theme::getActiveTheme());
             $this->makeItemsStaticPages($staticPages);
         }
-
-        $this->makeUrlSet();
-        return $this->xml->saveXML();
     }
 
     public function generateIndex()

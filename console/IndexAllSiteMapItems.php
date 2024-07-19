@@ -19,19 +19,19 @@ class IndexAllSiteMapItems extends Command
         $settings = Settings::instance();
         $locales = $settings->getLocalesForSitemap();
         $pages = \Cms\Classes\Page::all();
-        foreach ($pages as $page) {
+        $this->withProgressBar($pages, function ($page) use ($locales) {
             foreach ($locales as $site) {
                 Site::applyActiveSite($site);
-                SitemapItem::makeSitemapItemsForCmsPage($page);
+                SitemapItem::makeSitemapItemsForCmsPage($page, $site);
             }
-        }
+        });
 
         $pages = Page::all();
-        foreach ($pages as $page) {
+        $this->withProgressBar($pages, function ($page) use ($locales) {
             foreach ($locales as $site) {
                 Site::applyActiveSite($site);
-                SitemapItem::makeSitemapItemsForStaticPage($page);
+                SitemapItem::makeSitemapItemsForCmsPage($page, $site);
             }
-        }
+        });
     }
 }

@@ -2,8 +2,10 @@
 
 namespace Initbiz\SeoStorm\Jobs;
 
+use Site;
 use Request;
 use Cms\Classes\Controller;
+use Cms\Classes\CmsController;
 use Initbiz\SeoStorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
 use Illuminate\Http\Request as HttpRequest;
@@ -20,18 +22,23 @@ class ParseSiteJob
         Request::swap($request);
         $sitemapItem = SitemapItem::where('loc', $data['url'])->first();
 
-        $controller = new Controller();
+        $controller = new CmsController();
         try {
             $parsedUrl = parse_url($sitemapItem->loc);
             $url = $parsedUrl['path'] ?? '/';
             $response = $controller->run($url);
         } catch (\Throwable $th) {
-
+            Request::swap($originalRequest);
             trace_log('Problem with parsing page ' . $sitemapItem->loc);
             throw new \Exception($th, 1);
             return false;
         }
+        if ($response->getStatusCode() != 200) {
+            return false;
+        }
+
         $content = $response->getContent();
+        \Storage::put('testaaa/' . $data['url'] . '.txt', $content);
 
         $dom = new \DOMDocument();
         $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
@@ -74,6 +81,7 @@ class ParseSiteJob
         $sitemapItem->save();
 
         Request::swap($originalRequest);
+        $job->delete();
     }
 
     public function getImagesLinksFromDom(\DOMDocument $dom): array

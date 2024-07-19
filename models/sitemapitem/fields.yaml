@@ -3,17 +3,18 @@
 # ===================================
 
 fields:
-    id:
-        label: ID
-        disabled: true
     loc:
-        label: loc
+        label: initbiz.seostorm::lang.models.sitemap_item.loc
         disabled: true
-    images:
-        label: images
-        type: repeater
-        form:
-            fields:
-                url:
-                    label: url
-                    type: text
+        span: left
+    siteDefinition:
+        label: initbiz.seostorm::lang.models.sitemap_item.site_definition
+        type: relation
+        span: right
+    base_file_name:
+        label: initbiz.seostorm::lang.models.sitemap_item.base_file_name
+        span: left
+        disabled: true
+    media:
+        label: initbiz.seostorm::lang.models.sitemap_item.media
+        type: partial

@@ -3,12 +3,14 @@
 namespace Initbiz\SeoStorm;
 
 use Event;
+use Backend;
 use Cms\Twig\Extension;
 use Cms\Classes\Controller;
 use System\Classes\PluginBase;
 use Initbiz\SeoStorm\Classes\Router;
 use Initbiz\SeoStorm\Models\Htaccess;
 use Initbiz\SeoStorm\Models\Settings;
+use Initbiz\Seostorm\Models\SitemapItem;
 use Twig\Extension\StringLoaderExtension;
 
 /**
@@ -86,6 +88,15 @@ class Plugin extends PluginBase
                 'icon'        => 'icon-file-text-o',
                 'category'    => 'initbiz.seostorm::lang.form.settings.category_label',
                 'class'       => Htaccess::class,
+                'order'       => 200,
+                'permissions' => ['initbiz.manage_seo'],
+            ],
+            'sitemap_item' => [
+                'label'       => 'initbiz.seostorm::lang.form.sitemap_item.label',
+                'description' => 'initbiz.seostorm::lang.form.sitemap_item.description',
+                'icon'        => 'icon-sitemap',
+                'category'    => 'initbiz.seostorm::lang.form.settings.category_label',
+                'url'         => Backend::url('initbiz/seostorm/sitemapitems'),
                 'order'       => 200,
                 'permissions' => ['initbiz.manage_seo'],
             ]

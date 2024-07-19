@@ -1,13 +1,4 @@
 <div data-control="toolbar loader-container">
-    <a
-        href="<?= Backend::url('initbiz/seostorm/sitemapmedia/create') ?>"
-        class="btn btn-primary">
-        <i class="icon-plus"></i>
-        <?= __("New :name", ['name' => 'Sitemap Media']) ?>
-    </a>
-
-    <div class="toolbar-divider"></div>
-
     <button
         class="btn btn-secondary"
         data-request="onDelete"

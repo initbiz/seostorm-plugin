@@ -2,10 +2,8 @@
 
 namespace Initbiz\SeoStorm\Classes;
 
-use System\Classes\PluginManager;
+use Site;
 use Initbiz\SeoStorm\Classes\SitemapItem;
-use RainLab\Translate\Classes\Translator;
-use RainLab\Pages\Classes\Page as StaticPage;
 use Initbiz\SeoStorm\Classes\SitemapGenerator;
 use Initbiz\Seostorm\Models\SitemapItem as ModelSitemapItem;
 
@@ -31,79 +29,22 @@ class SitemapImagesGenerator extends SitemapGenerator
         return $this->urlSet = $urlSet;
     }
 
-    public function makeItemsCmsPages($pages): void
+    public function makeItems($pages = []): void
     {
-        $this->sitemapItemModels = ModelSitemapItem::get(['images', 'loc'])->pluck('images', 'loc')->toArray();
+        $site = Site::getActiveSite();
+        $sitemapItemsModel = ModelSitemapItem::where('site_definition_id', $site->id)->whereHas('media', function ($query) {
+            $query->where('type', 'image');
+        })->with('media')->get();
 
-        parent::makeItemsCmsPages($pages);
-    }
-
-    public function makeItemsCmsPage($page)
-    {
-        $sitemapItems = [];
-        $sitemapItem = new SitemapItem();
-        $sitemapItem->loc = $page->url;
-        $loc = $page->url;
-        $baseFileName = $page->base_file_name;
-        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
-            $translator = Translator::instance();
-            $loc = $translator->getPageInLocale($baseFileName) ?? $loc;
-        }
-
-        $modelClass = $page->seoOptionsModelClass;
-        // if page has model class
-        if (class_exists($modelClass)) {
-            $scope = $page->seoOptionsModelScope;
-            $models = $this->getModels($modelClass, $scope);
-
-            foreach ($models as $model) {
-                if (($model->seo_options['enabled_in_sitemap'] ?? null) === "0") {
-                    continue;
-                }
-                $modelParams = $page->seoOptionsModelParams;
-                $loc = $this->getLocForModel($model, $modelParams, $baseFileName);
-                $sitemapItem->loc = $this->trimOptionalParameters($loc);
-
-                $this->makeItemMediaFromPage($sitemapItem);
-
-                $sitemapItems[] = $sitemapItem->toArray();
-                if (!empty($sitemapItem->images)) {
-                    $this->addItemToSet($sitemapItem);
-                }
-            }
-        } else {
-            $this->makeItemMediaFromPage($sitemapItem);
-
-            $sitemapItem->loc = $this->trimOptionalParameters($loc);
-            $sitemapItems[] = $sitemapItem->toArray();
-            if (!empty($sitemapItem->images)) {
-                $this->addItemToSet($sitemapItem);
-            }
-        }
-
-        return $sitemapItems;
-    }
-
-    public function makeItemsStaticPages($staticPages): void
-    {
-        foreach ($staticPages as $staticPage) {
-            $viewBag = $staticPage->getViewBag();
-            if (!$viewBag->property('enabled_in_sitemap')) {
-                continue;
-            }
-
+        foreach ($sitemapItemsModel as $sitemapItemModel) {
             $sitemapItem = new SitemapItem();
-            $sitemapItem->loc = StaticPage::url($staticPage->fileName);
-            $this->makeItemMediaFromPage($sitemapItem);
-            if (!empty($sitemapItem->images)) {
-                $this->addItemToSet($sitemapItem);
+            $sitemapItem->loc = $sitemapItemModel->loc;
+            foreach ($sitemapItemModel->media as $media) {
+                if ($media->type === 'image') {
+                    $sitemapItem->images[] = $media->values;
+                }
             }
+            $this->addItemToSet($sitemapItem);
         }
-    }
-
-    public function makeItemMediaFromPage(SitemapItem $sitemapItem): void
-    {
-        $images = $this->sitemapItemModels[url($sitemapItem->loc)] ?? [];
-        $sitemapItem->images = $images;
     }
 }
