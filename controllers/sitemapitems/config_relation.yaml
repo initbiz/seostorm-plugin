@@ -1,5 +1,5 @@
 media:
-    label: Invoice Line Item
+    label: Sitemap Media
     view:
         list: $/initbiz/seostorm/models/sitemapmedia/columns.yaml
         toolbarButtons: create|delete
