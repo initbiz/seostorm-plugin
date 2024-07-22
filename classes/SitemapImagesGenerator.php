@@ -37,12 +37,14 @@ class SitemapImagesGenerator extends SitemapGenerator
         })->with('media')->get();
 
         foreach ($sitemapItemsModel as $sitemapItemModel) {
+            if (!$sitemapItemModel->isAvailable()) {
+                continue;
+            }
+
             $sitemapItem = new SitemapItem();
             $sitemapItem->loc = $sitemapItemModel->loc;
             foreach ($sitemapItemModel->media as $media) {
-                if ($media->type === 'image') {
-                    $sitemapItem->images[] = $media->values;
-                }
+                $sitemapItem->images[] = $media->values;
             }
             $this->addItemToSet($sitemapItem);
         }

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use System\Classes\PluginManager;
+use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Models\Settings;
 use October\Rain\Support\Facades\Site;
 use Initbiz\SeoStorm\Classes\SitemapItem;
@@ -178,15 +179,15 @@ class SitemapGenerator
 
         $settings = Settings::instance();
         if ($settings->get('enable_image_in_sitemap') || $settings->get('enable_video_in_sitemap')) {
-            $this->sitemapItemModels = ModelSitemapItem::get(['videos', 'images', 'loc'])->keyBy('loc')->toArray();
+            $this->sitemapItemModels = ModelSitemapItem::with('media')->keyBy('loc')->toArray();
         }
 
         foreach ($pages as $page) {
-            $this->makeItemsCmsPage($page);
+            $this->makeItemsForCmsPage($page);
         }
     }
 
-    public function makeItemsCmsPage($page)
+    public function makeItemsForCmsPage(Page|StaticPage $page, ?SiteDefinition $site = null): array
     {
         $sitemapItems = [];
         $sitemapItem = new SitemapItem();
@@ -198,7 +199,7 @@ class SitemapGenerator
         $baseFileName = $page->base_file_name;
         if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
             $translator = Translator::instance();
-            $loc = $translator->getPageInLocale($baseFileName) ?? $loc;
+            $loc = $translator->getPageInLocale($baseFileName, $site) ?? $loc;
         }
 
         $modelClass = $page->seoOptionsModelClass;

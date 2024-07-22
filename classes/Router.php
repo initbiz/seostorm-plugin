@@ -36,7 +36,7 @@ class Router
 
     public function sitemapRouting(): void
     {
-        $sites = Settings::instance()->getLocalesForSitemap();
+        $sites = Settings::instance()->getSitesEnabledInSitemap();
         foreach ($sites as $site) {
             $prefix = $site->is_prefixed ? $site->route_prefix : '';
             $sitemapUrl = $prefix . '/sitemap.xml';
@@ -54,7 +54,7 @@ class Router
 
     public function sitemapIndexRouting(): void
     {
-        $sites = Settings::instance()->getLocalesForSitemap();
+        $sites = Settings::instance()->getSitesEnabledInSitemap();
         foreach ($sites as $site) {
             $prefix = $site->is_prefixed ? $site->route_prefix : '';
             $sitemapUrl = $prefix . '/sitemap_index.xml';
@@ -64,7 +64,7 @@ class Router
 
     public function sitemapVideosRouting(): void
     {
-        $sites = Settings::instance()->getLocalesForSitemap();
+        $sites = Settings::instance()->getSitesEnabledInSitemap();
         foreach ($sites as $site) {
             $prefix = $site->is_prefixed ? $site->route_prefix : '';
             $sitemapUrl = $prefix . '/sitemap_videos.xml';
@@ -74,7 +74,7 @@ class Router
 
     public function sitemapImagesRouting(): void
     {
-        $sites = Settings::instance()->getLocalesForSitemap();
+        $sites = Settings::instance()->getSitesEnabledInSitemap();
         foreach ($sites as $site) {
             $prefix = $site->is_prefixed ? $site->route_prefix : '';
             $sitemapUrl = $prefix . '/sitemap_images.xml';

@@ -2,7 +2,10 @@
 
 namespace Initbiz\Seostorm\Models;
 
+use Site;
+use Cache;
 use Model;
+use Cms\Classes\Page;
 use Cms\Classes\Controller;
 use System\Models\SiteDefinition;
 use Illuminate\Support\Facades\Queue;
@@ -13,6 +16,8 @@ use Initbiz\SeoStorm\Classes\SitemapGenerator;
 class SitemapItem extends Model
 {
     use \October\Rain\Database\Traits\Validation;
+
+    const HASH_PAGE_CACHE_KEY = 'initbiz.seostorm.hash_pages';
 
     /**
      * @var string table name
@@ -45,94 +50,27 @@ class SitemapItem extends Model
         'siteDefinition' => SiteDefinition::class
     ];
 
-    public function parsePage(): void
-    {
-        if (!$this->parseImages && !$this->parseVideos) {
-            return;
-        }
-
-        $controller = new Controller();
-        try {
-            $url = parse_url($this->loc);
-            $response = $controller->run($url['path']);
-        } catch (\Throwable $th) {
-            trace_log('Problem with parsing page ' . $this->loc);
-            return;
-        }
-        $content = $response->getContent();
-
-        $dom = new \DOMDocument();
-        $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
-
-        $this->images = $this->getImagesLinksFromDom($dom);
-
-        $this->videos = $this->getVideoItemsFromDom($dom);
-    }
-
-    protected function getVideoItemsFromDom(\DOMDocument $dom): array
-    {
-        $items = [];
-
-        $finder = new \DomXPath($dom);
-        $schemaName = "https://schema.org/VideoObject";
-        $nodes = $finder->query("//*[contains(@itemtype, '$schemaName')]");
-
-        foreach ($nodes as $node) {
-            $video = [];
-            foreach ($node->childNodes as $childNode) {
-                if (!$childNode instanceof \DOMElement) {
-                    continue;
-                }
-
-                if ($childNode->tagName !== 'meta') {
-                    continue;
-                }
-
-                $key = $childNode->getAttribute('itemprop');
-                $value = $childNode->getAttribute('content');
-
-                $video[$key] = $value;
-            }
-
-            $items[] = $video;
-        }
-
-        return $items;
-    }
-
-    protected function getImagesLinksFromDom(\DOMDocument $dom): array
-    {
-        $links = [];
-
-        $finder = new \DomXPath($dom);
-        $nodes = $finder->query("//img");
-        foreach ($nodes as $node) {
-            $link = $node->getAttribute('src');
-            if (!blank($link)) {
-                $links[] = $link;
-            }
-        }
-
-        return $links;
-    }
-
-    public static function makeSitemapItemsForCmsPage($page, ?SiteDefinition $site = null): void
+    public static function makeSitemapItemsForCmsPage($page): void
     {
         $sitemapGenerator = new SitemapGenerator();
-        $pages = $sitemapGenerator->makeItemsCmsPage($page);
-        $sitemapItemModels = self::get();
-        foreach ($pages as $sitemapItem) {
+        $sitemapItems = $sitemapGenerator->makeItemsForCmsPage($page);
+        $sitemapItemModels = self::where('base_file_name', $page['base_file_name'])
+            ->where('site_definition_id', $site->id)->get(['loc', 'base_file_name']);
+        foreach ($sitemapItems as $sitemapItem) {
             $sitemapItemModel = $sitemapItemModels->where('loc', $sitemapItem['loc'])->first();
+
             if ($sitemapItemModel) {
                 $sitemapItemModel->queueParseSite();
+                // $sitemapItemModel->is_enabled = $sitemapItemModel->isAvailable();
+                $sitemapItemModel->save();
                 continue;
             }
+
             $sitemapItemModel = new self();
             $sitemapItemModel->loc = $sitemapItem['loc'];
             $sitemapItemModel->base_file_name = $page['base_file_name'];
-            if ($site) {
-                $sitemapItemModel->site_definition_id = $site->id;
-            }
+            $sitemapItemModel->site_definition_id = $site->id;
+            // $sitemapItemModel->is_enabled = $sitemapItemModel->isAvailable();
             $sitemapItemModel->save();
             $sitemapItemModel->queueParseSite();
         }
@@ -140,6 +78,10 @@ class SitemapItem extends Model
 
     public static function makeSitemapItemsForStaticPage($page, ?SiteDefinition $site = null): void
     {
+        if (is_null($site)) {
+            $site = Site::getActiveSite();
+        }
+
         $sitemapItemModel = self::where('loc', StaticPage::url($page->fileName))->first();
         if ($sitemapItemModel) {
             $sitemapItemModel->queueParseSite();
@@ -159,5 +101,48 @@ class SitemapItem extends Model
     public function queueParseSite(): void
     {
         Queue::push(ParseSiteJob::class, ['url' => $this->loc]);
+    }
+
+    public function isAvailable(): bool
+    {
+        $page = Page::find($this->base_file_name);
+        if (!$page) {
+            return false;
+        }
+
+        $siteCode = $this->siteDefinition->code;
+        if (!isset($page->attributes["viewBag"]["localeSeoOptionsEnabledInSitemap"])) {
+            if (!$page->seoOptionsEnabledInSitemap) {
+                return false;
+            }
+
+            return true;
+        }
+
+        if (!$this->site_definition_id) {
+            return true;
+        }
+
+        if (!isset($page->attributes["viewBag"]["localeSeoOptionsEnabledInSitemap"][$siteCode])) {
+            return false;
+        }
+
+        if (!$page->attributes["viewBag"]["localeSeoOptionsEnabledInSitemap"][$siteCode] ?? true) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function checkHash($page)
+    {
+        $hash = md5($page['content']);
+        if ($hash === Cache::get(self::HASH_PAGE_CACHE_KEY . $page['base_file_name'])) {
+            return null;
+        }
+
+        return !!Cache::rememberForever(self::HASH_PAGE_CACHE_KEY . $page['base_file_name'], function () use ($hash) {
+            return $hash;
+        });
     }
 }

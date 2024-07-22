@@ -9,7 +9,5 @@ columns:
     base_file_name:
         label: initbiz.seostorm::lang.models.sitemap_item.base_file_name
         searchable: true
-    site_definition:
+    siteDefinition[name]:
         label: initbiz.seostorm::lang.models.sitemap_item.site_definition
-        searchable: true
-        # select: site_definition.name

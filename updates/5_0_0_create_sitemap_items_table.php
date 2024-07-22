@@ -10,8 +10,9 @@ return new class extends Migration
     {
         Schema::create('initbiz_seostorm_sitemap_items', function(Blueprint $table) {
             $table->id();
-            $table->string('loc');
-            $table->string('base_file_name')->nullable();
+            $table->string('loc')->unique();
+            $table->string('base_file_name')->index();
+            $table->boolean('is_enabled')->default(false);
             $table->unsignedInteger('site_definition_id')->nullable();
             $table->foreign('site_definition_id')->references('id')->on('system_site_definitions');
             $table->timestamps();

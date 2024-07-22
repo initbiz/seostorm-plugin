@@ -58,7 +58,7 @@ class Settings extends Model
         return Locale::listLocales()->pluck('name', 'code')->toArray();
     }
 
-    public function getLocalesForSitemap()
+    public function getSitesEnabledInSitemap()
     {
         return Site::listSites()->whereIn('code', $this->sitemap_locales);
     }

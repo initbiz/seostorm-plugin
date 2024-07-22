@@ -40,6 +40,7 @@ class Plugin extends PluginBase
     public function register()
     {
         $this->registerConsoleCommand('seostorm.index.sitemapitems', \Initbiz\SeoStorm\Console\IndexAllSiteMapItems::class);
+        $this->registerConsoleCommand('seostorm:check:hash', \Initbiz\SeoStorm\Console\CheckHashForPages::class);
     }
 
     public function boot()
