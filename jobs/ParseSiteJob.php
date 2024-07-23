@@ -14,13 +14,18 @@ class ParseSiteJob
 {
     public $failOnTimeout = false;
 
-
     public function fire($job, $data)
+    {
+        $this->parse($data['url']);
+        $job->delete();
+    }
+
+    public function parse($loc): void
     {
         $originalRequest = Request::getFacadeRoot();
         $request = new HttpRequest();
         Request::swap($request);
-        $sitemapItem = SitemapItem::where('loc', $data['url'])->first();
+        $sitemapItem = SitemapItem::where('loc', $loc)->first();
 
         $controller = new CmsController();
         try {
@@ -30,21 +35,19 @@ class ParseSiteJob
         } catch (\Throwable $th) {
             Request::swap($originalRequest);
             trace_log('Problem with parsing page ' . $sitemapItem->loc);
-            throw new \Exception($th, 1);
-            return false;
+            return;
         }
         if ($response->getStatusCode() != 200) {
-            return false;
+            return;
         }
 
         $content = $response->getContent();
-        \Storage::put('testaaa/' . $data['url'] . '.txt', $content);
 
         $dom = new \DOMDocument();
         $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
         $images = $this->getImagesLinksFromDom($dom);
+        $mediaIds = [];
         if (!empty($images)) {
-            $imagesIds = [];
             foreach ($images as $image) {
                 $sitemapMedia = SitemapMedia::where('url', $image['url'])->first();
                 if (!$sitemapMedia) {
@@ -54,14 +57,12 @@ class ParseSiteJob
                     $sitemapMedia->values = $image;
                     $sitemapMedia->save();
                 }
-                $imagesIds[] = $sitemapMedia->id;
+                $mediaIds[] = $sitemapMedia->id;
             }
-            $sitemapItem->media()->sync($imagesIds);
         }
 
         $videos = $this->getVideoItemsFromDom($dom);
         if (!empty($videos)) {
-            $videosIds = [];
             foreach ($videos as $video) {
                 $sitemapMedia = SitemapMedia::where('url', $video["embedUrl"])->first();
                 if (!$sitemapMedia) {
@@ -72,16 +73,14 @@ class ParseSiteJob
                     $sitemapMedia->save();
                 }
 
-                $videosIds[] = $sitemapMedia->id;
+                $mediaIds[] = $sitemapMedia->id;
             }
-
-            $sitemapItem->media()->sync($videosIds);
         }
 
+        $sitemapItem->media()->sync($mediaIds);
         $sitemapItem->save();
 
         Request::swap($originalRequest);
-        $job->delete();
     }
 
     public function getImagesLinksFromDom(\DOMDocument $dom): array

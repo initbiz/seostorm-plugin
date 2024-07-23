@@ -16,15 +16,12 @@ class SitemapMedia extends SettingsController
     public $implement = [
         \Backend\Behaviors\FormController::class,
         \Backend\Behaviors\ListController::class,
-        \Backend\Behaviors\RelationController::class,
     ];
 
     /**
      * @var string formConfig file
      */
     public $formConfig = 'config_form.yaml';
-
-    public $relationConfig = 'config_relation.yaml';
 
     public $settingsItemCode = 'sitemap_item';
 

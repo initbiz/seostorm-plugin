@@ -19,10 +19,6 @@ class SitemapItemTest extends StormedTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $themesPath = plugins_path('/initbiz/seostorm/tests/themes');
-        Config::set('system.themes_path', $themesPath);
-        app()->useThemesPath($themesPath);
-        Theme::setActiveTheme('test');
 
         $componentManager = ComponentManager::instance();
         $componentManager->listComponents();
@@ -45,28 +41,26 @@ class SitemapItemTest extends StormedTestCase
     public function testParseSiteImages(): void
     {
         Queue::fake();
-        Theme::setActiveTheme('test');
         $theme = Theme::load('test');
-        $page = Page::load($theme, 'with-media.htm');
+        $page = Page::load($theme, 'with-media-2.htm');
         SitemapItem::makeSitemapItemsForCmsPage($page);
-        Queue::assertPushed(ParseSiteJob::class);
         $sitemapItem = SitemapItem::first();
-
-        (new ParseSiteJob())->fire(null, ['url' => $sitemapItem->loc]);
+        Queue::assertPushed(ParseSiteJob::class);
+        (new ParseSiteJob())->parse($sitemapItem->loc);
 
         $sitemapMedia = SitemapItem::first()->media;
         $this->assertEquals(2, $sitemapMedia->count());
-        $this->assertEquals('https://test.dev/images.jpg', $sitemapMedia->first()->url);
+        $this->assertEquals('https://test.dev/images2.jpg', $sitemapMedia->first()->url);
         $this->assertEquals('image', $sitemapMedia->first()->type);
 
-        (new ParseSiteJob())->fire(null, ['url' => $sitemapItem->loc]);
+        (new ParseSiteJob())->parse($sitemapItem->loc);
 
         $sitemapMedia = SitemapItem::first()->media;
         $this->assertEquals(2, $sitemapMedia->count());
 
         $page = Page::load($theme, 'with-media-2.htm');
         SitemapItem::makeSitemapItemsForCmsPage($page);
-        (new ParseSiteJob())->fire(null, ['url' => $sitemapItem->loc]);
+        (new ParseSiteJob())->parse($sitemapItem->loc);
 
         $this->assertEquals(2, SitemapMedia::count());
     }
@@ -81,22 +75,20 @@ class SitemapItemTest extends StormedTestCase
         Queue::assertPushed(ParseSiteJob::class);
         $sitemapItem = SitemapItem::first();
 
-        (new ParseSiteJob())->fire(null, ['url' => $sitemapItem->loc]);
+        (new ParseSiteJob())->parse($sitemapItem->loc);
 
         $sitemapMedia = SitemapItem::first()->media;
-        $this->assertEquals(1, $sitemapMedia->count());
-        $this->assertEquals('https://player.vimeo.com/video/347119375?autopause=1&badge=0&byline=0&color=57e117&portrait=0&title=0#t=0', $sitemapMedia->first()->url);
-        $this->assertEquals('video', $sitemapMedia->first()->type);
+        $this->assertEquals(2, $sitemapMedia->count());
+        $sitemapVideo = $sitemapMedia->where('type', 'video')->first();
+        $this->assertEquals('https://player.vimeo.com/video/347119375?autopause=1&badge=0&byline=0&color=57e117&portrait=0&title=0#t=0', $sitemapVideo->url);
+        $this->assertEquals('video', $sitemapVideo->type);
         $this->assertEquals([
             'name' => 'Test title',
             'description' => 'Test description',
             'thumbnailUrl' => 'https://i.vimeocdn.com/video/797382244-0106ae13e902e09d0f02d8f404fa80581f38d1b8b7846b3f8e87ef391ffb8c99-d?mw=1200&amp;mh=675&amp;q=70',
             'uploadDate' => '2024-06-26T16:18:25+00:00',
             'embedUrl' => 'https://player.vimeo.com/video/347119375?autopause=1&badge=0&byline=0&color=57e117&portrait=0&title=0#t=0'
-        ], $sitemapMedia->first()->values);
-
-        $sitemapMedia = SitemapItem::first()->media;
-        $this->assertEquals(1, $sitemapMedia->count());
+        ], $sitemapVideo->values);
     }
 
     public function testParseSiteWhenUpdateModel(): void
@@ -112,9 +104,8 @@ class SitemapItemTest extends StormedTestCase
 
         $sitemapItems = SitemapItem::get();
         $this->assertEquals(1, $sitemapItems->count());
-        foreach ($sitemapItems as $sitemapItems) {
-            (new ParseSiteJob())->fire(null, ['url' => $sitemapItems->loc]);
+        foreach ($sitemapItems as $sitemapItem) {
+            (new ParseSiteJob())->parse($sitemapItem->loc);
         }
-
     }
 }

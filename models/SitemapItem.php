@@ -50,8 +50,12 @@ class SitemapItem extends Model
         'siteDefinition' => SiteDefinition::class
     ];
 
-    public static function makeSitemapItemsForCmsPage($page): void
+    public static function makeSitemapItemsForCmsPage($page, ?SiteDefinition $site = null): void
     {
+        if (is_null($site)) {
+            $site = Site::getActiveSite();
+        }
+
         $sitemapGenerator = new SitemapGenerator();
         $sitemapItems = $sitemapGenerator->makeItemsForCmsPage($page);
         $sitemapItemModels = self::where('base_file_name', $page['base_file_name'])

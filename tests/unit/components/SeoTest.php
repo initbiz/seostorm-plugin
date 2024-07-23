@@ -27,10 +27,6 @@ class SeoTest extends StormedTestCase
         $componentManager->registerComponent(Seo::class, 'seo');
         $componentManager->registerComponent(FakeModelDetailsComponent::class, 'fakeModelDetails');
         $componentManager->registerComponent(ViewBag::class, 'viewBag');
-
-        $themesPath = 'plugins/initbiz/seostorm/tests/themes';
-        Config::set('system.themes_path', $themesPath);
-        app()->useThemesPath($themesPath);
     }
 
     public function testGetTitle()
