@@ -148,7 +148,7 @@ class Plugin extends PluginBase
             ],
         ];
 
-        if (env('APP_ENV') === 'testing') {
+        if (\App::runningUnitTests()) {
             $modelDefs['\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel'] = [
                 'placement' => 'tabs',
                 'excludeFields' => [
@@ -163,7 +163,7 @@ class Plugin extends PluginBase
     public function registerFormWidgets()
     {
         return [
-            '\Initbiz\SeoStorm\FormWidgets\Migrate' => 'seo_migrate'
+            \Initbiz\SeoStorm\FormWidgets\Migrate::class => 'seo_migrate'
         ];
     }
 }
