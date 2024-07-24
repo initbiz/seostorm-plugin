@@ -55,11 +55,32 @@ class Settings extends Model
 
     public function getSitemapLocalesOptions()
     {
-        return Locale::listLocales()->pluck('name', 'code')->toArray();
+        $options = [];
+
+        foreach (Site::listSites() as $siteDefinition) {
+            if ($siteDefinition->is_primary) {
+                continue;
+            }
+            $prefix = empty($siteDefinition->route_prefix) ? '/' : $siteDefinition->route_prefix;
+            $options[$siteDefinition->code] = $siteDefinition->name . ' (' . $prefix . ')';
+        }
+
+        return $options;
     }
 
     public function getSitesEnabledInSitemap()
     {
         return Site::listSites()->whereIn('code', $this->sitemap_locales);
+    }
+
+    public function filterFields($fields): void
+    {
+        if (!isset($fields->sitemap_locales)) {
+            return;
+        }
+
+        if (Site::listSites()->count() > 1) {
+            $fields->sitemap_locales->hidden = false;
+        }
     }
 }

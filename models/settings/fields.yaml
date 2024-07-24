@@ -10,6 +10,7 @@ tabs:
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_meta
             default: true
+
         site_name:
             label: initbiz.seostorm::lang.form.settings.site_name
             span: left
@@ -20,6 +21,7 @@ tabs:
                 action: show
                 field: enable_site_meta
                 condition: checked
+
         site_name_position:
             label: initbiz.seostorm::lang.form.settings.site_name_position
             options:
@@ -35,6 +37,7 @@ tabs:
                 action: show
                 field: enable_site_meta
                 condition: checked
+
         site_name_separator:
             label: initbiz.seostorm::lang.form.settings.site_name_separator
             span: auto
@@ -46,6 +49,7 @@ tabs:
                 action: show
                 field: enable_site_meta
                 condition: checked
+
         site_description:
             label: initbiz.seostorm::lang.form.settings.site_description
             size: tiny
@@ -62,38 +66,27 @@ tabs:
                 data-min: 100
                 data-max: 160
 
+        extra_meta:
+            label: initbiz.seostorm::lang.form.settings.extra_meta
+            size: huge
+            language: html
+            span: full
+            type: codeeditor
+            tab: initbiz.seostorm::lang.form.settings.tab_meta
+            comment: initbiz.seostorm::lang.form.settings.extra_meta_comment
+
         #----------------------------------------------------------------------
         # Sitemap Tab
         #----------------------------------------------------------------------
 
         enable_sitemap:
             label: initbiz.seostorm::lang.form.settings.enable_sitemap
+            comment: initbiz.seostorm::lang.form.settings.enable_sitemap_comment
             span: left
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
             default: true
-        _sitemap_section1:
-            type: section
-            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-        enable_image_in_sitemap:
-            label: initbiz.seostorm::lang.form.settings.enable_image_in_sitemap
-            span: left
-            type: switch
-            comment: initbiz.seostorm::lang.form.settings.enable_image_in_sitemap_comment
-            commentHtml: true
-            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-            default: false
-        enable_video_in_sitemap:
-            label: initbiz.seostorm::lang.form.settings.enable_video_in_sitemap
-            span: right
-            type: switch
-            comment: initbiz.seostorm::lang.form.settings.enable_video_in_sitemap_comment
-            commentHtml: true
-            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-            default: false
-        _sitemap_section2:
-            type: section
-            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
+
         enable_index_sitemap:
             label: initbiz.seostorm::lang.form.settings.enable_index_sitemap
             span: left
@@ -101,40 +94,47 @@ tabs:
             comment: initbiz.seostorm::lang.form.settings.enable_index_sitemap_comment
             commentHtml: true
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-        enable_index_sitemap_videos:
-            label: initbiz.seostorm::lang.form.settings.enable_index_sitemap_videos
+            trigger:
+                action: show
+                field: enable_sitemap
+                condition: checked
+
+        enable_images_sitemap:
+            label: initbiz.seostorm::lang.form.settings.enable_images_sitemap
+            commentHtml: true
+            comment: initbiz.seostorm::lang.form.settings.enable_images_sitemap_comment
             span: left
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-        enable_index_sitemap_images:
-            label: initbiz.seostorm::lang.form.settings.enable_index_sitemap_images
+            trigger:
+                action: show
+                field: enable_sitemap
+                condition: checked
+
+        enable_videos_sitemap:
+            label: initbiz.seostorm::lang.form.settings.enable_videos_sitemap
+            commentHtml: true
+            comment: initbiz.seostorm::lang.form.settings.enable_videos_sitemap_comment
             span: right
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
+            trigger:
+                action: show
+                field: enable_sitemap
+                condition: checked
+
         sitemap_locales:
             label: initbiz.seostorm::lang.form.settings.index_sitemap_locales
+            commentHtml: true
+            commentAbove: initbiz.seostorm::lang.form.settings.index_sitemap_locales_comment
             span: left
             type: checkboxlist
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-        enable_sitemap_hreflangs:
-            label: initbiz.seostorm::lang.form.settings.enable_sitemap_hreflangs
-            comment: initbiz.seostorm::lang.form.settings.enable_sitemap_hreflangs_comment
-            commentHtml: true
-            span: right
-            type: switch
-            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-
-        #----------------------------------------------------------------------
-        # <head> Tab
-        #----------------------------------------------------------------------
-        extra_meta:
-            label: initbiz.seostorm::lang.form.settings.extra_meta
-            size: huge
-            language: html
-            span: full
-            type: codeeditor
-            tab: initbiz.seostorm::lang.form.settings.tab_head
-            comment: initbiz.seostorm::lang.form.settings.extra_meta_comment
+            hidden: true
+            trigger:
+                action: show
+                field: enable_sitemap
+                condition: checked
 
         #----------------------------------------------------------------------
         # Robots Tab
@@ -145,12 +145,14 @@ tabs:
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_robots
             default: true
+
         enable_robots_meta:
             label: initbiz.seostorm::lang.form.settings.enable_robots_meta
             span: auto
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_robots
             default: true
+
         robots_txt:
             label: initbiz.seostorm::lang.form.settings.robots_txt
             size: huge
@@ -171,21 +173,19 @@ tabs:
             type: switch
             default: false
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
+
         favicon_16:
             label: initbiz.seostorm::lang.form.settings.favicon_16
             type: checkbox
             default: false
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
+
         favicon:
             label: initbiz.seostorm::lang.form.settings.favicon
             type: mediafinder
             mode: image
             prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
-
-        #----------------------------------------------------------------------
-        # HTTP Headers
-        #----------------------------------------------------------------------
 
         #----------------------------------------------------------------------
         # Social Media Tab
@@ -196,11 +196,13 @@ tabs:
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
             default: true
+
         site_image_hint:
             type: hint
             span: right
             path: $/initbiz/seostorm/models/settings/_site_image_hint.htm
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
+
         site_image_from:
             label: initbiz.seostorm::lang.form.settings.site_image_from
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
@@ -214,6 +216,7 @@ tabs:
                 action: enable
                 field: enable_og
                 condition: checked
+
         site_image:
             label: initbiz.seostorm::lang.form.settings.site_image
             mode: image
@@ -241,6 +244,7 @@ tabs:
                 action: show
                 field: site_image_from
                 condition: value[fileupload]
+
         site_image_url:
             label: initbiz.seostorm::lang.form.settings.site_image
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
@@ -250,6 +254,7 @@ tabs:
                 action: show
                 field: site_image_from
                 condition: value[url]
+
         og_site_name:
             label: initbiz.seostorm::lang.form.settings.og_site_name
             disabled: 0
@@ -261,6 +266,7 @@ tabs:
                 action: enable
                 field: enable_og
                 condition: checked
+
         fb_app_id:
             label: initbiz.seostorm::lang.form.settings.fb_app_id
             disabled: 0
@@ -272,6 +278,7 @@ tabs:
             span: left
             comment: initbiz.seostorm::lang.form.settings.fb_app_id_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
+
         twitter_site:
             label: initbiz.seostorm::lang.form.settings.twitter_site
             type: text
@@ -283,6 +290,7 @@ tabs:
                 condition: checked
             comment: initbiz.seostorm::lang.form.settings.twitter_site_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
+
         twitter_creator:
             label: initbiz.seostorm::lang.form.settings.twitter_creator
             type: text
@@ -294,6 +302,7 @@ tabs:
                 condition: checked
             comment: initbiz.seostorm::lang.form.settings.twitter_creator_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
+
         og_locale:
             label: initbiz.seostorm::lang.form.settings.og_locale
             trigger:
@@ -305,6 +314,7 @@ tabs:
             commentHtml: true
             comment: initbiz.seostorm::lang.form.settings.og_locale_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
+
         og_locale_alternate:
             label: initbiz.seostorm::lang.form.settings.og_locale_alternate
             trigger:
@@ -317,10 +327,6 @@ tabs:
             comment: initbiz.seostorm::lang.form.settings.og_locale_alternate_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
 
-        _btn_migrate:
-            type: seo_migrate
-            tab: initbiz.seostorm::lang.form.settings.tab_migrate
-
         #----------------------------------------------------------------------
         # Schema
         #----------------------------------------------------------------------
@@ -331,6 +337,7 @@ tabs:
             mode: info
             type: hint
             tab: initbiz.seostorm::lang.form.settings.tab_schema
+
         schema_image_from:
             label: initbiz.seostorm::lang.form.settings.schema_image_from
             tab: initbiz.seostorm::lang.form.settings.tab_schema
@@ -340,6 +347,7 @@ tabs:
                 media: initbiz.seostorm::lang.form.settings.schema_image_from_media
                 fileupload: initbiz.seostorm::lang.form.settings.schema_image_from_fileupload
                 url: initbiz.seostorm::lang.form.settings.site_image_from_url
+
         schema_image:
             label: initbiz.seostorm::lang.form.settings.schema_image
             mode: image
@@ -366,6 +374,7 @@ tabs:
                 action: show
                 field: schema_image_from
                 condition: value[fileupload]
+
         schema_image_url:
             label: initbiz.seostorm::lang.form.settings.schema_image
             tab: initbiz.seostorm::lang.form.settings.tab_schema
@@ -375,12 +384,14 @@ tabs:
                 action: show
                 field: schema_image_from
                 condition: value[url]
+
         publisher_hint:
             label: initbiz.seostorm::lang.form.settings.publisher_hint
             comment: initbiz.seostorm::lang.form.settings.publisher_hint_comment
             mode: info
             type: hint
             tab: initbiz.seostorm::lang.form.settings.tab_schema
+
         publisher_type:
             label: initbiz.seostorm::lang.form.settings.publisher_type
             comment: initbiz.seostorm::lang.form.settings.publisher_type_comment
@@ -388,6 +399,7 @@ tabs:
             placeholder: Organization
             span: left
             tab: initbiz.seostorm::lang.form.settings.tab_schema
+
         publisher_same_as:
             label: initbiz.seostorm::lang.form.settings.publisher_same_as
             type: repeater
@@ -401,19 +413,31 @@ tabs:
                         descriptionFrom: ''
                         span: auto
                         type: text
+
         publisher_name:
             label: initbiz.seostorm::lang.form.settings.publisher_name
             type: text
             span: left
             tab: initbiz.seostorm::lang.form.settings.tab_schema
+
         publisher_logo_url:
             label: initbiz.seostorm::lang.form.settings.publisher_logo_url
             comment: initbiz.seostorm::lang.form.settings.publisher_logo_url_comment
             type: text
             span: left
             tab: initbiz.seostorm::lang.form.settings.tab_schema
+
         publisher_url:
             label: initbiz.seostorm::lang.form.settings.publisher_url
             type: text
             span: left
             tab: initbiz.seostorm::lang.form.settings.tab_schema
+
+        #----------------------------------------------------------------------
+        # Migrate
+        #----------------------------------------------------------------------
+
+        _btn_migrate:
+            type: seo_migrate
+            tab: initbiz.seostorm::lang.form.settings.tab_migrate
+

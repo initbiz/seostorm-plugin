@@ -25,6 +25,7 @@ class SitemapController
         $sitemap = new SitemapVideosGenerator();
         return Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
     }
+
     public function images()
     {
         $sitemap = new SitemapImagesGenerator();

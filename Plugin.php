@@ -45,7 +45,8 @@ class Plugin extends PluginBase
 
     public function boot()
     {
-        (new Router)->register();
+        (new Router())->register();
+
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\BackendHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\StormedHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\RainlabPagesHandler::class);

@@ -2,20 +2,21 @@
 
 namespace Initbiz\SeoStorm\Classes;
 
-use Site;
 use Route;
 use Initbiz\SeoStorm\Models\Settings;
 
+/**
+ * SEO Storm router - will register routings for sitemaps, robots, etc.
+ * if enabled in settings
+ */
 class Router
 {
-    private Settings $settings;
-
     public function register(): void
     {
         $settings = Settings::instance();
 
         if ($settings->get('enable_sitemap')) {
-            $this->sitemapRouting();
+            $this->registerSitemapRouting();
         }
 
         if ($settings->get('enable_index_sitemap')) {
@@ -34,7 +35,7 @@ class Router
         $this->faviconRouting();
     }
 
-    public function sitemapRouting(): void
+    public function registerSitemapRouting(): void
     {
         $sites = Settings::instance()->getSitesEnabledInSitemap();
         foreach ($sites as $site) {
@@ -42,14 +43,6 @@ class Router
             $sitemapUrl = $prefix . '/sitemap.xml';
             Route::get($sitemapUrl, [SitemapController::class, 'sitemap']);
         }
-    }
-
-    public function robotsRouting(): void
-    {
-    }
-
-    public function faviconRouting(): void
-    {
     }
 
     public function sitemapIndexRouting(): void
@@ -82,12 +75,13 @@ class Router
         }
     }
 
-    public function getSettings(): Settings
+    public function robotsRouting(): void
     {
-        if ($this->settings) {
-            return $this->settings;
-        }
+        //TODO
+    }
 
-        return $this->settings = Settings::instance();
+    public function faviconRouting(): void
+    {
+        //TODO
     }
 }

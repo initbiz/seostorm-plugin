@@ -86,15 +86,15 @@
             'description' => 'Configure SEO Storm',
             'tab_meta' => 'Meta',
             'tab_sitemap' => 'Sitemap',
-            'tab_head' => '<head>',
             'tab_robots' => 'Robots',
             'tab_favicon' => 'Favicon',
             'tab_htaccess' => '.htaccess',
             'tab_social_media' => 'Social Media',
             'tab_migrate' => 'Migrate',
             'tab_schema' => 'Schema',
+
+            // Meta tab
             'enable_site_meta' => 'Enable title and description meta tags',
-            'enable_sitemap' => 'Enable sitemap.xml',
             'site_name' => 'Site name',
             'site_name_placeholder' => 'Your site name',
             'site_name_position' => 'Site name display',
@@ -107,16 +107,36 @@
             'site_name_separator_comment' => 'Character to separate site name from title, eg: Page Title|SiteName',
             'site_description' => 'Default description',
             'site_description_placeholder' => 'Your site description',
+
+            // Sitemap
+            'enable_sitemap' => 'Enable sitemap',
+            'enable_sitemap_comment' => 'Generate sitemap under /sitemap.xml',
+            'enable_index_sitemap' => 'Enable sitemap index',
+            'enable_index_sitemap_comment' => 'Generate sitemap index file under /index_sitemap.xml. <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/large-sitemaps">More info</a>',
+            'enable_images_sitemap' => 'Enable images sitemap',
+            'enable_images_sitemap_comment' => 'Generate sitemap for images and add to the index. <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps">More info</a>',
+            'enable_videos_sitemap' => 'Enable videos sitemap',
+            'enable_videos_sitemap_comment' => 'Generate sitemap for videos and add to the index. <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/video-sitemaps">More info</a>',
+
+            'index_sitemap_locales' => 'Locales for sitemaps',
+            'index_sitemap_locales_comment' => 'Locales to generate sitemaps for and include in the index sitemap. <strong>It will work only for prefixed sites.</strong>',
+
             'extra_meta' => 'Additional <head> content',
             'extra_meta_comment' => 'Additional meta tags',
+
+            // Robots
             'enable_robots_txt' => 'Enable robots.txt',
             'enable_robots_meta' => 'Enable robots meta tags',
             'robots_txt' => 'robots.txt',
+
+            // Favicon
             'favicon_enabled' => 'Enable favicon.ico',
             'favicon_enabled_comment' => 'This will generate a route to /favicon.ico',
             'favicon_16' => 'Resize favicon to 16x16',
             'favicon' => 'Select your favicon',
             'favicon_prompt' => 'Click %s to search the media library',
+
+            // Social media
             'enable_og' => 'Enable Open Graph',
             'enable_og_comment' => 'Display the Open Graph meta tags',
             'site_image_from' => 'Where to get default site image from',
@@ -155,17 +175,6 @@
             'schema_image_from_fileupload' => 'File upload',
             'schema_image_from_url' => 'Url',
             'schema_image' => 'Schema image',
-            'enable_image_in_sitemap' => 'Enable image in sitemap',
-            'enable_image_in_sitemap_comment' => 'Adding photos from page to the sitemap see: <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps">Here</a>',
-            'enable_video_in_sitemap' => 'Enable video in sitemap',
-            'enable_video_in_sitemap_comment' => 'Adding videos from page to the sitemap see: <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/video-sitemaps">Here</a>',
-            'enable_index_sitemap' => 'Enable index sitemap',
-            'enable_index_sitemap_comment' => 'Enable routing /index_sitemap.xml see: <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/large-sitemaps">Here</a>',
-            'enable_index_sitemap_videos' => 'Enable index sitemap videos',
-            'enable_index_sitemap_images' => 'Enable index sitemap images',
-            'index_sitemap_locales' => 'Locales to include for the index sitemap',
-            'enable_sitemap_hreflangs' => 'Enable hreflangs',
-            'enable_sitemap_hreflangs_comment' => 'Enable hreflangs in sitemap see: <a href="https://developers.google.com/search/docs/specialty/international/localized-versions">Here</a>',
         ],
         'htaccess' => [
             'label' => '.htaccess',
