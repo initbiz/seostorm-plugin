@@ -2,10 +2,10 @@
 
 namespace Initbiz\SeoStorm\Classes;
 
+use DOMAttr;
 use DOMElement;
 use DOMDocument;
 use October\Rain\Support\Facades\Site;
-use RainLab\Translate\Classes\Translator;
 use Initbiz\SeoStorm\Classes\SitemapItemsCollection;
 
 abstract class AbstractGenerator
@@ -81,14 +81,17 @@ abstract class AbstractGenerator
     {
         $items = $this->makeItems();
 
-        // TODO: sort by priority if the parameter exists in the items
+        $items->sortByDesc(function($item) {
+            return $item->priority ?? 0;
+        });
 
         foreach ($items as $sitemapItem) {
             if ($this->getUrlsCount() >= self::MAX_URLS) {
                 break;
             }
 
-            $urlElement = $sitemapItem->makeUrlElement($this->xml);
+            $emptyUrlElement = $this->xml->createElement('url');
+            $urlElement = $sitemapItem->toDomElement($emptyUrlElement, $this);
 
             if ($urlElement) {
                 $this->urlSet->appendChild($urlElement);
@@ -97,6 +100,29 @@ abstract class AbstractGenerator
         }
 
         return $this->xml->saveXML();
+    }
+
+    /**
+     * Method that creates DOMElement using our DOMDocument instance
+     *
+     * @param string $name
+     * @param string $value
+     * @return DOMElement|false
+     */
+    public function createElement(string $name, string $value = ""): DOMElement|false
+    {
+        return $this->xml->createElement($name, $value);
+    }
+
+    /**
+     * Method to create attribute that can be then appended to any DOMElement
+     *
+     * @param string $localName
+     * @return DOMAttr|false
+     */
+    public function createAttribute(string $localName): DOMAttr|false
+    {
+        return $this->xml->createAttribute($localName);
     }
 
     /**

@@ -2,8 +2,10 @@
 
 namespace Initbiz\SeoStorm\Contracts;
 
+use DOMElement;
 use Carbon\Carbon;
 use Initbiz\SeoStorm\Contracts\Changefreq;
+use Initbiz\SeoStorm\Classes\AbstractGenerator;
 
 /**
  * Classes of this type can be parsed by Sitemap Pages generator
@@ -77,4 +79,15 @@ interface ConvertingToSitemapXml
      * @return ConvertingToSitemapXml
      */
     public function fillFromArray(array $data): ConvertingToSitemapXml;
+
+    /**
+     * Method that should convert this item to XML DOMElement
+     * In the first parameter you get already created URL element to work on
+     *
+     * @param DOMElement $urlElement
+     * @param AbstractGenerator $generator
+     * @return DOMElement
+     */
+    public function toDomElement(DOMElement $urlElement, AbstractGenerator $generator): DOMElement;
+
 }

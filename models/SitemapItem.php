@@ -3,10 +3,12 @@
 namespace Initbiz\Seostorm\Models;
 
 use Model;
+use DOMElement;
 use Carbon\Carbon;
-use Initbiz\SeoStorm\Classes\SitemapItemsCollection;
 use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Contracts\Changefreq;
+use Initbiz\SeoStorm\Classes\AbstractGenerator;
+use Initbiz\SeoStorm\Classes\SitemapItemsCollection;
 use Initbiz\SeoStorm\Contracts\ConvertingToSitemapXml;
 
 class SitemapItem extends Model implements ConvertingToSitemapXml
@@ -105,6 +107,10 @@ class SitemapItem extends Model implements ConvertingToSitemapXml
      */
     public function setLoc(string $loc): ConvertingToSitemapXml
     {
+        if (!str_starts_with($loc, 'http')) {
+            $loc = url($loc);
+        }
+
         $this->loc = $loc;
         return $this;
     }
@@ -188,5 +194,39 @@ class SitemapItem extends Model implements ConvertingToSitemapXml
     public function newCollection(array $models = []): SitemapItemsCollection
     {
         return new SitemapItemsCollection($models);
+    }
+
+    /**
+     * Method that should convert this item to XML DOMElement
+     * In the first parameter you get already created URL element to work on
+     *
+     * @param DOMElement $urlElement
+     * @param AbstractGenerator $generator
+     * @return DOMElement
+     */
+    public function toDomElement(DOMElement $urlElement, AbstractGenerator $generator): DOMElement
+    {
+        $element = $generator->createElement('loc', $this->getLoc());
+        $urlElement->appendChild($element);
+
+        $lastmod = $this->getLastmod();
+        if (!empty($lastmod)) {
+            $element = $generator->createElement('lastmod', $lastmod->format('c'));
+            $urlElement->appendChild($element);
+        }
+
+        $changefreq = $this->getChangefreq();
+        if (!empty($changefreq)) {
+            $element = $generator->createElement('changefreq', $changefreq->value);
+            $urlElement->appendChild($element);
+        }
+
+        $priority = $this->getPriority();
+        if (!empty($priority)) {
+            $element = $generator->createElement('priority', $priority);
+            $urlElement->appendChild($element);
+        }
+
+        return $urlElement;
     }
 }
