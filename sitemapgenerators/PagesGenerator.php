@@ -1,6 +1,6 @@
 <?php
 
-namespace Initbiz\SeoStorm\Classes;
+namespace Initbiz\SeoStorm\SitemapGenerators;
 
 use Site;
 use Cache;
@@ -16,8 +16,9 @@ use October\Rain\Database\Collection;
 use Initbiz\Seostorm\Models\SitemapItem;
 use RainLab\Translate\Classes\Translator;
 use RainLab\Pages\Classes\Page as StaticPage;
-use Initbiz\SeoStorm\Classes\AbstractGenerator;
 use Initbiz\SeoStorm\Classes\SitemapItemsCollection;
+use Initbiz\SeoStorm\SitemapGenerators\AbstractGenerator;
+use October\Rain\Support\Collection as SupportCollection;
 
 /**
  * This generator provides sitemaps for CMS pages as well as added by RainLab.Pages
@@ -27,6 +28,13 @@ class PagesGenerator extends AbstractGenerator
     use EventEmitter;
 
     const HASH_PAGE_CACHE_KEY = 'initbiz.seostorm.pages_content_hashes';
+
+    /**
+     * Collection of pages to parse, if not set, will be taken from the current theme
+     *
+     * @var Collection
+     */
+    protected $pages;
 
     public function fillUrlSet(DOMElement $urlSet): DOMElement
     {
@@ -45,9 +53,9 @@ class PagesGenerator extends AbstractGenerator
 
         $baseFilenamesToLeave = [];
         foreach ($pages as $page) {
-            $baseFilenamesToLeave[] = $page['base_file_name'];
+            $baseFilenamesToLeave[] = $page->base_file_name;
 
-            if (!$this->isPageContentChanged($page['base_file_name'], $page['content'])) {
+            if (!$this->isPageContentChanged($page->base_file_name, $page['content'])) {
                 continue;
             }
 
@@ -65,7 +73,7 @@ class PagesGenerator extends AbstractGenerator
             foreach ($staticPages as $staticPage) {
                 $baseFilenamesToLeave[] = $staticPage->fileName;
 
-                if ($this->isPageContentChanged($staticPage->fileName, $staticPage->getTwigContent())) {
+                if (!$this->isPageContentChanged($staticPage->fileName, $staticPage->getContent())) {
                     continue;
                 }
 
@@ -77,9 +85,12 @@ class PagesGenerator extends AbstractGenerator
         $this->fireSystemEvent('initbiz.seostorm.beforeClearingSitemapItems', [&$baseFilenamesToLeave]);
 
         // Remove all unused SitemapItems
-        SitemapItem::whereNotIn('base_file_name', $baseFilenamesToLeave)->get()->delete();
+        $sitemapItemsToDelete = SitemapItem::whereNotIn('base_file_name', $baseFilenamesToLeave)->get();
+        foreach ($sitemapItemsToDelete as $sitemapItemToDelete) {
+            $sitemapItemToDelete->delete();
+        }
 
-        $sitemapItemsCollection = SitemapItem::active()->all();
+        $sitemapItemsCollection = SitemapItem::active()->get();
 
         $this->fireSystemEvent('initbiz.seostorm.sitemapItems', [&$sitemapItemsCollection]);
 
@@ -98,7 +109,7 @@ class PagesGenerator extends AbstractGenerator
     public function getEnabledCmsPages($pages = null, ?SiteDefinition $site = null): array
     {
         if (empty($pages)) {
-            $pages = Page::listInTheme(Theme::getEditTheme());
+            $pages = $this->getPages();
         }
 
         if (empty($site)) {
@@ -117,6 +128,36 @@ class PagesGenerator extends AbstractGenerator
         }
 
         return $enabledPages;
+    }
+
+    /**
+     * Generate the XML
+     *
+     * @return string|false
+     */
+    public function generate(?SupportCollection $pages = null): string|false
+    {
+        if (!is_null($pages)) {
+            $this->pages = $pages;
+        }
+
+        return parent::generate();
+    }
+
+    /**
+     * Get Pages attribute
+     *
+     * @return Collection
+     */
+    public function getPages()
+    {
+        if (isset($this->pages)) {
+            return $this->pages;
+        }
+
+        $this->pages = Page::listInTheme(Theme::getEditTheme());
+
+        return $this->pages;
     }
 
     /**
@@ -175,6 +216,7 @@ class PagesGenerator extends AbstractGenerator
 
                 $sitemapItem = new SitemapItem();
                 $sitemapItem->fillFromArray([
+                    'base_file_name' => $page->base_file_name,
                     'loc' => $loc,
                     'lastmod' => $lastmod,
                     'priority' => $page->seoOptionsPriority,
@@ -186,6 +228,7 @@ class PagesGenerator extends AbstractGenerator
         } else {
             $sitemapItem = new SitemapItem();
             $sitemapItem->fillFromArray([
+                'base_file_name' => $page->getFileName(),
                 'priority' => $page->seoOptionsPriority,
                 'changefreq' => $page->seoOptionsChangefreq,
                 'lastmod' => $page->lastmod ?: Carbon::createFromTimestamp($page->mtime),
@@ -308,7 +351,6 @@ class PagesGenerator extends AbstractGenerator
         return $sitemapItem;
     }
 
-
     // Helpers
 
     /**
@@ -329,7 +371,10 @@ class PagesGenerator extends AbstractGenerator
 
     public function isPageContentChanged(string $baseFileName, string $content): bool
     {
-        $cacheArray = json_decode(Cache::get(self::HASH_PAGE_CACHE_KEY, '{}'));
+        $cacheArray = [];
+        if (Cache::has(self::HASH_PAGE_CACHE_KEY)) {
+            $cacheArray = json_decode(Cache::get(self::HASH_PAGE_CACHE_KEY), true);
+        }
 
         $md5 = md5($content);
         if (
@@ -337,7 +382,7 @@ class PagesGenerator extends AbstractGenerator
             $cacheArray[$baseFileName] !== $md5
         ) {
             $cacheArray[$baseFileName] = $md5;
-            Cache::rememberForever(self::HASH_PAGE_CACHE_KEY, json_encode($cacheArray));
+            Cache::put(self::HASH_PAGE_CACHE_KEY, json_encode($cacheArray));
 
             return true;
         }

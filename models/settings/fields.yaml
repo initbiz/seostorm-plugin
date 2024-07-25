@@ -123,10 +123,10 @@ tabs:
                 field: enable_sitemap
                 condition: checked
 
-        sitemap_locales:
-            label: initbiz.seostorm::lang.form.settings.index_sitemap_locales
+        sitemap_enabled_for_sites:
+            label: initbiz.seostorm::lang.form.settings.index_sitemap_enabled_for_sites
             commentHtml: true
-            commentAbove: initbiz.seostorm::lang.form.settings.index_sitemap_locales_comment
+            commentAbove: initbiz.seostorm::lang.form.settings.index_sitemap_enabled_for_sites_comment
             span: left
             type: checkboxlist
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap

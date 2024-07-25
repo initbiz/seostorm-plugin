@@ -117,9 +117,8 @@
             'enable_images_sitemap_comment' => 'Generate sitemap for images and add to the index. <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps">More info</a>',
             'enable_videos_sitemap' => 'Enable videos sitemap',
             'enable_videos_sitemap_comment' => 'Generate sitemap for videos and add to the index. <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/video-sitemaps">More info</a>',
-
-            'index_sitemap_locales' => 'Locales for sitemaps',
-            'index_sitemap_locales_comment' => 'Locales to generate sitemaps for and include in the index sitemap. <strong>It will work only for prefixed sites.</strong>',
+            'index_sitemap_enabled_for_sites' => 'Sites to enable index for',
+            'index_sitemap_enabled_for_sites_comment' => '<strong>It will work only for sites using prefixes</strong>',
 
             'extra_meta' => 'Additional <head> content',
             'extra_meta_comment' => 'Additional meta tags',

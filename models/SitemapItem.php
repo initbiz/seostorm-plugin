@@ -6,6 +6,7 @@ use Model;
 use DOMElement;
 use Carbon\Carbon;
 use System\Models\SiteDefinition;
+use October\Rain\Database\Builder;
 use Initbiz\SeoStorm\Contracts\Changefreq;
 use Initbiz\SeoStorm\Classes\AbstractGenerator;
 use Initbiz\SeoStorm\Classes\SitemapItemsCollection;
@@ -58,6 +59,10 @@ class SitemapItem extends Model implements ConvertingToSitemapXml
         'siteDefinition' => SiteDefinition::class
     ];
 
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
 
     /**
      * Get Loc attribute
@@ -160,6 +165,12 @@ class SitemapItem extends Model implements ConvertingToSitemapXml
         return $this;
     }
 
+    public function setBaseFileName(string $baseFileName): self
+    {
+        $this->base_file_name = $baseFileName;
+        return $this;
+    }
+
     /**
      * Fill from array - it should accept strings as keys and values to parse the item
      *
@@ -173,6 +184,7 @@ class SitemapItem extends Model implements ConvertingToSitemapXml
             'lastmod',
             'changefreq',
             'priority',
+            'base_file_name',
         ];
 
         foreach ($attributes as $attribute) {

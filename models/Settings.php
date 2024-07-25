@@ -54,12 +54,16 @@ class Settings extends Model
         $this->enable_videos_sitemap = false;
     }
 
-    public function getSitemapLocalesOptions()
+    public function getSitemapEnabledForSitesOptions()
     {
         $options = [];
 
         foreach (Site::listSites() as $siteDefinition) {
             if ($siteDefinition->is_primary) {
+                continue;
+            }
+
+            if (!$siteDefinition->is_prefixed) {
                 continue;
             }
 
@@ -77,17 +81,25 @@ class Settings extends Model
      */
     public function getSitesEnabledInSitemap(): SiteCollection
     {
-        return Site::listSites()->whereIn('code', $this->sitemap_locales)->orWhere('is_primary', true)->get();
+        $codes = $this->sitemap_enabled_for_sites ?? [];
+
+        // Always include primary site
+        $primarySiteCode = Site::getPrimarySite()->code;
+        if (!in_array($primarySiteCode, $codes)) {
+            $codes[] = $primarySiteCode;
+        }
+
+        return Site::listSites()->whereIn('code', $codes);
     }
 
     public function filterFields($fields): void
     {
-        if (!isset($fields->sitemap_locales)) {
+        if (!isset($fields->sitemap_enabled_for_sites)) {
             return;
         }
 
         if (Site::listSites()->count() > 1) {
-            $fields->sitemap_locales->hidden = false;
+            $fields->sitemap_enabled_for_sites->hidden = false;
         }
     }
 }
