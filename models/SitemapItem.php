@@ -4,6 +4,7 @@ namespace Initbiz\Seostorm\Models;
 
 use Model;
 use Carbon\Carbon;
+use Initbiz\SeoStorm\Classes\SitemapItemsCollection;
 use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Contracts\Changefreq;
 use Initbiz\SeoStorm\Contracts\ConvertingToSitemapXml;
@@ -176,5 +177,16 @@ class SitemapItem extends Model implements ConvertingToSitemapXml
         }
 
         return $this;
+    }
+
+    /**
+     * Every time when creating collection Eloquent will build this collection
+     *
+     * @param array $models
+     * @return SitemapItemsCollection
+     */
+    public function newCollection(array $models = []): SitemapItemsCollection
+    {
+        return new SitemapItemsCollection($models);
     }
 }

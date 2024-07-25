@@ -13,12 +13,11 @@ use October\Rain\Database\Model;
 use System\Classes\PluginManager;
 use System\Models\SiteDefinition;
 use October\Rain\Database\Collection;
-use Initbiz\SeoStorm\Classes\SitemapItem;
+use Initbiz\Seostorm\Models\SitemapItem;
 use RainLab\Translate\Classes\Translator;
 use RainLab\Pages\Classes\Page as StaticPage;
 use Initbiz\SeoStorm\Classes\AbstractGenerator;
 use Initbiz\SeoStorm\Classes\SitemapItemsCollection;
-use Initbiz\SeoStorm\Contracts\ConvertingToSitemapXml;
 
 /**
  * This generator provides sitemaps for CMS pages as well as added by RainLab.Pages
@@ -42,33 +41,60 @@ class PagesGenerator extends AbstractGenerator
 
     public function makeItems(): SitemapItemsCollection
     {
-        $items = new SitemapItemsCollection();
-
-        // TODO: fetch from the DB, check checksums
-        // Generate
-
         $pages = $this->getEnabledCmsPages();
 
+        $baseFilenamesToLeave = [];
         foreach ($pages as $page) {
-            if ($this->hasPageContentChanged($page['base_file_name'], $page['content'])) {
-                $items->push($this->makeItemsForCmsPage($page));
-                $this->fireSystemEvent('initbiz.seostorm.cmsPageChanged', [$page]);
+            $baseFilenamesToLeave[] = $page['base_file_name'];
+
+            if (!$this->isPageContentChanged($page['base_file_name'], $page['content'])) {
+                continue;
             }
+
+            // We use SitemapItem model as cache for all the items
+            $items = $this->makeItemsForCmsPage($page);
+            foreach ($items as $item) {
+                $item->save();
+            }
+
+            $this->fireSystemEvent('initbiz.seostorm.cmsPageChanged', [$page]);
         }
 
         if (PluginManager::instance()->hasPlugin('RainLab.Pages')) {
-            $staticPageItems = $this->getEnabledStaticPages();
-            // TODO: fetch from the DB, too
-            $items->push($this->makeItemsForStaticPages());
+            $staticPages = $this->getEnabledStaticPages();
+            foreach ($staticPages as $staticPage) {
+                $baseFilenamesToLeave[] = $staticPage->fileName;
+
+                if ($this->isPageContentChanged($staticPage->fileName, $staticPage->getTwigContent())) {
+                    continue;
+                }
+
+                $item = $this->makeItemForStaticPage($staticPage);
+                $item->save();
+            }
         }
 
-        $this->fireSystemEvent('initbiz.seostorm.sitemapItems', [&$items]);
+        $this->fireSystemEvent('initbiz.seostorm.beforeClearingSitemapItems', [&$baseFilenamesToLeave]);
 
-        return $items;
+        // Remove all unused SitemapItems
+        SitemapItem::whereNotIn('base_file_name', $baseFilenamesToLeave)->get()->delete();
+
+        $sitemapItemsCollection = SitemapItem::active()->all();
+
+        $this->fireSystemEvent('initbiz.seostorm.sitemapItems', [&$sitemapItemsCollection]);
+
+        return $sitemapItemsCollection;
     }
 
     // CMS pages
 
+    /**
+     * Get CMS pages that have sitemap enabled
+     *
+     * @param array|Collection $pages
+     * @param SiteDefinition|null $site
+     * @return array<Page>
+     */
     public function getEnabledCmsPages($pages = null, ?SiteDefinition $site = null): array
     {
         if (empty($pages)) {
@@ -93,6 +119,13 @@ class PagesGenerator extends AbstractGenerator
         return $enabledPages;
     }
 
+    /**
+     * Checks if the page has sitemap enabled
+     *
+     * @param Page $page
+     * @param SiteDefinition|null $site
+     * @return boolean
+     */
     public function isCmsPageEnabledInSitemap(Page $page, ?SiteDefinition $site = null): bool
     {
         if (empty($site)) {
@@ -111,7 +144,7 @@ class PagesGenerator extends AbstractGenerator
      *
      * @param Page $page
      * @param SiteDefinition|null $site
-     * @return array<ConvertingToSitemapXml>
+     * @return array<SitemapItem>
      */
     public function makeItemsForCmsPage(Page $page, ?SiteDefinition $site = null): array
     {
@@ -251,12 +284,23 @@ class PagesGenerator extends AbstractGenerator
         return $enabledPages;
     }
 
-    public function makeItemForStaticPage(StaticPage $staticPage): ConvertingToSitemapXml
+    /**
+     * Get SitemapItem object for this static page
+     *
+     * @param StaticPage $staticPage
+     * @return SitemapItem
+     */
+    public function makeItemForStaticPage(StaticPage $staticPage): SitemapItem
     {
         $viewBag = $staticPage->getViewBag();
 
-        $sitemapItem = new SitemapItem();
-        $sitemapItem->loc = StaticPage::url($staticPage->fileName);
+        $loc = StaticPage::url($staticPage->fileName);
+        $sitemapItem = SitemapItem::where('loc', $loc)->first();
+        if (!$sitemapItem) {
+            $sitemapItem = new SitemapItem();
+        }
+
+        $sitemapItem->loc = $loc;
         $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->mtime;
         $sitemapItem->priority = $viewBag->property('priority');
         $sitemapItem->changefreq = $viewBag->property('changefreq');
@@ -283,7 +327,7 @@ class PagesGenerator extends AbstractGenerator
         return $loc;
     }
 
-    public function hasPageContentChanged(string $baseFileName, string $content): bool
+    public function isPageContentChanged(string $baseFileName, string $content): bool
     {
         $cacheArray = json_decode(Cache::get(self::HASH_PAGE_CACHE_KEY, '{}'));
 
