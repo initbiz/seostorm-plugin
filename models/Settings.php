@@ -4,6 +4,7 @@ namespace Initbiz\SeoStorm\Models;
 
 use Site;
 use Model;
+use System\Classes\SiteCollection;
 use RainLab\Translate\Classes\Locale;
 
 class Settings extends Model
@@ -49,8 +50,8 @@ class Settings extends Model
         $this->favicon_16 = false;
         $this->enable_og = true;
         $this->publisher_type = 'Organization';
-        $this->enable_image_in_sitemap = false;
-        $this->enable_video_in_sitemap = false;
+        $this->enable_images_sitemap = false;
+        $this->enable_videos_sitemap = false;
     }
 
     public function getSitemapLocalesOptions()
@@ -61,6 +62,7 @@ class Settings extends Model
             if ($siteDefinition->is_primary) {
                 continue;
             }
+
             $prefix = empty($siteDefinition->route_prefix) ? '/' : $siteDefinition->route_prefix;
             $options[$siteDefinition->code] = $siteDefinition->name . ' (' . $prefix . ')';
         }
@@ -68,9 +70,14 @@ class Settings extends Model
         return $options;
     }
 
-    public function getSitesEnabledInSitemap()
+    /**
+     * Return all enabled sites in the sitemap + the primary one
+     *
+     * @return SiteCollection
+     */
+    public function getSitesEnabledInSitemap(): SiteCollection
     {
-        return Site::listSites()->whereIn('code', $this->sitemap_locales);
+        return Site::listSites()->whereIn('code', $this->sitemap_locales)->orWhere('is_primary', true)->get();
     }
 
     public function filterFields($fields): void

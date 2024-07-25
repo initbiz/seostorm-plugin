@@ -1,6 +1,6 @@
 <?php
 
-namespace Initbiz\SeoStorm\Classes;
+namespace Initbiz\SeoStorm\Controllers;
 
 class RobotsController
 {

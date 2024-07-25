@@ -81,7 +81,7 @@ class SitemapItem
     {
         return [
             'loc' => $this->loc,
-            'lastmod' => $this->lastmod,
+            'lastmod' => $this->getLastModified(),
             'priority' => $this->priority,
             'changefreq' => $this->changefreq,
             'images' => $this->images,

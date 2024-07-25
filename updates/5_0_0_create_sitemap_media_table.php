@@ -1,17 +1,19 @@
-<?php namespace Initbiz\Seostorm\Updates;
+<?php
+
+namespace Initbiz\Seostorm\Updates;
 
 use Schema;
 use October\Rain\Database\Schema\Blueprint;
 use October\Rain\Database\Updates\Migration;
 
-return new class extends Migration
+class CreateSitemapMediaTable extends Migration
 {
     public function up()
     {
-        Schema::create('initbiz_seostorm_sitemap_media', function(Blueprint $table) {
+        Schema::create('initbiz_seostorm_sitemap_media', function (Blueprint $table) {
             $table->id();
-            $table->string('url')->unique();
-            $table->string('type');
+            $table->string('loc')->unique();
+            $table->string('type', 10);
             $table->text('values');
             $table->timestamps();
         });

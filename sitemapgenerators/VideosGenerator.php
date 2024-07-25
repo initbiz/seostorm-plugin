@@ -7,22 +7,32 @@ use Initbiz\SeoStorm\Classes\SitemapItem;
 use Initbiz\SeoStorm\Classes\SitemapGenerator;
 use Initbiz\Seostorm\Models\SitemapItem as ModelSitemapItem;
 
-class SitemapImagesGenerator extends SitemapGenerator
+class SitemapVideosGenerator extends SitemapGenerator
 {
     protected $sitemapItemModels;
 
-    protected function makeUrlSet()
+        $settings = Settings::instance();
+        if ($settings->get('enable_images_sitemap') || $settings->get('enable_videos_sitemap')) {
+            $this->sitemapItemModels = ModelSitemapItem::with('media')->keyBy('loc')->toArray();
+        }
+
+    public function queueParseSite(): void
+    {
+        Queue::push(ParseSiteJob::class, ['url' => $this->loc]);
+    }
+
+    protected function fillUrlSet()
     {
         if ($this->urlSet !== null) {
             return $this->urlSet;
         }
 
-        $xml = $this->makeRoot();
+        $xml = $this->getXml();
         $urlSet = $xml->createElement('urlset');
         $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $urlSet->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $urlSet->setAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd');
-        $urlSet->setAttribute('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
+        $urlSet->setAttribute('xmlns:video', 'http://www.google.com/schemas/sitemap-video/1.1');
 
         $xml->appendChild($urlSet);
 
@@ -33,18 +43,16 @@ class SitemapImagesGenerator extends SitemapGenerator
     {
         $site = Site::getActiveSite();
         $sitemapItemsModel = ModelSitemapItem::where('site_definition_id', $site->id)->whereHas('media', function ($query) {
-            $query->where('type', 'image');
+            $query->where('type', 'video');
         })->with('media')->get();
 
         foreach ($sitemapItemsModel as $sitemapItemModel) {
-            if (!$sitemapItemModel->isAvailable()) {
-                continue;
-            }
-
             $sitemapItem = new SitemapItem();
             $sitemapItem->loc = $sitemapItemModel->loc;
             foreach ($sitemapItemModel->media as $media) {
-                $sitemapItem->images[] = $media->values;
+                if ($media->type === 'video') {
+                    $sitemapItem->videos[] = $media->values;
+                }
             }
             $this->addItemToSet($sitemapItem);
         }

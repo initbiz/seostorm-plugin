@@ -46,7 +46,7 @@ class SitemapGenerator
         Site::applyActiveSite($activeSite);
 
         $this->makeItems($pages);
-        $this->makeUrlSet();
+        $this->urlSet = $this->fillUrlSet();
         return $this->xml->saveXML();
     }
 
@@ -66,14 +66,17 @@ class SitemapGenerator
 
     public function generateIndex()
     {
-        $xml = $this->makeRoot();
+        $xml = $this->getXml();
+
         $localesSitemap = $this->makeSitemapIndex();
         $request = \Request::instance();
         $activeSite = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
+
         if (Settings::get('enable_index_sitemap_videos')) {
             $sitemapElement = $localesSitemap->appendChild($xml->createElement('sitemap'));
             $sitemapElement->appendChild($xml->createElement('loc', $activeSite->base_url . '/sitemap_videos.xml'));
         }
+
         if (Settings::get('enable_index_sitemap_images')) {
             $sitemapElement = $localesSitemap->appendChild($xml->createElement('sitemap'));
             $sitemapElement->appendChild($xml->createElement('loc', $activeSite->base_url . '/sitemap_images.xml'));
@@ -86,25 +89,29 @@ class SitemapGenerator
         return $this->xml->saveXML();
     }
 
-    protected function makeUrlSet()
+    protected function fillUrlSet()
     {
         if ($this->urlSet !== null) {
             return $this->urlSet;
         }
 
-        $xml = $this->makeRoot();
+        $xml = $this->getXml();
         $urlSet = $xml->createElement('urlset');
         $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $urlSet->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-        $urlSet->setAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd');
+
+        $value = 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd';
+        $urlSet->setAttribute('xsi:schemaLocation', $value);
 
         $settings = Settings::instance();
-        if ($settings->get('enable_image_in_sitemap')) {
+        if ($settings->get('enable_images_sitemap')) {
             $urlSet->setAttribute('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
         }
-        if ($settings->get('enable_video_in_sitemap')) {
+
+        if ($settings->get('enable_videos_sitemap')) {
             $urlSet->setAttribute('xmlns:video', 'http://www.google.com/schemas/sitemap-video/1.1');
         }
+
         $xml->appendChild($urlSet);
 
         return $this->urlSet = $urlSet;
@@ -116,7 +123,7 @@ class SitemapGenerator
             return $this->sitemapIndex;
         }
 
-        $xml = $this->makeRoot();
+        $xml = $this->getXml();
         $sitemapIndex = $xml->createElement('sitemapindex');
         $sitemapIndex->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 
@@ -125,7 +132,7 @@ class SitemapGenerator
         return $this->sitemapIndex = $sitemapIndex;
     }
 
-    public function makeRoot()
+    public function getXml()
     {
         if ($this->xml !== null) {
             return $this->xml;
@@ -143,8 +150,8 @@ class SitemapGenerator
             return false;
         }
 
-        $urlSet = $this->makeUrlSet();
-        $urlElement = $item->makeUrlElement($this->makeRoot());
+        $urlSet = $this->fillUrlSet();
+        $urlElement = $item->makeUrlElement($this->getXml());
 
         if ($urlElement) {
             $urlSet->appendChild($urlElement);
@@ -178,7 +185,7 @@ class SitemapGenerator
             })->sortByDesc('seoOptionsPriority');
 
         $settings = Settings::instance();
-        if ($settings->get('enable_image_in_sitemap') || $settings->get('enable_video_in_sitemap')) {
+        if ($settings->get('enable_images_sitemap') || $settings->get('enable_videos_sitemap')) {
             $this->sitemapItemModels = ModelSitemapItem::with('media')->keyBy('loc')->toArray();
         }
 
@@ -206,15 +213,14 @@ class SitemapGenerator
         // if page has model class
         if (class_exists($modelClass)) {
             $scope = $page->seoOptionsModelScope;
-            $models = $this->getModels($modelClass, $scope);
+            $models = $this->getModelObjects($modelClass, $scope);
 
             foreach ($models as $model) {
                 if (($model->seo_options['enabled_in_sitemap'] ?? null) === "0") {
                     continue;
                 }
-                $modelParams = $page->seoOptionsModelParams;
 
-                $loc = $this->getLocForModel($model, $modelParams, $baseFileName);
+                $loc = $this->generateLocForModelAndCmsPage($model, $page);
 
                 $sitemapItem->loc = $this->trimOptionalParameters($loc);
 
@@ -267,11 +273,11 @@ class SitemapGenerator
         $modelSitemapItem = $this->sitemapItemModels[url($sitemapItem->loc)];
 
         $settings = Settings::instance();
-        if ($settings->get('enable_image_in_sitemap')) {
+        if ($settings->get('enable_images_sitemap')) {
             $sitemapItem->images = $modelSitemapItem['images'] ?? [];
         }
 
-        if ($settings->get('enable_video_in_sitemap')) {
+        if ($settings->get('enable_videos_sitemap')) {
             $sitemapItem->videos = $modelSitemapItem['videos'] ?? [];
         }
     }
@@ -279,49 +285,5 @@ class SitemapGenerator
     public function getUrlsCount()
     {
         return $this->urlCount;
-    }
-
-    public function getModels($modelClass, $scope)
-    {
-        if (empty($scope)) {
-            return $modelClass::all();
-        } else {
-            $params = explode(':', $scope);
-            return $modelClass::{$params[0]}($params[1] ?? null)->get();
-        }
-    }
-
-    public function getLocForModel($model, $modelParams, $baseFileName): string
-    {
-        if (empty($modelParams)) {
-            return \Cms::pageUrl($baseFileName);
-        }
-
-        $params = [];
-        $modelParams = explode('|', $modelParams);
-        foreach ($modelParams as $modelParam) {
-            list($urlParam, $modelParam) = explode(':', $modelParam);
-
-            $replacement = '';
-            if (strpos($modelParam, '.') === false) {
-                $replacement = $model->$modelParam;
-            } else {
-                // parameter with dot -> try to find by relation
-                list($relationMethod, $relatedAttribute) = explode('.', $modelParam);
-                if ($relatedObject = $model->$relationMethod()->first()) {
-                    $replacement = $relatedObject->$relatedAttribute ?? 'default';
-                }
-                $replacement = empty($replacement) ? 'default' : $replacement;
-            }
-            $params[$urlParam] = $replacement;
-        }
-        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
-            $translator = Translator::instance();
-            $loc = $translator->getPageInLocale($baseFileName, null, $params);
-        } else {
-            $loc = \Cms::pageUrl($baseFileName, $params);
-        }
-
-        return $loc;
     }
 }

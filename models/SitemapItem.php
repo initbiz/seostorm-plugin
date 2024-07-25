@@ -2,22 +2,15 @@
 
 namespace Initbiz\Seostorm\Models;
 
-use Site;
-use Cache;
 use Model;
-use Cms\Classes\Page;
-use Cms\Classes\Controller;
+use Carbon\Carbon;
 use System\Models\SiteDefinition;
-use Illuminate\Support\Facades\Queue;
-use Initbiz\SeoStorm\Jobs\ParseSiteJob;
-use RainLab\Pages\Classes\Page as StaticPage;
-use Initbiz\SeoStorm\Classes\SitemapGenerator;
+use Initbiz\SeoStorm\Contracts\Changefreq;
+use Initbiz\SeoStorm\Contracts\ConvertingToSitemapXml;
 
-class SitemapItem extends Model
+class SitemapItem extends Model implements ConvertingToSitemapXml
 {
     use \October\Rain\Database\Traits\Validation;
-
-    const HASH_PAGE_CACHE_KEY = 'initbiz.seostorm.hash_pages';
 
     /**
      * @var string table name
@@ -29,124 +22,159 @@ class SitemapItem extends Model
      */
     public $rules = [
         'loc' => 'required',
-        'images',
-        'videos',
-        'base_file_name'
+        'priority' => 'nullable|float',
+        'changefreq' => 'nullable|in:always,hourly,daily,weekly,monthly,yearly,never',
+        'lastmod' => 'nullable|date',
     ];
 
-    public $jsonable = [
-        'images',
-        'videos'
+    protected $casts = [
+        'priority' => 'float',
+    ];
+
+    protected $dates = [
+        'lastmod',
+        'created_at',
+        'updated_at'
     ];
 
     public $belongsToMany = [
-        'media' => [
+        'images' => [
             SitemapMedia::class,
-            'table' => 'initbiz_seostorm_sitemap_items_media'
-        ]
+            'table' => 'initbiz_seostorm_sitemap_items_media',
+            'scope' => 'onlyImages',
+        ],
+
+        'videos' => [
+            SitemapMedia::class,
+            'table' => 'initbiz_seostorm_sitemap_items_media',
+            'scope' => 'onlyVideos',
+        ],
     ];
 
     public $belongsTo = [
         'siteDefinition' => SiteDefinition::class
     ];
 
-    public static function makeSitemapItemsForCmsPage($page, ?SiteDefinition $site = null): void
+
+    /**
+     * Get Loc attribute
+     *
+     * @return string
+     */
+    public function getLoc(): string
     {
-        if (is_null($site)) {
-            $site = Site::getActiveSite();
+        return $this->loc;
+    }
+
+    /**
+     * Get lastmod attribute
+     *
+     * @return Carbon|null
+     */
+    public function getLastmod(): ?Carbon
+    {
+        return $this->lastmod;
+    }
+
+    /**
+     * Get changefreq attribute
+     *
+     * @return Changefreq|null
+     */
+    public function getChangefreq(): ?Changefreq
+    {
+        return Changefreq::tryFrom($this->changefreq);
+    }
+
+    /**
+     * Get priority attribute
+     *
+     * @return float|null
+     */
+    public function getPriority(): ?float
+    {
+        return $this->priority;
+    }
+
+    /**
+     * Set loc attribute
+     *
+     * @param string $loc
+     * @return ConvertingToSitemapXml
+     */
+    public function setLoc(string $loc): ConvertingToSitemapXml
+    {
+        $this->loc = $loc;
+        return $this;
+    }
+
+    /**
+     * Set Lastmod attribute
+     *
+     * @param string|Carbon $lastmod
+     * @return ConvertingToSitemapXml
+     */
+    public function setLastmod(string|Carbon $lastmod): ConvertingToSitemapXml
+    {
+        if (is_string($lastmod)) {
+            $lastmod = Carbon::parse($lastmod);
         }
 
-        $sitemapGenerator = new SitemapGenerator();
-        $sitemapItems = $sitemapGenerator->makeItemsForCmsPage($page);
-        $sitemapItemModels = self::where('base_file_name', $page['base_file_name'])
-            ->where('site_definition_id', $site->id)->get(['loc', 'base_file_name']);
-        foreach ($sitemapItems as $sitemapItem) {
-            $sitemapItemModel = $sitemapItemModels->where('loc', $sitemapItem['loc'])->first();
+        $this->lastmod = $lastmod;
+        return $this;
+    }
 
-            if ($sitemapItemModel) {
-                $sitemapItemModel->queueParseSite();
-                // $sitemapItemModel->is_enabled = $sitemapItemModel->isAvailable();
-                $sitemapItemModel->save();
-                continue;
+    /**
+     * Set Changefreq attribute
+     *
+     * @param string|Changefreq $changefreq
+     * @return ConvertingToSitemapXml
+     */
+    public function setChangefreq(string|Changefreq $changefreq): ConvertingToSitemapXml
+    {
+        if ($changefreq instanceof Changefreq) {
+            $changefreq = $changefreq->value;
+        }
+
+        $this->changeFreq = $changefreq;
+
+        return $this;
+    }
+
+    /**
+     * Set priority attribute
+     *
+     * @param string|float $priority
+     * @return ConvertingToSitemapXml
+     */
+    public function setPriority(string|float $priority): ConvertingToSitemapXml
+    {
+        $this->priority = (float) $priority;
+        return $this;
+    }
+
+    /**
+     * Fill from array - it should accept strings as keys and values to parse the item
+     *
+     * @param array $data
+     * @return ConvertingToSitemapXml
+     */
+    public function fillFromArray(array $data): ConvertingToSitemapXml
+    {
+        $attributes = [
+            'loc',
+            'lastmod',
+            'changefreq',
+            'priority',
+        ];
+
+        foreach ($attributes as $attribute) {
+            if (isset($data[$attribute])) {
+                $methodName = 'set' . studly_case($attribute);
+                $this->{$methodName}($data[$attribute]);
             }
-
-            $sitemapItemModel = new self();
-            $sitemapItemModel->loc = $sitemapItem['loc'];
-            $sitemapItemModel->base_file_name = $page['base_file_name'];
-            $sitemapItemModel->site_definition_id = $site->id;
-            // $sitemapItemModel->is_enabled = $sitemapItemModel->isAvailable();
-            $sitemapItemModel->save();
-            $sitemapItemModel->queueParseSite();
-        }
-    }
-
-    public static function makeSitemapItemsForStaticPage($page, ?SiteDefinition $site = null): void
-    {
-        if (is_null($site)) {
-            $site = Site::getActiveSite();
         }
 
-        $sitemapItemModel = self::where('loc', StaticPage::url($page->fileName))->first();
-        if ($sitemapItemModel) {
-            $sitemapItemModel->queueParseSite();
-            return;
-        }
-
-        $sitemapItemModel = new self();
-        $sitemapItemModel->loc = StaticPage::url($page->fileName);
-        $sitemapItemModel->base_file_name = $page->fileName;
-        if ($site) {
-            $sitemapItemModel->site_definition_id = $site->id;
-        }
-        $sitemapItemModel->save();
-        $sitemapItemModel->queueParseSite();
-    }
-
-    public function queueParseSite(): void
-    {
-        Queue::push(ParseSiteJob::class, ['url' => $this->loc]);
-    }
-
-    public function isAvailable(): bool
-    {
-        $page = Page::find($this->base_file_name);
-        if (!$page) {
-            return false;
-        }
-
-        $siteCode = $this->siteDefinition->code;
-        if (!isset($page->attributes["viewBag"]["localeSeoOptionsEnabledInSitemap"])) {
-            if (!$page->seoOptionsEnabledInSitemap) {
-                return false;
-            }
-
-            return true;
-        }
-
-        if (!$this->site_definition_id) {
-            return true;
-        }
-
-        if (!isset($page->attributes["viewBag"]["localeSeoOptionsEnabledInSitemap"][$siteCode])) {
-            return false;
-        }
-
-        if (!$page->attributes["viewBag"]["localeSeoOptionsEnabledInSitemap"][$siteCode] ?? true) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public static function checkHash($page)
-    {
-        $hash = md5($page['content']);
-        if ($hash === Cache::get(self::HASH_PAGE_CACHE_KEY . $page['base_file_name'])) {
-            return null;
-        }
-
-        return !!Cache::rememberForever(self::HASH_PAGE_CACHE_KEY . $page['base_file_name'], function () use ($hash) {
-            return $hash;
-        });
+        return $this;
     }
 }

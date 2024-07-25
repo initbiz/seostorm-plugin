@@ -3,6 +3,7 @@
 namespace Initbiz\Seostorm\Models;
 
 use Model;
+use October\Rain\Database\Builder;
 
 /**
  * SitemapMedia Model
@@ -33,4 +34,14 @@ class SitemapMedia extends Model
             'table' => 'initbiz_seostorm_sitemap_items_media'
         ]
     ];
+
+    public function scopeOnlyImages(Builder $query): Builder
+    {
+        return $query->where('type', 'image');
+    }
+
+    public function scopeOnlyVideos(Builder $query): Builder
+    {
+        return $query->where('type', 'video');
+    }
 }
