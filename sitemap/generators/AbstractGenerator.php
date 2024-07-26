@@ -134,7 +134,6 @@ abstract class AbstractGenerator
         return $this->xml->saveXML();
     }
 
-
     /**
      * Fill initial URL Set with proper attributes
      *
@@ -146,8 +145,8 @@ abstract class AbstractGenerator
     /**
      * Make items that are added to the XML
      *
-     * @param DOMElement $urlSet
+     * @param SiteDefinition|null $site
      * @return SitemapItemsCollection
      */
-    abstract public function makeItems(): SitemapItemsCollection;
+    abstract public function makeItems(?SiteDefinition $site = null): SitemapItemsCollection;
 }

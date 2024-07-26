@@ -22,10 +22,13 @@ class SitemapMedia extends Model
     /**
      * @var array rules for validation
      */
-    public $rules = [];
+    public $rules = [
+        'loc' => 'required',
+        'type' => 'required|in:video,image',
+    ];
 
     public $jsonable = [
-        'values'
+        'additional_data'
     ];
 
     public $belongsToMany = [
@@ -43,5 +46,15 @@ class SitemapMedia extends Model
     public function scopeOnlyVideos(Builder $query): Builder
     {
         return $query->where('type', 'video');
+    }
+
+    /**
+     * Delete all media references that doesn't have any items
+     *
+     * @return void
+     */
+    public static function deleteGhosts(): void
+    {
+        SitemapMedia::doesntHave('items')->delete();
     }
 }

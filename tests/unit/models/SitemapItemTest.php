@@ -11,7 +11,7 @@ use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
-use Initbiz\SeoStorm\Jobs\ParseSiteJob as ParseSiteJob;
+use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems as ScanPageForMediaItems;
 use Initbiz\SeoStorm\Tests\Classes\FakeModelDetailsComponent;
 
 class SitemapItemTest extends StormedTestCase
@@ -31,7 +31,7 @@ class SitemapItemTest extends StormedTestCase
         Theme::setActiveTheme('test');
         $theme = Theme::load('test');
         $page = Page::load($theme, 'empty.htm');
-        SitemapItem::makeSitemapItemsForCmsPage($page);
+        SitemapItem::refreshForCmsPage($page);
 
         $sitemapItems = SitemapItem::get();
 
@@ -43,24 +43,24 @@ class SitemapItemTest extends StormedTestCase
         Queue::fake();
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-media-2.htm');
-        SitemapItem::makeSitemapItemsForCmsPage($page);
+        SitemapItem::refreshForCmsPage($page);
         $sitemapItem = SitemapItem::first();
-        Queue::assertPushed(ParseSiteJob::class);
-        (new ParseSiteJob())->parse($sitemapItem->loc);
+        Queue::assertPushed(ScanPageForMediaItems::class);
+        (new ScanPageForMediaItems())->parse($sitemapItem->loc);
 
         $sitemapMedia = SitemapItem::first()->media;
         $this->assertEquals(2, $sitemapMedia->count());
         $this->assertEquals('https://test.dev/images2.jpg', $sitemapMedia->first()->url);
         $this->assertEquals('image', $sitemapMedia->first()->type);
 
-        (new ParseSiteJob())->parse($sitemapItem->loc);
+        (new ScanPageForMediaItems())->parse($sitemapItem->loc);
 
         $sitemapMedia = SitemapItem::first()->media;
         $this->assertEquals(2, $sitemapMedia->count());
 
         $page = Page::load($theme, 'with-media-2.htm');
-        SitemapItem::makeSitemapItemsForCmsPage($page);
-        (new ParseSiteJob())->parse($sitemapItem->loc);
+        SitemapItem::refreshForCmsPage($page);
+        (new ScanPageForMediaItems())->parse($sitemapItem->loc);
 
         $this->assertEquals(2, SitemapMedia::count());
     }
@@ -71,11 +71,11 @@ class SitemapItemTest extends StormedTestCase
         Theme::setActiveTheme('test');
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-media-2.htm');
-        SitemapItem::makeSitemapItemsForCmsPage($page);
-        Queue::assertPushed(ParseSiteJob::class);
+        SitemapItem::refreshForCmsPage($page);
+        Queue::assertPushed(ScanPageForMediaItems::class);
         $sitemapItem = SitemapItem::first();
 
-        (new ParseSiteJob())->parse($sitemapItem->loc);
+        (new ScanPageForMediaItems())->parse($sitemapItem->loc);
 
         $sitemapMedia = SitemapItem::first()->media;
         $this->assertEquals(2, $sitemapMedia->count());
@@ -105,7 +105,7 @@ class SitemapItemTest extends StormedTestCase
         $sitemapItems = SitemapItem::get();
         $this->assertEquals(1, $sitemapItems->count());
         foreach ($sitemapItems as $sitemapItem) {
-            (new ParseSiteJob())->parse($sitemapItem->loc);
+            (new ScanPageForMediaItems())->parse($sitemapItem->loc);
         }
     }
 }

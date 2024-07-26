@@ -68,8 +68,6 @@ class PagesGenerator extends AbstractGenerator
 
             $items = $this->makeItemsForCmsPage($page, $site);
             SitemapItem::refreshForCmsPage($page, $site, $items);
-
-            $this->fireSystemEvent('initbiz.seostorm.cmsPageChanged', [$page]);
         }
 
         if (PluginManager::instance()->hasPlugin('RainLab.Pages')) {

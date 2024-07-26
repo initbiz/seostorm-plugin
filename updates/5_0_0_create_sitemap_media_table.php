@@ -14,7 +14,7 @@ class CreateSitemapMediaTable extends Migration
             $table->id();
             $table->string('loc')->unique();
             $table->string('type', 10);
-            $table->text('values');
+            $table->text('additional_data')->nullable();
             $table->timestamps();
         });
     }

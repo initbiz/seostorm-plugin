@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace Initbiz\SeoStorm\Sitemap\Resources;
 
 use DOMElement;
-use Carbon\Carbon;
-use Initbiz\SeoStorm\Sitemap\Resources\Changefreq;
 use Initbiz\SeoStorm\Sitemap\Generators\DOMCreator;
-use Initbiz\SeoStorm\Sitemap\Contracts\SitemapPageItem;
+use Initbiz\SeoStorm\Sitemap\Contracts\SitemapImageItem;
 
 /**
  * Page Sitemap item
  */
-class PageItem implements SitemapPageItem
+class PageItem implements SitemapImageItem
 {
     /**
      * Loc
@@ -21,27 +19,6 @@ class PageItem implements SitemapPageItem
      * @var string
      */
     protected string $loc;
-
-    /**
-     * Lastmod
-     *
-     * @var Carbon
-     */
-    protected Carbon $lastmod;
-
-    /**
-     * Changefreq
-     *
-     * @var Changefreq
-     */
-    protected Changefreq $changefreq;
-
-    /**
-     * Priority
-     *
-     * @var float
-     */
-    protected float $priority;
 
     /**
      * Base file name of the page
@@ -71,42 +48,12 @@ class PageItem implements SitemapPageItem
     }
 
     /**
-     * Get lastmod attribute
-     *
-     * @return Carbon|null
-     */
-    public function getLastmod(): ?Carbon
-    {
-        return $this->lastmod ?? null;
-    }
-
-    /**
-     * Get changefreq attribute
-     *
-     * @return Changefreq|null
-     */
-    public function getChangefreq(): ?Changefreq
-    {
-        return $this->changefreq ?? null;
-    }
-
-    /**
-     * Get priority attribute
-     *
-     * @return float|null
-     */
-    public function getPriority(): ?float
-    {
-        return $this->priority ?? null;
-    }
-
-    /**
      * Set loc attribute
      *
      * @param string $loc
-     * @return SitemapPageItem
+     * @return SitemapImageItem
      */
-    public function setLoc(string $loc): SitemapPageItem
+    public function setLoc(string $loc): SitemapImageItem
     {
         if (!str_starts_with($loc, 'http')) {
             $loc = url($loc);
@@ -117,57 +64,12 @@ class PageItem implements SitemapPageItem
     }
 
     /**
-     * Set Lastmod attribute
-     *
-     * @param string|Carbon $lastmod
-     * @return SitemapPageItem
-     */
-    public function setLastmod(string|Carbon $lastmod): SitemapPageItem
-    {
-        if (is_string($lastmod)) {
-            $lastmod = Carbon::parse($lastmod);
-        }
-
-        $this->lastmod = $lastmod;
-        return $this;
-    }
-
-    /**
-     * Set Changefreq attribute
-     *
-     * @param string|Changefreq $changefreq
-     * @return SitemapPageItem
-     */
-    public function setChangefreq(string|Changefreq $changefreq): SitemapPageItem
-    {
-        if (is_string($changefreq)) {
-            $changefreq = Changefreq::tryFrom($changefreq);
-        }
-
-        $this->changefreq = $changefreq;
-
-        return $this;
-    }
-
-    /**
-     * Set priority attribute
-     *
-     * @param string|float $priority
-     * @return SitemapPageItem
-     */
-    public function setPriority(string|float $priority): SitemapPageItem
-    {
-        $this->priority = (float) $priority;
-        return $this;
-    }
-
-    /**
      * Set baseFileName attribute
      *
      * @param string $baseFileName
-     * @return SitemapPageItem
+     * @return SitemapImageItem
      */
-    public function setBaseFileName(string $baseFileName): SitemapPageItem
+    public function setBaseFileName(string $baseFileName): SitemapImageItem
     {
         // trim extension if exists
         if (str_contains($baseFileName, '.')) {
@@ -182,9 +84,9 @@ class PageItem implements SitemapPageItem
      * Fill from array - it should accept strings as keys and values to parse the item
      *
      * @param array $data
-     * @return SitemapPageItem
+     * @return SitemapImageItem
      */
-    public function fillFromArray(array $data): SitemapPageItem
+    public function fillFromArray(array $data): SitemapImageItem
     {
         $attributes = [
             'loc',

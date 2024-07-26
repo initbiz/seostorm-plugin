@@ -3,49 +3,45 @@
 namespace Initbiz\SeoStorm\SitemapGenerators;
 
 use Site;
-use Initbiz\SeoStorm\Classes\SitemapItem;
-use Initbiz\SeoStorm\Classes\SitemapGenerator;
-use Initbiz\Seostorm\Models\SitemapItem as ModelSitemapItem;
+use DOMElement;
+use System\Models\SiteDefinition;
+use Initbiz\Seostorm\Models\SitemapItem;
+use Initbiz\SeoStorm\Sitemap\Generators\AbstractGenerator;
+use Initbiz\SeoStorm\Sitemap\Resources\SitemapItemsCollection;
 
-class SitemapVideosGenerator extends SitemapGenerator
+class SitemapVideosGenerator extends AbstractGenerator
 {
-    protected $sitemapItemModels;
-
-        $settings = Settings::instance();
-        if ($settings->get('enable_images_sitemap') || $settings->get('enable_videos_sitemap')) {
-            $this->sitemapItemModels = ModelSitemapItem::with('media')->keyBy('loc')->toArray();
-        }
-
-    public function queueParseSite(): void
+    /**
+     * Fill initial URL Set with proper attributes
+     *
+     * @param DOMElement $urlSet
+     * @return DOMElement
+     */
+    public function fillUrlSet(DOMElement $urlSet): DOMElement
     {
-        Queue::push(ParseSiteJob::class, ['url' => $this->loc]);
-    }
-
-    protected function fillUrlSet()
-    {
-        if ($this->urlSet !== null) {
-            return $this->urlSet;
-        }
-
-        $xml = $this->getXml();
-        $urlSet = $xml->createElement('urlset');
         $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $urlSet->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $urlSet->setAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd');
         $urlSet->setAttribute('xmlns:video', 'http://www.google.com/schemas/sitemap-video/1.1');
 
-        $xml->appendChild($urlSet);
-
-        return $this->urlSet = $urlSet;
+        return $urlSet;
     }
 
-    public function makeItems($pages = []): void
+    /**
+     * Make items that are added to the XML
+     *
+     * @param SiteDefinition|null $site
+     * @return SitemapItemsCollection
+     */
+    public function makeItems(?SiteDefinition $site = null): SitemapItemsCollection
     {
-        $site = Site::getActiveSite();
-        $sitemapItemsModel = ModelSitemapItem::where('site_definition_id', $site->id)->whereHas('media', function ($query) {
-            $query->where('type', 'video');
-        })->with('media')->get();
+        if (is_null($site)) {
+            $site = Site::getActiveSite();
+        }
 
+        $sitemapItemsModel = SitemapItem::enabled()->whereHas('videos')->withSite($site)->get();
+
+        $sitemapItems = [];
         foreach ($sitemapItemsModel as $sitemapItemModel) {
             $sitemapItem = new SitemapItem();
             $sitemapItem->loc = $sitemapItemModel->loc;
@@ -54,7 +50,9 @@ class SitemapVideosGenerator extends SitemapGenerator
                     $sitemapItem->videos[] = $media->values;
                 }
             }
-            $this->addItemToSet($sitemapItem);
+            $sitemapItems[] = $sitemapItem;
         }
+
+        return new SitemapItemsCollection($sitemapItems);
     }
 }

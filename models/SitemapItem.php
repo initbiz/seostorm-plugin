@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Initbiz\Seostorm\Models;
 
+use Event;
 use Model;
+use Queue;
 use Cms\Classes\Page;
 use System\Models\SiteDefinition;
 use October\Rain\Database\Builder;
 use October\Rain\Support\Facades\Site;
 use RainLab\Pages\Classes\Page as StaticPage;
+use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
 use Initbiz\SeoStorm\Sitemap\Resources\PageItem;
 use Initbiz\SeoStorm\Sitemap\Resources\Changefreq;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
@@ -89,6 +92,42 @@ class SitemapItem extends Model
     }
 
     /**
+     * Every time when creating collection Eloquent will build this collection
+     *
+     * @param array $models
+     * @return SitemapItemsCollection
+     */
+    public function newCollection(array $models = []): SitemapItemsCollection
+    {
+        return new SitemapItemsCollection($models);
+    }
+
+    /**
+     * Sync images appended to the page using their locs
+     *
+     * @param array<string> $locs
+     * @return void
+     */
+    public function syncImagesUsingLocs(array $locs): void
+    {
+        $idsToSync = [];
+        foreach ($locs as $loc) {
+            $sitemapMedia = SitemapMedia::where('loc', $loc)->first();
+            if (!$sitemapMedia) {
+                $sitemapMedia = new SitemapMedia();
+                $sitemapMedia->type = 'image';
+                $sitemapMedia->loc = $loc;
+                $sitemapMedia->save();
+            }
+            $idsToSync[] = $sitemapMedia->id;
+        }
+
+        $this->images()->sync($idsToSync);
+
+        SitemapMedia::deleteGhosts();
+    }
+
+    /**
      * Refresh SitemapItem table records for a CMS page
      *
      * @param Page $page
@@ -114,7 +153,11 @@ class SitemapItem extends Model
             $object = SitemapItem::fromSitemapPageItem($item);
             $object->site_definition_id = $site->id;
             $object->save();
+
+            Queue::push(ScanPageForMediaItems::class, ['loc' => $item->getLoc()]);
         }
+
+        Event::fire('initbiz.seostorm.sitemapItemForCmsPageRefreshed', [$page]);
     }
 
     /**
@@ -142,6 +185,10 @@ class SitemapItem extends Model
         $object = SitemapItem::fromSitemapPageItem($item);
         $object->site_definition_id = $site->id;
         $object->save();
+
+        Queue::push(ScanPageForMediaItems::class, ['loc' => $item->getLoc()]);
+
+        Event::fire('initbiz.seostorm.sitemapItemForStaticPageRefreshed', [$staticPage]);
     }
 
     /**
@@ -192,16 +239,5 @@ class SitemapItem extends Model
         $sitemapItem->base_file_name = $pageItem->getBaseFileName();
 
         return $sitemapItem;
-    }
-
-    /**
-     * Every time when creating collection Eloquent will build this collection
-     *
-     * @param array $models
-     * @return SitemapItemsCollection
-     */
-    public function newCollection(array $models = []): SitemapItemsCollection
-    {
-        return new SitemapItemsCollection($models);
     }
 }

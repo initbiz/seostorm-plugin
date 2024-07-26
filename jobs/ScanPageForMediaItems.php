@@ -2,42 +2,47 @@
 
 namespace Initbiz\SeoStorm\Jobs;
 
-use Site;
 use Request;
-use Cms\Classes\Controller;
 use Cms\Classes\CmsController;
 use Initbiz\SeoStorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
 use Illuminate\Http\Request as HttpRequest;
 
-class ParseSiteJob
+class ScanPageForMediaItems
 {
     public $failOnTimeout = false;
 
     public function fire($job, $data)
     {
-        $this->parse($data['url']);
+        $this->scan($data['loc']);
         $job->delete();
     }
 
-    public function parse($loc): void
+    public function scan($loc): void
     {
+        $sitemapItem = SitemapItem::where('loc', $loc)->first();
+        if (!$sitemapItem) {
+            return;
+        }
+
+        // We need to temporarily replace request with faked one to get valid URLs
         $originalRequest = Request::getFacadeRoot();
         $request = new HttpRequest();
         Request::swap($request);
-        $sitemapItem = SitemapItem::where('loc', $loc)->first();
 
         $controller = new CmsController();
         try {
-            $parsedUrl = parse_url($sitemapItem->loc);
+            $parsedUrl = parse_url($loc);
             $url = $parsedUrl['path'] ?? '/';
             $response = $controller->run($url);
         } catch (\Throwable $th) {
             Request::swap($originalRequest);
-            trace_log('Problem with parsing page ' . $sitemapItem->loc);
+            trace_log('Problem with parsing page ' . $loc);
+            // In case of any issue in the page, we need to ignore it and proceed
             return;
         }
-        if ($response->getStatusCode() != 200) {
+
+        if ($response->getStatusCode() !== 200) {
             return;
         }
 
@@ -45,21 +50,10 @@ class ParseSiteJob
 
         $dom = new \DOMDocument();
         $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
-        $images = $this->getImagesLinksFromDom($dom);
+        $imagesLocs = $this->getImagesLinksFromDom($dom);
+        $sitemapItem->syncImagesUsingLocs($imagesLocs);
+
         $mediaIds = [];
-        if (!empty($images)) {
-            foreach ($images as $image) {
-                $sitemapMedia = SitemapMedia::where('url', $image['url'])->first();
-                if (!$sitemapMedia) {
-                    $sitemapMedia = new SitemapMedia();
-                    $sitemapMedia->type = 'image';
-                    $sitemapMedia->url = $image['url'];
-                    $sitemapMedia->values = $image;
-                    $sitemapMedia->save();
-                }
-                $mediaIds[] = $sitemapMedia->id;
-            }
-        }
 
         $videos = $this->getVideoItemsFromDom($dom);
         if (!empty($videos)) {
@@ -83,6 +77,12 @@ class ParseSiteJob
         Request::swap($originalRequest);
     }
 
+    /**
+     * Get image objects from DOMDocument
+     *
+     * @param \DOMDocument $dom
+     * @return array
+     */
     public function getImagesLinksFromDom(\DOMDocument $dom): array
     {
         $links = [];
@@ -99,6 +99,13 @@ class ParseSiteJob
         return $links;
     }
 
+    /**
+     * Get Video objects from DOMDocument
+     * We're taking only videos that have itemtype defined as VideoObject
+     *
+     * @param \DOMDocument $dom
+     * @return array
+     */
     protected function getVideoItemsFromDom(\DOMDocument $dom): array
     {
         $items = [];
