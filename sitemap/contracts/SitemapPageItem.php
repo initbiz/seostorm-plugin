@@ -6,8 +6,8 @@ namespace Initbiz\SeoStorm\Sitemap\Contracts;
 
 use DOMElement;
 use Carbon\Carbon;
-use Initbiz\SeoStorm\Sitemap\Contracts\Changefreq;
-use Initbiz\SeoStorm\Sitemap\Generators\AbstractGenerator;
+use Initbiz\SeoStorm\Sitemap\Resources\Changefreq;
+use Initbiz\SeoStorm\Sitemap\Generators\DOMCreator;
 
 /**
  * Classes of this type can be parsed by Sitemap Pages generator
@@ -20,6 +20,13 @@ interface SitemapPageItem
      * @return string
      */
     public function getLoc(): string;
+
+    /**
+     * Get base file name attribute
+     *
+     * @return string
+     */
+    public function getBaseFileName(): string;
 
     /**
      * Get lastmod attribute
@@ -49,6 +56,14 @@ interface SitemapPageItem
      * @return SitemapPageItem
      */
     public function setLoc(string $loc): SitemapPageItem;
+
+    /**
+     * Set baseFileName attribute
+     *
+     * @param string $baseFileName
+     * @return SitemapPageItem
+     */
+    public function setBaseFileName(string $baseFileName): SitemapPageItem;
 
     /**
      * Set Lastmod attribute

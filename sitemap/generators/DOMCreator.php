@@ -8,6 +8,9 @@ use DOMAttr;
 use DOMElement;
 use DOMDocument;
 
+/**
+ * Simple class that creates elements and attributes of given DOMDocument
+ */
 class DOMCreator
 {
     /**

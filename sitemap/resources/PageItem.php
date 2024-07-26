@@ -13,7 +13,7 @@ use Initbiz\SeoStorm\Sitemap\Contracts\SitemapPageItem;
 /**
  * Page Sitemap item
  */
-class PageItem
+class PageItem implements SitemapPageItem
 {
     /**
      * Loc
@@ -44,6 +44,13 @@ class PageItem
     protected float $priority;
 
     /**
+     * Base file name of the page
+     *
+     * @var string
+     */
+    protected string $baseFileName;
+
+    /**
      * Get Loc attribute
      *
      * @return string
@@ -51,6 +58,16 @@ class PageItem
     public function getLoc(): string
     {
         return $this->loc;
+    }
+
+    /**
+     * Get base file name attribute
+     *
+     * @return string
+     */
+    public function getBaseFileName(): string
+    {
+        return $this->baseFileName;
     }
 
     /**
@@ -70,7 +87,7 @@ class PageItem
      */
     public function getChangefreq(): ?Changefreq
     {
-        return Changefreq::tryFrom($this->changefreq);
+        return $this->changefreq;
     }
 
     /**
@@ -123,11 +140,11 @@ class PageItem
      */
     public function setChangefreq(string|Changefreq $changefreq): SitemapPageItem
     {
-        if ($changefreq instanceof Changefreq) {
-            $changefreq = $changefreq->value;
+        if (is_string($changefreq)) {
+            $changefreq = Changefreq::tryFrom($changefreq);
         }
 
-        $this->changeFreq = $changefreq;
+        $this->changefreq = $changefreq;
 
         return $this;
     }
@@ -144,9 +161,15 @@ class PageItem
         return $this;
     }
 
-    public function setBaseFileName(string $baseFileName): self
+    /**
+     * Set baseFileName attribute
+     *
+     * @param string $baseFileName
+     * @return SitemapPageItem
+     */
+    public function setBaseFileName(string $baseFileName): SitemapPageItem
     {
-        $this->base_file_name = $baseFileName;
+        $this->baseFileName = $baseFileName;
         return $this;
     }
 
@@ -163,7 +186,7 @@ class PageItem
             'lastmod',
             'changefreq',
             'priority',
-            'base_file_name',
+            'baseFileName',
         ];
 
         foreach ($attributes as $attribute) {
@@ -174,17 +197,6 @@ class PageItem
         }
 
         return $this;
-    }
-
-    /**
-     * Every time when creating collection Eloquent will build this collection
-     *
-     * @param array $models
-     * @return SitemapItemsCollection
-     */
-    public function newCollection(array $models = []): SitemapItemsCollection
-    {
-        return new SitemapItemsCollection($models);
     }
 
     /**
