@@ -56,7 +56,7 @@ class PagesGenerator extends AbstractGenerator
             $site = Site::getActiveSite();
         }
 
-        $pages = $this->getEnabledCmsPages($site);
+        $pages = $this->getEnabledCmsPages($this->getPages(), $site);
 
         $baseFilenamesToLeave = [];
         foreach ($pages as $page) {
@@ -98,9 +98,14 @@ class PagesGenerator extends AbstractGenerator
             $sitemapItemToDelete->delete();
         }
 
-        $sitemapItemsCollection = SitemapItem::active()->withSite($site)->get();
+        $sitemapItemsModels = SitemapItem::active()->withSite($site)->get();
 
-        $this->fireSystemEvent('initbiz.seostorm.sitemapItems', [&$sitemapItemsCollection]);
+        $this->fireSystemEvent('initbiz.seostorm.sitemapItemsModels', [&$sitemapItemsModels]);
+
+        $sitemapItemsCollection = new SitemapItemsCollection();
+        foreach ($sitemapItemsModels as $sitemapItemModel) {
+            $sitemapItemsCollection->push($sitemapItemModel->toSitemapPageItem());
+        }
 
         return $sitemapItemsCollection;
     }
@@ -208,7 +213,7 @@ class PagesGenerator extends AbstractGenerator
         }
 
         $sitemapItems = [];
-        $modelClass = $page->seoOptionsModelClass;
+        $modelClass = $page->seoOptionsModelClass ?? "";
         if (class_exists($modelClass)) {
             $scope = $page->seoOptionsModelScope;
             $models = $this->getModelObjects($modelClass, $scope);

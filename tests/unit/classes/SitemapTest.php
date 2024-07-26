@@ -8,7 +8,7 @@ use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
-use Initbiz\SeoStorm\SitemapGenerators\PagesGenerator;
+use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedCategory;
 
 class SitemapTest extends StormedTestCase

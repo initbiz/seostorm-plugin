@@ -76,6 +76,7 @@ class SitemapItem extends Model
         $pageItem = new PageItem();
 
         $pageItem->setLoc($this->loc);
+        $pageItem->setBaseFileName($this->base_file_name);
 
         if (!empty($this->lastmod)) {
             $pageItem->setLastmod($this->lastmod);
@@ -108,8 +109,9 @@ class SitemapItem extends Model
 
         $sitemapItem->loc = $pageItem->getLoc();
         $sitemapItem->lastmod = $pageItem->getLastmod();
-        $sitemapItem->changefreq = $pageItem->getChangefreq()->value;
+        $sitemapItem->changefreq = $pageItem->getChangefreq()?->value;
         $sitemapItem->priority = $pageItem->getPriority();
+        $sitemapItem->base_file_name = $pageItem->getBaseFileName();
 
         return $sitemapItem;
     }

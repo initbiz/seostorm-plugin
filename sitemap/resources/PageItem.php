@@ -77,7 +77,7 @@ class PageItem implements SitemapPageItem
      */
     public function getLastmod(): ?Carbon
     {
-        return $this->lastmod;
+        return $this->lastmod ?? null;
     }
 
     /**
@@ -87,7 +87,7 @@ class PageItem implements SitemapPageItem
      */
     public function getChangefreq(): ?Changefreq
     {
-        return $this->changefreq;
+        return $this->changefreq ?? null;
     }
 
     /**
@@ -97,7 +97,7 @@ class PageItem implements SitemapPageItem
      */
     public function getPriority(): ?float
     {
-        return $this->priority;
+        return $this->priority ?? null;
     }
 
     /**

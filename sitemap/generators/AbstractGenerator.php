@@ -110,7 +110,7 @@ abstract class AbstractGenerator
         $items = $this->makeItems();
 
         $items->sortByDesc(function ($item) {
-            return $item->priority ?? 0;
+            return $item->getPriority() ?? 0;
         });
 
         foreach ($items as $sitemapItem) {
