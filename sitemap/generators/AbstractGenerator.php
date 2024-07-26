@@ -1,12 +1,14 @@
 <?php
 
-namespace Initbiz\SeoStorm\SitemapGenerators;
+declare(strict_types=1);
 
-use DOMAttr;
+namespace Initbiz\SeoStorm\Sitemap\Generators;
+
 use DOMElement;
 use DOMDocument;
 use October\Rain\Support\Facades\Site;
-use Initbiz\SeoStorm\Classes\SitemapItemsCollection;
+use Initbiz\SeoStorm\Sitemap\Generators\DOMCreator;
+use Initbiz\SeoStorm\Sitemap\Resources\SitemapItemsCollection;
 
 abstract class AbstractGenerator
 {
@@ -26,6 +28,13 @@ abstract class AbstractGenerator
      * @var integer
      */
     protected $urlCount = 0;
+
+    /**
+     * DOMCreator instance that we use externally to create elements on our document
+     *
+     * @var DOMCreator
+     */
+    protected $creator;
 
     /**
      * Whole XML instance
@@ -60,6 +69,7 @@ abstract class AbstractGenerator
         // We need both, because we add all items to urlSet while generating uses whole xml instance
         $this->urlSet = $urlSet;
         $this->xml = $xml;
+        $this->setCreator(new DOMCreator($this->xml));
     }
 
     /**
@@ -73,6 +83,24 @@ abstract class AbstractGenerator
     }
 
     /**
+     * Get dOMCreator instance that we use externally to create elements on our document
+     */
+    public function getCreator(): DOMCreator
+    {
+        return $this->creator;
+    }
+
+    /**
+     * Set dOMCreator instance that we use externally to create elements on our document
+     */
+    public function setCreator(DOMCreator $creator): self
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
      * Generate the XML
      *
      * @return string|false
@@ -81,7 +109,7 @@ abstract class AbstractGenerator
     {
         $items = $this->makeItems();
 
-        $items->sortByDesc(function($item) {
+        $items->sortByDesc(function ($item) {
             return $item->priority ?? 0;
         });
 
@@ -90,8 +118,8 @@ abstract class AbstractGenerator
                 break;
             }
 
-            $emptyUrlElement = $this->xml->createElement('url');
-            $urlElement = $sitemapItem->toDomElement($emptyUrlElement, $this);
+            $creator = $this->getCreator();
+            $urlElement = $sitemapItem->toDomElement($creator);
 
             if ($urlElement) {
                 $this->urlSet->appendChild($urlElement);
@@ -102,28 +130,6 @@ abstract class AbstractGenerator
         return $this->xml->saveXML();
     }
 
-    /**
-     * Method that creates DOMElement using our DOMDocument instance
-     *
-     * @param string $name
-     * @param string $value
-     * @return DOMElement|false
-     */
-    public function createElement(string $name, string $value = ""): DOMElement|false
-    {
-        return $this->xml->createElement($name, $value);
-    }
-
-    /**
-     * Method to create attribute that can be then appended to any DOMElement
-     *
-     * @param string $localName
-     * @return DOMAttr|false
-     */
-    public function createAttribute(string $localName): DOMAttr|false
-    {
-        return $this->xml->createAttribute($localName);
-    }
 
     /**
      * Fill initial URL Set with proper attributes

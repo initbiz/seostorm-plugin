@@ -1,6 +1,8 @@
 <?php
 
-namespace Initbiz\SeoStorm\Contracts;
+declare(strict_types=1);
+
+namespace Initbiz\SeoStorm\Sitemap\Resources;
 
 enum Changefreq: string
 {

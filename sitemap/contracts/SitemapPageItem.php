@@ -1,16 +1,18 @@
 <?php
 
-namespace Initbiz\SeoStorm\Contracts;
+declare(strict_types=1);
+
+namespace Initbiz\SeoStorm\Sitemap\Contracts;
 
 use DOMElement;
 use Carbon\Carbon;
-use Initbiz\SeoStorm\Contracts\Changefreq;
-use Initbiz\SeoStorm\Classes\AbstractGenerator;
+use Initbiz\SeoStorm\Sitemap\Contracts\Changefreq;
+use Initbiz\SeoStorm\Sitemap\Generators\AbstractGenerator;
 
 /**
  * Classes of this type can be parsed by Sitemap Pages generator
  */
-interface ConvertingToSitemapXml
+interface SitemapPageItem
 {
     /**
      * Get Loc attribute
@@ -44,50 +46,48 @@ interface ConvertingToSitemapXml
      * Set loc attribute
      *
      * @param string $loc
-     * @return ConvertingToSitemapXml
+     * @return SitemapPageItem
      */
-    public function setLoc(string $loc): ConvertingToSitemapXml;
+    public function setLoc(string $loc): SitemapPageItem;
 
     /**
      * Set Lastmod attribute
      *
      * @param string|Carbon $lastmod
-     * @return ConvertingToSitemapXml
+     * @return SitemapPageItem
      */
-    public function setLastmod(string|Carbon $lastmod): ConvertingToSitemapXml;
+    public function setLastmod(string|Carbon $lastmod): SitemapPageItem;
 
     /**
      * Set Changefreq attribute
      *
      * @param string|Changefreq $changefreq
-     * @return ConvertingToSitemapXml
+     * @return SitemapPageItem
      */
-    public function setChangefreq(string|Changefreq $changefreq): ConvertingToSitemapXml;
+    public function setChangefreq(string|Changefreq $changefreq): SitemapPageItem;
 
     /**
      * Set priority attribute
      *
      * @param string|float $priority
-     * @return ConvertingToSitemapXml
+     * @return SitemapPageItem
      */
-    public function setPriority(string|float $priority): ConvertingToSitemapXml;
+    public function setPriority(string|float $priority): SitemapPageItem;
 
     /**
      * Fill from array - it should accept strings as keys and values to parse the item
      *
      * @param array $data
-     * @return ConvertingToSitemapXml
+     * @return SitemapPageItem
      */
-    public function fillFromArray(array $data): ConvertingToSitemapXml;
+    public function fillFromArray(array $data): SitemapPageItem;
 
     /**
      * Method that should convert this item to XML DOMElement
-     * In the first parameter you get already created URL element to work on
      *
-     * @param DOMElement $urlElement
-     * @param AbstractGenerator $generator
+     * @param DOMCreator $creator
      * @return DOMElement
      */
-    public function toDomElement(DOMElement $urlElement, AbstractGenerator $generator): DOMElement;
+    public function toDomElement(DOMCreator $creator): DOMElement;
 
 }

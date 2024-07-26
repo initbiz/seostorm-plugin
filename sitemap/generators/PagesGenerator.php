@@ -1,6 +1,8 @@
 <?php
 
-namespace Initbiz\SeoStorm\SitemapGenerators;
+declare(strict_types=1);
+
+namespace Initbiz\SeoStorm\Sitemap\Generators;
 
 use Site;
 use Cache;
@@ -16,8 +18,8 @@ use October\Rain\Database\Collection;
 use Initbiz\Seostorm\Models\SitemapItem;
 use RainLab\Translate\Classes\Translator;
 use RainLab\Pages\Classes\Page as StaticPage;
-use Initbiz\SeoStorm\Classes\SitemapItemsCollection;
-use Initbiz\SeoStorm\SitemapGenerators\AbstractGenerator;
+use Initbiz\SeoStorm\Sitemap\Generators\AbstractGenerator;
+use Initbiz\SeoStorm\Sitemap\Resources\SitemapItemsCollection;
 use October\Rain\Support\Collection as SupportCollection;
 
 /**

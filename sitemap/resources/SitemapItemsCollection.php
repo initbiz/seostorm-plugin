@@ -1,6 +1,8 @@
 <?php
 
-namespace Initbiz\SeoStorm\Classes;
+declare(strict_types=1);
+
+namespace Initbiz\SeoStorm\Sitemap\Resources;
 
 use October\Rain\Support\Collection;
 

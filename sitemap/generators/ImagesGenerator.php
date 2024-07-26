@@ -1,6 +1,6 @@
 <?php
 
-namespace Initbiz\SeoStorm\SitemapGenerators;
+namespace Initbiz\SeoStorm\Sitemap\Generators;
 
 use Site;
 use Initbiz\SeoStorm\Classes\SitemapItem;

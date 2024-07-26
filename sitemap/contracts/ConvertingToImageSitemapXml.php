@@ -1,6 +1,6 @@
 <?php
 
-namespace Initbiz\SeoStorm\Contracts;
+namespace Initbiz\SeoStorm\Sitemap\Contracts;
 
 /**
  * Classes of this type can be parsed by Images Sitemap generator
