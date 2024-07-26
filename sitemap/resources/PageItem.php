@@ -169,6 +169,11 @@ class PageItem implements SitemapPageItem
      */
     public function setBaseFileName(string $baseFileName): SitemapPageItem
     {
+        // trim extension if exists
+        if (str_contains($baseFileName, '.')) {
+            $baseFileName = substr($baseFileName, 0 , (strrpos($baseFileName, ".")));
+        }
+
         $this->baseFileName = $baseFileName;
         return $this;
     }

@@ -6,6 +6,7 @@ use Config;
 use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
+use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
@@ -20,6 +21,9 @@ class SitemapTest extends StormedTestCase
         $themesPath = plugins_path('initbiz/seostorm/tests/themes');
         Config::set('system.themes_path', $themesPath);
         app()->useThemesPath($themesPath);
+
+        PagesGenerator::resetCache();
+        SitemapItem::truncate();
     }
 
     public function testEnabledInSitemap()
@@ -36,10 +40,13 @@ class SitemapTest extends StormedTestCase
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-1-page.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
 
+        SitemapItem::truncate();
+        PagesGenerator::resetCache();
+
         $page1->settings['seoOptionsEnabledInSitemap'] = "true";
         $pages = collect([$page1, $page2]);
 
-        $xml = (new PagesGenerator)->generate($pages);
+        $xml = (new PagesGenerator())->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-2-pages.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -77,6 +84,9 @@ class SitemapTest extends StormedTestCase
 
         $model2->is_active = false;
         $model2->save();
+
+        SitemapItem::truncate();
+        PagesGenerator::resetCache();
 
         $page->settings['seoOptionsModelScope'] = "active";
         $pages = collect();

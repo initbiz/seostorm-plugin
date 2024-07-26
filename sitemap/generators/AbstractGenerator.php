@@ -6,6 +6,7 @@ namespace Initbiz\SeoStorm\Sitemap\Generators;
 
 use DOMElement;
 use DOMDocument;
+use System\Models\SiteDefinition;
 use October\Rain\Support\Facades\Site;
 use Initbiz\SeoStorm\Sitemap\Generators\DOMCreator;
 use Initbiz\SeoStorm\Sitemap\Resources\SitemapItemsCollection;
@@ -50,7 +51,7 @@ abstract class AbstractGenerator
      */
     private $urlSet;
 
-    public function __construct(?Site $activeSite = null)
+    public function __construct(?SiteDefinition $activeSite = null)
     {
         if (is_null($activeSite)) {
             $request = \Request::instance();
@@ -109,6 +110,9 @@ abstract class AbstractGenerator
     {
         $items = $this->makeItems();
 
+        if (false) {
+            # code...
+        }
         $items->sortByDesc(function ($item) {
             return $item->getPriority() ?? 0;
         });

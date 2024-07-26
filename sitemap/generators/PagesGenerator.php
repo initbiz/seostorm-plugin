@@ -66,11 +66,8 @@ class PagesGenerator extends AbstractGenerator
                 continue;
             }
 
-            $items = $this->makeItemsForCmsPage($page);
-            foreach ($items as $item) {
-                $modelObject = SitemapItem::fromSitemapPageItem($item);
-                $modelObject->save();
-            }
+            $items = $this->makeItemsForCmsPage($page, $site);
+            SitemapItem::refreshForCmsPage($page, $site, $items);
 
             $this->fireSystemEvent('initbiz.seostorm.cmsPageChanged', [$page]);
         }
@@ -85,8 +82,7 @@ class PagesGenerator extends AbstractGenerator
                 }
 
                 $item = $this->makeItemForStaticPage($staticPage);
-                $modelObject = SitemapItem::fromSitemapPageItem($item);
-                $modelObject->save();
+                SitemapItem::refreshForStaticPage($staticPage, $site, $item);
             }
         }
 
@@ -98,7 +94,7 @@ class PagesGenerator extends AbstractGenerator
             $sitemapItemToDelete->delete();
         }
 
-        $sitemapItemsModels = SitemapItem::active()->withSite($site)->get();
+        $sitemapItemsModels = SitemapItem::enabled()->withSite($site)->get();
 
         $this->fireSystemEvent('initbiz.seostorm.sitemapItemsModels', [&$sitemapItemsModels]);
 
@@ -198,9 +194,9 @@ class PagesGenerator extends AbstractGenerator
      *
      * @param Page $page
      * @param SiteDefinition|null $site
-     * @return array<PageItem>
+     * @return SitemapItemsCollection<PageItem>
      */
-    public function makeItemsForCmsPage(Page $page, ?SiteDefinition $site = null): array
+    public function makeItemsForCmsPage(Page $page, ?SiteDefinition $site = null): SitemapItemsCollection
     {
         if (is_null($site)) {
             $site = Site::getActiveSite();
@@ -219,6 +215,10 @@ class PagesGenerator extends AbstractGenerator
             $models = $this->getModelObjects($modelClass, $scope);
 
             foreach ($models as $model) {
+                if (($model->seo_options['enabled_in_sitemap'] ?? null) === "0") {
+                    continue;
+                }
+
                 $loc = $this->generateLocForModelAndCmsPage($model, $page);
                 $loc = $this->trimOptionalParameters($loc);
 
@@ -251,7 +251,7 @@ class PagesGenerator extends AbstractGenerator
             $sitemapItems[] = $pageItem;
         }
 
-        return $sitemapItems;
+        return new SitemapItemsCollection($sitemapItems);
     }
 
     /**
@@ -270,7 +270,9 @@ class PagesGenerator extends AbstractGenerator
         $params = explode(':', $scopeDef);
         $scopeName = $params[0];
         $scopeParameter = $params[1] ?? null;
-        return $modelClass::{$scopeName}($scopeParameter)->get();
+        $query = $modelClass::with(['seostorm_options'])->{$scopeName}($scopeParameter);
+
+        return $query->get();
     }
 
     /**

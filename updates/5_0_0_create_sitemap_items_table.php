@@ -19,7 +19,7 @@ class CreateSitemapItemsTable extends Migration
             $table->float('priority', 3, 2)->nullable();
 
             $table->string('base_file_name')->index();
-            $table->boolean('is_enabled')->default(false);
+            $table->boolean('is_enabled')->default(true);
 
             $table->unsignedInteger('site_definition_id')->nullable();
             $table->foreign('site_definition_id')->references('id')->on('system_site_definitions');
