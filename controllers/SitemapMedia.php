@@ -4,14 +4,14 @@ namespace Initbiz\Seostorm\Controllers;
 
 use BackendMenu;
 use Backend\Classes\Controller;
-use Backend\Classes\SettingsController;
+use System\Classes\SettingsManager;
 
 /**
  * Sitemap Media Backend Controller
  *
  * @link https://docs.octobercms.com/3.x/extend/system/controllers.html
  */
-class SitemapMedia extends SettingsController
+class SitemapMedia extends Controller
 {
     public $implement = [
         \Backend\Behaviors\FormController::class,
@@ -41,5 +41,8 @@ class SitemapMedia extends SettingsController
     public function __construct()
     {
         parent::__construct();
+
+        BackendMenu::setContext('October.System', 'system', 'settings');
+        SettingsManager::setContext('Initbiz.Seostorm', 'settings');
     }
 }

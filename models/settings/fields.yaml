@@ -87,6 +87,16 @@ tabs:
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
             default: true
 
+        _btn_browse_sitemapitems:
+            type: partial
+            path: $/initbiz/seostorm/models/settings/_btn_browse_sitemapitems.htm
+            tab: initbiz.seostorm::lang.form.settings.tab_sitemap
+            span: right
+            trigger:
+                action: show
+                field: enable_sitemap
+                condition: checked
+
         enable_index_sitemap:
             label: initbiz.seostorm::lang.form.settings.enable_index_sitemap
             span: left

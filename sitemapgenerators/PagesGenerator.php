@@ -59,7 +59,6 @@ class PagesGenerator extends AbstractGenerator
                 continue;
             }
 
-            // We use SitemapItem model as cache for all the items
             $items = $this->makeItemsForCmsPage($page);
             foreach ($items as $item) {
                 $item->save();

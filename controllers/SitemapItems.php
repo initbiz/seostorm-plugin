@@ -4,14 +4,15 @@ namespace Initbiz\Seostorm\Controllers;
 
 use BackendMenu;
 use Backend\Classes\Controller;
-use Backend\Classes\SettingsController;
+use System\Classes\SettingsManager;
+use Illuminate\Support\Facades\Artisan;
 
 /**
  * SitemapItem Backend Controller
  *
  * @link https://docs.octobercms.com/3.x/extend/system/controllers.html
  */
-class SitemapItems extends SettingsController
+class SitemapItems extends Controller
 {
     public $implement = [
         \Backend\Behaviors\FormController::class,
@@ -47,6 +48,12 @@ class SitemapItems extends SettingsController
     {
         parent::__construct();
 
-        // BackendMenu::setContext('Initbiz.Seostorm', 'seostorm', 'sitemapitem');
+        BackendMenu::setContext('October.System', 'system', 'settings');
+        SettingsManager::setContext('Initbiz.Seostorm', 'settings');
+    }
+
+    public function onRefresh()
+    {
+        Artisan::call('sitemap:refresh');
     }
 }

@@ -111,6 +111,9 @@
             // Sitemap
             'enable_sitemap' => 'Enable sitemap',
             'enable_sitemap_comment' => 'Generate sitemap under /sitemap.xml',
+            'btn_browse_sitemapitems' => 'Browse sitemap items stored in the database',
+            'btn_refresh_sitemapitems' => 'Refresh items in the database',
+            'btn_back_to_settings' => 'SEO Storm settings',
             'enable_index_sitemap' => 'Enable sitemap index',
             'enable_index_sitemap_comment' => 'Generate sitemap index file under /index_sitemap.xml. <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/large-sitemaps">More info</a>',
             'enable_images_sitemap' => 'Enable images sitemap',
@@ -179,9 +182,6 @@
             'label' => '.htaccess',
             'description' => 'Manage .htaccess file',
         ],
-        'sitemap_item' => [
-            'label' => 'Sitemap Item'
-        ]
     ],
     'components' => [
         'group' => [
@@ -212,8 +212,9 @@
     ],
     'models' => [
         'sitemap_item' => [
-            'manage_sitemap_media' => 'Manage Sitemap Media',
-            'loc' => 'loc',
+            'btn_see_media' => 'Browse media items',
+            'list_label' => 'Sitemap items',
+            'loc' => 'Location',
             'site_definition' => 'Site Definition',
             'media' => 'Media',
             'base_file_name' => 'Base File Name',

@@ -40,6 +40,7 @@ class Plugin extends PluginBase
     public function register()
     {
         $this->registerConsoleCommand('migrate:arcane', \Initbiz\SeoStorm\Console\MigrateArcane::class);
+        $this->registerConsoleCommand('sitemap:refresh', \Initbiz\SeoStorm\Console\RefreshSitemap::class);
     }
 
     public function boot()
@@ -92,15 +93,6 @@ class Plugin extends PluginBase
                 'order'       => 200,
                 'permissions' => ['initbiz.manage_seo'],
             ],
-            'sitemap_item' => [
-                'label'       => 'initbiz.seostorm::lang.form.sitemap_item.label',
-                'description' => 'initbiz.seostorm::lang.form.sitemap_item.description',
-                'icon'        => 'icon-sitemap',
-                'category'    => 'initbiz.seostorm::lang.form.settings.category_label',
-                'url'         => Backend::url('initbiz/seostorm/sitemapitems'),
-                'order'       => 200,
-                'permissions' => ['initbiz.manage_seo'],
-            ]
         ];
     }
 
