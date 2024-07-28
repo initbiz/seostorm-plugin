@@ -6,7 +6,6 @@ namespace Initbiz\SeoStorm\Sitemap\Generators;
 
 use Site;
 use Cache;
-use DOMElement;
 use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
@@ -18,10 +17,9 @@ use October\Rain\Database\Collection;
 use Initbiz\Seostorm\Models\SitemapItem;
 use RainLab\Translate\Classes\Translator;
 use RainLab\Pages\Classes\Page as StaticPage;
-use Initbiz\SeoStorm\Sitemap\Resources\PageItem;
+use Initbiz\Sitemap\DOMElements\UrlsetDOMElement;
+use Initbiz\Sitemap\Generators\AbstractGenerator;
 use October\Rain\Support\Collection as SupportCollection;
-use Initbiz\SeoStorm\Sitemap\Generators\AbstractGenerator;
-use Initbiz\SeoStorm\Sitemap\Resources\SitemapItemsCollection;
 
 /**
  * This generator provides sitemaps for CMS pages as well as added by RainLab.Pages
@@ -41,27 +39,17 @@ class PagesGenerator extends AbstractGenerator
 
     public function __construct(?SiteDefinition $activeSite = null)
     {
-                if (is_null($activeSite)) {
+        parent::__construct();
+
+        if (is_null($activeSite)) {
             $request = \Request::instance();
             $activeSite = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
         }
 
         Site::applyActiveSite($activeSite);
-
     }
 
-    public function fillUrlSet(DOMElement $urlSet): DOMElement
-    {
-        $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
-        $urlSet->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-
-        $value = 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd';
-        $urlSet->setAttribute('xsi:schemaLocation', $value);
-
-        return $urlSet;
-    }
-
-    public function makeItems(?SiteDefinition $site = null): SitemapItemsCollection
+    public function makeDOMElements(?SiteDefinition $site = null): array
     {
         if (is_null($site)) {
             $site = Site::getActiveSite();
@@ -77,8 +65,8 @@ class PagesGenerator extends AbstractGenerator
                 continue;
             }
 
-            $items = $this->makeItemsForCmsPage($page, $site);
-            SitemapItem::refreshForCmsPage($page, $site, $items);
+            $urls = $this->makeItemsForCmsPage($page, $site);
+            SitemapItem::refreshForCmsPage($page, $site, $urls);
         }
 
         if (PluginManager::instance()->hasPlugin('RainLab.Pages')) {
@@ -90,14 +78,14 @@ class PagesGenerator extends AbstractGenerator
                     continue;
                 }
 
-                $item = $this->makeItemForStaticPage($staticPage);
+                $item = $this->makeItemForStaticPage($staticPage, $site);
                 SitemapItem::refreshForStaticPage($staticPage, $site, $item);
             }
         }
 
         $this->fireSystemEvent('initbiz.seostorm.beforeClearingSitemapItems', [&$baseFilenamesToLeave]);
 
-        // Remove all unused SitemapItems
+        // Remove all unused SitemapUrls
         $sitemapItemsToDelete = SitemapItem::whereNotIn('base_file_name', $baseFilenamesToLeave)->get();
         foreach ($sitemapItemsToDelete as $sitemapItemToDelete) {
             $sitemapItemToDelete->delete();
@@ -107,12 +95,15 @@ class PagesGenerator extends AbstractGenerator
 
         $this->fireSystemEvent('initbiz.seostorm.sitemapItemsModels', [&$sitemapItemsModels]);
 
-        $sitemapItemsCollection = new SitemapItemsCollection();
+        $urls = [];
         foreach ($sitemapItemsModels as $sitemapItemModel) {
-            $sitemapItemsCollection->push($sitemapItemModel->toSitemapPageItem());
+            $urls[] = $sitemapItemModel->toUrlDOMElement();
         }
 
-        return $sitemapItemsCollection;
+        $urlSetDOMElement = new UrlsetDOMElement();
+        $urlSetDOMElement->setUrls($urls);
+
+        return [$urlSetDOMElement];
     }
 
     // CMS pages
@@ -203,9 +194,9 @@ class PagesGenerator extends AbstractGenerator
      *
      * @param Page $page
      * @param SiteDefinition|null $site
-     * @return SitemapItemsCollection<PageItem>
+     * @return array<SitemapItem>
      */
-    public function makeItemsForCmsPage(Page $page, ?SiteDefinition $site = null): SitemapItemsCollection
+    public function makeItemsForCmsPage(Page $page, ?SiteDefinition $site = null): array
     {
         if (is_null($site)) {
             $site = Site::getActiveSite();
@@ -236,31 +227,39 @@ class PagesGenerator extends AbstractGenerator
                     $lastmod = $model->updated_at;
                 }
 
-                $pageItem = new PageItem();
-                $pageItem->fillFromArray([
-                    'baseFileName' => $page->base_file_name,
-                    'loc' => $loc,
-                    'lastmod' => $lastmod,
-                    'priority' => $page->seoOptionsPriority,
-                    'changefreq' => $page->seoOptionsChangefreq,
-                ]);
+                $sitemapItem = SitemapItem::where('loc', $loc)->first();
+                if (!$sitemapItem) {
+                    $sitemapItem = new SitemapItem();
+                    $sitemapItem->loc = $loc;
+                }
 
-                $sitemapItems[] = $pageItem;
+                $sitemapItem->lastmod = $lastmod;
+                $sitemapItem->priority = $page->seoOptionsPriority;
+                $sitemapItem->changefreq = $page->seoOptionsChangefreq;
+                $sitemapItem->base_file_name = $page->base_file_name;
+                $sitemapItem->site_definition_id = $site->id;
+
+                $sitemapItems[] = $sitemapItem;
             }
         } else {
-            $pageItem = new PageItem();
-            $pageItem->fillFromArray([
-                'baseFileName' => $page->getFileName(),
-                'priority' => $page->seoOptionsPriority,
-                'changefreq' => $page->seoOptionsChangefreq,
-                'lastmod' => $page->lastmod ?: Carbon::createFromTimestamp($page->mtime),
-                'loc' => $this->trimOptionalParameters($loc),
-            ]);
+            $loc = $this->trimOptionalParameters($loc);
 
-            $sitemapItems[] = $pageItem;
+            $sitemapItem = SitemapItem::where('loc', $loc)->first();
+            if (!$sitemapItem) {
+                $sitemapItem = new SitemapItem();
+                $sitemapItem->loc = $loc;
+            }
+
+            $sitemapItem->base_file_name = $page->base_file_name;
+            $sitemapItem->site_definition_id = $site->id;
+            $sitemapItem->priority = $page->seoOptionsPriority;
+            $sitemapItem->changefreq = $page->seoOptionsChangefreq;
+            $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
+
+            $sitemapItems[] = $sitemapItem;
         }
 
-        return new SitemapItemsCollection($sitemapItems);
+        return $sitemapItems;
     }
 
     /**
@@ -352,23 +351,29 @@ class PagesGenerator extends AbstractGenerator
     }
 
     /**
-     * Get PageItem object for this static page
+     * Get SitemapItem object for this static page
      *
      * @param StaticPage $staticPage
-     * @return PageItem
+     * @param SiteDefinition|null $site
+     * @return SitemapItem
      */
-    public function makeItemForStaticPage(StaticPage $staticPage): PageItem
+    public function makeItemForStaticPage(StaticPage $staticPage, ?SiteDefinition $site = null): SitemapItem
     {
+        if (is_null($site)) {
+            $site = Site::getActiveSite();
+        }
+
         $viewBag = $staticPage->getViewBag();
 
-        $loc = StaticPage::url($staticPage->fileName);
-        $pageItem = new PageItem();
-        $pageItem->setLoc($loc);
-        $pageItem->setLastmod($viewBag->property('lastmod') ?: $staticPage->mtime);
-        $pageItem->setPriority($viewBag->property('priority'));
-        $pageItem->setChangefreq($viewBag->property('changefreq'));
+        $sitemapItem = new SitemapItem();
+        $sitemapItem->loc = StaticPage::url($staticPage->fileName);
+        $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->mtime;
+        $sitemapItem->priority = $viewBag->property('priority');
+        $sitemapItem->changefreq = $viewBag->property('changefreq');
+        $sitemapItem->base_file_name = $staticPage->fileName;
+        $sitemapItem->site_definition_id = $site->id;
 
-        return $pageItem;
+        return $sitemapItem;
     }
 
     // Helpers

@@ -7,6 +7,8 @@ use Cms\Classes\CmsController;
 use Initbiz\SeoStorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
 use Illuminate\Http\Request as HttpRequest;
+use Initbiz\Sitemap\DOMElements\ImageDOMElement;
+use Initbiz\Sitemap\DOMElements\VideoDOMElement;
 
 class ScanPageForMediaItems
 {
@@ -50,29 +52,12 @@ class ScanPageForMediaItems
 
         $dom = new \DOMDocument();
         $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
-        $imagesLocs = $this->getImagesLinksFromDom($dom);
-        $sitemapItem->syncImagesUsingLocs($imagesLocs);
 
-        $mediaIds = [];
+        $images = $this->getImagesFromDOM($dom);
+        $sitemapItem->syncImages($images);
 
-        $videos = $this->getVideoItemsFromDom($dom);
-        if (!empty($videos)) {
-            foreach ($videos as $video) {
-                $sitemapMedia = SitemapMedia::where('url', $video["embedUrl"])->first();
-                if (!$sitemapMedia) {
-                    $sitemapMedia = new SitemapMedia();
-                    $sitemapMedia->type = 'video';
-                    $sitemapMedia->url = $video["embedUrl"];
-                    $sitemapMedia->values = $video;
-                    $sitemapMedia->save();
-                }
-
-                $mediaIds[] = $sitemapMedia->id;
-            }
-        }
-
-        $sitemapItem->media()->sync($mediaIds);
-        $sitemapItem->save();
+        $videos = $this->getVideosFromDOM($dom);
+        $sitemapItem->syncVideos($videos);
 
         Request::swap($originalRequest);
     }
@@ -81,22 +66,26 @@ class ScanPageForMediaItems
      * Get image objects from DOMDocument
      *
      * @param \DOMDocument $dom
-     * @return array
+     * @return array<ImageDOMElement>
      */
-    public function getImagesLinksFromDom(\DOMDocument $dom): array
+    public function getImagesFromDOM(\DOMDocument $dom): array
     {
-        $links = [];
+        $imageDOMElements = [];
 
         $finder = new \DomXPath($dom);
         $nodes = $finder->query("//img");
         foreach ($nodes as $node) {
-            $link = $node->getAttribute('src');
-            if (!blank($link)) {
-                $links[] = ['url' => $link];
+            $src = $node->getAttribute('src');
+            if (blank($src)) {
+                continue;
             }
+
+            $imageDOMElement = new ImageDOMElement();
+            $imageDOMElement->setLoc($src);
+            $imageDOMElements[] = $imageDOMElement;
         }
 
-        return $links;
+        return $imageDOMElements;
     }
 
     /**
@@ -106,16 +95,14 @@ class ScanPageForMediaItems
      * @param \DOMDocument $dom
      * @return array
      */
-    protected function getVideoItemsFromDom(\DOMDocument $dom): array
+    protected function getVideosFromDOM(\DOMDocument $dom): array
     {
-        $items = [];
-
         $finder = new \DomXPath($dom);
-        $schemaName = "https://schema.org/VideoObject";
-        $nodes = $finder->query("//*[contains(@itemtype, '$schemaName')]");
+        $nodes = $finder->query("//*[contains(@itemtype, 'https://schema.org/VideoObject')]");
 
+        $videos = [];
         foreach ($nodes as $node) {
-            $video = [];
+            $videoDOMElement = new VideoDOMElement();
             foreach ($node->childNodes as $childNode) {
                 if (!$childNode instanceof \DOMElement) {
                     continue;
@@ -125,15 +112,26 @@ class ScanPageForMediaItems
                     continue;
                 }
 
-                $key = $childNode->getAttribute('itemprop');
-                $value = $childNode->getAttribute('content');
+                $propertyName = $childNode->getAttribute('itemprop');
+                $methodName = 'set' . studly_case($propertyName);
+                if (method_exists($videoDOMElement, $methodName)) {
+                    $videoDOMElement->$methodName($childNode->getAttribute('content'));
+                }
 
-                $video[$key] = $value;
+                if ($propertyName === 'embedUrl') {
+                    $videoDOMElement->setPlayerLoc($childNode->getAttribute('content'));
+                } elseif ($propertyName === 'uploadDate') {
+                    $videoDOMElement->setPublicationDate(new \DateTime($childNode->getAttribute('content')));
+                } elseif ($propertyName === 'thumbnailUrl') {
+                    $videoDOMElement->setThumbnailLoc($childNode->getAttribute('content'));
+                } elseif ($propertyName === 'name') {
+                    $videoDOMElement->setTitle($childNode->getAttribute('content'));
+                }
             }
 
-            $items[] = $video;
+            $videos[] = $videoDOMElement;
         }
 
-        return $items;
+        return $videos;
     }
 }

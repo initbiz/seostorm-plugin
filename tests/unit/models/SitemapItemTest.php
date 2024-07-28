@@ -46,21 +46,21 @@ class SitemapItemTest extends StormedTestCase
         SitemapItem::refreshForCmsPage($page);
         $sitemapItem = SitemapItem::first();
         Queue::assertPushed(ScanPageForMediaItems::class);
-        (new ScanPageForMediaItems())->parse($sitemapItem->loc);
+        (new ScanPageForMediaItems())->scan($sitemapItem->loc);
 
-        $sitemapMedia = SitemapItem::first()->media;
-        $this->assertEquals(2, $sitemapMedia->count());
-        $this->assertEquals('https://test.dev/images2.jpg', $sitemapMedia->first()->url);
-        $this->assertEquals('image', $sitemapMedia->first()->type);
+        $sitemapItem = SitemapItem::with(['videos', 'images'])->first();
+        $this->assertEquals(1, $sitemapItem->videos->count());
+        $this->assertEquals(1, $sitemapItem->images->count());
+        $this->assertEquals('https://test.dev/images2.jpg', $sitemapItem->images->first()->loc);
+        $this->assertEquals('image', $sitemapItem->images->first()->type);
 
-        (new ScanPageForMediaItems())->parse($sitemapItem->loc);
-
-        $sitemapMedia = SitemapItem::first()->media;
-        $this->assertEquals(2, $sitemapMedia->count());
+        // Re-scan to ensure no new items were added
+        (new ScanPageForMediaItems())->scan($sitemapItem->loc);
+        $this->assertEquals(2, SitemapMedia::count());
 
         $page = Page::load($theme, 'with-media-2.htm');
         SitemapItem::refreshForCmsPage($page);
-        (new ScanPageForMediaItems())->parse($sitemapItem->loc);
+        (new ScanPageForMediaItems())->scan($sitemapItem->loc);
 
         $this->assertEquals(2, SitemapMedia::count());
     }
@@ -75,20 +75,18 @@ class SitemapItemTest extends StormedTestCase
         Queue::assertPushed(ScanPageForMediaItems::class);
         $sitemapItem = SitemapItem::first();
 
-        (new ScanPageForMediaItems())->parse($sitemapItem->loc);
+        (new ScanPageForMediaItems())->scan($sitemapItem->loc);
 
-        $sitemapMedia = SitemapItem::first()->media;
-        $this->assertEquals(2, $sitemapMedia->count());
-        $sitemapVideo = $sitemapMedia->where('type', 'video')->first();
-        $this->assertEquals('https://player.vimeo.com/video/347119375?autopause=1&badge=0&byline=0&color=57e117&portrait=0&title=0#t=0', $sitemapVideo->url);
+        $sitemapItem = SitemapItem::first();
+        $sitemapVideo = $sitemapItem->videos()->first();
+        $this->assertEquals('https://player.vimeo.com/video/347119375?autopause=1&badge=0&byline=0&color=57e117&portrait=0&title=0#t=0', $sitemapVideo->loc);
         $this->assertEquals('video', $sitemapVideo->type);
         $this->assertEquals([
-            'name' => 'Test title',
+            'title' => 'Test title',
             'description' => 'Test description',
-            'thumbnailUrl' => 'https://i.vimeocdn.com/video/797382244-0106ae13e902e09d0f02d8f404fa80581f38d1b8b7846b3f8e87ef391ffb8c99-d?mw=1200&amp;mh=675&amp;q=70',
-            'uploadDate' => '2024-06-26T16:18:25+00:00',
-            'embedUrl' => 'https://player.vimeo.com/video/347119375?autopause=1&badge=0&byline=0&color=57e117&portrait=0&title=0#t=0'
-        ], $sitemapVideo->values);
+            'thumbnail_loc' => 'https://i.vimeocdn.com/video/797382244-0106ae13e902e09d0f02d8f404fa80581f38d1b8b7846b3f8e87ef391ffb8c99-d?mw=1200&amp;mh=675&amp;q=70',
+            'publication_date' => '2024-06-26T16:18:25+00:00',
+        ], $sitemapVideo->additional_data);
     }
 
     public function testParseSiteWhenUpdateModel(): void
@@ -105,7 +103,7 @@ class SitemapItemTest extends StormedTestCase
         $sitemapItems = SitemapItem::get();
         $this->assertEquals(1, $sitemapItems->count());
         foreach ($sitemapItems as $sitemapItem) {
-            (new ScanPageForMediaItems())->parse($sitemapItem->loc);
+            (new ScanPageForMediaItems())->scan($sitemapItem->loc);
         }
     }
 }

@@ -7,7 +7,6 @@ use DOMElement;
 use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Models\SitemapItem;
 use Initbiz\SeoStorm\Sitemap\Generators\AbstractGenerator;
-use Initbiz\SeoStorm\Sitemap\Resources\SitemapItemsCollection;
 
 class SitemapImagesGenerator extends AbstractGenerator
 {
@@ -31,9 +30,9 @@ class SitemapImagesGenerator extends AbstractGenerator
      * Make items that are added to the XML
      *
      * @param DOMElement $urlSet
-     * @return SitemapItemsCollection
+     * @return array
      */
-    public function makeItems(?SiteDefinition $site = null): SitemapItemsCollection
+    public function makeItems(?SiteDefinition $site = null): array
     {
         if (is_null($site)) {
             $site = Site::getActiveSite();
@@ -55,6 +54,6 @@ class SitemapImagesGenerator extends AbstractGenerator
             $sitemapItems[] = $sitemapItem;
         }
 
-        return new SitemapItemsCollection($sitemapItems);
+        return $sitemapItems;
     }
 }

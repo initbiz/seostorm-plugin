@@ -7,7 +7,6 @@ use DOMElement;
 use System\Models\SiteDefinition;
 use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\SeoStorm\Sitemap\Generators\AbstractGenerator;
-use Initbiz\SeoStorm\Sitemap\Resources\SitemapItemsCollection;
 
 class SitemapVideosGenerator extends AbstractGenerator
 {
@@ -31,9 +30,9 @@ class SitemapVideosGenerator extends AbstractGenerator
      * Make items that are added to the XML
      *
      * @param SiteDefinition|null $site
-     * @return SitemapItemsCollection
+     * @return array
      */
-    public function makeItems(?SiteDefinition $site = null): SitemapItemsCollection
+    public function makeItems(?SiteDefinition $site = null): array
     {
         if (is_null($site)) {
             $site = Site::getActiveSite();
@@ -53,6 +52,6 @@ class SitemapVideosGenerator extends AbstractGenerator
             $sitemapItems[] = $sitemapItem;
         }
 
-        return new SitemapItemsCollection($sitemapItems);
+        return $sitemapItems;
     }
 }

@@ -10,13 +10,14 @@ use Queue;
 use Cms\Classes\Page;
 use System\Models\SiteDefinition;
 use October\Rain\Database\Builder;
+use Initbiz\Sitemap\Values\Changefreq;
 use October\Rain\Support\Facades\Site;
 use RainLab\Pages\Classes\Page as StaticPage;
+use Initbiz\Sitemap\DOMElements\UrlDOMElement;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
-use Initbiz\SeoStorm\Sitemap\Resources\PageItem;
-use Initbiz\SeoStorm\Sitemap\Resources\Changefreq;
+use Initbiz\Sitemap\DOMElements\ImageDOMElement;
+use Initbiz\Sitemap\DOMElements\VideoDOMElement;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
-use Initbiz\SeoStorm\Sitemap\Resources\SitemapItemsCollection;
 
 class SitemapItem extends Model
 {
@@ -92,37 +93,45 @@ class SitemapItem extends Model
     }
 
     /**
-     * Every time when creating collection Eloquent will build this collection
+     * Sync images appended to the page
      *
-     * @param array $models
-     * @return SitemapItemsCollection
-     */
-    public function newCollection(array $models = []): SitemapItemsCollection
-    {
-        return new SitemapItemsCollection($models);
-    }
-
-    /**
-     * Sync images appended to the page using their locs
-     *
-     * @param array<string> $locs
+     * @param array<ImageDOMElement> $imageDOMElements
      * @return void
      */
-    public function syncImagesUsingLocs(array $locs): void
+    public function syncImages(array $imageDOMElements): void
     {
         $idsToSync = [];
-        foreach ($locs as $loc) {
-            $sitemapMedia = SitemapMedia::where('loc', $loc)->first();
-            if (!$sitemapMedia) {
-                $sitemapMedia = new SitemapMedia();
-                $sitemapMedia->type = 'image';
-                $sitemapMedia->loc = $loc;
-                $sitemapMedia->save();
-            }
+        foreach ($imageDOMElements as $imageDOMElement) {
+            $sitemapMedia = SitemapMedia::fromImageDOMElement($imageDOMElement);
+            $sitemapMedia->save();
             $idsToSync[] = $sitemapMedia->id;
         }
 
-        $this->images()->sync($idsToSync);
+        // We need to fetch videos IDs to not touch them when syncing
+        $videosIds = $this->videos()->get(['initbiz_seostorm_sitemap_media.id'])->pluck('id')->toArray();
+        $this->images()->sync(array_merge($videosIds, $idsToSync));
+
+        SitemapMedia::deleteGhosts();
+    }
+
+    /**
+     * Sync videos appended to the page
+     *
+     * @param array<VideoDOMElement> $videoDOMElements
+     * @return void
+     */
+    public function syncVideos(array $videoDOMElements): void
+    {
+        $idsToSync = [];
+        foreach ($videoDOMElements as $videoDOMElement) {
+            $sitemapMedia = SitemapMedia::fromVideoDOMElement($videoDOMElement);
+            $sitemapMedia->save();
+            $idsToSync[] = $sitemapMedia->id;
+        }
+
+        // We need to fetch images IDs to not touch them when syncing
+        $imagesIds = $this->images()->get(['initbiz_seostorm_sitemap_media.id'])->pluck('id')->toArray();
+        $this->videos()->sync(array_merge($imagesIds, $idsToSync));
 
         SitemapMedia::deleteGhosts();
     }
@@ -132,13 +141,13 @@ class SitemapItem extends Model
      *
      * @param Page $page
      * @param SiteDefinition|null $site
-     * @param SitemapItemsCollection<PageItem>|null $items
+     * @param array<SitemapItem>|null $items
      * @return void
      */
     public static function refreshForCmsPage(
         Page $page,
         ?SiteDefinition $site = null,
-        ?SitemapItemsCollection $items = null
+        ?array $items = null
     ): void {
         if (is_null($site)) {
             $site = Site::getActiveSite();
@@ -150,11 +159,8 @@ class SitemapItem extends Model
         }
 
         foreach ($items as $item) {
-            $object = SitemapItem::fromSitemapPageItem($item);
-            $object->site_definition_id = $site->id;
-            $object->save();
-
-            Queue::push(ScanPageForMediaItems::class, ['loc' => $item->getLoc()]);
+            $item->save();
+            Queue::push(ScanPageForMediaItems::class, ['loc' => $item->loc]);
         }
 
         Event::fire('initbiz.seostorm.sitemapItemForCmsPageRefreshed', [$page]);
@@ -165,13 +171,13 @@ class SitemapItem extends Model
      *
      * @param StaticPage $staticPage
      * @param SiteDefinition|null $site
-     * @param PageItem|null $item
+     * @param SitemapItem|null $item
      * @return void
      */
     public static function refreshForStaticPage(
         StaticPage $staticPage,
         ?SiteDefinition $site = null,
-        ?PageItem $item = null
+        ?SitemapItem $item = null
     ): void {
         if (is_null($site)) {
             $site = Site::getActiveSite();
@@ -182,62 +188,37 @@ class SitemapItem extends Model
             $item = $pagesGenerator->makeItemForStaticPage($staticPage);
         }
 
-        $object = SitemapItem::fromSitemapPageItem($item);
-        $object->site_definition_id = $site->id;
-        $object->save();
+        $item->save();
 
-        Queue::push(ScanPageForMediaItems::class, ['loc' => $item->getLoc()]);
+        Queue::push(ScanPageForMediaItems::class, ['loc' => $item->loc]);
 
         Event::fire('initbiz.seostorm.sitemapItemForStaticPageRefreshed', [$staticPage]);
     }
 
     /**
-     * Convert this model instance to PageItem instance
+     * Convert this model instance to UrlDOMElement instance
      *
-     * @return PageItem
+     * @return UrlDOMElement
      */
-    public function toSitemapPageItem(): PageItem
+    public function toUrlDOMElement(): UrlDOMElement
     {
-        $pageItem = new PageItem();
+        $urlDOMElement = new UrlDOMElement();
 
-        $pageItem->setLoc($this->loc);
-        $pageItem->setBaseFileName($this->base_file_name);
+        $urlDOMElement->setLoc($this->loc);
 
         if (!empty($this->lastmod)) {
-            $pageItem->setLastmod($this->lastmod);
+            $urlDOMElement->setLastmod($this->lastmod);
         }
 
         if (!empty($this->changefreq)) {
             $changefreq = Changefreq::tryFrom($this->changefreq);
-            $pageItem->setChangefreq($changefreq);
+            $urlDOMElement->setChangefreq($changefreq);
         }
 
         if (!empty($this->priority)) {
-            $pageItem->setPriority($this->priority);
+            $urlDOMElement->setPriority($this->priority);
         }
 
-        return $pageItem;
-    }
-
-    /**
-     * Create model instance using PageItem
-     *
-     * @param PageItem $pageItem
-     * @return SitemapItem
-     */
-    public static function fromSitemapPageItem(PageItem $pageItem): SitemapItem
-    {
-        $sitemapItem = SitemapItem::where('loc', $pageItem->getLoc())->first();
-        if (!$sitemapItem) {
-            $sitemapItem = new SitemapItem();
-        }
-
-        $sitemapItem->loc = $pageItem->getLoc();
-        $sitemapItem->lastmod = $pageItem->getLastmod();
-        $sitemapItem->changefreq = $pageItem->getChangefreq()?->value;
-        $sitemapItem->priority = $pageItem->getPriority();
-        $sitemapItem->base_file_name = $pageItem->getBaseFileName();
-
-        return $sitemapItem;
+        return $urlDOMElement;
     }
 }

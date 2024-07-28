@@ -2,11 +2,13 @@
 
 namespace Initbiz\SeoStorm\Tests\Unit\Classes;
 
+use Queue;
 use Config;
 use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Initbiz\Seostorm\Models\SitemapItem;
+use Initbiz\Seostorm\Models\SitemapMedia;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
@@ -85,7 +87,10 @@ class SitemapTest extends StormedTestCase
         $model2->is_active = false;
         $model2->save();
 
-        SitemapItem::truncate();
+        foreach (SitemapItem::all() as $sitemapItem) {
+            $sitemapItem->delete();
+        }
+
         PagesGenerator::resetCache();
 
         $page->settings['seoOptionsModelScope'] = "active";
@@ -100,6 +105,8 @@ class SitemapTest extends StormedTestCase
 
     public function testParamsWithRelation()
     {
+        Queue::fake();
+
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-fake-model-category');
         $page->mtime = 1632858273;
