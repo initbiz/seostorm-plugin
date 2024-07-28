@@ -39,6 +39,17 @@ class PagesGenerator extends AbstractGenerator
      */
     protected $pages;
 
+    public function __construct(?SiteDefinition $activeSite = null)
+    {
+                if (is_null($activeSite)) {
+            $request = \Request::instance();
+            $activeSite = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
+        }
+
+        Site::applyActiveSite($activeSite);
+
+    }
+
     public function fillUrlSet(DOMElement $urlSet): DOMElement
     {
         $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
