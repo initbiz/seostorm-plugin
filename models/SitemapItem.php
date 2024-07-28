@@ -34,7 +34,7 @@ class SitemapItem extends Model
     public $rules = [
         'loc' => 'required',
         'base_file_name' => 'required',
-        'priority' => 'nullable|float',
+        'priority' => 'nullable|numeric',
         'changefreq' => 'nullable|in:always,hourly,daily,weekly,monthly,yearly,never',
         'lastmod' => 'nullable|date',
     ];

@@ -3,7 +3,8 @@
 namespace Initbiz\SeoStorm\Console;
 
 use Illuminate\Console\Command;
-use Initbiz\SeoStorm\SitemapGenerators\PagesGenerator;
+use October\Rain\Support\Facades\Site;
+use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
 
 class RefreshSitemap extends Command
 {
@@ -13,6 +14,8 @@ class RefreshSitemap extends Command
     public function handle()
     {
         $pagesGenerator = new PagesGenerator();
-        $pagesGenerator->makeItems();
+        foreach (Site::listEnabled() as $site) {
+            $pagesGenerator->makeDOMElements($site);
+        }
     }
 }

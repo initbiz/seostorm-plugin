@@ -64,7 +64,7 @@
 4.8.1:
     - "Fix tests in October 3.6"
 5.0.0:
-    - "Add external sitemap"
+    - "Provide automatic sitemaps with index, images and videos support"
     - 5_0_0_create_sitemap_items_table.php
     - 5_0_0_create_sitemap_media_table.php
     - 5_0_0_create_sitemap_items_media_table.php
