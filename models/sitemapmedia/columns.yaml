@@ -3,11 +3,8 @@
 # ===================================
 
 columns:
-    id:
-        label: ID
-        searchable: true
-    url:
-        label: url
+    loc:
+        label: loc
         searchable: true
     type:
         label: type

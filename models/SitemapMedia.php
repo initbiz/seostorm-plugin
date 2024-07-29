@@ -2,6 +2,7 @@
 
 namespace Initbiz\Seostorm\Models;
 
+use Initbiz\Sitemap\Contracts\ConvertingToDOMElement;
 use Model;
 use October\Rain\Database\Builder;
 use Initbiz\Sitemap\DOMElements\ImageDOMElement;
@@ -125,6 +126,95 @@ class SitemapMedia extends Model
         $sitemapMedia->additional_data = $additionalData;
 
         return $sitemapMedia;
+    }
+
+    public function toDOMElement(): ConvertingToDOMElement
+    {
+        if ($this->type === 'image') {
+            return $this->toImageDOMElement();
+        } elseif ($this->type === 'video') {
+            return $this->toVideoDOMElement();
+        }
+
+        throw new \Exception("Unsupported media type");
+    }
+
+    public function toImageDOMElement(): ImageDOMElement
+    {
+        $imageDOMElement = new ImageDOMElement();
+
+        $imageDOMElement->setLoc($this->loc);
+
+        return $imageDOMElement;
+    }
+
+    public function toVideoDOMElement(): VideoDOMElement
+    {
+        $videoDOMElement = new VideoDOMElement();
+
+        $videoDOMElement->setPlayerLoc($this->loc);
+
+        $thumbnailLoc = $this->additional_data['thumbnail_loc'] ?? null;
+        if (!is_null($thumbnailLoc)) {
+            $videoDOMElement->setThumbnailLoc($thumbnailLoc);
+        }
+
+        $title = $this->additional_data['title'] ?? null;
+        if (!is_null($title)) {
+            $videoDOMElement->setTitle($title);
+        }
+
+        $description = $this->additional_data['description'] ?? null;
+        if (!is_null($description)) {
+            $videoDOMElement->setDescription($description);
+        }
+
+        $contentLoc = $this->additional_data['content_loc'] ?? null;
+        if (!is_null($contentLoc)) {
+            $videoDOMElement->setContentLoc($contentLoc);
+        }
+
+        $duration = $this->additional_data['duration'] ?? null;
+        if (!is_null($duration)) {
+            $videoDOMElement->setDuration($duration);
+        }
+
+        $expirationDate = $this->additional_data['expiration_date'] ?? null;
+        if (!is_null($expirationDate)) {
+            $videoDOMElement->setExpirationDate(new \DateTime($expirationDate));
+        }
+
+        $rating = $this->additional_data['rating'] ?? null;
+        if (!is_null($rating)) {
+            $videoDOMElement->setRating((float) $rating);
+        }
+
+        $viewCount = $this->additional_data['view_count'] ?? null;
+        if (!is_null($viewCount)) {
+            $videoDOMElement->setViewCount((int) $viewCount);
+        }
+
+        $publicationDate = $this->additional_data['publication_date'] ?? null;
+        if (!is_null($publicationDate)) {
+            $videoDOMElement->setPublicationDate(new \DateTime($publicationDate));
+        }
+
+        $familyFriendly = $this->additional_data['family_friendly'] ?? null;
+        if (!is_null($familyFriendly)) {
+            $videoDOMElement->setFamilyFriendly((bool) $familyFriendly);
+        }
+
+        $requiresSubscription = $this->additional_data['requires_subscription'] ?? null;
+        if (!is_null($requiresSubscription)) {
+            $videoDOMElement->setRequiresSubscription((bool) $requiresSubscription);
+        }
+
+        $live = $this->additional_data['live'] ?? null;
+        if (!is_null($live)) {
+            $videoDOMElement->setLive((bool) $live);
+        }
+
+        return $videoDOMElement;
     }
 
     /**

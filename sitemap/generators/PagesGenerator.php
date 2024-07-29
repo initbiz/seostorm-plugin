@@ -49,6 +49,12 @@ class PagesGenerator extends AbstractGenerator
         Site::applyActiveSite($activeSite);
     }
 
+    /**
+     * Make DOMElements listed in the sitemap
+     *
+     * @param SiteDefinition|null $site
+     * @return array
+     */
     public function makeDOMElements(?SiteDefinition $site = null): array
     {
         if (is_null($site)) {
@@ -61,7 +67,7 @@ class PagesGenerator extends AbstractGenerator
         foreach ($pages as $page) {
             $baseFilenamesToLeave[] = $page->base_file_name;
 
-            if (!$this->isPageContentChanged($page->base_file_name, $page['content'])) {
+            if (!$this->isPageContentChanged($page, $site)) {
                 continue;
             }
 
@@ -74,7 +80,7 @@ class PagesGenerator extends AbstractGenerator
             foreach ($staticPages as $staticPage) {
                 $baseFilenamesToLeave[] = $staticPage->fileName;
 
-                if (!$this->isPageContentChanged($staticPage->fileName, $staticPage->getContent())) {
+                if (!$this->isPageContentChanged($staticPage, $site)) {
                     continue;
                 }
 
@@ -86,7 +92,7 @@ class PagesGenerator extends AbstractGenerator
         $this->fireSystemEvent('initbiz.seostorm.beforeClearingSitemapItems', [&$baseFilenamesToLeave]);
 
         // Remove all unused SitemapUrls
-        $sitemapItemsToDelete = SitemapItem::whereNotIn('base_file_name', $baseFilenamesToLeave)->get();
+        $sitemapItemsToDelete = SitemapItem::whereNotIn('base_file_name', $baseFilenamesToLeave)->withSite($site)->get();
         foreach ($sitemapItemsToDelete as $sitemapItemToDelete) {
             $sitemapItemToDelete->delete();
         }
@@ -203,9 +209,20 @@ class PagesGenerator extends AbstractGenerator
         }
 
         $loc = $page->url;
+
+        // We're restoring ending / if the page is a "root" page
+        $restoreSlash = false;
+        if ($loc === '/') {
+            $restoreSlash = true;
+        }
+
         if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
             $translator = Translator::instance();
             $loc = $translator->getPageInLocale($page->base_file_name, $site) ?? $loc;
+        }
+
+        if ($restoreSlash && !str_ends_with('/', $loc)) {
+            $loc .= '/';
         }
 
         $sitemapItems = [];
@@ -222,12 +239,13 @@ class PagesGenerator extends AbstractGenerator
                 $loc = $this->generateLocForModelAndCmsPage($model, $page);
                 $loc = $this->trimOptionalParameters($loc);
 
-                $lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
+                $lastmod = $this->getLastmodForCmsPage($page);
+
                 if ($page->seoOptionsUseUpdatedAt && isset($model->updated_at)) {
                     $lastmod = $model->updated_at;
                 }
 
-                $sitemapItem = SitemapItem::where('loc', $loc)->first();
+                $sitemapItem = SitemapItem::where('loc', $loc)->withSite($site)->first();
                 if (!$sitemapItem) {
                     $sitemapItem = new SitemapItem();
                     $sitemapItem->loc = $loc;
@@ -244,17 +262,19 @@ class PagesGenerator extends AbstractGenerator
         } else {
             $loc = $this->trimOptionalParameters($loc);
 
-            $sitemapItem = SitemapItem::where('loc', $loc)->first();
+            $sitemapItem = SitemapItem::where('loc', $loc)->withSite($site)->first();
             if (!$sitemapItem) {
                 $sitemapItem = new SitemapItem();
                 $sitemapItem->loc = $loc;
             }
 
+            $lastmod = $this->getLastmodForCmsPage($page);
+
             $sitemapItem->base_file_name = $page->base_file_name;
             $sitemapItem->site_definition_id = $site->id;
             $sitemapItem->priority = $page->seoOptionsPriority;
             $sitemapItem->changefreq = $page->seoOptionsChangefreq;
-            $sitemapItem->lastmod = $page->lastmod ?: Carbon::createFromTimestamp($page->mtime);
+            $sitemapItem->lastmod = $lastmod;
 
             $sitemapItems[] = $sitemapItem;
         }
@@ -328,6 +348,19 @@ class PagesGenerator extends AbstractGenerator
         return $loc;
     }
 
+    public function getLastmodForCmsPage(Page $page): Carbon
+    {
+        if (!is_null($page->lastmod)) {
+            return Carbon::parse($page->lastmod);
+        }
+
+        if (!is_null($page->mtime)) {
+            return Carbon::createFromTimestamp($page->mtime);
+        }
+
+        return Carbon::now();
+    }
+
     // RainLab.Pages
 
     public function getEnabledStaticPages(?Theme $theme = null): array
@@ -365,8 +398,14 @@ class PagesGenerator extends AbstractGenerator
 
         $viewBag = $staticPage->getViewBag();
 
-        $sitemapItem = new SitemapItem();
-        $sitemapItem->loc = StaticPage::url($staticPage->fileName);
+        $loc = StaticPage::url($staticPage->fileName);
+        $sitemapItem = SitemapItem::where('loc', $loc)->withSite($site)->first();
+
+        if (!$sitemapItem) {
+            $sitemapItem = new SitemapItem();
+            $sitemapItem->loc = $loc;
+        }
+
         $sitemapItem->lastmod = $viewBag->property('lastmod') ?: $staticPage->mtime;
         $sitemapItem->priority = $viewBag->property('priority');
         $sitemapItem->changefreq = $viewBag->property('changefreq');
@@ -394,8 +433,24 @@ class PagesGenerator extends AbstractGenerator
         return $loc;
     }
 
-    public function isPageContentChanged(string $baseFileName, string $content): bool
+    public function isPageContentChanged(Page|StaticPage $page, ?SiteDefinition $site = null): bool
     {
+        if (is_null($site)) {
+            $site = Site::getActiveSite();
+        }
+
+        $key = $site->code . '-';
+
+        if ($page instanceof StaticPage) {
+            $baseFileName = $page->fileName;
+            $content = $page->getContent();
+        } else {
+            $baseFileName = $page->base_file_name;
+            $content = $page['content'];
+        }
+
+        $key .= $baseFileName;
+
         $cacheArray = [];
         if (Cache::has(self::HASH_PAGE_CACHE_KEY)) {
             $cacheArray = json_decode(Cache::get(self::HASH_PAGE_CACHE_KEY), true);
@@ -403,16 +458,27 @@ class PagesGenerator extends AbstractGenerator
 
         $md5 = md5($content);
         if (
-            !isset($cacheArray[$baseFileName]) ||
-            $cacheArray[$baseFileName] !== $md5
+            !isset($cacheArray[$key]) ||
+            $cacheArray[$key] !== $md5
         ) {
-            $cacheArray[$baseFileName] = $md5;
+            $cacheArray[$key] = $md5;
             Cache::put(self::HASH_PAGE_CACHE_KEY, json_encode($cacheArray));
 
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Generate array key to save in cache the information about update
+     *
+     * @param Page|StaticPage $page
+     * @param SiteDefinition|null $site
+     * @return string
+     */
+    public static function getCacheKeyForPage(Page|StaticPage $page,): string
+    {
     }
 
     public static function resetCache(): void

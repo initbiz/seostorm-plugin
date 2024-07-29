@@ -2,8 +2,9 @@
 
 namespace Initbiz\SeoStorm\Console;
 
+use Site;
 use Illuminate\Console\Command;
-use October\Rain\Support\Facades\Site;
+use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
 
 class RefreshSitemap extends Command
@@ -13,8 +14,11 @@ class RefreshSitemap extends Command
 
     public function handle()
     {
+        PagesGenerator::resetCache();
         $pagesGenerator = new PagesGenerator();
-        foreach (Site::listEnabled() as $site) {
+        $settings = Settings::instance();
+        foreach ($settings->getSitesEnabledInSitemap() as $site) {
+            Site::applyActiveSite($site);
             $pagesGenerator->makeDOMElements($site);
         }
     }

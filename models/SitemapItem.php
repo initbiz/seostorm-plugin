@@ -108,7 +108,7 @@ class SitemapItem extends Model
         }
 
         // We need to fetch videos IDs to not touch them when syncing
-        $videosIds = $this->videos()->get(['initbiz_seostorm_sitemap_media.id'])->pluck('id')->toArray();
+        $videosIds = $this->videos()->get(['initbiz_seostorm_sitemap_media.id as id'])->pluck('id')->toArray();
         $this->images()->sync(array_merge($videosIds, $idsToSync));
 
         SitemapMedia::deleteGhosts();
@@ -130,7 +130,7 @@ class SitemapItem extends Model
         }
 
         // We need to fetch images IDs to not touch them when syncing
-        $imagesIds = $this->images()->get(['initbiz_seostorm_sitemap_media.id'])->pluck('id')->toArray();
+        $imagesIds = $this->images()->get(['initbiz_seostorm_sitemap_media.id as id'])->pluck('id')->toArray();
         $this->videos()->sync(array_merge($imagesIds, $idsToSync));
 
         SitemapMedia::deleteGhosts();

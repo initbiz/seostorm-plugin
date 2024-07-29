@@ -45,11 +45,11 @@ class Router
                 Route::get($prefix . '/sitemap_index.xml', [SitemapController::class, 'index']);
             }
 
-            if ($settings->get('enable_index_sitemap_videos')) {
+            if ($settings->get('enable_videos_sitemap')) {
                 Route::get($prefix . '/sitemap_videos.xml', [SitemapController::class, 'videos']);
             }
 
-            if ($settings->get('enable_index_sitemap_images')) {
+            if ($settings->get('enable_images_sitemap')) {
                 Route::get($prefix . '/sitemap_images.xml', [SitemapController::class, 'images']);
             }
         }

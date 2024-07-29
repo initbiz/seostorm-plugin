@@ -8,5 +8,3 @@ fields:
         disabled: true
     type:
         label: type
-    # items:
-    #     label: items

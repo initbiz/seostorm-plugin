@@ -2,10 +2,12 @@
 
 namespace Initbiz\Seostorm\Controllers;
 
+use Request;
 use BackendMenu;
 use Backend\Classes\Controller;
 use System\Classes\SettingsManager;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Http\Request as HttpRequest;
 
 /**
  * SitemapItem Backend Controller
@@ -54,6 +56,22 @@ class SitemapItems extends Controller
 
     public function onRefresh()
     {
-        Artisan::call('sitemap:refresh');
+        // We need to temporarily replace request with faked one to get valid URLs
+        $originalRequest = Request::getFacadeRoot();
+        $originalHost = parse_url($originalRequest->url())['host'];
+
+        $request = new HttpRequest();
+        $request->headers->set('host', $originalHost);
+
+        Request::swap($request);
+
+        try {
+            Artisan::call('sitemap:refresh');
+        } catch (\Throwable $th) {
+            Request::swap($originalRequest);
+            throw $th;
+        }
+
+        Request::swap($originalRequest);
     }
 }

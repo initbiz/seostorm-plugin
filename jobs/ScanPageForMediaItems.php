@@ -5,7 +5,6 @@ namespace Initbiz\SeoStorm\Jobs;
 use Request;
 use Cms\Classes\CmsController;
 use Initbiz\SeoStorm\Models\SitemapItem;
-use Initbiz\Seostorm\Models\SitemapMedia;
 use Illuminate\Http\Request as HttpRequest;
 use Initbiz\Sitemap\DOMElements\ImageDOMElement;
 use Initbiz\Sitemap\DOMElements\VideoDOMElement;
@@ -54,10 +53,14 @@ class ScanPageForMediaItems
         $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
 
         $images = $this->getImagesFromDOM($dom);
-        $sitemapItem->syncImages($images);
+        if (!empty($images)) {
+            $sitemapItem->syncImages($images);
+        }
 
         $videos = $this->getVideosFromDOM($dom);
-        $sitemapItem->syncVideos($videos);
+        if (!empty($videos)) {
+            $sitemapItem->syncVideos($videos);
+        }
 
         Request::swap($originalRequest);
     }
@@ -81,7 +84,7 @@ class ScanPageForMediaItems
             }
 
             $imageDOMElement = new ImageDOMElement();
-            $imageDOMElement->setLoc($src);
+            $imageDOMElement->setLoc(url($src));
             $imageDOMElements[] = $imageDOMElement;
         }
 
