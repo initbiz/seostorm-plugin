@@ -63,10 +63,6 @@ class Settings extends Model
                 continue;
             }
 
-            if (!$siteDefinition->is_prefixed) {
-                continue;
-            }
-
             $prefix = empty($siteDefinition->route_prefix) ? '/' : $siteDefinition->route_prefix;
             $options[$siteDefinition->code] = $siteDefinition->name . ' (' . $prefix . ')';
         }
@@ -94,6 +90,7 @@ class Settings extends Model
 
     public function filterFields($fields): void
     {
+        // Display sitemap_enabled_for_sites only if there are more than one site
         if (!isset($fields->sitemap_enabled_for_sites)) {
             return;
         }

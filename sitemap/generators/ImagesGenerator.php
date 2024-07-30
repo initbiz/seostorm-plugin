@@ -23,23 +23,27 @@ class ImagesGenerator extends AbstractGenerator
             $site = Site::getActiveSite();
         }
 
-        $sitemapItems = SitemapItem::with(['images'])->enabled()->whereHas('images')->withSite($site)->get();
+        $sitemapItems = SitemapItem::with(['images'])
+            ->enabled()
+            ->whereHas('images')
+            ->withSite($site)
+            ->get();
 
-        $urls = [];
+        $urlDOMElements = [];
         foreach ($sitemapItems as $sitemapItem) {
-            $url = new UrlDOMElement();
-            $url->setLoc($sitemapItem->loc);
-            $images = [];
+            $urlDOMElement = new UrlDOMElement();
+            $urlDOMElement->setLoc($sitemapItem->loc);
+            $imagesDOMElements = [];
             foreach ($sitemapItem->images as $image) {
-                $images[] = $image->toDOMElement();
+                $imagesDOMElements[] = $image->toDOMElement();
             }
 
-            $url->setImages($images);
-            $urls[] = $url;
+            $urlDOMElement->setImages($imagesDOMElements);
+            $urlDOMElements[] = $urlDOMElement;
         }
 
         $urlSetDOMElement = new UrlsetDOMElement();
-        $urlSetDOMElement->setUrls($urls);
+        $urlSetDOMElement->setUrls($urlDOMElements);
 
         return [$urlSetDOMElement];
     }

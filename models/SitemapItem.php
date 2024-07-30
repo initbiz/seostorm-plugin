@@ -93,7 +93,7 @@ class SitemapItem extends Model
     }
 
     /**
-     * Sync images appended to the page
+     * Sync images attached to the page
      *
      * @param array<ImageDOMElement> $imageDOMElements
      * @return void
@@ -115,7 +115,7 @@ class SitemapItem extends Model
     }
 
     /**
-     * Sync videos appended to the page
+     * Sync videos attached to the page
      *
      * @param array<VideoDOMElement> $videoDOMElements
      * @return void
@@ -141,7 +141,7 @@ class SitemapItem extends Model
      *
      * @param Page $page
      * @param SiteDefinition|null $site
-     * @param array<SitemapItem>|null $items
+     * @param array<SitemapItem>|null $items the items will be added, if not provided, we'll build them from scratch
      * @return void
      */
     public static function refreshForCmsPage(
@@ -158,9 +158,22 @@ class SitemapItem extends Model
             $items = $pagesGenerator->makeItemsForCmsPage($page);
         }
 
+        $idsToLeave = [];
+        $baseFileNamesToScan = [];
         foreach ($items as $item) {
+            $idsToLeave[] = $item->id;
+            $baseFileNamesToScan[] = $item->base_file_name;
             $item->save();
             Queue::push(ScanPageForMediaItems::class, ['loc' => $item->loc]);
+        }
+
+        // Remove old records, for example when a model in the parameter was removed
+        $ghostSitemapItems = SitemapItem::whereIn('base_file_name', $baseFileNamesToScan)
+            ->whereNotIn('id', $idsToLeave)
+            ->get();
+
+        foreach ($ghostSitemapItems as $ghostSitemapItem) {
+            $ghostSitemapItem->delete();
         }
 
         Event::fire('initbiz.seostorm.sitemapItemForCmsPageRefreshed', [$page]);
@@ -171,7 +184,7 @@ class SitemapItem extends Model
      *
      * @param StaticPage $staticPage
      * @param SiteDefinition|null $site
-     * @param SitemapItem|null $item
+     * @param SitemapItem|null $item the item will be added, if not provided, we'll build it from scratch
      * @return void
      */
     public static function refreshForStaticPage(

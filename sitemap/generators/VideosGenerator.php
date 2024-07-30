@@ -23,23 +23,27 @@ class VideosGenerator extends AbstractGenerator
             $site = Site::getActiveSite();
         }
 
-        $sitemapItems = SitemapItem::with(['videos'])->enabled()->whereHas('videos')->withSite($site)->get();
+        $sitemapItems = SitemapItem::with(['videos'])
+            ->enabled()
+            ->whereHas('videos')
+            ->withSite($site)
+            ->get();
 
-        $urls = [];
+        $urlDOMElements = [];
         foreach ($sitemapItems as $sitemapItem) {
-            $url = new UrlDOMElement();
-            $url->setLoc($sitemapItem->loc);
-            $videos = [];
+            $urlDOMElement = new UrlDOMElement();
+            $urlDOMElement->setLoc($sitemapItem->loc);
+            $videosDOMElements = [];
             foreach ($sitemapItem->videos as $video) {
-                $videos[] = $video->toDOMElement();
+                $videosDOMElements[] = $video->toDOMElement();
             }
 
-            $url->setVideos($videos);
-            $urls[] = $url;
+            $urlDOMElement->setVideos($videosDOMElements);
+            $urlDOMElements[] = $urlDOMElement;
         }
 
         $urlSetDOMElement = new UrlsetDOMElement();
-        $urlSetDOMElement->setUrls($urls);
+        $urlSetDOMElement->setUrls($urlDOMElements);
 
         return [$urlSetDOMElement];
     }

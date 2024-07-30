@@ -2,11 +2,11 @@
 
 namespace Initbiz\Seostorm\Models;
 
-use Initbiz\Sitemap\Contracts\ConvertingToDOMElement;
 use Model;
 use October\Rain\Database\Builder;
 use Initbiz\Sitemap\DOMElements\ImageDOMElement;
 use Initbiz\Sitemap\DOMElements\VideoDOMElement;
+use Initbiz\Sitemap\Contracts\ConvertingToDOMElement;
 
 /**
  * SitemapMedia Model
@@ -51,6 +51,12 @@ class SitemapMedia extends Model
         return $query->where('type', 'video');
     }
 
+    /**
+     * Create SitemapMedia using image DOM Element
+     *
+     * @param ImageDOMElement $imageDOMElement
+     * @return SitemapMedia
+     */
     public static function fromImageDOMElement(ImageDOMElement $imageDOMElement): SitemapMedia
     {
         $sitemapMedia = SitemapMedia::where('loc', $imageDOMElement->getLoc())->first();
@@ -63,6 +69,12 @@ class SitemapMedia extends Model
         return $sitemapMedia;
     }
 
+    /**
+     * Create Sitemap Media from Video DOM Element
+     *
+     * @param VideoDOMElement $videoDOMElement
+     * @return SitemapMedia
+     */
     public static function fromVideoDOMElement(VideoDOMElement $videoDOMElement): SitemapMedia
     {
         $sitemapMedia = SitemapMedia::where('loc', $videoDOMElement->getPlayerLoc())->first();
@@ -128,6 +140,12 @@ class SitemapMedia extends Model
         return $sitemapMedia;
     }
 
+    /**
+     * Convert this Sitemap Media item to DOM Element
+     * It will return either Image DOM Element or Video DOM Element - depending on the type
+     *
+     * @return ConvertingToDOMElement
+     */
     public function toDOMElement(): ConvertingToDOMElement
     {
         if ($this->type === 'image') {
@@ -139,6 +157,11 @@ class SitemapMedia extends Model
         throw new \Exception("Unsupported media type");
     }
 
+    /**
+     * Convert this Sitemap Media item to Image DOM Element
+     *
+     * @return ImageDOMElement
+     */
     public function toImageDOMElement(): ImageDOMElement
     {
         $imageDOMElement = new ImageDOMElement();
@@ -148,6 +171,11 @@ class SitemapMedia extends Model
         return $imageDOMElement;
     }
 
+    /**
+     * Convert this Sitemap Media item to Video DOM Element
+     *
+     * @return VideoDOMElement
+     */
     public function toVideoDOMElement(): VideoDOMElement
     {
         $videoDOMElement = new VideoDOMElement();

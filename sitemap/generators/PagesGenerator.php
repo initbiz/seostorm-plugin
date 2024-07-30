@@ -71,8 +71,8 @@ class PagesGenerator extends AbstractGenerator
                 continue;
             }
 
-            $urls = $this->makeItemsForCmsPage($page, $site);
-            SitemapItem::refreshForCmsPage($page, $site, $urls);
+            $sitemapItems = $this->makeItemsForCmsPage($page, $site);
+            SitemapItem::refreshForCmsPage($page, $site, $sitemapItems);
         }
 
         if (PluginManager::instance()->hasPlugin('RainLab.Pages')) {
@@ -84,8 +84,8 @@ class PagesGenerator extends AbstractGenerator
                     continue;
                 }
 
-                $item = $this->makeItemForStaticPage($staticPage, $site);
-                SitemapItem::refreshForStaticPage($staticPage, $site, $item);
+                $sitemapItem = $this->makeItemForStaticPage($staticPage, $site);
+                SitemapItem::refreshForStaticPage($staticPage, $site, $sitemapItem);
             }
         }
 
@@ -97,17 +97,17 @@ class PagesGenerator extends AbstractGenerator
             $sitemapItemToDelete->delete();
         }
 
-        $sitemapItemsModels = SitemapItem::enabled()->withSite($site)->get();
+        $sitemapItems = SitemapItem::enabled()->withSite($site)->get();
 
-        $this->fireSystemEvent('initbiz.seostorm.sitemapItemsModels', [&$sitemapItemsModels]);
+        $this->fireSystemEvent('initbiz.seostorm.sitemapItems', [&$sitemapItems]);
 
-        $urls = [];
-        foreach ($sitemapItemsModels as $sitemapItemModel) {
-            $urls[] = $sitemapItemModel->toUrlDOMElement();
+        $urlDOMElements = [];
+        foreach ($sitemapItems as $sitemapItem) {
+            $urlDOMElements[] = $sitemapItem->toUrlDOMElement();
         }
 
         $urlSetDOMElement = new UrlsetDOMElement();
-        $urlSetDOMElement->setUrls($urls);
+        $urlSetDOMElement->setUrls($urlDOMElements);
 
         return [$urlSetDOMElement];
     }
@@ -227,7 +227,12 @@ class PagesGenerator extends AbstractGenerator
 
         $sitemapItems = [];
         $modelClass = $page->seoOptionsModelClass ?? "";
+        $lastmod = $this->getLastmodForCmsPage($page);
+
         if (class_exists($modelClass)) {
+            // If there a model class specified we'll iterate over them
+            // and generate URLs separately for every single one
+
             $scope = $page->seoOptionsModelScope;
             $models = $this->getModelObjects($modelClass, $scope);
 
@@ -238,8 +243,6 @@ class PagesGenerator extends AbstractGenerator
 
                 $loc = $this->generateLocForModelAndCmsPage($model, $page);
                 $loc = $this->trimOptionalParameters($loc);
-
-                $lastmod = $this->getLastmodForCmsPage($page);
 
                 if ($page->seoOptionsUseUpdatedAt && isset($model->updated_at)) {
                     $lastmod = $model->updated_at;
@@ -260,6 +263,7 @@ class PagesGenerator extends AbstractGenerator
                 $sitemapItems[] = $sitemapItem;
             }
         } else {
+            // If there is no model class specified - we'll add just a single record
             $loc = $this->trimOptionalParameters($loc);
 
             $sitemapItem = SitemapItem::where('loc', $loc)->withSite($site)->first();
@@ -267,8 +271,6 @@ class PagesGenerator extends AbstractGenerator
                 $sitemapItem = new SitemapItem();
                 $sitemapItem->loc = $loc;
             }
-
-            $lastmod = $this->getLastmodForCmsPage($page);
 
             $sitemapItem->base_file_name = $page->base_file_name;
             $sitemapItem->site_definition_id = $site->id;
@@ -286,7 +288,7 @@ class PagesGenerator extends AbstractGenerator
      * Get Objects for provided model class, using scope definition
      *
      * @param string $modelClass
-     * @param string|null $scopeDef
+     * @param string|null $scopeDef, for example isPublished:yesterday
      * @return Collection
      */
     public function getModelObjects(string $modelClass, ?string $scopeDef = null): Collection
@@ -298,6 +300,7 @@ class PagesGenerator extends AbstractGenerator
         $params = explode(':', $scopeDef);
         $scopeName = $params[0];
         $scopeParameter = $params[1] ?? null;
+
         $query = $modelClass::with(['seostorm_options'])->{$scopeName}($scopeParameter);
 
         return $query->get();
@@ -348,6 +351,12 @@ class PagesGenerator extends AbstractGenerator
         return $loc;
     }
 
+    /**
+     * Use page's lastmod or mtime attributes, if none of them set, use "now" as the lastmod
+     *
+     * @param Page $page
+     * @return Carbon
+     */
     public function getLastmodForCmsPage(Page $page): Carbon
     {
         if (!is_null($page->lastmod)) {
@@ -363,6 +372,12 @@ class PagesGenerator extends AbstractGenerator
 
     // RainLab.Pages
 
+    /**
+     * List Static pages that are enabled for the Sitemap
+     *
+     * @param Theme|null $theme
+     * @return array<StaticPage>
+     */
     public function getEnabledStaticPages(?Theme $theme = null): array
     {
         if (empty($theme)) {
@@ -384,7 +399,7 @@ class PagesGenerator extends AbstractGenerator
     }
 
     /**
-     * Get SitemapItem object for this static page
+     * Makes SitemapItem object for this static page
      *
      * @param StaticPage $staticPage
      * @param SiteDefinition|null $site
@@ -433,6 +448,16 @@ class PagesGenerator extends AbstractGenerator
         return $loc;
     }
 
+    /**
+     * The method checks if the page was changed at the file level and if so, it'll store the content's hash
+     * in the cache, so that it knows next time that the content has changed or not.
+     *
+     * The method is particularly useful for re-generating items to not touch records that were not changed
+     *
+     * @param Page|StaticPage $page
+     * @param SiteDefinition|null $site
+     * @return boolean
+     */
     public function isPageContentChanged(Page|StaticPage $page, ?SiteDefinition $site = null): bool
     {
         if (is_null($site)) {
@@ -440,6 +465,7 @@ class PagesGenerator extends AbstractGenerator
         }
 
         $key = $site->code . '-';
+        $content = '';
 
         if ($page instanceof StaticPage) {
             $baseFileName = $page->fileName;
@@ -471,16 +497,10 @@ class PagesGenerator extends AbstractGenerator
     }
 
     /**
-     * Generate array key to save in cache the information about update
+     * Forget cache that stores info about files being changed or not
      *
-     * @param Page|StaticPage $page
-     * @param SiteDefinition|null $site
-     * @return string
+     * @return void
      */
-    public static function getCacheKeyForPage(Page|StaticPage $page,): string
-    {
-    }
-
     public static function resetCache(): void
     {
         Cache::forget(self::HASH_PAGE_CACHE_KEY);

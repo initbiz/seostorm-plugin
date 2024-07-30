@@ -3,15 +3,14 @@
 namespace Initbiz\SeoStorm\Tests\Unit\Models;
 
 use Queue;
-use Config;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Cms\Classes\ComponentManager;
 use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
+use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
-use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems as ScanPageForMediaItems;
 use Initbiz\SeoStorm\Tests\Classes\FakeModelDetailsComponent;
 
 class SitemapItemTest extends StormedTestCase

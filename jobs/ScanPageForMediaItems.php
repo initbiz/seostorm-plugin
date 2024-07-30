@@ -11,8 +11,6 @@ use Initbiz\Sitemap\DOMElements\VideoDOMElement;
 
 class ScanPageForMediaItems
 {
-    public $failOnTimeout = false;
-
     public function fire($job, $data)
     {
         $this->scan($data['loc']);
