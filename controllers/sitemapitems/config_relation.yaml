@@ -1,8 +1,23 @@
-media:
-    label: Sitemap Media
+images:
+    label: initbiz.seostorm::lang.models.sitemap_item.images
     view:
-        list: $/initbiz/seostorm/models/sitemapmedia/columns.yaml
-        toolbarButtons: create|delete
-        recordsPerPage: 10
-    manage:
-        form: $/initbiz/seostorm/models/sitemapmedia/fields.yaml
+        list:
+            columns:
+                loc:
+                    label: initbiz.seostorm::lang.models.sitemap_media.loc
+                    searchable: true
+        toolbarButtons: remove
+        recordUrl: initbiz/seostorm/sitemapmedia/update/:id
+        recordsPerPage: 20
+
+videos:
+    label: initbiz.seostorm::lang.models.sitemap_item.videos
+    view:
+        list:
+            columns:
+                loc:
+                    label: initbiz.seostorm::lang.models.sitemap_media.loc
+                    searchable: true
+        toolbarButtons: remove
+        recordUrl: initbiz/seostorm/sitemapmedia/update/:id
+        recordsPerPage: 20

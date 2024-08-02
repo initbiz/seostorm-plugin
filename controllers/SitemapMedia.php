@@ -16,6 +16,7 @@ class SitemapMedia extends Controller
     public $implement = [
         \Backend\Behaviors\FormController::class,
         \Backend\Behaviors\ListController::class,
+        \Backend\Behaviors\RelationController::class,
     ];
 
     /**
@@ -27,6 +28,8 @@ class SitemapMedia extends Controller
      * @var string listConfig file
      */
     public $listConfig = 'config_list.yaml';
+
+    public $relationConfig = 'config_relation.yaml';
 
     /**
      * @var array required permissions

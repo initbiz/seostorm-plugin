@@ -218,8 +218,14 @@
             'list_label' => 'Sitemap items',
             'loc' => 'Location',
             'site_definition' => 'Site Definition',
-            'media' => 'Media',
             'base_file_name' => 'Base File Name',
-        ]
-    ]
+            'images' => 'Images',
+            'videos' => 'Videos',
+        ],
+        'sitemap_media' => [
+            'items' => 'Items',
+            'loc' => 'Loc',
+            'type' => 'Type',
+        ],
+    ],
 ];

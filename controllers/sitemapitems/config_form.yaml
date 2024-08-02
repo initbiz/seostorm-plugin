@@ -14,18 +14,9 @@ modelClass: Initbiz\Seostorm\Models\SitemapItem
 # Default redirect location
 defaultRedirect: initbiz/seostorm/sitemapitems
 
-# Create page
-create:
-    title: backend::lang.form.create_title
-    redirect: initbiz/seostorm/sitemapitems/update/:id
-    redirectClose: initbiz/seostorm/sitemapitems
-
 # Update page
 update:
     title: backend::lang.form.update_title
     redirect: initbiz/seostorm/sitemapitems
     redirectClose: initbiz/seostorm/sitemapitems
 
-# Preview page
-preview:
-    title: backend::lang.form.preview_title

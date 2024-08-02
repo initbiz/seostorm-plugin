@@ -1,1 +1,1 @@
-<?= $this->relationRender('item') ?>
+<?= $this->relationRender('items') ?>

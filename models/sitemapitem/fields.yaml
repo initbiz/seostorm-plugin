@@ -15,6 +15,11 @@ fields:
         label: initbiz.seostorm::lang.models.sitemap_item.base_file_name
         span: left
         disabled: true
-    media:
-        label: initbiz.seostorm::lang.models.sitemap_item.media
+    images:
+        label: initbiz.seostorm::lang.models.sitemap_item.images
         type: partial
+        span: left
+    videos:
+        label: initbiz.seostorm::lang.models.sitemap_item.videos
+        type: partial
+        span: right

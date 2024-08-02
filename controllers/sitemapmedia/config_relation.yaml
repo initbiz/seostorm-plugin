@@ -1,8 +1,7 @@
-item:
-    label: Invoice Line Item
+items:
+    label: initbiz.seostorm::lang.models.sitemap_media.items
     view:
         list: $/initbiz/seostorm/models/sitemapitem/columns.yaml
-        toolbarButtons: create|delete
-        recordsPerPage: 10
-    manage:
-        form: $/initbiz/seostorm/models/sitemapitem/fields.yaml
+        toolbarButtons: remove
+        recordUrl: initbiz/seostorm/sitemapitems/update/:id
+        recordsPerPage: 20
