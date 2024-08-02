@@ -23,8 +23,6 @@ class SitemapMedia extends Controller
      */
     public $formConfig = 'config_form.yaml';
 
-    public $settingsItemCode = 'sitemap_item';
-
     /**
      * @var string listConfig file
      */

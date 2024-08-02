@@ -5,7 +5,9 @@
     ],
     'permissions' => [
         'settings_tab' => 'SEO Storm',
-        'config' => 'Access SEO Storm configuration',
+        'config' => 'Access to SEO Storm configuration',
+        'sitemapmedia' => 'Access to SEO Storm Sitemap Media view',
+        'sitemapitems' => 'Access to SEO Storm Sitemap Items view',
     ],
     'form_widgets' => [
         'migrate' => 'Migrate',

@@ -23,10 +23,6 @@ class SitemapItems extends Controller
     ];
 
     /**
-     * @var string settingsItemCode determines the settings code
-     */
-    public $settingsItemCode = 'sitemap_item';
-    /**
      * @var string formConfig file
      */
     public $formConfig = 'config_form.yaml';
@@ -41,7 +37,7 @@ class SitemapItems extends Controller
     /**
      * @var array required permissions
      */
-    public $requiredPermissions = ['initbiz.seostorm.sitemapitem'];
+    public $requiredPermissions = ['initbiz.seostorm.sitemapitems'];
 
     /**
      * __construct the controller
