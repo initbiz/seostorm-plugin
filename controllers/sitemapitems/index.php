@@ -6,7 +6,9 @@
             <?= e(trans('initbiz.seostorm::lang.form.settings.btn_back_to_settings')) ?>
         </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page">Sitemap Items</li>
+    <li class="breadcrumb-item active" aria-current="page">
+        <?= e(trans('initbiz.seostorm::lang.models.sitemap_item.label')) ?>
+    </li>
 </ol>
 <?php Block::endPut() ?>
 

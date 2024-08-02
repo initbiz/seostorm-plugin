@@ -214,6 +214,7 @@
     ],
     'models' => [
         'sitemap_item' => [
+            'label' => 'Sitemap items',
             'btn_see_media' => 'Browse media items',
             'list_label' => 'Sitemap items',
             'loc' => 'Location',
@@ -223,6 +224,7 @@
             'videos' => 'Videos',
         ],
         'sitemap_media' => [
+            'label' => 'Sitemap Media',
             'items' => 'Items',
             'loc' => 'Loc',
             'type' => 'Type',

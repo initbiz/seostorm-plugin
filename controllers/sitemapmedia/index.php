@@ -11,7 +11,9 @@
             <?= e(trans('initbiz.seostorm::lang.models.sitemap_item.list_label')) ?>
         </a>
     </li>
-    <li class="breadcrumb-item active">Sitemap Media</li>
+    <li class="breadcrumb-item active">
+        <?= e(trans('initbiz.seostorm::lang.models.sitemap_media.label')) ?>
+    </li>
 </ol>
 <?php Block::endPut() ?>
 

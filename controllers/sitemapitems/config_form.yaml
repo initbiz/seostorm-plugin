@@ -3,7 +3,7 @@
 # ===================================
 
 # Record name
-name: SitemapItem
+name: initbiz.seostorm::lang.models.sitemap_item.label
 
 # Model Form Field configuration
 form: $/initbiz/seostorm/models/sitemapitem/fields.yaml

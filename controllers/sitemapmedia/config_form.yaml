@@ -3,7 +3,7 @@
 # ===================================
 
 # Record name
-name: Sitemap Media
+name: initbiz.seostorm::lang.models.sitemap_media.label
 
 # Model Form Field configuration
 form: $/initbiz/seostorm/models/sitemapmedia/fields.yaml
