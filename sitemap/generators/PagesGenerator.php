@@ -218,7 +218,7 @@ class PagesGenerator extends AbstractGenerator
 
         if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
             $translator = Translator::instance();
-            $loc = $translator->getPageInLocale($page->base_file_name, $site) ?? $loc;
+            $loc = $translator->getPageInLocale($page->base_file_name, $site->locale ?? null) ?? $loc;
         }
 
         if ($restoreSlash && !str_ends_with('/', $loc)) {
@@ -241,7 +241,7 @@ class PagesGenerator extends AbstractGenerator
                     continue;
                 }
 
-                $loc = $this->generateLocForModelAndCmsPage($model, $page);
+                $loc = $this->generateLocForModelAndCmsPage($model, $page, $site);
                 $loc = $this->trimOptionalParameters($loc);
 
                 if ($page->seoOptionsUseUpdatedAt && isset($model->updated_at)) {
@@ -311,10 +311,15 @@ class PagesGenerator extends AbstractGenerator
      *
      * @param Model $model
      * @param Page $page
+     * @param SiteDefinition|null $site
      * @return string
      */
-    public function generateLocForModelAndCmsPage(Model $model, Page $page): string
+    public function generateLocForModelAndCmsPage(Model $model, Page $page, ?SiteDefinition $site = null): string
     {
+        if (is_null($site)) {
+            $site = Site::getActiveSite();
+        }
+
         $baseFileName = $page->base_file_name;
 
         $modelParams = $page->seoOptionsModelParams;
@@ -343,7 +348,7 @@ class PagesGenerator extends AbstractGenerator
 
         if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
             $translator = Translator::instance();
-            $loc = $translator->getPageInLocale($baseFileName, null, $params);
+            $loc = $translator->getPageInLocale($baseFileName, $site->locale ?? null, $params);
         } else {
             $loc = \Cms::pageUrl($baseFileName, $params);
         }

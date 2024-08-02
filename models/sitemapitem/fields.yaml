@@ -7,7 +7,7 @@ fields:
         label: initbiz.seostorm::lang.models.sitemap_item.loc
         disabled: true
         span: left
-    siteDefinition:
+    site_definition:
         label: initbiz.seostorm::lang.models.sitemap_item.site_definition
         type: relation
         span: right

@@ -69,7 +69,7 @@ class SitemapItem extends Model
     ];
 
     public $belongsTo = [
-        'siteDefinition' => SiteDefinition::class
+        'site_definition' => SiteDefinition::class
     ];
 
     public function scopeWithSite(Builder $query, SiteDefinition $site): Builder
@@ -155,7 +155,7 @@ class SitemapItem extends Model
 
         if (is_null($items)) {
             $pagesGenerator = new PagesGenerator($site);
-            $items = $pagesGenerator->makeItemsForCmsPage($page);
+            $items = $pagesGenerator->makeItemsForCmsPage($page, $site);
         }
 
         $idsToLeave = [];
@@ -198,7 +198,7 @@ class SitemapItem extends Model
 
         if (is_null($item)) {
             $pagesGenerator = new PagesGenerator($site);
-            $item = $pagesGenerator->makeItemForStaticPage($staticPage);
+            $item = $pagesGenerator->makeItemForStaticPage($staticPage, $site);
         }
 
         $item->save();
