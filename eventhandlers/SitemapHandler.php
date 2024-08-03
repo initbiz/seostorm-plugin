@@ -34,12 +34,13 @@ class SitemapHandler
             }
         });
 
-        $event->listen('halcyon.deleting: RainLab\Pages\Classes\Page', function ($model) {
+        $event->listen('halcyon.deleting: RainLab\Pages\Classes\Page', function ($staticPage) {
             $settings = Settings::instance();
             foreach ($settings->getSitesEnabledInSitemap() as $site) {
-                $pagesGenerator = new PagesGenerator($site);
-                $item = $pagesGenerator->makeItemForStaticPage($model);
-                $item->delete();
+                $sitemapItems = SitemapItem::where('base_file_name', $staticPage->fileName)->withSite($site)->get();
+                foreach ($sitemapItems as $sitemapItem) {
+                    $sitemapItem->delete();
+                }
             }
         });
 

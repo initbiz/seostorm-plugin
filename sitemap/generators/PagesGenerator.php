@@ -85,7 +85,8 @@ class PagesGenerator extends AbstractGenerator
             $this->refreshForCmsPage($page);
         }
 
-        if (PluginManager::instance()->hasPlugin('RainLab.Pages')) {
+        $pluginManager = PluginManager::instance();
+        if ($pluginManager->hasPlugin('RainLab.Pages') && !$pluginManager->isDisabled('RainLab.Pages')) {
             $staticPages = $this->getEnabledStaticPages();
             foreach ($staticPages as $staticPage) {
                 $baseFilenamesToLeave[] = $staticPage->fileName;
@@ -134,8 +135,6 @@ class PagesGenerator extends AbstractGenerator
         if (empty($pages)) {
             $pages = $this->getPages();
         }
-
-        $site = $this->getSite();
 
         $pages = $pages->filter(function ($page) {
             return (bool) $page->seoOptionsEnabledInSitemap;

@@ -77,7 +77,7 @@ class Settings extends Model
      */
     public function getSitesEnabledInSitemap(): SiteCollection
     {
-        $codes = $this->sitemap_enabled_for_sites ?? [];
+        $codes = $this->get('sitemap_enabled_for_sites') ?? [];
 
         // Always include primary site
         $primarySiteCode = Site::getPrimarySite()->code;
