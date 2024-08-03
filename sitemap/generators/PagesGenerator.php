@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Initbiz\SeoStorm\Sitemap\Generators;
 
-use Cms;
-use Site;
 use Cache;
-use Queue;
 use Event;
+use Queue;
+use Config;
 use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
@@ -18,6 +17,7 @@ use System\Classes\PluginManager;
 use System\Models\SiteDefinition;
 use October\Rain\Database\Collection;
 use Initbiz\Seostorm\Models\SitemapItem;
+use Initbiz\Seostorm\Models\SitemapMedia;
 use RainLab\Pages\Classes\Page as StaticPage;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
 use Initbiz\Sitemap\DOMElements\UrlsetDOMElement;
@@ -220,7 +220,7 @@ class PagesGenerator extends AbstractGenerator
     {
         $site = $this->getSite();
 
-        $loc = $this->generateLocForCmsPage($page);
+        $urlPattern = $this->makeUrlPattern($page);
 
         $sitemapItems = [];
         $modelClass = $page->seoOptionsModelClass ?? "";
@@ -238,7 +238,8 @@ class PagesGenerator extends AbstractGenerator
                     continue;
                 }
 
-                $loc = $this->generateLocForModelAndCmsPage($model, $page);
+                $params = $this->generateParamsToUrl($page->seoOptionsModelParams, $model);
+                $loc = $this->fillUrlPatternWithParams($urlPattern, $params);
 
                 if ($page->seoOptionsUseUpdatedAt && isset($model->updated_at)) {
                     $lastmod = $model->updated_at;
@@ -261,7 +262,7 @@ class PagesGenerator extends AbstractGenerator
             }
         } else {
             // If there is no model class specified - we'll add just a single record
-
+            $loc = $this->fillUrlPatternWithParams($urlPattern);
             $sitemapItem = SitemapItem::where('loc', $loc)->withSite($site)->first();
             if (!$sitemapItem) {
                 $sitemapItem = new SitemapItem();
@@ -304,19 +305,17 @@ class PagesGenerator extends AbstractGenerator
     }
 
     /**
-     * Generate URL (loc) for provided model and CMS page
+     * Generate parameters array to use in URL using a definition and a model object
      *
+     * @param string $paramsDef
      * @param Model $model
-     * @param Page $page
-     * @return string
+     * @return array
      */
-    public function generateLocForModelAndCmsPage(Model $model, Page $page): string
+    public function generateParamsToUrl(string $paramsDef, Model $model): array
     {
-        $paramsDefinition = $page->seoOptionsModelParams;
-
         $params = [];
-        $paramsDefinition = explode('|', $paramsDefinition);
-        foreach ($paramsDefinition as $modelParam) {
+        $paramsDefs = explode('|', $paramsDef);
+        foreach ($paramsDefs as $modelParam) {
             list($urlParam, $modelParam) = explode(':', $modelParam);
 
             $replacement = '';
@@ -333,40 +332,7 @@ class PagesGenerator extends AbstractGenerator
             $params[$urlParam] = $replacement;
         }
 
-        $loc = $this->generateLocForCmsPage($page, $params);
-
-        return $loc;
-    }
-
-    public function generateLocForCmsPage(Page $page, $params = []): string
-    {
-        $site = $this->getSite();
-
-        $urlPattern = $page->url;
-
-        // We're restoring ending / if the page is a "root" page
-        $restoreSlash = false;
-        if ($urlPattern === '/') {
-            $restoreSlash = true;
-        }
-
-        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
-            $urlPattern = array_get($page->attributes, 'viewBag.localeUrl.' . $site->locale, $urlPattern);
-        }
-
-        $currentSite = Site::getActiveSite();
-        Site::applyActiveSite($site);
-        // It has to be set to '/' as October sets route prefix only if set,
-        // otherwise it's not restarted to the default of '/'
-        Cms::setUrlPrefix($site->route_prefix ?? '/');
-        $urlPattern = Cms::pageUrl($page->getBaseFileName(), $params);
-        Site::applyActiveSite($currentSite);
-
-        if ($restoreSlash && !str_ends_with('/', $urlPattern)) {
-            $urlPattern .= '/';
-        }
-
-        return $urlPattern;
+        return $params;
     }
 
     /**
@@ -418,13 +384,15 @@ class PagesGenerator extends AbstractGenerator
             $ghostSitemapItem->delete();
         }
 
+        SitemapMedia::deleteGhosts();
+
         Event::fire('initbiz.seostorm.sitemapItemForCmsPageRefreshed', [$page]);
     }
 
     // RainLab.Pages
 
     /**
-     * List Static pages that are enabled for the Sitemap
+     * List Static pages that are enabled in the Sitemap
      *
      * @param Theme|null $theme
      * @return array<StaticPage>
@@ -435,7 +403,7 @@ class PagesGenerator extends AbstractGenerator
             $theme = Theme::getActiveTheme();
         }
 
-        $staticPages = StaticPage::listInTheme($theme);
+        $staticPages = StaticPage::listInTheme($theme, true);
 
         $enabledPages = [];
 
@@ -461,13 +429,7 @@ class PagesGenerator extends AbstractGenerator
 
         $viewBag = $staticPage->getViewBag();
 
-        $currentSite = Site::getActiveSite();
-        Site::applyActiveSite($site);
-        // It has to be set to '/' as October sets route prefix only if set,
-        // otherwise it's not restarted to the default of '/'
-        Cms::setUrlPrefix($site->route_prefix ?? '/');
-        $loc = StaticPage::url($staticPage->fileName);
-        Site::applyActiveSite($currentSite);
+        $loc = $this->makeUrlPattern($staticPage);
 
         $sitemapItem = SitemapItem::where('loc', $loc)->withSite($site)->first();
 
@@ -483,6 +445,15 @@ class PagesGenerator extends AbstractGenerator
         $sitemapItem->site_definition_id = $site->id;
         $sitemapItem->save();
 
+        $sitemapItemsToDelete = SitemapItem::where('base_file_name', $staticPage->fileName)
+            ->where('id', '!=', $sitemapItem->id)
+            ->withSite($site)
+            ->get();
+
+        foreach ($sitemapItemsToDelete as $sitemapItemToDelete) {
+            $sitemapItemToDelete->delete();
+        }
+
         return $sitemapItem;
     }
 
@@ -496,10 +467,81 @@ class PagesGenerator extends AbstractGenerator
     {
         $item = $this->makeItemForStaticPage($staticPage);
         Queue::push(ScanPageForMediaItems::class, ['loc' => $item->loc]);
+
+        SitemapMedia::deleteGhosts();
+
         Event::fire('initbiz.seostorm.sitemapItemForStaticPageRefreshed', [$staticPage]);
     }
 
     // Helpers
+
+    /**
+     * Make URL pattern - raw URL with params ready to be filled
+     * e.g. https://init.biz/:category/:slug?
+     *
+     * @param StaticPage|Page $page
+     * @return string For example: https://init.biz/:category/:slug?
+     */
+    public function makeUrlPattern(StaticPage|Page $page): string
+    {
+        $site = $this->getSite();
+
+        $urlPattern = $page->url;
+
+        // We're restoring ending / if the page is a "root" page
+        $restoreSlash = false;
+        if ($urlPattern === '/') {
+            $restoreSlash = true;
+        }
+
+        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
+            $urlPattern = array_get($page->attributes, 'viewBag.localeUrl.' . $site->locale, $urlPattern);
+        }
+
+        $urlPattern = $site->attachRoutePrefix(ltrim($urlPattern, '/'));
+
+        $urlPattern = rtrim(Config::get('app.url'), '/') . '/' . ltrim($urlPattern, '/');
+
+        if ($restoreSlash && !str_ends_with($urlPattern, '/')) {
+            $urlPattern .= '/';
+        }
+
+        return $urlPattern;
+    }
+
+    /**
+     * Fill the parameters in pattern using provided params array
+     * if not provided, all optional params like :slug? will be removed
+     * if not provided, all required params like :slug will be replaced with default
+     *
+     * @param string $urlPattern
+     * @param array $params
+     * @return string
+     */
+    public function fillUrlPatternWithParams(string $urlPattern, array $params = []): string
+    {
+        $url = $urlPattern;
+
+        // replace parameters with the provided params
+        foreach ($params as $param => $value) {
+            $pattern = '/\/\:' . $param . '\?{0,1}/i';
+            $toReplace = empty($value) ? "" : '/' . $value;
+            $url = preg_replace($pattern, $toReplace, $url);
+        }
+
+        // Remove empty optional parameters that didn't have any parameters
+        $pattern = '/\/\:.+\?/i';
+        $url = preg_replace($pattern, '', $url);
+
+        // Replace :param with default
+        $pattern = '/\/\:.+$/i';
+        $url = preg_replace($pattern, '/default', $url);
+
+        $pattern = '/\/\:.+\//i';
+        $url = preg_replace($pattern, '/default/', $url);
+
+        return $url;
+    }
 
     /**
      * The method checks if the page was changed at the file level and if so, it'll store the content's hash

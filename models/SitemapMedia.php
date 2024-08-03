@@ -51,6 +51,14 @@ class SitemapMedia extends Model
         return $query->where('type', 'video');
     }
 
+    public function beforeSave(): void
+    {
+        if (str_contains($this->loc, 'http://:/')) {
+            if (false) {
+                # code...
+            }
+        }
+    }
     /**
      * Create SitemapMedia using image DOM Element
      *

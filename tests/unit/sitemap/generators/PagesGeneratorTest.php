@@ -269,7 +269,7 @@ class PagesGeneratorTest extends StormedTestCase
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
     }
 
-    public function testGenerateLocForPage(): void
+    public function testMakeUrlPattern(): void
     {
         (PluginManager::instance())->disablePlugin('RainLab.Pages');
         $theme = Theme::load('test');
@@ -277,23 +277,82 @@ class PagesGeneratorTest extends StormedTestCase
         $pagesGenerator = new PagesGenerator($site);
 
         $page = Page::load($theme, 'with-fake-model-optional');
-        $url = $pagesGenerator->generateLocForCmsPage($page);
+        $urlPattern = $pagesGenerator->makeUrlPattern($page);
+        $urlPattern = str_replace(url('/'), 'http://initwebsite.devt', $urlPattern);
+        $this->assertEquals('http://initwebsite.devt/model/:slug?', $urlPattern);
+
+        $page = Page::load($theme, 'with-fake-model');
+        $urlPattern = $pagesGenerator->makeUrlPattern($page);
+        $urlPattern = str_replace(url('/'), 'http://initwebsite.devt', $urlPattern);
+        $this->assertEquals('http://initwebsite.devt/model/:slug', $urlPattern);
+
+        $page = Page::load($theme, 'with-fake-model-category');
+        $urlPattern = $pagesGenerator->makeUrlPattern($page);
+        $urlPattern = str_replace(url('/'), 'http://initwebsite.devt', $urlPattern);
+        $this->assertEquals('http://initwebsite.devt/model/:category/:slug?', $urlPattern);
+
+        $page = Page::load($theme, 'empty');
+        $urlPattern = $pagesGenerator->makeUrlPattern($page);
+        $urlPattern = str_replace(url('/'), 'http://initwebsite.devt', $urlPattern);
+        $this->assertEquals('http://initwebsite.devt/', $urlPattern);
+
+        $plSite = new SiteDefinition();
+        $plSite->is_prefixed = true;
+        $plSite->name = 'Polish';
+        $plSite->code = 'pl';
+        $plSite->route_prefix = '/pl';
+        $plSite->locale = 'pl';
+        $plSite->save();
+
+        $page = Page::load($theme, 'empty');
+
+        $pagesGenerator = new PagesGenerator($plSite);
+        $urlPattern = $pagesGenerator->makeUrlPattern($page);
+        $urlPattern = str_replace(url('/'), 'http://initwebsite.devt', $urlPattern);
+        $this->assertEquals('http://initwebsite.devt/pl/', $urlPattern);
+    }
+
+    public function testFillUrlPatternWithParams(): void
+    {
+        (PluginManager::instance())->disablePlugin('RainLab.Pages');
+
+        $category = new FakeStormedCategory();
+        $category->name = 'cat-test-name';
+        $category->slug = 'cat-test-slug';
+        $category->save();
+
+        $model = new FakeStormedModel();
+        $model->name = 'test-name';
+        $model->slug = 'test-slug';
+        $model->category_id = $category->id;
+        $model->save();
+
+        $theme = Theme::load('test');
+        $site = SiteDefinition::first();
+        $pagesGenerator = new PagesGenerator($site);
+
+        $page = Page::load($theme, 'with-fake-model-optional');
+        $urlPattern = $pagesGenerator->makeUrlPattern($page);
+        $url = $pagesGenerator->fillUrlPatternWithParams($urlPattern, ['slug' => '']);
         $url = str_replace(url('/'), 'http://initwebsite.devt', $url);
         $this->assertEquals('http://initwebsite.devt/model', $url);
 
         $page = Page::load($theme, 'with-fake-model');
-        $url = $pagesGenerator->generateLocForCmsPage($page);
+        $urlPattern = $pagesGenerator->makeUrlPattern($page);
+        $url = $pagesGenerator->fillUrlPatternWithParams($urlPattern, []);
         $url = str_replace(url('/'), 'http://initwebsite.devt', $url);
         $this->assertEquals('http://initwebsite.devt/model/default', $url);
 
         $page = Page::load($theme, 'with-fake-model-category');
-        $url = $pagesGenerator->generateLocForCmsPage($page);
+        $urlPattern = $pagesGenerator->makeUrlPattern($page);
+        $params = $pagesGenerator->generateParamsToUrl('slug:slug|category:category.slug', $model);
+        $url = $pagesGenerator->fillUrlPatternWithParams($urlPattern, $params);
         $url = str_replace(url('/'), 'http://initwebsite.devt', $url);
-        $this->assertEquals('http://initwebsite.devt/model/default', $url);
+        $this->assertEquals('http://initwebsite.devt/model/cat-test-slug/test-slug', $url);
 
         $page = Page::load($theme, 'empty');
-        $url = $pagesGenerator->generateLocForCmsPage($page);
-        $url = str_replace(url('/'), 'http://initwebsite.devt', $url);
+        $urlPattern = $pagesGenerator->makeUrlPattern($page);
+        $url = str_replace(url('/'), 'http://initwebsite.devt', $urlPattern);
         $this->assertEquals('http://initwebsite.devt/', $url);
 
         $plSite = new SiteDefinition();
@@ -307,8 +366,8 @@ class PagesGeneratorTest extends StormedTestCase
         $page = Page::load($theme, 'empty');
 
         $pagesGenerator = new PagesGenerator($plSite);
-        $url = $pagesGenerator->generateLocForCmsPage($page);
-        $url = str_replace(url('/'), 'http://initwebsite.devt', $url);
+        $urlPattern = $pagesGenerator->makeUrlPattern($page);
+        $url = str_replace(url('/'), 'http://initwebsite.devt', $urlPattern);
         $this->assertEquals('http://initwebsite.devt/pl/', $url);
     }
 
