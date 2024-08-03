@@ -7,12 +7,16 @@ use Schema;
 use PluginTestCase;
 use Cms\Classes\Theme;
 use System\Classes\MarkupManager;
+use System\Classes\PluginManager;
 
 abstract class StormedTestCase extends PluginTestCase
 {
+    protected $isRainLabPagesDisabled;
+
     public function setUp(): void
     {
         parent::setUp();
+        $this->isRainLabPagesDisabled = (PluginManager::instance())->isDisabled('RainLab.Pages');
 
         $themesPath = plugins_path('initbiz/seostorm/tests/themes');
         Config::set('system.themes_path', $themesPath);
@@ -44,6 +48,12 @@ abstract class StormedTestCase extends PluginTestCase
     public function tearDown(): void
     {
         Theme::resetCache();
+
+        if ($this->isRainLabPagesDisabled) {
+            (PluginManager::instance())->disablePlugin('RainLab.Pages');
+        } else {
+            (PluginManager::instance())->enablePlugin('RainLab.Pages');
+        }
 
         parent::tearDown();
     }
