@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Initbiz\SeoStorm\Sitemap\Generators;
 
+use Cms;
 use Site;
 use Cache;
+use Queue;
+use Event;
 use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
@@ -15,8 +18,8 @@ use System\Classes\PluginManager;
 use System\Models\SiteDefinition;
 use October\Rain\Database\Collection;
 use Initbiz\Seostorm\Models\SitemapItem;
-use RainLab\Translate\Classes\Translator;
 use RainLab\Pages\Classes\Page as StaticPage;
+use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
 use Initbiz\Sitemap\DOMElements\UrlsetDOMElement;
 use Initbiz\Sitemap\Generators\AbstractGenerator;
 use October\Rain\Support\Collection as SupportCollection;
@@ -37,42 +40,49 @@ class PagesGenerator extends AbstractGenerator
      */
     protected $pages;
 
-    public function __construct(?SiteDefinition $activeSite = null)
+    /**
+     * SiteDefinition
+     *
+     * @var SiteDefinition
+     */
+    protected SiteDefinition $site;
+
+    public function __construct(SiteDefinition $site)
     {
+        $this->site = $site;
+
         parent::__construct();
+    }
 
-        if (is_null($activeSite)) {
-            $request = \Request::instance();
-            $activeSite = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
-        }
-
-        Site::applyActiveSite($activeSite);
+    /**
+     * Get the value of site
+     *
+     * @return SiteDefinition
+     */
+    public function getSite(): SiteDefinition
+    {
+        return $this->site;
     }
 
     /**
      * Make DOMElements listed in the sitemap
      *
-     * @param SiteDefinition|null $site
      * @return array
      */
-    public function makeDOMElements(?SiteDefinition $site = null): array
+    public function makeDOMElements(): array
     {
-        if (is_null($site)) {
-            $site = Site::getActiveSite();
-        }
-
-        $pages = $this->getEnabledCmsPages($this->getPages(), $site);
+        $site = $this->getSite();
+        $pages = $this->getEnabledCmsPages($this->getPages());
 
         $baseFilenamesToLeave = [];
         foreach ($pages as $page) {
             $baseFilenamesToLeave[] = $page->base_file_name;
 
-            if (!$this->isPageContentChanged($page, $site)) {
+            if (!$this->isPageContentChanged($page)) {
                 continue;
             }
 
-            $sitemapItems = $this->makeItemsForCmsPage($page, $site);
-            SitemapItem::refreshForCmsPage($page, $site, $sitemapItems);
+            $this->refreshForCmsPage($page);
         }
 
         if (PluginManager::instance()->hasPlugin('RainLab.Pages')) {
@@ -80,12 +90,11 @@ class PagesGenerator extends AbstractGenerator
             foreach ($staticPages as $staticPage) {
                 $baseFilenamesToLeave[] = $staticPage->fileName;
 
-                if (!$this->isPageContentChanged($staticPage, $site)) {
+                if (!$this->isPageContentChanged($staticPage)) {
                     continue;
                 }
 
-                $sitemapItem = $this->makeItemForStaticPage($staticPage, $site);
-                SitemapItem::refreshForStaticPage($staticPage, $site, $sitemapItem);
+                $this->refreshForStaticPage($staticPage);
             }
         }
 
@@ -118,26 +127,23 @@ class PagesGenerator extends AbstractGenerator
      * Get CMS pages that have sitemap enabled
      *
      * @param array|Collection $pages
-     * @param SiteDefinition|null $site
      * @return array<Page>
      */
-    public function getEnabledCmsPages($pages = null, ?SiteDefinition $site = null): array
+    public function getEnabledCmsPages($pages = null): array
     {
         if (empty($pages)) {
             $pages = $this->getPages();
         }
 
-        if (empty($site)) {
-            $site = Site::getActiveSite();
-        }
+        $site = $this->getSite();
 
         $pages = $pages->filter(function ($page) {
-            return $page->seoOptionsEnabledInSitemap;
+            return (bool) $page->seoOptionsEnabledInSitemap;
         })->sortByDesc('seoOptionsPriority');
 
         $enabledPages = [];
         foreach ($pages as $page) {
-            if ($this->isCmsPageEnabledInSitemap($page, $site)) {
+            if ($this->isCmsPageEnabledInSitemap($page)) {
                 $enabledPages[] = $page;
             }
         }
@@ -179,51 +185,43 @@ class PagesGenerator extends AbstractGenerator
      * Checks if the page has sitemap enabled
      *
      * @param Page $page
-     * @param SiteDefinition|null $site
      * @return boolean
      */
-    public function isCmsPageEnabledInSitemap(Page $page, ?SiteDefinition $site = null): bool
+    public function isCmsPageEnabledInSitemap(Page $page): bool
     {
-        if (empty($site)) {
-            $site = Site::getActiveSite();
+        $site = $this->getSite();
+
+        if (!PluginManager::instance()->hasPlugin('RainLab.Translate')) {
+            return (bool) $page->seoOptionsEnabledInSitemap;
         }
 
-        if (isset($page->attributes["viewBag"]["localeSeoOptionsEnabledInSitemap"][$site->code])) {
-            return (bool) $page->attributes["viewBag"]["localeSeoOptionsEnabledInSitemap"][$site->code];
+        if (!isset($page->attributes["viewBag"]["localeSeoOptionsEnabledInSitemap"])) {
+            return (bool) $page->seoOptionsEnabledInSitemap;
         }
 
-        return (bool) ($page->seoOptionsEnabledInSitemap ?? false);
+        $locale = $site->locale ?? null;
+        if (is_null($locale)) {
+            return (bool) $page->seoOptionsEnabledInSitemap;
+        }
+
+        if (!isset($page->attributes["viewBag"]["localeSeoOptionsEnabledInSitemap"][$locale])) {
+            return (bool) $page->seoOptionsEnabledInSitemap;
+        }
+
+        return (bool) $page->attributes["viewBag"]["localeSeoOptionsEnabledInSitemap"][$locale];
     }
 
     /**
      * Make SitemapItems for provided CMS page
      *
      * @param Page $page
-     * @param SiteDefinition|null $site
      * @return array<SitemapItem>
      */
-    public function makeItemsForCmsPage(Page $page, ?SiteDefinition $site = null): array
+    public function makeItemsForCmsPage(Page $page): array
     {
-        if (is_null($site)) {
-            $site = Site::getActiveSite();
-        }
+        $site = $this->getSite();
 
-        $loc = $page->url;
-
-        // We're restoring ending / if the page is a "root" page
-        $restoreSlash = false;
-        if ($loc === '/') {
-            $restoreSlash = true;
-        }
-
-        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
-            $translator = Translator::instance();
-            $loc = $translator->getPageInLocale($page->base_file_name, $site->locale ?? null) ?? $loc;
-        }
-
-        if ($restoreSlash && !str_ends_with('/', $loc)) {
-            $loc .= '/';
-        }
+        $loc = $this->generateLocForCmsPage($page);
 
         $sitemapItems = [];
         $modelClass = $page->seoOptionsModelClass ?? "";
@@ -241,8 +239,7 @@ class PagesGenerator extends AbstractGenerator
                     continue;
                 }
 
-                $loc = $this->generateLocForModelAndCmsPage($model, $page, $site);
-                $loc = $this->trimOptionalParameters($loc);
+                $loc = $this->generateLocForModelAndCmsPage($model, $page);
 
                 if ($page->seoOptionsUseUpdatedAt && isset($model->updated_at)) {
                     $lastmod = $model->updated_at;
@@ -259,12 +256,12 @@ class PagesGenerator extends AbstractGenerator
                 $sitemapItem->changefreq = $page->seoOptionsChangefreq;
                 $sitemapItem->base_file_name = $page->base_file_name;
                 $sitemapItem->site_definition_id = $site->id;
+                $sitemapItem->save();
 
                 $sitemapItems[] = $sitemapItem;
             }
         } else {
             // If there is no model class specified - we'll add just a single record
-            $loc = $this->trimOptionalParameters($loc);
 
             $sitemapItem = SitemapItem::where('loc', $loc)->withSite($site)->first();
             if (!$sitemapItem) {
@@ -277,6 +274,7 @@ class PagesGenerator extends AbstractGenerator
             $sitemapItem->priority = $page->seoOptionsPriority;
             $sitemapItem->changefreq = $page->seoOptionsChangefreq;
             $sitemapItem->lastmod = $lastmod;
+            $sitemapItem->save();
 
             $sitemapItems[] = $sitemapItem;
         }
@@ -311,25 +309,15 @@ class PagesGenerator extends AbstractGenerator
      *
      * @param Model $model
      * @param Page $page
-     * @param SiteDefinition|null $site
      * @return string
      */
-    public function generateLocForModelAndCmsPage(Model $model, Page $page, ?SiteDefinition $site = null): string
+    public function generateLocForModelAndCmsPage(Model $model, Page $page): string
     {
-        if (is_null($site)) {
-            $site = Site::getActiveSite();
-        }
-
-        $baseFileName = $page->base_file_name;
-
-        $modelParams = $page->seoOptionsModelParams;
-        if (empty($modelParams)) {
-            return \Cms::pageUrl($baseFileName);
-        }
+        $paramsDefinition = $page->seoOptionsModelParams;
 
         $params = [];
-        $modelParams = explode('|', $modelParams);
-        foreach ($modelParams as $modelParam) {
+        $paramsDefinition = explode('|', $paramsDefinition);
+        foreach ($paramsDefinition as $modelParam) {
             list($urlParam, $modelParam) = explode(':', $modelParam);
 
             $replacement = '';
@@ -346,14 +334,40 @@ class PagesGenerator extends AbstractGenerator
             $params[$urlParam] = $replacement;
         }
 
-        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
-            $translator = Translator::instance();
-            $loc = $translator->getPageInLocale($baseFileName, $site->locale ?? null, $params);
-        } else {
-            $loc = \Cms::pageUrl($baseFileName, $params);
-        }
+        $loc = $this->generateLocForCmsPage($page, $params);
 
         return $loc;
+    }
+
+    public function generateLocForCmsPage(Page $page, $params = []): string
+    {
+        $site = $this->getSite();
+
+        $urlPattern = $page->url;
+
+        // We're restoring ending / if the page is a "root" page
+        $restoreSlash = false;
+        if ($urlPattern === '/') {
+            $restoreSlash = true;
+        }
+
+        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
+            $urlPattern = array_get($page->attributes, 'viewBag.localeUrl.' . $site->locale, $urlPattern);
+        }
+
+        $currentSite = Site::getActiveSite();
+        Site::applyActiveSite($site);
+        // It has to be set to '/' as October sets route prefix only if set,
+        // otherwise it's not restarted to the default of '/'
+        Cms::setUrlPrefix($site->route_prefix ?? '/');
+        $urlPattern = Cms::pageUrl($page->getBaseFileName(), $params);
+        Site::applyActiveSite($currentSite);
+
+        if ($restoreSlash && !str_ends_with('/', $urlPattern)) {
+            $urlPattern .= '/';
+        }
+
+        return $urlPattern;
     }
 
     /**
@@ -373,6 +387,39 @@ class PagesGenerator extends AbstractGenerator
         }
 
         return Carbon::now();
+    }
+
+    /**
+     * Refresh SitemapItem table records for a CMS page
+     *
+     * @param Page $page
+     * @return void
+     */
+    public function refreshForCmsPage(Page $page): void
+    {
+        $site = $this->getSite();
+
+        $items = $this->makeItemsForCmsPage($page);
+
+        $idsToLeave = [];
+        $baseFileNamesToScan = [];
+        foreach ($items as $item) {
+            $idsToLeave[] = $item->id;
+            $baseFileNamesToScan[] = $item->base_file_name;
+            Queue::push(ScanPageForMediaItems::class, ['loc' => $item->loc]);
+        }
+
+        // Remove old records, for example when a model in the parameter was removed
+        $ghostSitemapItems = SitemapItem::whereIn('base_file_name', $baseFileNamesToScan)
+            ->whereNotIn('id', $idsToLeave)
+            ->withSite($site)
+            ->get();
+
+        foreach ($ghostSitemapItems as $ghostSitemapItem) {
+            $ghostSitemapItem->delete();
+        }
+
+        Event::fire('initbiz.seostorm.sitemapItemForCmsPageRefreshed', [$page]);
     }
 
     // RainLab.Pages
@@ -407,18 +454,22 @@ class PagesGenerator extends AbstractGenerator
      * Makes SitemapItem object for this static page
      *
      * @param StaticPage $staticPage
-     * @param SiteDefinition|null $site
      * @return SitemapItem
      */
-    public function makeItemForStaticPage(StaticPage $staticPage, ?SiteDefinition $site = null): SitemapItem
+    public function makeItemForStaticPage(StaticPage $staticPage): SitemapItem
     {
-        if (is_null($site)) {
-            $site = Site::getActiveSite();
-        }
+        $site = $this->getSite();
 
         $viewBag = $staticPage->getViewBag();
 
+        $currentSite = Site::getActiveSite();
+        Site::applyActiveSite($site);
+        // It has to be set to '/' as October sets route prefix only if set,
+        // otherwise it's not restarted to the default of '/'
+        Cms::setUrlPrefix($site->route_prefix ?? '/');
         $loc = StaticPage::url($staticPage->fileName);
+        Site::applyActiveSite($currentSite);
+
         $sitemapItem = SitemapItem::where('loc', $loc)->withSite($site)->first();
 
         if (!$sitemapItem) {
@@ -431,27 +482,25 @@ class PagesGenerator extends AbstractGenerator
         $sitemapItem->changefreq = $viewBag->property('changefreq');
         $sitemapItem->base_file_name = $staticPage->fileName;
         $sitemapItem->site_definition_id = $site->id;
+        $sitemapItem->save();
 
         return $sitemapItem;
     }
 
-    // Helpers
-
     /**
-     * Remove optional parameters from URL - this method is used for last check
-     * if the sitemap has an optional parameter left in the URL
+     * Refresh SitemapItem table record for a single static page
      *
-     * @param string $loc
-     * @return string
+     * @param StaticPage $staticPage
+     * @return void
      */
-    public function trimOptionalParameters(string $loc): string
+    public function refreshForStaticPage(StaticPage $staticPage): void
     {
-        // Remove empty optional parameters that don't have any models
-        $pattern = '/\:.+\?/i';
-        $loc = preg_replace($pattern, '', $loc);
-
-        return $loc;
+        $item = $this->makeItemForStaticPage($staticPage);
+        Queue::push(ScanPageForMediaItems::class, ['loc' => $item->loc]);
+        Event::fire('initbiz.seostorm.sitemapItemForStaticPageRefreshed', [$staticPage]);
     }
+
+    // Helpers
 
     /**
      * The method checks if the page was changed at the file level and if so, it'll store the content's hash
@@ -460,14 +509,11 @@ class PagesGenerator extends AbstractGenerator
      * The method is particularly useful for re-generating items to not touch records that were not changed
      *
      * @param Page|StaticPage $page
-     * @param SiteDefinition|null $site
      * @return boolean
      */
-    public function isPageContentChanged(Page|StaticPage $page, ?SiteDefinition $site = null): bool
+    public function isPageContentChanged(Page|StaticPage $page): bool
     {
-        if (is_null($site)) {
-            $site = Site::getActiveSite();
-        }
+        $site = $this->getSite();
 
         $key = $site->code . '-';
         $content = '';

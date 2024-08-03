@@ -15,36 +15,28 @@ class SitemapController
     public function index(Request $request)
     {
         $site = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
-        Site::applyActiveSite($site);
-
-        $generator = new SitemapIndexGenerator();
+        $generator = new SitemapIndexGenerator($site);
         return Response::make($generator->generate())->header('Content-Type', 'application/xml');
     }
 
     public function sitemap(Request $request)
     {
         $site = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
-        Site::applyActiveSite($site);
-
-        $generator = new PagesGenerator();
+        $generator = new PagesGenerator($site);
         return Response::make($generator->generate())->header('Content-Type', 'application/xml');
     }
 
     public function videos(Request $request)
     {
         $site = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
-        Site::applyActiveSite($site);
-
-        $sitemap = new VideosGenerator();
+        $sitemap = new VideosGenerator($site);
         return Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
     }
 
     public function images(Request $request)
     {
         $site = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
-        Site::applyActiveSite($site);
-
-        $sitemap = new ImagesGenerator();
+        $sitemap = new ImagesGenerator($site);
         return Response::make($sitemap->generate())->header('Content-Type', 'application/xml');
     }
 }

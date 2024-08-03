@@ -6,11 +6,13 @@ use Queue;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Cms\Classes\ComponentManager;
+use System\Models\SiteDefinition;
 use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
+use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
 use Initbiz\SeoStorm\Tests\Classes\FakeModelDetailsComponent;
 
 class SitemapItemTest extends StormedTestCase
@@ -22,6 +24,13 @@ class SitemapItemTest extends StormedTestCase
         $componentManager = ComponentManager::instance();
         $componentManager->listComponents();
         $componentManager->registerComponent(FakeModelDetailsComponent::class, 'fakeModelDetails');
+
+        $site = new SiteDefinition();
+        $site->is_prefixed = false;
+        $site->name = 'US';
+        $site->code = 'US';
+        $site->locale = 'us';
+        $site->save();
     }
 
     public function testMakeSitemapItemsForCmsPage(): void
@@ -30,7 +39,10 @@ class SitemapItemTest extends StormedTestCase
         Theme::setActiveTheme('test');
         $theme = Theme::load('test');
         $page = Page::load($theme, 'empty.htm');
-        SitemapItem::refreshForCmsPage($page);
+        $site = SiteDefinition::first();
+
+        $pagesGenerator = new PagesGenerator($site);
+        $pagesGenerator->refreshForCmsPage($page);
 
         $sitemapItems = SitemapItem::get();
 
@@ -42,7 +54,10 @@ class SitemapItemTest extends StormedTestCase
         Queue::fake();
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-media-2.htm');
-        SitemapItem::refreshForCmsPage($page);
+
+        $site = SiteDefinition::first();
+        $pagesGenerator = new PagesGenerator($site);
+        $pagesGenerator->refreshForCmsPage($page);
         $sitemapItem = SitemapItem::first();
         Queue::assertPushed(ScanPageForMediaItems::class);
         (new ScanPageForMediaItems())->scan($sitemapItem->loc);
@@ -58,7 +73,9 @@ class SitemapItemTest extends StormedTestCase
         $this->assertEquals(2, SitemapMedia::count());
 
         $page = Page::load($theme, 'with-media-2.htm');
-        SitemapItem::refreshForCmsPage($page);
+        $site = SiteDefinition::first();
+        $pagesGenerator = new PagesGenerator($site);
+        $pagesGenerator->refreshForCmsPage($page);
         (new ScanPageForMediaItems())->scan($sitemapItem->loc);
 
         $this->assertEquals(2, SitemapMedia::count());
@@ -70,7 +87,9 @@ class SitemapItemTest extends StormedTestCase
         Theme::setActiveTheme('test');
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-media-2.htm');
-        SitemapItem::refreshForCmsPage($page);
+        $site = SiteDefinition::first();
+        $pagesGenerator = new PagesGenerator($site);
+        $pagesGenerator->refreshForCmsPage($page);
         Queue::assertPushed(ScanPageForMediaItems::class);
         $sitemapItem = SitemapItem::first();
 

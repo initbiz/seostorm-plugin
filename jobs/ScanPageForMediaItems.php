@@ -2,6 +2,7 @@
 
 namespace Initbiz\SeoStorm\Jobs;
 
+use Site;
 use Request;
 use Cms\Classes\CmsController;
 use Initbiz\SeoStorm\Models\SitemapItem;
@@ -29,6 +30,7 @@ class ScanPageForMediaItems
         $request = new HttpRequest();
         Request::swap($request);
 
+        $currentSite = Site::getActiveSite();
         $controller = new CmsController();
         try {
             $parsedUrl = parse_url($loc);
@@ -36,10 +38,12 @@ class ScanPageForMediaItems
             $response = $controller->run($url);
         } catch (\Throwable $th) {
             Request::swap($originalRequest);
+            Site::applyActiveSite($currentSite);
             trace_log('Problem with parsing page ' . $loc);
             // In case of any issue in the page, we need to ignore it and proceed
             return;
         }
+        Site::applyActiveSite($currentSite);
 
         if ($response->getStatusCode() !== 200) {
             return;

@@ -11,7 +11,6 @@ use Cms\Classes\Page;
 use System\Models\SiteDefinition;
 use October\Rain\Database\Builder;
 use Initbiz\Sitemap\Values\Changefreq;
-use October\Rain\Support\Facades\Site;
 use RainLab\Pages\Classes\Page as StaticPage;
 use Initbiz\Sitemap\DOMElements\UrlDOMElement;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
@@ -82,16 +81,6 @@ class SitemapItem extends Model
         return $query->where('is_enabled', true);
     }
 
-    public function setBaseFileNameAttribute($baseFileName)
-    {
-        // Remove extension if exists
-        if (str_contains($baseFileName, '.')) {
-            $baseFileName = substr($baseFileName, 0, (strrpos($baseFileName, ".")));
-        }
-
-        $this->attributes['base_file_name'] = $baseFileName;
-    }
-
     /**
      * Sync images attached to the page
      *
@@ -134,78 +123,6 @@ class SitemapItem extends Model
         $this->videos()->sync(array_merge($imagesIds, $idsToSync));
 
         SitemapMedia::deleteGhosts();
-    }
-
-    /**
-     * Refresh SitemapItem table records for a CMS page
-     *
-     * @param Page $page
-     * @param SiteDefinition|null $site
-     * @param array<SitemapItem>|null $items the items will be added, if not provided, we'll build them from scratch
-     * @return void
-     */
-    public static function refreshForCmsPage(
-        Page $page,
-        ?SiteDefinition $site = null,
-        ?array $items = null
-    ): void {
-        if (is_null($site)) {
-            $site = Site::getActiveSite();
-        }
-
-        if (is_null($items)) {
-            $pagesGenerator = new PagesGenerator($site);
-            $items = $pagesGenerator->makeItemsForCmsPage($page, $site);
-        }
-
-        $idsToLeave = [];
-        $baseFileNamesToScan = [];
-        foreach ($items as $item) {
-            $idsToLeave[] = $item->id;
-            $baseFileNamesToScan[] = $item->base_file_name;
-            $item->save();
-            Queue::push(ScanPageForMediaItems::class, ['loc' => $item->loc]);
-        }
-
-        // Remove old records, for example when a model in the parameter was removed
-        $ghostSitemapItems = SitemapItem::whereIn('base_file_name', $baseFileNamesToScan)
-            ->whereNotIn('id', $idsToLeave)
-            ->get();
-
-        foreach ($ghostSitemapItems as $ghostSitemapItem) {
-            $ghostSitemapItem->delete();
-        }
-
-        Event::fire('initbiz.seostorm.sitemapItemForCmsPageRefreshed', [$page]);
-    }
-
-    /**
-     * Refresh SitemapItem table record for a single static page
-     *
-     * @param StaticPage $staticPage
-     * @param SiteDefinition|null $site
-     * @param SitemapItem|null $item the item will be added, if not provided, we'll build it from scratch
-     * @return void
-     */
-    public static function refreshForStaticPage(
-        StaticPage $staticPage,
-        ?SiteDefinition $site = null,
-        ?SitemapItem $item = null
-    ): void {
-        if (is_null($site)) {
-            $site = Site::getActiveSite();
-        }
-
-        if (is_null($item)) {
-            $pagesGenerator = new PagesGenerator($site);
-            $item = $pagesGenerator->makeItemForStaticPage($staticPage, $site);
-        }
-
-        $item->save();
-
-        Queue::push(ScanPageForMediaItems::class, ['loc' => $item->loc]);
-
-        Event::fire('initbiz.seostorm.sitemapItemForStaticPageRefreshed', [$staticPage]);
     }
 
     /**

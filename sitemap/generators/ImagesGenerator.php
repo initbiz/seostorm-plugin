@@ -12,16 +12,37 @@ use Initbiz\Sitemap\Generators\AbstractGenerator;
 class ImagesGenerator extends AbstractGenerator
 {
     /**
+     * SiteDefinition
+     *
+     * @var SiteDefinition
+     */
+    protected SiteDefinition $site;
+
+    public function __construct(SiteDefinition $site)
+    {
+        $this->site = $site;
+
+        parent::__construct();
+    }
+
+    /**
+     * Get the value of site
+     *
+     * @return SiteDefinition
+     */
+    public function getSite(): SiteDefinition
+    {
+        return $this->site;
+    }
+
+    /**
      * Make DOMElements listed in the sitemap
      *
-     * @param SiteDefinition|null $site
      * @return array
      */
-    public function makeDOMElements(?SiteDefinition $site = null): array
+    public function makeDOMElements(): array
     {
-        if (is_null($site)) {
-            $site = Site::getActiveSite();
-        }
+        $site = $this->getSite();
 
         $sitemapItems = SitemapItem::with(['images'])
             ->enabled()

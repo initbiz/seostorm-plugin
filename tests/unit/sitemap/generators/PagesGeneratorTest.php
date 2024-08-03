@@ -7,14 +7,14 @@ use Config;
 use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
+use System\Models\SiteDefinition;
 use Initbiz\Seostorm\Models\SitemapItem;
-use Initbiz\Seostorm\Models\SitemapMedia;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedCategory;
 
-class SitemapTest extends StormedTestCase
+class PagesGeneratorTest extends StormedTestCase
 {
     public function setUp(): void
     {
@@ -26,6 +26,13 @@ class SitemapTest extends StormedTestCase
 
         PagesGenerator::resetCache();
         SitemapItem::truncate();
+
+        $site = new SiteDefinition();
+        $site->is_prefixed = false;
+        $site->name = 'US';
+        $site->code = 'US';
+        $site->locale = 'us';
+        $site->save();
     }
 
     public function testEnabledInSitemap()
@@ -37,7 +44,8 @@ class SitemapTest extends StormedTestCase
         $page2->mtime = 1632858273;
         $pages = collect([$page1, $page2]);
 
-        $xml = (new PagesGenerator())->generate($pages);
+        $site = SiteDefinition::first();
+        $xml = (new PagesGenerator($site))->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-1-page.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -48,7 +56,7 @@ class SitemapTest extends StormedTestCase
         $page1->settings['seoOptionsEnabledInSitemap'] = "true";
         $pages = collect([$page1, $page2]);
 
-        $xml = (new PagesGenerator())->generate($pages);
+        $xml = (new PagesGenerator($site))->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-2-pages.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -77,7 +85,8 @@ class SitemapTest extends StormedTestCase
         $model2->slug = 'test-slug-2';
         $model2->save();
 
-        $xml = (new PagesGenerator)->generate($pages);
+        $site = SiteDefinition::first();
+        $xml = (new PagesGenerator($site))->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -97,7 +106,8 @@ class SitemapTest extends StormedTestCase
         $pages = collect();
         $pages = $pages->push($page);
 
-        $xml = (new PagesGenerator)->generate($pages);
+        $site = SiteDefinition::first();
+        $xml = (new PagesGenerator($site))->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs-filtered.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -128,7 +138,8 @@ class SitemapTest extends StormedTestCase
         $model->category_id = $category->id;
         $model->save();
 
-        $xml = (new PagesGenerator)->generate($pages);
+        $site = SiteDefinition::first();
+        $xml = (new PagesGenerator($site))->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs-relation.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -154,7 +165,8 @@ class SitemapTest extends StormedTestCase
         $model->updated_at = Carbon::parse('2021-09-21 10:00');
         $model->save();
 
-        $xml = (new PagesGenerator)->generate($pages);
+        $site = SiteDefinition::first();
+        $xml = (new PagesGenerator($site))->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-updated-at.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -187,7 +199,8 @@ class SitemapTest extends StormedTestCase
             'enabled_in_sitemap' => "0",
         ];
 
-        $xml = (new PagesGenerator)->generate($pages);
+        $site = SiteDefinition::first();
+        $xml = (new PagesGenerator($site))->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-slugs-filtered.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -207,7 +220,8 @@ class SitemapTest extends StormedTestCase
         $page->settings['seoOptionsModelParams'] = "category:slug";
         $pages = collect();
         $pages = $pages->push($page);
-        $xml = (new PagesGenerator)->generate($pages);
+        $site = SiteDefinition::first();
+        $xml = (new PagesGenerator($site))->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -217,7 +231,7 @@ class SitemapTest extends StormedTestCase
         $page->mtime = 1632858273;
         $pages = collect();
         $pages = $pages->push($page);
-        $xml = (new PagesGenerator)->generate($pages);
+        $xml = (new PagesGenerator($site))->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param-2.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
@@ -245,9 +259,52 @@ class SitemapTest extends StormedTestCase
         $page->settings['seoOptionsModelScope'] = "isPublished:yesterday";
         $pages = collect();
         $pages = $pages->push($page);
-        $xml = (new PagesGenerator)->generate($pages);
+        $site = SiteDefinition::first();
+        $xml = (new PagesGenerator($site))->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
+    }
+
+    public function testGenerateLocForPage(): void
+    {
+        $theme = Theme::load('test');
+        $site = SiteDefinition::first();
+        $pagesGenerator = new PagesGenerator($site);
+
+        $page = Page::load($theme, 'with-fake-model-optional');
+        $url = $pagesGenerator->generateLocForPage($page);
+        $url = str_replace(url('/'), 'http://initwebsite.devt', $url);
+        $this->assertEquals('http://initwebsite.devt/model', $url);
+
+        $page = Page::load($theme, 'with-fake-model');
+        $url = $pagesGenerator->generateLocForPage($page);
+        $url = str_replace(url('/'), 'http://initwebsite.devt', $url);
+        $this->assertEquals('http://initwebsite.devt/model/default', $url);
+
+        $page = Page::load($theme, 'with-fake-model-category');
+        $url = $pagesGenerator->generateLocForPage($page);
+        $url = str_replace(url('/'), 'http://initwebsite.devt', $url);
+        $this->assertEquals('http://initwebsite.devt/model/default', $url);
+
+        $page = Page::load($theme, 'empty');
+        $url = $pagesGenerator->generateLocForPage($page);
+        $url = str_replace(url('/'), 'http://initwebsite.devt', $url);
+        $this->assertEquals('http://initwebsite.devt/', $url);
+
+        $plSite = new SiteDefinition();
+        $plSite->is_prefixed = true;
+        $plSite->name = 'Polish';
+        $plSite->code = 'pl';
+        $plSite->route_prefix = '/pl';
+        $plSite->locale = 'pl';
+        $plSite->save();
+
+        $page = Page::load($theme, 'empty');
+
+        $pagesGenerator = new PagesGenerator($plSite);
+        $url = $pagesGenerator->generateLocForPage($page);
+        $url = str_replace(url('/'), 'http://initwebsite.devt', $url);
+        $this->assertEquals('http://initwebsite.devt/pl/', $url);
     }
 }
