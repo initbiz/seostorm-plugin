@@ -12,6 +12,7 @@ use System\Classes\PluginManager;
 use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\Seostorm\Models\SitemapItem;
+use RainLab\Pages\Classes\Page as StaticPage;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
@@ -355,20 +356,14 @@ class PagesGeneratorTest extends StormedTestCase
         $url = str_replace(url('/'), 'http://initwebsite.devt', $urlPattern);
         $this->assertEquals('http://initwebsite.devt/', $url);
 
-        $plSite = new SiteDefinition();
-        $plSite->is_prefixed = true;
-        $plSite->name = 'Polish';
-        $plSite->code = 'pl';
-        $plSite->route_prefix = '/pl';
-        $plSite->locale = 'pl';
-        $plSite->save();
-
-        $page = Page::load($theme, 'empty');
-
-        $pagesGenerator = new PagesGenerator($plSite);
-        $urlPattern = $pagesGenerator->makeUrlPattern($page);
-        $url = str_replace(url('/'), 'http://initwebsite.devt', $urlPattern);
-        $this->assertEquals('http://initwebsite.devt/pl/', $url);
+        $urlPattern = 'http://initwebsite.devt/:slug/:slug1/:slug2?';
+        $params = [
+            'slug' => 'test-1',
+            'slug2' => 'test-3',
+            'slug1' => 'test-2',
+        ];
+        $url = $pagesGenerator->fillUrlPatternWithParams($urlPattern, $params);
+        $this->assertEquals('http://initwebsite.devt/test-1/test-2/test-3', $url);
     }
 
     public function testStaticPages(): void
@@ -389,6 +384,7 @@ class PagesGeneratorTest extends StormedTestCase
         $settings->save();
 
         $theme = Theme::load('test');
+        StaticPage::clearCache($theme);
 
         $pagesGenerator = new PagesGenerator($site);
         $staticPage = $pagesGenerator->getEnabledStaticPages($theme)[0];
@@ -401,16 +397,14 @@ class PagesGeneratorTest extends StormedTestCase
         $pagesGenerator->refreshForStaticPage($staticPage);
 
         $this->assertEquals(2, SitemapItem::count());
-        // TODO: The asserts below works when the test is run independently, when run with others, it's failing
-        // It's probably caused by some static cache or something similar...
 
-        // $enSitemapItem = SitemapItem::where('site_definition_id', $site->id)->first();
-        // $url = str_replace(url('/'), 'http://initwebsite.devt', $enSitemapItem->loc);
-        // $this->assertEquals('http://initwebsite.devt/test-static', $url);
+        $enSitemapItem = SitemapItem::where('site_definition_id', $site->id)->first();
+        $url = str_replace(url('/'), 'http://initwebsite.devt', $enSitemapItem->loc);
+        $this->assertEquals('http://initwebsite.devt/test-static', $url);
 
-        // $plSitemapItem = SitemapItem::where('site_definition_id', $plSite->id)->first();
-        // $url = str_replace(url('/'), 'http://initwebsite.devt', $plSitemapItem->loc);
-        // $this->assertEquals('http://initwebsite.devt/pl/test-statyczna', $url);
+        $plSitemapItem = SitemapItem::where('site_definition_id', $plSite->id)->first();
+        $url = str_replace(url('/'), 'http://initwebsite.devt', $plSitemapItem->loc);
+        $this->assertEquals('http://initwebsite.devt/pl/test-statyczna', $url);
 
         // TODO: Watch out - it will truly remove the file
         // $staticPage->delete();

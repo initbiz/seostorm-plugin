@@ -524,7 +524,13 @@ class PagesGenerator extends AbstractGenerator
 
         // replace parameters with the provided params
         foreach ($params as $param => $value) {
-            $pattern = '/\/\:' . $param . '\?{0,1}/i';
+            // Parameters like /:slug/
+            $pattern = '/\/\:' . $param . '\?{0,1}\//i';
+            $toReplace = empty($value) ? "" : '/' . $value . '/';
+            $url = preg_replace($pattern, $toReplace, $url);
+
+            // Parameters at the end of the string, like /:slug
+            $pattern = '/\/\:' . $param . '\?{0,1}$/i';
             $toReplace = empty($value) ? "" : '/' . $value;
             $url = preg_replace($pattern, $toReplace, $url);
         }

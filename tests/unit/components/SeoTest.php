@@ -252,7 +252,7 @@ class SeoTest extends StormedTestCase
         $site->theme = 'test';
         $site->save();
 
-        Site::setActiveSite($site);
+        $currentSite = Site::getActiveSite();
         Site::applyActiveSite($site);
 
         Translator::forgetInstance();
@@ -263,6 +263,8 @@ class SeoTest extends StormedTestCase
         $page = Page::load($theme, 'with-fake-model');
 
         $result = $controller->runPage($page);
+
+        Site::applyActiveSite($currentSite);
         $this->assertStringContainsString('<title>Test page title PL</title>', $result);
         $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurlpl">', $result);
     }
