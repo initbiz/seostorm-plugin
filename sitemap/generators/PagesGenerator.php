@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Initbiz\SeoStorm\Sitemap\Generators;
 
+use Cms;
+use Site;
 use Cache;
 use Event;
 use Queue;
@@ -487,6 +489,9 @@ class PagesGenerator extends AbstractGenerator
         $site = $this->getSite();
 
         $urlPattern = $page->url;
+        if ($page instanceof StaticPage) {
+            $urlPattern = $page->getOriginalUrlAttributeTranslated();
+        }
 
         // We're restoring ending / if the page is a "root" page
         $restoreSlash = false;
