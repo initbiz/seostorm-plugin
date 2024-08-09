@@ -7,6 +7,7 @@ use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Cms\Classes\ComponentManager;
 use System\Models\SiteDefinition;
+use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
@@ -54,6 +55,10 @@ class SitemapItemTest extends StormedTestCase
         Queue::fake();
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-media-2.htm');
+
+        $settings = Settings::instance();
+        $settings->set('enable_images_sitemap', true);
+        $settings->set('enable_videos_sitemap', true);
 
         $site = SiteDefinition::first();
         $pagesGenerator = new PagesGenerator($site);

@@ -3,14 +3,12 @@
 namespace Initbiz\SeoStorm;
 
 use Event;
-use Backend;
 use Cms\Twig\Extension;
 use Cms\Classes\Controller;
 use System\Classes\PluginBase;
 use Initbiz\SeoStorm\Classes\Router;
 use Initbiz\SeoStorm\Models\Htaccess;
 use Initbiz\SeoStorm\Models\Settings;
-use Initbiz\Seostorm\Models\SitemapItem;
 use Twig\Extension\StringLoaderExtension;
 
 /**
@@ -24,6 +22,7 @@ class Plugin extends PluginBase
 
         if (app()->runningUnitTests()) {
             $this->require = array_merge($this->require, ['RainLab.Translate']);
+            $this->require = array_merge($this->require, ['OFFLINE.Mall']);
         }
 
         return $parent;

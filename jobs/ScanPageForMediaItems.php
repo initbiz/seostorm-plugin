@@ -3,8 +3,11 @@
 namespace Initbiz\SeoStorm\Jobs;
 
 use Site;
+use Cache;
+use Queue;
 use Request;
 use Cms\Classes\CmsController;
+use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Models\SitemapItem;
 use Illuminate\Http\Request as HttpRequest;
 use Initbiz\Sitemap\DOMElements\ImageDOMElement;
@@ -14,8 +17,35 @@ class ScanPageForMediaItems
 {
     public function fire($job, $data)
     {
-        $this->scan($data['loc']);
+        $loc = $data['loc'];
+
+        $this->scan($loc);
+
+        self::unmarkAsPending($loc);
+
         $job->delete();
+    }
+
+    /**
+     * The method protects us from creating too many queue jobs
+     *
+     * @param string $loc
+     * @return void
+     */
+    public function pushForLoc(string $loc): void
+    {
+        if (self::isPending($loc)) {
+            return;
+        }
+
+        $settings = Settings::instance();
+        $imagesEnabledInSitemap = $settings->get('enable_images_sitemap') ?? false;
+        $videosEnabledInSitemap = $settings->get('enable_videos_sitemap') ?? false;
+
+        if ($imagesEnabledInSitemap || $videosEnabledInSitemap) {
+            self::markAsPending($loc);
+            Queue::push(ScanPageForMediaItems::class, ['loc' => $loc]);
+        }
     }
 
     public function scan($loc): void
@@ -54,14 +84,22 @@ class ScanPageForMediaItems
         $dom = new \DOMDocument();
         $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
 
-        $images = $this->getImagesFromDOM($dom);
-        if (!empty($images)) {
-            $sitemapItem->syncImages($images);
+        $settings = Settings::instance();
+
+        $imagesEnabledInSitemap = $settings->get('enable_images_sitemap') ?? false;
+        if ($imagesEnabledInSitemap) {
+            $images = $this->getImagesFromDOM($dom);
+            if (!empty($images)) {
+                $sitemapItem->syncImages($images);
+            }
         }
 
-        $videos = $this->getVideosFromDOM($dom);
-        if (!empty($videos)) {
-            $sitemapItem->syncVideos($videos);
+        $videosEnabledInSitemap = $settings->get('enable_videos_sitemap') ?? false;
+        if ($videosEnabledInSitemap) {
+            $videos = $this->getVideosFromDOM($dom);
+            if (!empty($videos)) {
+                $sitemapItem->syncVideos($videos);
+            }
         }
 
         Request::swap($originalRequest);
@@ -138,5 +176,74 @@ class ScanPageForMediaItems
         }
 
         return $videos;
+    }
+
+    /**
+     * Check if provided loc is pending or not
+     *
+     * @param string $loc
+     * @return boolean
+     */
+    public static function isPending(string $loc): bool
+    {
+        $key = self::getCacheKey();
+
+        $waitingForScan = Cache::get($key, []);
+
+        return in_array($loc, $waitingForScan);
+    }
+
+    /**
+     * Mark provided loc as pending - this will protect us from adding the loc again
+     *
+     * @param string $loc
+     * @return void
+     */
+    public static function markAsPending(string $loc): void
+    {
+        if (self::isPending($loc)) {
+            return;
+        }
+
+        $key = self::getCacheKey();
+        $waitingForScan = Cache::get($key, []);
+
+        $waitingForScan[] = $loc;
+
+        Cache::pull($key);
+        Cache::put($key, $waitingForScan);
+    }
+
+    /**
+     * Unmark the provided loc as pending - make it available for pushing again
+     *
+     * @param string $loc
+     * @return void
+     */
+    public static function unmarkAsPending(string $loc): void
+    {
+        if (!self::isPending($loc)) {
+            return;
+        }
+
+        $key = self::getCacheKey();
+
+        $waitingForScan = Cache::get($key, []);
+
+        if (($key = array_search($loc, $waitingForScan, true)) !== false) {
+            unset($waitingForScan[$key]);
+        }
+
+        Cache::put($key, []);
+    }
+
+    /**
+     * Get cache key
+     *
+     * @return string
+     */
+    public static function getCacheKey(): string
+    {
+        return 'initbiz_seostorm_waiting_for_scan';
     }
 }
