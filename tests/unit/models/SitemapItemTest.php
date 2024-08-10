@@ -11,6 +11,7 @@ use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
+use Initbiz\SeoStorm\Jobs\UniqueQueueJobDispatcher;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
@@ -89,6 +90,10 @@ class SitemapItemTest extends StormedTestCase
     public function testParseSiteVideos(): void
     {
         Queue::fake();
+
+        $jobDispatcher = UniqueQueueJobDispatcher::instance();
+        $jobDispatcher->resetCache();
+
         Theme::setActiveTheme('test');
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-media-2.htm');

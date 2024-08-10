@@ -3,8 +3,6 @@
 namespace Initbiz\SeoStorm\Jobs;
 
 use Site;
-use Cache;
-use Queue;
 use Request;
 use Cms\Classes\CmsController;
 use Initbiz\SeoStorm\Models\Settings;
@@ -21,7 +19,8 @@ class ScanPageForMediaItems
 
         $this->scan($loc);
 
-        self::unmarkAsPending($loc);
+        $jobDispatcher = UniqueQueueJobDispatcher::instance();
+        $jobDispatcher->unmarkAsPending(get_class($this), $data);
 
         $job->delete();
     }
@@ -34,17 +33,13 @@ class ScanPageForMediaItems
      */
     public function pushForLoc(string $loc): void
     {
-        if (self::isPending($loc)) {
-            return;
-        }
-
         $settings = Settings::instance();
         $imagesEnabledInSitemap = $settings->get('enable_images_sitemap') ?? false;
         $videosEnabledInSitemap = $settings->get('enable_videos_sitemap') ?? false;
 
         if ($imagesEnabledInSitemap || $videosEnabledInSitemap) {
-            self::markAsPending($loc);
-            Queue::push(ScanPageForMediaItems::class, ['loc' => $loc]);
+            $jobDispatcher = UniqueQueueJobDispatcher::instance();
+            $jobDispatcher->push(get_class($this), ['loc' => $loc]);
         }
     }
 
@@ -176,74 +171,5 @@ class ScanPageForMediaItems
         }
 
         return $videos;
-    }
-
-    /**
-     * Check if provided loc is pending or not
-     *
-     * @param string $loc
-     * @return boolean
-     */
-    public static function isPending(string $loc): bool
-    {
-        $key = self::getCacheKey();
-
-        $waitingForScan = Cache::get($key, []);
-
-        return in_array($loc, $waitingForScan);
-    }
-
-    /**
-     * Mark provided loc as pending - this will protect us from adding the loc again
-     *
-     * @param string $loc
-     * @return void
-     */
-    public static function markAsPending(string $loc): void
-    {
-        if (self::isPending($loc)) {
-            return;
-        }
-
-        $key = self::getCacheKey();
-        $waitingForScan = Cache::get($key, []);
-
-        $waitingForScan[] = $loc;
-
-        Cache::pull($key);
-        Cache::put($key, $waitingForScan);
-    }
-
-    /**
-     * Unmark the provided loc as pending - make it available for pushing again
-     *
-     * @param string $loc
-     * @return void
-     */
-    public static function unmarkAsPending(string $loc): void
-    {
-        if (!self::isPending($loc)) {
-            return;
-        }
-
-        $key = self::getCacheKey();
-
-        $waitingForScan = Cache::get($key, []);
-
-        if (($key = array_search($loc, $waitingForScan, true)) !== false) {
-            unset($waitingForScan[$key]);
-        }
-
-        Cache::put($key, []);
-    }
-
-    /**
-     * Get cache key
-     *
-     * @return string
-     */
-    public static function getCacheKey(): string
-    {
-        return 'initbiz_seostorm_waiting_for_scan';
     }
 }
