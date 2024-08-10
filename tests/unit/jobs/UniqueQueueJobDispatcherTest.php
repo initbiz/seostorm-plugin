@@ -25,7 +25,7 @@ class UniqueQueueJobDispatcherTest extends PluginTestCase
 
         $this->assertFalse($jobDispatcher->isPending($jobClass, $data1));
 
-        // marking data2 as pending, checking if data1 still pending
+        // marking data2 as pending, checking if data1 still not pending
         $jobDispatcher->markAsPending($jobClass, $data2);
         $this->assertFalse($jobDispatcher->isPending($jobClass, $data1));
 
@@ -39,6 +39,7 @@ class UniqueQueueJobDispatcherTest extends PluginTestCase
     public function testPushingJob(): void
     {
         Queue::fake();
+
         $jobDispatcher = UniqueQueueJobDispatcher::instance();
         $jobDispatcher->resetCache();
 

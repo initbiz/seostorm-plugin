@@ -26,20 +26,6 @@ class UniqueQueueJobDispatcher
     public const CACHE_KEY = 'initbiz-seostorm-pending-jobs';
 
     /**
-     * Class of the queue job to be pushed
-     *
-     * @var string
-     */
-    protected string $jobClass;
-
-    /**
-     * Payload forwarded to the queue job
-     *
-     * @var array
-     */
-    protected array $data = [];
-
-    /**
      * Local cache variable that's used within one request
      *
      * @var array
@@ -56,24 +42,27 @@ class UniqueQueueJobDispatcher
 
     /**
      * Use this method to push job to queue, it will check for you if there's already
-     * pending job queue for the following payload and class
+     * pending job for the following payload and class and returns true if it was added
+     * successfully.
      *
      * @param string $jobClass
      * @param array|null $data
-     * @return void
+     * @return bool
      */
-    public function push(string $jobClass, ?array $data = []): void
+    public function push(string $jobClass, ?array $data = []): bool
     {
         if (empty($jobClass) || !class_exists($jobClass)) {
             throw new \Exception("Class " . $jobClass . " doesn't exist");
         }
 
         if ($this->isPending($jobClass, $data)) {
-            return;
+            return false;
         }
 
-        $this->markAsPending($jobClass, $data);
+        $marked = $this->markAsPending($jobClass, $data);
         Queue::push($jobClass, $data);
+
+        return $marked;
     }
 
     /**
@@ -94,7 +83,7 @@ class UniqueQueueJobDispatcher
 
     /**
      * Mark provided job as pending - remember to unmark it in your queue job once processed
-     * It will return true if the job was marked as pending or not
+     * It will return true if the job was marked as pending
      *
      * @param string $jobClass
      * @param array|null $data

@@ -22,7 +22,6 @@ class Plugin extends PluginBase
 
         if (app()->runningUnitTests()) {
             $this->require = array_merge($this->require, ['RainLab.Translate']);
-            $this->require = array_merge($this->require, ['OFFLINE.Mall']);
         }
 
         return $parent;
