@@ -20,6 +20,7 @@ use System\Models\SiteDefinition;
 use October\Rain\Database\Collection;
 use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
+use RainLab\Translate\Classes\MLStaticPage;
 use RainLab\Pages\Classes\Page as StaticPage;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
 use Initbiz\Sitemap\DOMElements\UrlsetDOMElement;
@@ -410,8 +411,15 @@ class PagesGenerator extends AbstractGenerator
         $enabledPages = [];
 
         foreach ($staticPages as $staticPage) {
-            $viewBag = $staticPage->getViewBag();
-            if ($viewBag->property('enabled_in_sitemap')) {
+            $viewBag = $staticPage->viewBag;
+            if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
+                $translatableModel = MLStaticPage::findLocale($this->getSite()->locale, $staticPage);
+                if (!is_null($translatableModel)) {
+                    $viewBag = array_merge($viewBag, $translatableModel->viewBag);
+                }
+            }
+
+            if ((string) $viewBag['enabled_in_sitemap'] === "1") {
                 $enabledPages[] = $staticPage;
             }
         }

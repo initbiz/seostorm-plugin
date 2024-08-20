@@ -6,6 +6,7 @@ use Cms\Classes\Page;
 use October\Rain\Database\Model;
 use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Classes\StormedManager;
+use RainLab\Pages\Classes\Page as StaticPage;
 
 class RainlabTranslateHandler
 {
@@ -16,6 +17,10 @@ class RainlabTranslateHandler
                 $this->addTranslatableSeoFields($event);
             });
             $this->addTranslatableSeoFieldsToEditor();
+        }
+
+        if (PluginManager::instance()->exists('RainLab.Pages')) {
+            $this->addTranslatableSeoFieldsToRainlabPages();
         }
     }
 
@@ -84,6 +89,27 @@ class RainlabTranslateHandler
                     $model->translatable[] = $newKey;
                 }
             }
+        });
+    }
+
+    public function addTranslatableSeoFieldsToRainlabPages()
+    {
+        StaticPage::extend(function ($model) {
+            if (!$model->propertyExists('translatable')) {
+                $model->addDynamicProperty('translatable', []);
+            }
+
+            $stormedManager = StormedManager::instance();
+            $excludeFields = [
+                'model_class',
+                'model_scope',
+                'model_params',
+            ];
+
+            $fields = $stormedManager->getTranslatableSeoFieldsDefs($excludeFields);
+            $fields = $stormedManager->addPrefix($fields, 'viewBag');
+
+            $model->translatable = array_merge($model->translatable, array_keys($fields));
         });
     }
 }
