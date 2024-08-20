@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Initbiz\SeoStorm\Sitemap\Generators;
 
-use Cms;
-use Site;
 use Cache;
 use Event;
 use Queue;
@@ -374,7 +372,7 @@ class PagesGenerator extends AbstractGenerator
         foreach ($items as $item) {
             $idsToLeave[] = $item->id;
             $baseFileNamesToScan[] = $item->base_file_name;
-            Queue::push(ScanPageForMediaItems::class, ['loc' => $item->loc]);
+            (new ScanPageForMediaItems())->pushForLoc($item->loc);
         }
 
         // Remove old records, for example when a model in the parameter was removed
@@ -476,7 +474,7 @@ class PagesGenerator extends AbstractGenerator
     public function refreshForStaticPage(StaticPage $staticPage): void
     {
         $item = $this->makeItemForStaticPage($staticPage);
-        Queue::push(ScanPageForMediaItems::class, ['loc' => $item->loc]);
+        (new ScanPageForMediaItems())->pushForLoc($item->loc);
 
         SitemapMedia::deleteGhosts();
 

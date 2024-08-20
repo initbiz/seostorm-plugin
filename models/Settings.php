@@ -5,7 +5,6 @@ namespace Initbiz\SeoStorm\Models;
 use Site;
 use Model;
 use System\Classes\SiteCollection;
-use RainLab\Translate\Classes\Locale;
 
 class Settings extends Model
 {

@@ -68,3 +68,5 @@
     - 5_0_0_create_sitemap_items_table.php
     - 5_0_0_create_sitemap_media_table.php
     - 5_0_0_create_sitemap_items_media_table.php
+5.1.0:
+    - "Pushing only unique jobs to queue"

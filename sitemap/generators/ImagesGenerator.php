@@ -2,7 +2,6 @@
 
 namespace Initbiz\SeoStorm\Sitemap\Generators;
 
-use Site;
 use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Models\SitemapItem;
 use Initbiz\Sitemap\DOMElements\UrlDOMElement;

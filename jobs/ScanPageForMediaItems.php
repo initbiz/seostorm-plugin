@@ -5,6 +5,7 @@ namespace Initbiz\SeoStorm\Jobs;
 use Site;
 use Request;
 use Cms\Classes\CmsController;
+use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Models\SitemapItem;
 use Illuminate\Http\Request as HttpRequest;
 use Initbiz\Sitemap\DOMElements\ImageDOMElement;
@@ -14,8 +15,32 @@ class ScanPageForMediaItems
 {
     public function fire($job, $data)
     {
-        $this->scan($data['loc']);
+        $loc = $data['loc'];
+
+        $this->scan($loc);
+
+        $jobDispatcher = UniqueQueueJobDispatcher::instance();
+        $jobDispatcher->unmarkAsPending(get_class($this), $data);
+
         $job->delete();
+    }
+
+    /**
+     * The method protects us from creating too many queue jobs
+     *
+     * @param string $loc
+     * @return void
+     */
+    public function pushForLoc(string $loc): void
+    {
+        $settings = Settings::instance();
+        $imagesEnabledInSitemap = $settings->get('enable_images_sitemap') ?? false;
+        $videosEnabledInSitemap = $settings->get('enable_videos_sitemap') ?? false;
+
+        if ($imagesEnabledInSitemap || $videosEnabledInSitemap) {
+            $jobDispatcher = UniqueQueueJobDispatcher::instance();
+            $jobDispatcher->push(get_class($this), ['loc' => $loc]);
+        }
     }
 
     public function scan($loc): void
@@ -54,14 +79,22 @@ class ScanPageForMediaItems
         $dom = new \DOMDocument();
         $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
 
-        $images = $this->getImagesFromDOM($dom);
-        if (!empty($images)) {
-            $sitemapItem->syncImages($images);
+        $settings = Settings::instance();
+
+        $imagesEnabledInSitemap = $settings->get('enable_images_sitemap') ?? false;
+        if ($imagesEnabledInSitemap) {
+            $images = $this->getImagesFromDOM($dom);
+            if (!empty($images)) {
+                $sitemapItem->syncImages($images);
+            }
         }
 
-        $videos = $this->getVideosFromDOM($dom);
-        if (!empty($videos)) {
-            $sitemapItem->syncVideos($videos);
+        $videosEnabledInSitemap = $settings->get('enable_videos_sitemap') ?? false;
+        if ($videosEnabledInSitemap) {
+            $videos = $this->getVideosFromDOM($dom);
+            if (!empty($videos)) {
+                $sitemapItem->syncVideos($videos);
+            }
         }
 
         Request::swap($originalRequest);

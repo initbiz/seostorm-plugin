@@ -4,19 +4,13 @@ declare(strict_types=1);
 
 namespace Initbiz\Seostorm\Models;
 
-use Event;
 use Model;
-use Queue;
-use Cms\Classes\Page;
 use System\Models\SiteDefinition;
 use October\Rain\Database\Builder;
 use Initbiz\Sitemap\Values\Changefreq;
-use RainLab\Pages\Classes\Page as StaticPage;
 use Initbiz\Sitemap\DOMElements\UrlDOMElement;
-use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
 use Initbiz\Sitemap\DOMElements\ImageDOMElement;
 use Initbiz\Sitemap\DOMElements\VideoDOMElement;
-use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
 
 class SitemapItem extends Model
 {

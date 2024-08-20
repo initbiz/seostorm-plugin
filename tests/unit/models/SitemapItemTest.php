@@ -7,9 +7,11 @@ use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Cms\Classes\ComponentManager;
 use System\Models\SiteDefinition;
+use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
+use Initbiz\SeoStorm\Jobs\UniqueQueueJobDispatcher;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
@@ -55,6 +57,10 @@ class SitemapItemTest extends StormedTestCase
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-media-2.htm');
 
+        $settings = Settings::instance();
+        $settings->set('enable_images_sitemap', true);
+        $settings->set('enable_videos_sitemap', true);
+
         $site = SiteDefinition::first();
         $pagesGenerator = new PagesGenerator($site);
         $pagesGenerator->refreshForCmsPage($page);
@@ -84,6 +90,10 @@ class SitemapItemTest extends StormedTestCase
     public function testParseSiteVideos(): void
     {
         Queue::fake();
+
+        $jobDispatcher = UniqueQueueJobDispatcher::instance();
+        $jobDispatcher->resetCache();
+
         Theme::setActiveTheme('test');
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-media-2.htm');
