@@ -10,6 +10,10 @@ class CreateSitemapItemsMediaTable extends Migration
 {
     public function up()
     {
+        if (Schema::hasTable('initbiz_seostorm_sitemap_items_media')) {
+            return;
+        }
+
         Schema::create('initbiz_seostorm_sitemap_items_media', function (Blueprint $table) {
             $table->unsignedBigInteger('sitemap_item_id');
             $table->unsignedBigInteger('sitemap_media_id');

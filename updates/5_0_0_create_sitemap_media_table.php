@@ -10,6 +10,10 @@ class CreateSitemapMediaTable extends Migration
 {
     public function up()
     {
+        if (Schema::hasTable('initbiz_seostorm_sitemap_media')) {
+            return;
+        }
+
         Schema::create('initbiz_seostorm_sitemap_media', function (Blueprint $table) {
             $table->id();
             $table->string('loc')->unique('initbiz_seostorm_sitemap_media_loc_unique');

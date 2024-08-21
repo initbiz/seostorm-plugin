@@ -10,6 +10,10 @@ class CreateSitemapItemsTable extends Migration
 {
     public function up()
     {
+        if (Schema::hasTable('initbiz_seostorm_sitemap_items')) {
+            return;
+        }
+
         Schema::create('initbiz_seostorm_sitemap_items', function (Blueprint $table) {
             $table->id();
 
