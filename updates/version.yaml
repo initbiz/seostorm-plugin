@@ -67,3 +67,5 @@
     - "Fix issue !90 - String Loader Twig extension"
 4.8.3:
     - "Fix issue !49 - CMS_STRICT_VARIABLES=true"
+4.8.4:
+    - "Fix issue !82 - template_from_string"

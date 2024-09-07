@@ -12,12 +12,12 @@
     "@type": "{{ schemaEntity.type }}"
     {% endif %}
     {% if schemaEntity.id %}
-    ,"@id": "{{ include(template_from_string(schemaEntity.id)) }}"
+    ,"@id": "{{ include(templateFromString(schemaEntity.id)) }}"
     {% endif %}
     },
 {% endif %}
 {% if __SELF__.getSchemaImage() %}
-    "image": "{{ include(template_from_string(__SELF__.getSchemaImage())) }}",
+    "image": "{{ include(templateFromString(__SELF__.getSchemaImage())) }}",
 {% endif %}
 
 {% set publisher = __SELF__.getPublisher() %}
