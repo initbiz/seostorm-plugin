@@ -65,3 +65,5 @@
     - "Fix tests in October 3.6"
 4.8.2:
     - "Fix issue !90 - String Loader Twig extension"
+4.8.3:
+    - "Fix issue !49 - CMS_STRICT_VARIABLES=true"
