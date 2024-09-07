@@ -92,7 +92,9 @@ class Plugin extends PluginBase
     {
         return [
             'functions' => [
+                // See https://github.com/initbiz/seostorm-plugin/issues/82 for explanation
                 'template_from_string' => [$this, 'templateFromString'],
+                'templateFromString' => [$this, 'templateFromString'],
             ]
         ];
     }
