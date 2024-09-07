@@ -105,8 +105,12 @@ class Plugin extends PluginBase
      */
     public function templateFromString($template)
     {
+        if (is_null($template)) {
+            $template = '';
+        }
+
         $twig = app()->get('twig.environment');
-        return twig_template_from_string($twig, $template);
+        return StringLoaderExtension::templateFromString($twig, $template);
     }
 
     /**

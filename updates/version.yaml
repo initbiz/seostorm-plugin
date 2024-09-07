@@ -63,3 +63,5 @@
     - "Add robot_index and robot_follow as translatable fields"
 4.8.1:
     - "Fix tests in October 3.6"
+4.8.2:
+    - "Fix issue !90 - String Loader Twig extension"
