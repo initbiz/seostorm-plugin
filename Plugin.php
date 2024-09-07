@@ -98,7 +98,9 @@ class Plugin extends PluginBase
     {
         return [
             'functions' => [
+                // See https://github.com/initbiz/seostorm-plugin/issues/82 for explanation
                 'template_from_string' => [$this, 'templateFromString'],
+                'templateFromString' => [$this, 'templateFromString'],
             ]
         ];
     }
@@ -111,8 +113,12 @@ class Plugin extends PluginBase
      */
     public function templateFromString($template)
     {
+        if (is_null($template)) {
+            $template = '';
+        }
+
         $twig = app()->get('twig.environment');
-        return twig_template_from_string($twig, $template);
+        return StringLoaderExtension::templateFromString($twig, $template);
     }
 
     /**
