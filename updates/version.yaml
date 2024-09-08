@@ -69,6 +69,8 @@
     - "Fix issue !49 - CMS_STRICT_VARIABLES=true"
 4.8.4:
     - "Fix issue !82 - template_from_string"
+4.9.0:
+    - "Allow disabling global prefix/suffix for title. Solves issue !65"
 5.0.0:
     - "Provide automatic sitemaps with index, images and videos support"
     - 5_0_0_create_sitemap_items_table.php
