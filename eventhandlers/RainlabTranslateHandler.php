@@ -12,12 +12,15 @@ class RainlabTranslateHandler
 {
     public function subscribe($event)
     {
-        if (PluginManager::instance()->exists('RainLab.Translate')) {
-            $event->listen('cms.beforeRoute', function () use ($event) {
-                $this->addTranslatableSeoFields($event);
-            });
-            $this->addTranslatableSeoFieldsToEditor();
+        if (!PluginManager::instance()->exists('RainLab.Translate')) {
+            return;
         }
+
+        $event->listen('cms.beforeRoute', function () use ($event) {
+            $this->addTranslatableSeoFields($event);
+        });
+
+        $this->addTranslatableSeoFieldsToEditor();
 
         if (PluginManager::instance()->exists('RainLab.Pages')) {
             $this->addTranslatableSeoFieldsToRainlabPages();

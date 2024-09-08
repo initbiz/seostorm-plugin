@@ -2,15 +2,17 @@
 
 namespace Initbiz\SeoStorm\Models;
 
+use Str;
 use Site;
-use Model;
+use System\Models\SettingModel;
+use System\Classes\PluginManager;
 use System\Classes\SiteCollection;
+use RainLab\Translate\Classes\Translator;
 
-class Settings extends Model
+class Settings extends SettingModel
 {
     public $implement = [
-        'System.Behaviors.SettingsModel',
-        '@RainLab.Translate.Behaviors.TranslatableModel',
+        '@' . \RainLab\Translate\Behaviors\TranslatableModel::class,
     ];
 
     public $translatable = [
@@ -19,15 +21,15 @@ class Settings extends Model
         'extra_meta',
         'site_image',
         'og_locale',
+        'robots_txt',
     ];
 
     public $attachOne = [
         'site_image_fileupload' => [
-            '\System\Models\File',
+            \System\Models\File::class,
         ],
-
         'schema_image_fileupload' => [
-            '\System\Models\File',
+            \System\Models\File::class,
         ],
     ];
 
@@ -41,16 +43,20 @@ class Settings extends Model
     {
         $this->enable_site_meta = true;
         $this->site_name_position = 'nowhere';
+
         $this->enable_sitemap = true;
-        $this->enable_robots_txt = true;
-        $this->enable_robots_meta = true;
-        $this->enable_robots_txt = 'User-agent: *\r\nAllow: /';
-        $this->favicon_enabled = false;
-        $this->favicon_16 = false;
-        $this->enable_og = true;
-        $this->publisher_type = 'Organization';
         $this->enable_images_sitemap = false;
         $this->enable_videos_sitemap = false;
+
+        $this->enable_robots_txt = true;
+        $this->enable_robots_meta = true;
+        $this->robots_txt = 'User-agent: *\r\nAllow: /';
+
+        $this->favicon_enabled = false;
+        $this->favicon_16 = false;
+
+        $this->enable_og = true;
+        $this->publisher_type = 'Organization';
     }
 
     public function getSitemapEnabledForSitesOptions()
