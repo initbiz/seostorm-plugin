@@ -1,15 +1,15 @@
 {% set settings = __SELF__.getSettings() %}
 
 {% if settings.enable_site_meta %}
-<title>{{ include(template_from_string(__SELF__.getTitle())) }}</title>
+<title>{{ include(templateFromString(__SELF__.getTitle())) }}</title>
 {% if __SELF__.getDescription() %}
-<meta name="description" content="{{ include(template_from_string(__SELF__.getDescription())) }}" />
+<meta name="description" content="{{ include(templateFromString(__SELF__.getDescription())) }}" />
 {% endif %}
-{% set canonical = include(template_from_string(__SELF__.getSeoAttribute('canonical_url'))) %}
+{% set canonical = include(templateFromString(__SELF__.getSeoAttribute('canonical_url'))) %}
 <link rel="canonical" href="{{ __SELF__.getCanonicalUrl(canonical) }}">
 {% endif %}
 {% if settings.enable_robots_meta %}
-{% set advancedRobots = include(template_from_string(__SELF__.getSeoAttribute('robot_advanced'))) %}
+{% set advancedRobots = include(templateFromString(__SELF__.getSeoAttribute('robot_advanced'))) %}
 <meta name="robots" content="{{ __SELF__.getRobots(advancedRobots) }}" />
 {% endif %}
 {% if settings.favicon_enabled %}

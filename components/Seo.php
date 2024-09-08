@@ -59,6 +59,11 @@ class Seo extends ComponentBase
         } else {
             $this->seoAttributes = $this->page->settings;
         }
+
+        $settings = $this->getSettings();
+
+        $this->page['seoStormSiteNameSeparator'] = $settings->site_name_separator;
+        $this->page['seoStormSiteName'] = $settings->site_name;
     }
 
     // Site meta getters
@@ -104,6 +109,12 @@ class Seo extends ComponentBase
     public function getTitle()
     {
         $title = $this->getTitleRaw();
+
+        $ignorePositionFromSettings = $this->getSeoAttribute('ignoreGlobalTitlePosition') ?? false;
+
+        if ($ignorePositionFromSettings) {
+            return $title;
+        }
 
         $settings = $this->getSettings();
 
