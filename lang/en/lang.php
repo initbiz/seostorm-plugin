@@ -134,6 +134,7 @@
             'enable_robots_txt' => 'Enable robots.txt',
             'enable_robots_meta' => 'Enable robots meta tags',
             'robots_txt' => 'robots.txt',
+            'robots_txt_comment' => 'You can use Twig here with "site" and "domain" variables available',
 
             // Favicon
             'favicon_enabled' => 'Enable favicon.ico',

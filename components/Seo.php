@@ -2,9 +2,7 @@
 
 namespace Initbiz\SeoStorm\Components;
 
-use App;
 use Cms\Facades\Cms;
-use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
 use Media\Classes\MediaLibrary;
 use Initbiz\SeoStorm\Models\Settings;

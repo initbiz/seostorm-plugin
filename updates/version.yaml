@@ -78,3 +78,5 @@
     - 5_0_0_create_sitemap_items_media_table.php
 5.1.0:
     - "Pushing only unique jobs to queue"
+5.2.0:
+    - "Robots.txt translatable and available with Twig"

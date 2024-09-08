@@ -165,14 +165,18 @@ tabs:
 
         robots_txt:
             label: initbiz.seostorm::lang.form.settings.robots_txt
+            commentAbove: initbiz.seostorm::lang.form.settings.robots_txt_comment
             size: huge
             language: plain_text
             span: full
-            disabled: 0
-            hidden: 0
             type: codeeditor
             tab: initbiz.seostorm::lang.form.settings.tab_robots
             default: "User-agent: *\r\nAllow: /"
+            hidden: false
+            trigger:
+                action: show
+                field: enable_robots_txt
+                condition: checked
 
         #----------------------------------------------------------------------
         # Favicon
