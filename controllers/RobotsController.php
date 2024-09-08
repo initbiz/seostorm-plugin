@@ -2,12 +2,28 @@
 
 namespace Initbiz\SeoStorm\Controllers;
 
-use Initbiz\SeoStorm\Classes\Robots;
+use Site;
+use Twig;
+use Response;
+use Illuminate\Http\Request;
+use Initbiz\SeoStorm\Models\Settings;
 
 class RobotsController
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Robots::generate();
+        $site = Site::getSiteFromRequest($request->getSchemeAndHttpHost(), $request->getPathInfo());
+
+        $vars = [
+            'domain' => url('/'),
+            'site' => $site,
+        ];
+
+        $content = Settings::get('robots_txt');
+        $content = Twig::parse($content, $vars);
+
+        $response = Response::make($content);
+        $response->header('Content-Type', 'text/plain');
+        return $response;
     }
 }
