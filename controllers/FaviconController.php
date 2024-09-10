@@ -14,6 +14,6 @@ class FaviconController
 
         $favicon = $settings->getFaviconObject();
 
-        return Response::file($favicon, ['Content-Type' => $favicon->getContentType()]);
+        return Response::file($favicon->getLocalPath(), ['Content-Type' => $favicon->getContentType()]);
     }
 }

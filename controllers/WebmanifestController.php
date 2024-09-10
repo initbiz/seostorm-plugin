@@ -19,7 +19,6 @@ class WebmanifestController
             'theme_color' => $settings->webmanifest_theme_color,
             'background_color' => $settings->webmanifest_background_color,
             'display' => $settings->webmanifest_display,
-            'icons' => []
         ];
 
         foreach ($settings->webmanifest_custom_attributes as $webmanifestAttribute) {
@@ -37,7 +36,12 @@ class WebmanifestController
         return $response;
     }
 
-    public function getIconsItem(): array
+    /**
+     * Generate Webmanifest icons item basing on favicon sizes
+     *
+     * @return array
+     */
+    protected function getIconsItem(): array
     {
         $settings = Settings::instance();
 

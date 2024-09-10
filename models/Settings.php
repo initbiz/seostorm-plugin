@@ -14,7 +14,7 @@ class Settings extends SettingModel
     use \October\Rain\Database\Traits\Validation;
 
     /**
-     * Cache key that's storing all the values between requests
+     * Cache key to store current favicon hash (to check if it was updated)
      */
     public const FAVICON_CACHE_KEY = 'initbiz-seostorm-favicon-cache-key';
 
@@ -84,13 +84,9 @@ class Settings extends SettingModel
         // Cleanup
         if ($this->favicon_from === 'media') {
             $this->favicon_url = null;
-        }
-
-        if ($this->favicon_from === 'url') {
+        } elseif ($this->favicon_from === 'url') {
             $this->favicon = null;
-        }
-
-        if ($this->favicon_from === 'fileupload') {
+        } elseif ($this->favicon_from === 'fileupload') {
             $this->favicon_url = null;
             $this->favicon = null;
         }
@@ -105,7 +101,7 @@ class Settings extends SettingModel
         $hash = sha1($this->favicon_from . $contents);
         $cachedHash = Cache::get(self::FAVICON_CACHE_KEY);
 
-        // Favicon hasn't changed
+        // Favicon hasn't been changed since last saving
         if ($hash === $cachedHash) {
             return;
         }
