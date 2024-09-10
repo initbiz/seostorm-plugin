@@ -58,6 +58,12 @@ class Router
 
     public function registerRobotsRouting(): void
     {
+        $settings = Settings::instance();
+
+        if (!$settings->enable_robots_txt) {
+            return;
+        }
+
         $sites = Site::listSites();
 
         foreach ($sites as $site) {
@@ -68,11 +74,26 @@ class Router
 
     public function registerFaviconRouting(): void
     {
+        $settings = Settings::instance();
+
+        if (!$settings->favicon_enabled) {
+            return;
+        }
+
         $sites = Site::listSites();
 
         foreach ($sites as $site) {
             $prefix = $site->is_prefixed ? $site->route_prefix : '';
-            Route::get($prefix . '/favicon.ico', [FaviconController::class, 'index']);
+            Route::get($prefix . '/favicon.ico', [FaviconController::class, 'faviconIco']);
+        }
+
+        if (!$settings->favicon_webmanifest) {
+            return;
+        }
+
+        foreach ($sites as $site) {
+            $prefix = $site->is_prefixed ? $site->route_prefix : '';
+            Route::get($prefix . '/manifest.webmanifest', [FaviconController::class, 'webmanifest']);
         }
     }
 }

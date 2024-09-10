@@ -2,46 +2,48 @@
 
 namespace Initbiz\SeoStorm\Controllers;
 
-use File;
-use Resizer;
-use Cms\Classes\Controller;
+use Event;
+use Response;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Initbiz\SeoStorm\Models\Settings;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class FaviconController
 {
-    public function index()
+    public function faviconIco(): BinaryFileResponse
     {
         $settings = Settings::instance();
 
-        if (!$settings->favicon_enabled) {
-            $controller = new Controller();
-            $controller->setStatusCode(404);
+        $favicon = $settings->getFaviconObject();
 
-            return $controller->run('/404');;
+        return Response::file($favicon, ['Content-Type' => $favicon->getContentType()]);
+    }
+
+    public function webmanifest(Request $request): JsonResponse
+    {
+        $settings = Settings::instance();
+
+        $favicon = $settings->getFaviconObject();
+        $sizes = array_column($settings->favicon_sizes, 'size');
+
+        // 32 and 180 are used as default sizes in HTML
+        $sizes = array_merge(['32', '180'], $sizes);
+
+        $result = [
+            'icons' => [],
+        ];
+
+        foreach ($sizes as $size) {
+            $result['icons'][] = [
+                "src" => $favicon->getThumb($size, $size),
+                "type" => $favicon->getContentType(),
+                "sizes" => $size . "x" . $size,
+            ];
         }
 
-        $finalPath = $inputPath = storage_path('app/media' . $settings->favicon);
+        Event::fire('initbiz.seostorm.webmanifestDataGenerate', [&$result]);
 
-        if ($settings->favicon_16) {
-
-            $destinationPath = storage_path('app/initbiz/seostorm/favicon/' . dirname($settings->favicon) . '/');
-            $finalPath = $outputPath = $destinationPath . basename($settings->favicon);
-
-            if (!file_exists($outputPath)) {
-                if (
-                    !File::makeDirectory($destinationPath, 0777, true, true) &&
-                    !File::isDirectory($destinationPath)
-                ) {
-                    trigger_error(error_get_last(), E_USER_WARNING);
-                }
-
-                Resizer::open($inputPath)->resize(16, 16)->save($outputPath);
-                $finalPath = $outputPath;
-            }
-        }
-
-        return response()->file($finalPath, [
-            'Content-Type' => 'image/x-icon',
-        ]);
+        return Response::json($result);
     }
 }

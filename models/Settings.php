@@ -2,15 +2,22 @@
 
 namespace Initbiz\SeoStorm\Models;
 
-use Str;
 use Site;
+use Cache;
+use System\Models\File;
+use Media\Classes\MediaLibrary;
 use System\Models\SettingModel;
-use System\Classes\PluginManager;
 use System\Classes\SiteCollection;
-use RainLab\Translate\Classes\Translator;
 
 class Settings extends SettingModel
 {
+    use \October\Rain\Database\Traits\Validation;
+
+    /**
+     * Cache key that's storing all the values between requests
+     */
+    public const FAVICON_CACHE_KEY = 'initbiz-seostorm-favicon-cache-key';
+
     public $implement = [
         '@' . \RainLab\Translate\Behaviors\TranslatableModel::class,
     ];
@@ -31,6 +38,9 @@ class Settings extends SettingModel
         'schema_image_fileupload' => [
             \System\Models\File::class,
         ],
+        'favicon_fileupload' => [
+            \System\Models\File::class,
+        ],
     ];
 
     // A unique code
@@ -38,6 +48,11 @@ class Settings extends SettingModel
 
     // Reference to field configuration
     public $settingsFields = 'fields.yaml';
+
+    public $rules = [
+        'favicon' => 'required_if:favicon_from,media',
+        'favicon_url' => 'required_if:favicon_from,url',
+    ];
 
     public function initSettingsData()
     {
@@ -53,10 +68,45 @@ class Settings extends SettingModel
         $this->robots_txt = 'User-agent: *\r\nAllow: /';
 
         $this->favicon_enabled = false;
-        $this->favicon_16 = false;
+        $this->webmanifest_enabled = false;
 
         $this->enable_og = true;
         $this->publisher_type = 'Organization';
+    }
+
+    public function beforeSave()
+    {
+        $favicon = $this->favicon_fileupload;
+
+        $contents = '';
+        if ($favicon instanceof File) {
+            $contents = $favicon->getContents();
+        }
+
+        $hash = sha1($this->favicon_from . $contents);
+        $cachedHash = Cache::get(self::FAVICON_CACHE_KEY);
+
+        // Favicon hasn't changed
+        if ($hash === $cachedHash) {
+            return;
+        }
+
+        if ($this->favicon_from === 'media' || $this->favicon_from === 'url') {
+            $url = $this->favicon_url;
+            if ($this->favicon_from === 'media' && !empty($this->favicon)) {
+                $url = MediaLibrary::url($this->favicon);
+            }
+
+            if (empty($url)) {
+                return;
+            }
+
+            $faviconInstance = (new File())->fromUrl($url);
+            $faviconInstance->save();
+            $this->favicon_fileupload()->add($faviconInstance);
+        }
+
+        Cache::put(self::FAVICON_CACHE_KEY, $hash);
     }
 
     public function getSitemapEnabledForSitesOptions()
@@ -106,5 +156,22 @@ class Settings extends SettingModel
         if (Site::listSites()->count() > 1) {
             $fields->sitemap_enabled_for_sites->hidden = false;
         }
+    }
+
+    /**
+     * Get Favicon object depending on type selected - for media and URL we'll generate it
+     *
+     * @return File|null
+     */
+    public function getFaviconObject(): ?File
+    {
+        // Backward compatibility
+        if (!empty($this->favicon) && empty($this->favicon_from)) {
+            $this->favicon_from = 'media';
+            $this->save();
+        }
+
+        // in afterSave event, we're setting favicon_fileupload for every type: media, and url, too
+        return $this->favicon_fileupload;
     }
 }

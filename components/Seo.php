@@ -62,6 +62,10 @@ class Seo extends ComponentBase
 
         $this->page['seoStormSiteNameSeparator'] = $settings->site_name_separator;
         $this->page['seoStormSiteName'] = $settings->site_name;
+
+        if ($settings->favicon_enabled) {
+            $this->page['favicon'] = $settings->getFaviconObject();
+        }
     }
 
     // Site meta getters

@@ -183,23 +183,75 @@ tabs:
         #----------------------------------------------------------------------
         favicon_enabled:
             label: initbiz.seostorm::lang.form.settings.favicon_enabled
-            comment: initbiz.seostorm::lang.form.settings.favicon_enabled_comment
             type: switch
             default: false
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
 
-        favicon_16:
-            label: initbiz.seostorm::lang.form.settings.favicon_16
-            type: checkbox
-            default: false
+        favicon_from:
+            label: initbiz.seostorm::lang.form.settings.favicon_from
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            span: left
+            type: dropdown
+            options:
+                media: initbiz.seostorm::lang.form.settings.favicon_from_media
+                url: initbiz.seostorm::lang.form.settings.favicon_from_url
+                fileupload: initbiz.seostorm::lang.form.settings.favicon_from_fileupload
 
         favicon:
             label: initbiz.seostorm::lang.form.settings.favicon
             type: mediafinder
             mode: image
+            span: right
             prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            trigger:
+                action: show
+                field: favicon_from
+                condition: value[media]
+
+        favicon_fileupload:
+            label: initbiz.seostorm::lang.form.settings.favicon_fileupload
+            type: fileupload
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            fileTypes: 'png,gif,jpg,jpeg,webp'
+            span: right
+            trigger:
+                action: show
+                field: favicon_from
+                condition: value[fileupload]
+
+        favicon_url:
+            label: initbiz.seostorm::lang.form.settings.favicon_url
+            type: text
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            span: right
+            trigger:
+                action: show
+                field: favicon_from
+                condition: value[url]
+
+        favicon_webmanifest:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_label
+            comment: initbiz.seostorm::lang.form.settings.webmanifest_comment
+            type: switch
+            span: left
+            default: false
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
+
+        favicon_sizes:
+            label: initbiz.seostorm::lang.form.settings.favicon_sizes_label
+            commentAbove: initbiz.seostorm::lang.form.settings.favicon_sizes_comment
+            type: repeater
+            span: right
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
+            form:
+                fields:
+                    size:
+                        type: number
+                        label: initbiz.seostorm::lang.form.settings.favicon_field_label
+                        default: 16
+                        min: 1
 
         #----------------------------------------------------------------------
         # Social Media Tab

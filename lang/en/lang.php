@@ -137,11 +137,20 @@
             'robots_txt_comment' => 'You can use Twig here with "site" and "domain" variables available',
 
             // Favicon
-            'favicon_enabled' => 'Enable favicon.ico',
-            'favicon_enabled_comment' => 'This will generate a route to /favicon.ico',
-            'favicon_16' => 'Resize favicon to 16x16',
+            'favicon_enabled' => 'Enable favicon',
             'favicon' => 'Select your favicon',
-            'favicon_prompt' => 'Click %s to search the media library',
+            'favicon_sizes_label' => 'Additional favicon sizes',
+            'favicon_sizes_comment' => 'Provided sizes will be used to resize favicons and added to webmanifest file (32px and 180px are default)',
+            'favicon_field_label' => 'Favicon size in pixels (e.g. 16x16 px)',
+            'favicon_prompt' => 'Add next favicon size',
+            'favicon_url' => 'Provide URL to the favicon',
+            'favicon_fileupload' => 'Upload your favicon',
+            'favicon_from' => 'Choose upload method',
+            'favicon_from_media' => 'Upload favicon through media',
+            'favicon_from_fileupload' => 'Upload favicon through fileupload',
+            'favicon_from_url' => 'Upload favicon through URL',
+            'webmanifest_label' => 'Webmanifest',
+            'webmanifest_comment' => 'This will generate webmanifest and a route to /manifest.webmanifest',
 
             // Social media
             'enable_og' => 'Enable Open Graph',
