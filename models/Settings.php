@@ -68,6 +68,7 @@ class Settings extends SettingModel
         $this->robots_txt = 'User-agent: *\r\nAllow: /';
 
         $this->favicon_enabled = false;
+        $this->favicon_from = 'fileupload';
         $this->webmanifest_enabled = false;
 
         $this->enable_og = true;
@@ -76,6 +77,24 @@ class Settings extends SettingModel
 
     public function beforeSave()
     {
+        if (empty($this->favicon_from)) {
+            $this->favicon_from = 'fileupload';
+        }
+
+        // Cleanup
+        if ($this->favicon_from === 'media') {
+            $this->favicon_url = null;
+        }
+
+        if ($this->favicon_from === 'url') {
+            $this->favicon = null;
+        }
+
+        if ($this->favicon_from === 'fileupload') {
+            $this->favicon_url = null;
+            $this->favicon = null;
+        }
+
         $favicon = $this->favicon_fileupload;
 
         $contents = '';
@@ -171,7 +190,7 @@ class Settings extends SettingModel
             $this->save();
         }
 
-        // in afterSave event, we're setting favicon_fileupload for every type: media, and url, too
+        // in beforeSave event, we're setting favicon_fileupload for every type: media, and url, too
         return $this->favicon_fileupload;
     }
 }

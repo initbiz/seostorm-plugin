@@ -230,19 +230,11 @@ tabs:
                 field: favicon_from
                 condition: value[url]
 
-        favicon_webmanifest:
-            label: initbiz.seostorm::lang.form.settings.webmanifest_label
-            comment: initbiz.seostorm::lang.form.settings.webmanifest_comment
-            type: switch
-            span: left
-            default: false
-            tab: initbiz.seostorm::lang.form.settings.tab_favicon
-
         favicon_sizes:
             label: initbiz.seostorm::lang.form.settings.favicon_sizes_label
             commentAbove: initbiz.seostorm::lang.form.settings.favicon_sizes_comment
             type: repeater
-            span: right
+            span: auto
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
             prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
             form:
@@ -254,8 +246,98 @@ tabs:
                         min: 1
 
         #----------------------------------------------------------------------
+        # Webmanifest Tab
+        #----------------------------------------------------------------------
+
+        webmanifest_enabled:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_enabled
+            comment: initbiz.seostorm::lang.form.settings.webmanifest_comment
+            type: switch
+            span: full
+            default: false
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+
+        webmanifest_name:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_name
+            span: auto
+            type: text
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+            trigger:
+                action: show
+                field: webmanifest_enabled
+                condition: checked
+
+        webmanifest_short_name:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_short_name
+            span: auto
+            type: text
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+            trigger:
+                action: show
+                field: webmanifest_enabled
+                condition: checked
+
+        webmanifest_background_color:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_background_color
+            span: auto
+            type: colorpicker
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+            trigger:
+                action: show
+                field: webmanifest_enabled
+                condition: checked
+
+        webmanifest_theme_color:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_theme_color
+            span: auto
+            type: colorpicker
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+            trigger:
+                action: show
+                field: webmanifest_enabled
+                condition: checked
+
+        webmanifest_display:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_display
+            span: auto
+            type: dropdown
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+            default: standalone
+            options:
+                fullscreen: fullscreen
+                standalone: standalone
+                minimal-ui: minimal-ui
+                browser: browser
+            trigger:
+                action: show
+                field: webmanifest_enabled
+                condition: checked
+
+        webmanifest_custom_attributes:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_custom_attributes
+            commentAbove: initbiz.seostorm::lang.form.settings.webmanifest_custom_attributes_comment
+            span: full
+            type: repeater
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+            trigger:
+                action: show
+                field: webmanifest_enabled
+                condition: checked
+            form:
+                fields:
+                    key:
+                        label: initbiz.seostorm::lang.form.settings.webmanifest_custom_attributes_key
+                        span: auto
+                        type: text
+                    value:
+                        label: initbiz.seostorm::lang.form.settings.webmanifest_custom_attributes_value
+                        span: auto
+                        type: text
+
+        #----------------------------------------------------------------------
         # Social Media Tab
         #----------------------------------------------------------------------
+
         enable_og:
             label: initbiz.seostorm::lang.form.settings.enable_og
             comment: initbiz.seostorm::lang.form.settings.enable_og_comment

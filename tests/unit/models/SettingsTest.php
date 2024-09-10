@@ -58,4 +58,11 @@ class SettingsTest extends PluginTestCase
         $this->assertTrue($settings->getFaviconObject() instanceof File);
         $this->assertEquals('seostorm-icon-3.png', $favicon->getFilename());
     }
+
+    public function tearDown(): void
+    {
+        Settings::clearInternalCache();
+
+        parent::tearDown();
+    }
 }

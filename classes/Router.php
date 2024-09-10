@@ -8,6 +8,7 @@ use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Controllers\RobotsController;
 use Initbiz\SeoStorm\Controllers\FaviconController;
 use Initbiz\SeoStorm\Controllers\SitemapController;
+use Initbiz\SeoStorm\Controllers\WebmanifestController;
 
 /**
  * SEO Storm router - will register routings for sitemaps, robots, etc.
@@ -29,6 +30,10 @@ class Router
 
         if ($settings->get('favicon_enabled')) {
             $this->registerFaviconRouting();
+        }
+
+        if ($settings->get('webmanifest_enabled')) {
+            $this->registerWebmanifestRouting();
         }
     }
 
@@ -58,14 +63,7 @@ class Router
 
     public function registerRobotsRouting(): void
     {
-        $settings = Settings::instance();
-
-        if (!$settings->enable_robots_txt) {
-            return;
-        }
-
         $sites = Site::listSites();
-
         foreach ($sites as $site) {
             $prefix = $site->is_prefixed ? $site->route_prefix : '';
             Route::get($prefix . '/robots.txt', [RobotsController::class, 'index']);
@@ -74,26 +72,19 @@ class Router
 
     public function registerFaviconRouting(): void
     {
-        $settings = Settings::instance();
-
-        if (!$settings->favicon_enabled) {
-            return;
-        }
-
         $sites = Site::listSites();
-
         foreach ($sites as $site) {
             $prefix = $site->is_prefixed ? $site->route_prefix : '';
             Route::get($prefix . '/favicon.ico', [FaviconController::class, 'faviconIco']);
         }
+    }
 
-        if (!$settings->favicon_webmanifest) {
-            return;
-        }
-
+    public function registerWebmanifestRouting(): void
+    {
+        $sites = Site::listSites();
         foreach ($sites as $site) {
             $prefix = $site->is_prefixed ? $site->route_prefix : '';
-            Route::get($prefix . '/manifest.webmanifest', [FaviconController::class, 'webmanifest']);
+            Route::get($prefix . '/manifest.webmanifest', [WebmanifestController::class, 'index']);
         }
     }
 }

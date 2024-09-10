@@ -92,6 +92,7 @@
             'tab_sitemap' => 'Sitemap',
             'tab_robots' => 'Robots',
             'tab_favicon' => 'Favicon',
+            'tab_webmanifest' => 'Webmanifest',
             'tab_htaccess' => '.htaccess',
             'tab_social_media' => 'Social Media',
             'tab_migrate' => 'Migrate',
@@ -149,8 +150,19 @@
             'favicon_from_media' => 'Upload favicon through media',
             'favicon_from_fileupload' => 'Upload favicon through fileupload',
             'favicon_from_url' => 'Upload favicon through URL',
-            'webmanifest_label' => 'Webmanifest',
+
+            // Webmanifest
+            'webmanifest_enabled' => 'Webmanifest enabled',
             'webmanifest_comment' => 'This will generate webmanifest and a route to /manifest.webmanifest',
+            'webmanifest_name' => 'Name',
+            'webmanifest_short_name' => 'Short name',
+            'webmanifest_theme_color' => 'Theme color',
+            'webmanifest_background_color' => 'Background color',
+            'webmanifest_display' => 'Display property',
+            'webmanifest_custom_attributes' => 'Custom attributes',
+            'webmanifest_custom_attributes_comment' => 'Custom attributes added to your webmanifest',
+            'webmanifest_custom_attributes_key' => 'Key',
+            'webmanifest_custom_attributes_value' => 'Value',
 
             // Social media
             'enable_og' => 'Enable Open Graph',
