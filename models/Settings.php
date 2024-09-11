@@ -3,14 +3,23 @@
 namespace Initbiz\SeoStorm\Models;
 
 use Site;
-use Model;
+use Cache;
+use System\Models\File;
+use Media\Classes\MediaLibrary;
+use System\Models\SettingModel;
 use System\Classes\SiteCollection;
 
-class Settings extends Model
+class Settings extends SettingModel
 {
+    use \October\Rain\Database\Traits\Validation;
+
+    /**
+     * Cache key to store current favicon hash (to check if it was updated)
+     */
+    public const FAVICON_CACHE_KEY = 'initbiz-seostorm-favicon-cache-key';
+
     public $implement = [
-        'System.Behaviors.SettingsModel',
-        '@RainLab.Translate.Behaviors.TranslatableModel',
+        '@' . \RainLab\Translate\Behaviors\TranslatableModel::class,
     ];
 
     public $translatable = [
@@ -19,15 +28,18 @@ class Settings extends Model
         'extra_meta',
         'site_image',
         'og_locale',
+        'robots_txt',
     ];
 
     public $attachOne = [
         'site_image_fileupload' => [
-            '\System\Models\File',
+            \System\Models\File::class,
         ],
-
         'schema_image_fileupload' => [
-            '\System\Models\File',
+            \System\Models\File::class,
+        ],
+        'favicon_fileupload' => [
+            \System\Models\File::class,
         ],
     ];
 
@@ -37,20 +49,79 @@ class Settings extends Model
     // Reference to field configuration
     public $settingsFields = 'fields.yaml';
 
+    public $rules = [
+        'favicon' => 'required_if:favicon_from,media',
+        'favicon_url' => 'required_if:favicon_from,url',
+    ];
+
     public function initSettingsData()
     {
         $this->enable_site_meta = true;
         $this->site_name_position = 'nowhere';
+
         $this->enable_sitemap = true;
-        $this->enable_robots_txt = true;
-        $this->enable_robots_meta = true;
-        $this->enable_robots_txt = 'User-agent: *\r\nAllow: /';
-        $this->favicon_enabled = false;
-        $this->favicon_16 = false;
-        $this->enable_og = true;
-        $this->publisher_type = 'Organization';
         $this->enable_images_sitemap = false;
         $this->enable_videos_sitemap = false;
+
+        $this->enable_robots_txt = true;
+        $this->enable_robots_meta = true;
+        $this->robots_txt = 'User-agent: *\r\nAllow: /';
+
+        $this->favicon_enabled = false;
+        $this->favicon_from = 'fileupload';
+        $this->webmanifest_enabled = false;
+
+        $this->enable_og = true;
+        $this->publisher_type = 'Organization';
+    }
+
+    public function beforeSave()
+    {
+        if (empty($this->favicon_from)) {
+            $this->favicon_from = 'fileupload';
+        }
+
+        // Cleanup
+        if ($this->favicon_from === 'media') {
+            $this->favicon_url = null;
+        } elseif ($this->favicon_from === 'url') {
+            $this->favicon = null;
+        } elseif ($this->favicon_from === 'fileupload') {
+            $this->favicon_url = null;
+            $this->favicon = null;
+        }
+
+        $favicon = $this->favicon_fileupload;
+
+        $contents = '';
+        if ($favicon instanceof File) {
+            $contents = $favicon->getContents();
+        }
+
+        $hash = sha1($this->favicon_from . $contents);
+        $cachedHash = Cache::get(self::FAVICON_CACHE_KEY);
+
+        // Favicon hasn't been changed since last saving
+        if ($hash === $cachedHash) {
+            return;
+        }
+
+        if ($this->favicon_from === 'media' || $this->favicon_from === 'url') {
+            $url = $this->favicon_url;
+            if ($this->favicon_from === 'media' && !empty($this->favicon)) {
+                $url = MediaLibrary::url($this->favicon);
+            }
+
+            if (empty($url)) {
+                return;
+            }
+
+            $faviconInstance = (new File())->fromUrl($url);
+            $faviconInstance->save();
+            $this->favicon_fileupload()->add($faviconInstance);
+        }
+
+        Cache::put(self::FAVICON_CACHE_KEY, $hash);
     }
 
     public function getSitemapEnabledForSitesOptions()
@@ -100,5 +171,22 @@ class Settings extends Model
         if (Site::listSites()->count() > 1) {
             $fields->sitemap_enabled_for_sites->hidden = false;
         }
+    }
+
+    /**
+     * Get Favicon object depending on type selected - for media and URL we'll generate it
+     *
+     * @return File|null
+     */
+    public function getFaviconObject(): ?File
+    {
+        // Backward compatibility
+        if (!empty($this->favicon) && empty($this->favicon_from)) {
+            $this->favicon_from = 'media';
+            $this->save();
+        }
+
+        // in beforeSave event, we're setting favicon_fileupload for every type: media, and url, too
+        return $this->favicon_fileupload;
     }
 }

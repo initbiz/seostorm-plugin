@@ -165,41 +165,179 @@ tabs:
 
         robots_txt:
             label: initbiz.seostorm::lang.form.settings.robots_txt
+            commentAbove: initbiz.seostorm::lang.form.settings.robots_txt_comment
             size: huge
             language: plain_text
             span: full
-            disabled: 0
-            hidden: 0
             type: codeeditor
             tab: initbiz.seostorm::lang.form.settings.tab_robots
             default: "User-agent: *\r\nAllow: /"
+            hidden: false
+            trigger:
+                action: show
+                field: enable_robots_txt
+                condition: checked
 
         #----------------------------------------------------------------------
         # Favicon
         #----------------------------------------------------------------------
         favicon_enabled:
             label: initbiz.seostorm::lang.form.settings.favicon_enabled
-            comment: initbiz.seostorm::lang.form.settings.favicon_enabled_comment
             type: switch
             default: false
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
 
-        favicon_16:
-            label: initbiz.seostorm::lang.form.settings.favicon_16
-            type: checkbox
-            default: false
+        favicon_from:
+            label: initbiz.seostorm::lang.form.settings.favicon_from
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            span: left
+            type: dropdown
+            options:
+                media: initbiz.seostorm::lang.form.settings.favicon_from_media
+                url: initbiz.seostorm::lang.form.settings.favicon_from_url
+                fileupload: initbiz.seostorm::lang.form.settings.favicon_from_fileupload
 
         favicon:
             label: initbiz.seostorm::lang.form.settings.favicon
             type: mediafinder
             mode: image
+            span: right
             prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            trigger:
+                action: show
+                field: favicon_from
+                condition: value[media]
+
+        favicon_fileupload:
+            label: initbiz.seostorm::lang.form.settings.favicon_fileupload
+            type: fileupload
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            fileTypes: 'png,gif,jpg,jpeg,webp'
+            span: right
+            trigger:
+                action: show
+                field: favicon_from
+                condition: value[fileupload]
+
+        favicon_url:
+            label: initbiz.seostorm::lang.form.settings.favicon_url
+            type: text
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            span: right
+            trigger:
+                action: show
+                field: favicon_from
+                condition: value[url]
+
+        favicon_sizes:
+            label: initbiz.seostorm::lang.form.settings.favicon_sizes_label
+            commentAbove: initbiz.seostorm::lang.form.settings.favicon_sizes_comment
+            type: repeater
+            span: auto
+            tab: initbiz.seostorm::lang.form.settings.tab_favicon
+            prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
+            form:
+                fields:
+                    size:
+                        type: number
+                        label: initbiz.seostorm::lang.form.settings.favicon_field_label
+                        default: 16
+                        min: 1
+
+        #----------------------------------------------------------------------
+        # Webmanifest Tab
+        #----------------------------------------------------------------------
+
+        webmanifest_enabled:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_enabled
+            comment: initbiz.seostorm::lang.form.settings.webmanifest_comment
+            type: switch
+            span: full
+            default: false
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+
+        webmanifest_name:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_name
+            span: auto
+            type: text
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+            trigger:
+                action: show
+                field: webmanifest_enabled
+                condition: checked
+
+        webmanifest_short_name:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_short_name
+            span: auto
+            type: text
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+            trigger:
+                action: show
+                field: webmanifest_enabled
+                condition: checked
+
+        webmanifest_background_color:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_background_color
+            span: auto
+            type: colorpicker
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+            trigger:
+                action: show
+                field: webmanifest_enabled
+                condition: checked
+
+        webmanifest_theme_color:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_theme_color
+            span: auto
+            type: colorpicker
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+            trigger:
+                action: show
+                field: webmanifest_enabled
+                condition: checked
+
+        webmanifest_display:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_display
+            span: auto
+            type: dropdown
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+            default: standalone
+            options:
+                fullscreen: fullscreen
+                standalone: standalone
+                minimal-ui: minimal-ui
+                browser: browser
+            trigger:
+                action: show
+                field: webmanifest_enabled
+                condition: checked
+
+        webmanifest_custom_attributes:
+            label: initbiz.seostorm::lang.form.settings.webmanifest_custom_attributes
+            commentAbove: initbiz.seostorm::lang.form.settings.webmanifest_custom_attributes_comment
+            span: full
+            type: repeater
+            tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
+            trigger:
+                action: show
+                field: webmanifest_enabled
+                condition: checked
+            form:
+                fields:
+                    key:
+                        label: initbiz.seostorm::lang.form.settings.webmanifest_custom_attributes_key
+                        span: auto
+                        type: text
+                    value:
+                        label: initbiz.seostorm::lang.form.settings.webmanifest_custom_attributes_value
+                        span: auto
+                        type: text
 
         #----------------------------------------------------------------------
         # Social Media Tab
         #----------------------------------------------------------------------
+
         enable_og:
             label: initbiz.seostorm::lang.form.settings.enable_og
             comment: initbiz.seostorm::lang.form.settings.enable_og_comment
