@@ -119,12 +119,18 @@ class SitemapItemTest extends StormedTestCase
 
     public function testParseSiteWhenUpdateModel(): void
     {
+        $settings = Settings::instance();
+        $settings->set('enable_images_sitemap', true);
+        $settings->set('enable_videos_sitemap', true);
         Queue::fake();
         Theme::setActiveTheme('test');
 
+        $sitemapItems = SitemapItem::get();
+        $this->assertEquals(0, $sitemapItems->count());
         $model = new FakeStormedModel();
         $model->name = 'test-name';
         $model->slug = 'test-slug';
+        $model->description = '<img src="https://test.dev/images3.jpg" alt="" srcset="">';
         $model->created_at = \Carbon\Carbon::parse('today');
         $model->save();
 
@@ -133,5 +139,63 @@ class SitemapItemTest extends StormedTestCase
         foreach ($sitemapItems as $sitemapItem) {
             (new ScanPageForMediaItems())->scan($sitemapItem->loc);
         }
+
+        $sitemapMedia = SitemapMedia::all();
+        $this->assertEquals(3, $sitemapMedia->count());
+        $model->description = '';
+        $model->save();
+
+        $sitemapItems = SitemapItem::get();
+        foreach ($sitemapItems as $sitemapItem) {
+            (new ScanPageForMediaItems())->scan($sitemapItem->loc);
+        }
+
+        $sitemapMedia = SitemapMedia::all();
+        $this->assertEquals(2, $sitemapMedia->count());
+
+        $model->description = '
+        <div class="video-embed"
+     itemprop="subjectOf"
+     itemscope
+     itemtype="https://schema.org/VideoObject">
+
+    <meta itemprop="name"
+          content="Test title">
+    <meta itemprop="description"
+          content="Test description">
+    <meta itemprop="thumbnailUrl"
+          content="https://i.vimeocdn.com/video/797382244-0106ae13e902e09d0f02d8f404fa80581f38d1b8b7846b3f8e87ef391ffb8c99-d?mw=1200&amp;amp;mh=675&amp;amp;q=70">
+    <meta itemprop="uploadDate"
+          content="2024-06-26T16:18:25+00:00">
+    <meta itemprop="embedUrl"
+          content="https://player.vimeo.com/video/347119375?autopause=1&amp;badge=0&amp;byline=0&amp;color=57e117&amp;portrait=0&amp;title=0#t=0">
+
+    <iframe src=https://player.vimeo.com/video/347119375?autopause=1&amp;badge=0&amp;byline=0&amp;color=57e117&amp;portrait=0&amp;title=0#t=0
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen></iframe>
+
+    <script src="https://player.vimeo.com/api/player.js"></script>
+</div>';
+        $model->save();
+
+        $sitemapItems = SitemapItem::get();
+        foreach ($sitemapItems as $sitemapItem) {
+            (new ScanPageForMediaItems())->scan($sitemapItem->loc);
+        }
+
+        $sitemapMedia = SitemapMedia::all();
+        $this->assertEquals(3, $sitemapMedia->count());
+
+        $model->description = '';
+        $model->save();
+
+        $sitemapItems = SitemapItem::get();
+        foreach ($sitemapItems as $sitemapItem) {
+            (new ScanPageForMediaItems())->scan($sitemapItem->loc);
+        }
+
+        $sitemapMedia = SitemapMedia::all();
+        $this->assertEquals(3, $sitemapMedia->count());
     }
 }

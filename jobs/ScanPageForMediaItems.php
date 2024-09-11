@@ -43,7 +43,7 @@ class ScanPageForMediaItems
         }
     }
 
-    public function scan($loc): void
+    public function scan(string $loc): void
     {
         $sitemapItem = SitemapItem::where('loc', $loc)->first();
         if (!$sitemapItem) {
