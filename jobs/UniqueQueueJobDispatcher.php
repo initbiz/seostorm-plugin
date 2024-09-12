@@ -87,7 +87,7 @@ class UniqueQueueJobDispatcher
 
         $cacheData = Cache::get(self::CACHE_KEY);
         $cacheData[$key] = $pendingJobsForClass;
-        Cache::put(self::CACHE_KEY, $cacheData);
+        Cache::put(self::CACHE_KEY, $cacheData, 600);
 
         return true;
     }
@@ -115,7 +115,7 @@ class UniqueQueueJobDispatcher
 
         $cacheData = Cache::get(self::CACHE_KEY);
         $cacheData[$key] = $pendingJobsForClass;
-        Cache::put(self::CACHE_KEY, $cacheData);
+        Cache::put(self::CACHE_KEY, $cacheData, 600);
 
         return true;
     }
