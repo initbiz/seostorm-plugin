@@ -196,6 +196,6 @@ class SitemapItemTest extends StormedTestCase
         }
 
         $sitemapMedia = SitemapMedia::all();
-        $this->assertEquals(3, $sitemapMedia->count());
+        $this->assertEquals(2, $sitemapMedia->count());
     }
 }

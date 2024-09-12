@@ -15,12 +15,11 @@ class ScanPageForMediaItems
 {
     public function fire($job, $data)
     {
-        $loc = $data['loc'];
-
-        $this->scan($loc);
-
         $jobDispatcher = UniqueQueueJobDispatcher::instance();
         $jobDispatcher->unmarkAsPending(get_class($this), $data);
+
+        $loc = $data['loc'];
+        $this->scan($loc);
 
         $job->delete();
     }
@@ -84,17 +83,13 @@ class ScanPageForMediaItems
         $imagesEnabledInSitemap = $settings->get('enable_images_sitemap') ?? false;
         if ($imagesEnabledInSitemap) {
             $images = $this->getImagesFromDOM($dom);
-            if (!empty($images)) {
-                $sitemapItem->syncImages($images);
-            }
+            $sitemapItem->syncImages($images);
         }
 
         $videosEnabledInSitemap = $settings->get('enable_videos_sitemap') ?? false;
         if ($videosEnabledInSitemap) {
             $videos = $this->getVideosFromDOM($dom);
-            if (!empty($videos)) {
-                $sitemapItem->syncVideos($videos);
-            }
+            $sitemapItem->syncVideos($videos);
         }
 
         Request::swap($originalRequest);

@@ -26,21 +26,6 @@ class UniqueQueueJobDispatcher
     public const CACHE_KEY = 'initbiz-seostorm-pending-jobs';
 
     /**
-     * Local cache variable that's used within one request
-     *
-     * @var array
-     */
-    protected array $localCache = [];
-
-    /**
-     * init the singleton
-     */
-    protected function init()
-    {
-        $this->localCache = Cache::get(self::CACHE_KEY, []);
-    }
-
-    /**
      * Use this method to push job to queue, it will check for you if there's already
      * pending job for the following payload and class and returns true if it was added
      * successfully.
@@ -100,9 +85,9 @@ class UniqueQueueJobDispatcher
         $hash = hash(self::HASH_ALGO, json_encode($data));
         $pendingJobsForClass[] = $hash;
 
-        $this->localCache[$key] = $pendingJobsForClass;
-
-        Cache::put(self::CACHE_KEY, $this->localCache);
+        $cacheData = Cache::get(self::CACHE_KEY);
+        $cacheData[$key] = $pendingJobsForClass;
+        Cache::put(self::CACHE_KEY, $cacheData);
 
         return true;
     }
@@ -128,9 +113,9 @@ class UniqueQueueJobDispatcher
             unset($pendingJobsForClass[$arrayKey]);
         }
 
-        $this->localCache[$key] = $pendingJobsForClass;
-
-        Cache::put(self::CACHE_KEY, $this->localCache);
+        $cacheData = Cache::get(self::CACHE_KEY);
+        $cacheData[$key] = $pendingJobsForClass;
+        Cache::put(self::CACHE_KEY, $cacheData);
 
         return true;
     }
@@ -144,7 +129,8 @@ class UniqueQueueJobDispatcher
     {
         $key = $this->getCacheKeyForClass($jobClass);
 
-        return $this->localCache[$key] ?? [];
+        $cacheData = Cache::get(self::CACHE_KEY);
+        return $cacheData[$key] ?? [];
     }
 
     /**
@@ -165,6 +151,5 @@ class UniqueQueueJobDispatcher
     public function resetCache(): void
     {
         Cache::forget(self::CACHE_KEY);
-        $this->localCache = [];
     }
 }
