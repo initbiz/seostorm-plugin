@@ -50,7 +50,6 @@ class Settings extends SettingModel
     public $settingsFields = 'fields.yaml';
 
     public $rules = [
-        'favicon' => 'required_if:favicon_from,media',
         'favicon_url' => 'required_if:favicon_from,url',
     ];
 

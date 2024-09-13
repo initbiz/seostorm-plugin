@@ -356,6 +356,7 @@ tabs:
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
             span: left
             type: dropdown
+            default: fileupload
             options:
                 media: initbiz.seostorm::lang.form.settings.site_image_from_media
                 fileupload: initbiz.seostorm::lang.form.settings.site_image_from_fileupload
