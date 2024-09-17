@@ -495,8 +495,11 @@ class PagesGenerator extends AbstractGenerator
         $site = $this->getSite();
 
         $urlPattern = $page->url;
-        if ($page instanceof StaticPage) {
-            $urlPattern = $page->getOriginalUrlAttributeTranslated();
+        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
+            if ($page instanceof StaticPage) {
+                $translated = $page->getOriginalUrlAttributeTranslated();
+                $urlPattern = empty($translated) ? $urlPattern : $translated;
+            }
         }
 
         // We're restoring ending / if the page is a "root" page
@@ -506,7 +509,8 @@ class PagesGenerator extends AbstractGenerator
         }
 
         if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
-            $urlPattern = array_get($page->attributes, 'viewBag.localeUrl.' . $site->locale, $urlPattern);
+            $translated = array_get($page->attributes, 'viewBag.localeUrl.' . $site->locale, $urlPattern);
+            $urlPattern = empty($translated) ? $urlPattern : $translated;
         }
 
         $urlPattern = $site->attachRoutePrefix(ltrim($urlPattern, '/'));
