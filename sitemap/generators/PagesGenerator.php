@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Initbiz\SeoStorm\Sitemap\Generators;
 
 use Cache;
-use Event;
-use Queue;
 use Config;
 use Carbon\Carbon;
 use Cms\Classes\Page;
@@ -102,7 +100,7 @@ class PagesGenerator extends AbstractGenerator
 
         $this->fireSystemEvent('initbiz.seostorm.beforeClearingSitemapItems', [&$baseFilenamesToLeave]);
 
-        // Remove all unused SitemapUrls
+        // Remove all unused SitemapItem
         $sitemapItemsToDelete = SitemapItem::whereNotIn('base_file_name', $baseFilenamesToLeave)->withSite($site)->get();
         foreach ($sitemapItemsToDelete as $sitemapItemToDelete) {
             $sitemapItemToDelete->delete();
@@ -257,6 +255,19 @@ class PagesGenerator extends AbstractGenerator
                 $sitemapItem->changefreq = $page->seoOptionsChangefreq;
                 $sitemapItem->base_file_name = $page->base_file_name;
                 $sitemapItem->site_definition_id = $site->id;
+
+
+                $toSave = $this->fireSystemEvent('initbiz.seostorm.beforeAddingSitemapItem', [$page, $sitemapItem], true);
+                if ($toSave === false) {
+                    continue;
+                }
+
+                $eventParams = [$page, $sitemapItem, $model];
+                $toSave = $this->fireSystemEvent('initbiz.seostorm.beforeAddingSitemapItemWithModel', $eventParams, true);
+                if ($toSave === false) {
+                    continue;
+                }
+
                 $sitemapItem->save();
 
                 $sitemapItems[] = $sitemapItem;
@@ -275,9 +286,12 @@ class PagesGenerator extends AbstractGenerator
             $sitemapItem->priority = $page->seoOptionsPriority;
             $sitemapItem->changefreq = $page->seoOptionsChangefreq;
             $sitemapItem->lastmod = $lastmod;
-            $sitemapItem->save();
 
-            $sitemapItems[] = $sitemapItem;
+            $toSave = $this->fireSystemEvent('initbiz.seostorm.beforeAddingSitemapItem', [$page, $sitemapItem], true);
+            if ($toSave !== false) {
+                $sitemapItem->save();
+                $sitemapItems[] = $sitemapItem;
+            }
         }
 
         return $sitemapItems;
@@ -287,7 +301,7 @@ class PagesGenerator extends AbstractGenerator
      * Get Objects for provided model class, using scope definition
      *
      * @param string $modelClass
-     * @param string|null $scopeDef, for example isPublished:yesterday
+     * @param string|null $scopeDef, for example isPublished|publishedPeriod:yesterday:today
      * @return Collection
      */
     public function getModelObjects(string $modelClass, ?string $scopeDef = null): Collection
@@ -296,11 +310,14 @@ class PagesGenerator extends AbstractGenerator
             return $modelClass::all();
         }
 
-        $params = explode(':', $scopeDef);
-        $scopeName = $params[0];
-        $scopeParameter = $params[1] ?? null;
+        $query = $modelClass::with(['seostorm_options']);
 
-        $query = $modelClass::with(['seostorm_options'])->{$scopeName}($scopeParameter);
+        $scopes = explode('|', $scopeDef);
+        foreach ($scopes as $scope) {
+            $params = explode(':', $scope);
+            $scopeName = array_shift($params);
+            $query = $query->{$scopeName}(...$params);
+        }
 
         return $query->get();
     }
@@ -387,7 +404,7 @@ class PagesGenerator extends AbstractGenerator
 
         SitemapMedia::deleteGhosts();
 
-        Event::fire('initbiz.seostorm.sitemapItemForCmsPageRefreshed', [$page]);
+        $this->fireSystemEvent('initbiz.seostorm.sitemapItemForCmsPageRefreshed', [$page]);
     }
 
     // RainLab.Pages
@@ -429,9 +446,9 @@ class PagesGenerator extends AbstractGenerator
      * Makes SitemapItem object for this static page
      *
      * @param StaticPage $staticPage
-     * @return SitemapItem
+     * @return SitemapItem|null
      */
-    public function makeItemForStaticPage(StaticPage $staticPage): SitemapItem
+    public function makeItemForStaticPage(StaticPage $staticPage): ?SitemapItem
     {
         $site = $this->getSite();
 
@@ -451,6 +468,12 @@ class PagesGenerator extends AbstractGenerator
         $sitemapItem->changefreq = $viewBag->property('changefreq');
         $sitemapItem->base_file_name = $staticPage->fileName;
         $sitemapItem->site_definition_id = $site->id;
+
+        $toSave = $this->fireSystemEvent('initbiz.seostorm.beforeAddingSitemapItem', [$staticPage, $sitemapItem], true);
+        if ($toSave === false) {
+            return null;
+        }
+
         $sitemapItem->save();
 
         $sitemapItemsToDelete = SitemapItem::where('base_file_name', $staticPage->fileName)
@@ -474,11 +497,15 @@ class PagesGenerator extends AbstractGenerator
     public function refreshForStaticPage(StaticPage $staticPage): void
     {
         $item = $this->makeItemForStaticPage($staticPage);
+        if (is_null($item)) {
+            return;
+        }
+
         (new ScanPageForMediaItems())->pushForLoc($item->loc);
 
         SitemapMedia::deleteGhosts();
 
-        Event::fire('initbiz.seostorm.sitemapItemForStaticPageRefreshed', [$staticPage]);
+        $this->fireSystemEvent('initbiz.seostorm.sitemapItemForStaticPageRefreshed', [$staticPage]);
     }
 
     // Helpers
