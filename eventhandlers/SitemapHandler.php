@@ -80,7 +80,7 @@ class SitemapHandler
             });
 
             $class::extend(function ($model) use ($page) {
-                $model->bindEvent('model.afterSave', function () use ($page) {
+                $model->bindEvent('model.saveComplete', function () use ($page) {
                     $settings = Settings::instance();
                     foreach ($settings->getSitesEnabledInSitemap() as $site) {
                         $pagesGenerator = new PagesGenerator($site);
