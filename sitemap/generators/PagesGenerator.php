@@ -71,11 +71,15 @@ class PagesGenerator extends AbstractGenerator
     public function makeDOMElements(): array
     {
         $site = $this->getSite();
-        $pages = $this->getEnabledCmsPages($this->getPages());
+        $pages = $this->getPages();
+        $baseFileNamesToClear = $pages->pluck('base_file_name')->toArray();
 
-        $baseFilenamesToLeave = [];
-        foreach ($pages as $page) {
-            $baseFilenamesToLeave[] = $page->base_file_name;
+        $enabledPages = $this->getEnabledCmsPages($pages);
+
+        foreach ($enabledPages as $page) {
+            if (($key = array_search($page->base_file_name, $baseFileNamesToClear)) !== false) {
+                unset($baseFileNamesToClear[$key]);
+            }
 
             if (!$this->isPageContentChanged($page)) {
                 continue;
@@ -88,7 +92,9 @@ class PagesGenerator extends AbstractGenerator
         if ($pluginManager->hasPlugin('RainLab.Pages') && !$pluginManager->isDisabled('RainLab.Pages')) {
             $staticPages = $this->getEnabledStaticPages();
             foreach ($staticPages as $staticPage) {
-                $baseFilenamesToLeave[] = $staticPage->fileName;
+                if (($key = array_search($staticPage->fileName, $baseFileNamesToClear)) !== false) {
+                    unset($baseFileNamesToClear[$key]);
+                }
 
                 if (!$this->isPageContentChanged($staticPage)) {
                     continue;
@@ -98,10 +104,10 @@ class PagesGenerator extends AbstractGenerator
             }
         }
 
-        $this->fireSystemEvent('initbiz.seostorm.beforeClearingSitemapItems', [&$baseFilenamesToLeave]);
+        $this->fireSystemEvent('initbiz.seostorm.beforeClearingSitemapItems', [&$baseFileNamesToClear]);
 
-        // Remove all unused SitemapItem
-        $sitemapItemsToDelete = SitemapItem::whereNotIn('base_file_name', $baseFilenamesToLeave)->withSite($site)->get();
+        // Remove all unused SitemapItems
+        $sitemapItemsToDelete = SitemapItem::whereIn('base_file_name', $baseFileNamesToClear)->withSite($site)->get();
         foreach ($sitemapItemsToDelete as $sitemapItemToDelete) {
             $sitemapItemToDelete->delete();
         }
@@ -135,18 +141,14 @@ class PagesGenerator extends AbstractGenerator
             $pages = $this->getPages();
         }
 
-        $pages = $pages->filter(function ($page) {
-            return (bool) $page->seoOptionsEnabledInSitemap;
-        })->sortByDesc('seoOptionsPriority');
-
-        $enabledPages = [];
-        foreach ($pages as $page) {
+        $filteredPages = [];
+        foreach ($pages->sortByDesc('seoOptionsPriority') as $page) {
             if ($this->isCmsPageEnabledInSitemap($page)) {
-                $enabledPages[] = $page;
+                $filteredPages[] = $page;
             }
         }
 
-        return $enabledPages;
+        return $filteredPages;
     }
 
     /**
@@ -217,11 +219,16 @@ class PagesGenerator extends AbstractGenerator
      */
     public function makeItemsForCmsPage(Page $page): array
     {
+        $sitemapItems = [];
+
+        if (!$this->isCmsPageEnabledInSitemap($page)) {
+            return $sitemapItems;
+        }
+
         $site = $this->getSite();
 
         $urlPattern = $this->makeUrlPattern($page);
 
-        $sitemapItems = [];
         $modelClass = $page->seoOptionsModelClass ?? "";
         $lastmod = $this->getLastmodForCmsPage($page);
 
@@ -255,7 +262,6 @@ class PagesGenerator extends AbstractGenerator
                 $sitemapItem->changefreq = $page->seoOptionsChangefreq;
                 $sitemapItem->base_file_name = $page->base_file_name;
                 $sitemapItem->site_definition_id = $site->id;
-
 
                 $toSave = $this->fireSystemEvent('initbiz.seostorm.beforeAddingSitemapItem', [$page, $sitemapItem], true);
                 if ($toSave === false) {

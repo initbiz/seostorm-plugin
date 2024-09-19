@@ -85,6 +85,9 @@ class PagesGeneratorTest extends StormedTestCase
         $model2->slug = 'test-slug-2';
         $model2->save();
 
+        // Remove items generated automatically by events
+        SitemapItem::truncate();
+
         $site = SiteDefinition::first();
         $xml = (new PagesGenerator($site))->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
@@ -139,6 +142,9 @@ class PagesGeneratorTest extends StormedTestCase
         $model->category_id = $category->id;
         $model->save();
 
+        // Remove items generated automatically by events
+        SitemapItem::truncate();
+
         $site = SiteDefinition::first();
         $xml = (new PagesGenerator($site))->generate($pages);
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
@@ -168,6 +174,9 @@ class PagesGeneratorTest extends StormedTestCase
         $model->slug = 'test-slug';
         $model->updated_at = Carbon::parse('2021-09-21 10:00');
         $model->save();
+
+        // Remove items generated automatically by events
+        SitemapItem::truncate();
 
         $site = SiteDefinition::first();
         $xml = (new PagesGenerator($site))->generate($pages);
@@ -202,6 +211,9 @@ class PagesGeneratorTest extends StormedTestCase
         $model2->slug = 'test-slug-2';
         $model2->save();
 
+        // Remove items generated automatically by events
+        SitemapItem::truncate();
+
         $model2->seo_options = [
             'enabled_in_sitemap' => "0",
         ];
@@ -223,6 +235,9 @@ class PagesGeneratorTest extends StormedTestCase
         $model->slug = 'test-slug';
         $model->save();
 
+        // Remove items generated automatically by events
+        SitemapItem::truncate();
+
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-fake-model-category');
         $page->mtime = 1632858273;
@@ -235,6 +250,9 @@ class PagesGeneratorTest extends StormedTestCase
         $xml = str_replace(url('/'), 'http://initwebsite.devt', $xml);
         $filePath = plugins_path('initbiz/seostorm/tests/fixtures/reference/sitemap-empty-optional-param.xml');
         $this->assertXmlStringEqualsXmlFile($filePath, $xml);
+
+        // Remove items generated automatically by events
+        SitemapItem::truncate();
 
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-fake-model-optional');
@@ -263,6 +281,9 @@ class PagesGeneratorTest extends StormedTestCase
         $model->slug = 'test-slug2';
         $model->created_at = \Carbon\Carbon::parse('before yesterday');
         $model->save();
+
+        // Remove items generated automatically by events
+        SitemapItem::truncate();
 
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-fake-model');
