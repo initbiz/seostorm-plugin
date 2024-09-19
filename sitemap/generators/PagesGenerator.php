@@ -399,15 +399,13 @@ class PagesGenerator extends AbstractGenerator
         $items = $this->makeItemsForCmsPage($page);
 
         $idsToLeave = [];
-        $baseFileNamesToScan = [];
         foreach ($items as $item) {
             $idsToLeave[] = $item->id;
-            $baseFileNamesToScan[] = $item->base_file_name;
             (new ScanPageForMediaItems())->pushForLoc($item->loc);
         }
 
         // Remove old records, for example when a model in the parameter was removed
-        $ghostSitemapItems = SitemapItem::whereIn('base_file_name', $baseFileNamesToScan)
+        $ghostSitemapItems = SitemapItem::where('base_file_name', $page->base_file_name)
             ->whereNotIn('id', $idsToLeave)
             ->withSite($site)
             ->get();
