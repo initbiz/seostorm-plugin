@@ -306,11 +306,11 @@ class PagesGenerator extends AbstractGenerator
      */
     public function getModelObjects(string $modelClass, ?string $scopeDef = null): Collection
     {
-        if (empty($scopeDef)) {
-            return $modelClass::all();
-        }
-
         $query = $modelClass::with(['seostorm_options']);
+
+        if (empty($scopeDef)) {
+            return $query->get();
+        }
 
         $scopes = explode('|', $scopeDef);
         foreach ($scopes as $scope) {
@@ -342,11 +342,25 @@ class PagesGenerator extends AbstractGenerator
             } else {
                 // parameter with dot -> try to find by relation
                 list($relationMethod, $relatedAttribute) = explode('.', $modelParam);
-                if ($relatedObject = $model->$relationMethod()->first()) {
+
+                $relationQuery = $model->$relationMethod();
+
+                $sessionKey = $this->guessSessionKey($model);
+                if (!empty($sessionKey)) {
+                    $relationQuery->withDeferred($sessionKey);
+                }
+
+                $relatedObject = $relationQuery->first();
+
+                if ($relatedObject) {
                     $replacement = $relatedObject->$relatedAttribute ?? 'default';
                 }
-                $replacement = empty($replacement) ? 'default' : $replacement;
+
+                if (empty($replacement)) {
+                    $replacement = 'default';
+                }
             }
+
             $params[$urlParam] = $replacement;
         }
 
@@ -634,6 +648,11 @@ class PagesGenerator extends AbstractGenerator
         }
 
         return false;
+    }
+
+    protected function guessSessionKey(Model $model): ?string
+    {
+        return post('_session_key', $model->sessionKey ?? null);
     }
 
     /**

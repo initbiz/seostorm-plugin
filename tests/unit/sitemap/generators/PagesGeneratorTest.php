@@ -2,7 +2,6 @@
 
 namespace Initbiz\SeoStorm\Tests\Unit\Classes;
 
-use Site;
 use Queue;
 use Config;
 use Carbon\Carbon;
@@ -62,6 +61,8 @@ class PagesGeneratorTest extends StormedTestCase
 
     public function testHasModelClass()
     {
+        Queue::fake();
+
         (PluginManager::instance())->disablePlugin('RainLab.Pages');
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-fake-model');
@@ -147,6 +148,8 @@ class PagesGeneratorTest extends StormedTestCase
 
     public function testUseUpdatedAt()
     {
+        Queue::fake();
+
         (PluginManager::instance())->disablePlugin('RainLab.Pages');
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-fake-model');
@@ -175,6 +178,8 @@ class PagesGeneratorTest extends StormedTestCase
 
     public function testDisabledInModel()
     {
+        Queue::fake();
+
         (PluginManager::instance())->disablePlugin('RainLab.Pages');
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-fake-model');
@@ -210,6 +215,8 @@ class PagesGeneratorTest extends StormedTestCase
 
     public function testOptionalParameterEmpty()
     {
+        Queue::fake();
+
         (PluginManager::instance())->disablePlugin('RainLab.Pages');
         $model = new FakeStormedModel();
         $model->name = 'test-name';
@@ -242,6 +249,8 @@ class PagesGeneratorTest extends StormedTestCase
 
     public function testOptionalScopeParameter()
     {
+        Queue::fake();
+
         (PluginManager::instance())->disablePlugin('RainLab.Pages');
         $model = new FakeStormedModel();
         $model->name = 'test-name';
@@ -272,6 +281,8 @@ class PagesGeneratorTest extends StormedTestCase
 
     public function testMakeUrlPattern(): void
     {
+        Queue::fake();
+
         (PluginManager::instance())->disablePlugin('RainLab.Pages');
         $theme = Theme::load('test');
         $site = SiteDefinition::first();
@@ -315,6 +326,8 @@ class PagesGeneratorTest extends StormedTestCase
 
     public function testFillUrlPatternWithParams(): void
     {
+        Queue::fake();
+
         (PluginManager::instance())->disablePlugin('RainLab.Pages');
 
         $category = new FakeStormedCategory();
@@ -406,7 +419,7 @@ class PagesGeneratorTest extends StormedTestCase
         $url = str_replace(url('/'), 'http://initwebsite.devt', $plSitemapItem->loc);
         $this->assertEquals('http://initwebsite.devt/pl/test-statyczna', $url);
 
-        // TODO: Watch out - it will truly remove the file
+        // TODO: Watch out - it will remove the file for real
         // $staticPage->delete();
 
         // $this->assertEquals(0, SitemapItem::count());

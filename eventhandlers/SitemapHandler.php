@@ -12,8 +12,11 @@ class SitemapHandler
 {
     public function subscribe($event)
     {
-        $this->halcyonModels($event);
-        $this->seoStormedModels($event);
+        $settings = Settings::instance();
+        if ($settings->get('enable_sitemap')) {
+            $this->halcyonModels($event);
+            $this->seoStormedModels($event);
+        }
     }
 
     public function halcyonModels($event): void

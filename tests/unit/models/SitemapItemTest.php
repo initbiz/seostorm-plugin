@@ -134,7 +134,7 @@ class SitemapItemTest extends StormedTestCase
         $model->created_at = \Carbon\Carbon::parse('today');
         $model->save();
 
-        $sitemapItems = SitemapItem::get();
+        $sitemapItems = SitemapItem::where('base_file_name', 'with-media')->get();
         $this->assertEquals(1, $sitemapItems->count());
         foreach ($sitemapItems as $sitemapItem) {
             (new ScanPageForMediaItems())->scan($sitemapItem->loc);
@@ -145,7 +145,7 @@ class SitemapItemTest extends StormedTestCase
         $model->description = '';
         $model->save();
 
-        $sitemapItems = SitemapItem::get();
+        $sitemapItems = SitemapItem::where('base_file_name', 'with-media')->get();
         foreach ($sitemapItems as $sitemapItem) {
             (new ScanPageForMediaItems())->scan($sitemapItem->loc);
         }
@@ -179,7 +179,7 @@ class SitemapItemTest extends StormedTestCase
 </div>';
         $model->save();
 
-        $sitemapItems = SitemapItem::get();
+        $sitemapItems = SitemapItem::where('base_file_name', 'with-media')->get();
         foreach ($sitemapItems as $sitemapItem) {
             (new ScanPageForMediaItems())->scan($sitemapItem->loc);
         }
@@ -190,7 +190,7 @@ class SitemapItemTest extends StormedTestCase
         $model->description = '';
         $model->save();
 
-        $sitemapItems = SitemapItem::get();
+        $sitemapItems = SitemapItem::where('base_file_name', 'with-media')->get();
         foreach ($sitemapItems as $sitemapItem) {
             (new ScanPageForMediaItems())->scan($sitemapItem->loc);
         }
