@@ -407,7 +407,6 @@ class PagesGenerator extends AbstractGenerator
         $idsToLeave = [];
         foreach ($items as $item) {
             $idsToLeave[] = $item->id;
-            (new ScanPageForMediaItems())->pushForLoc($item->loc);
         }
 
         // Remove old records, for example when a model in the parameter was removed
@@ -418,6 +417,10 @@ class PagesGenerator extends AbstractGenerator
 
         foreach ($ghostSitemapItems as $ghostSitemapItem) {
             $ghostSitemapItem->delete();
+        }
+
+        foreach ($items as $item) {
+            (new ScanPageForMediaItems())->pushForLoc($item->loc);
         }
 
         SitemapMedia::deleteGhosts();
@@ -507,10 +510,6 @@ class PagesGenerator extends AbstractGenerator
     {
         $item = $this->makeItemForStaticPage($staticPage);
 
-        if ($item instanceof SitemapItem) {
-            (new ScanPageForMediaItems())->pushForLoc($item->loc);
-        }
-
         $site = $this->getSite();
 
         // Remove old records
@@ -527,6 +526,10 @@ class PagesGenerator extends AbstractGenerator
         }
 
         SitemapMedia::deleteGhosts();
+
+        if ($item instanceof SitemapItem) {
+            (new ScanPageForMediaItems())->pushForLoc($item->loc);
+        }
 
         $this->fireSystemEvent('initbiz.seostorm.sitemapItemForStaticPageRefreshed', [$staticPage]);
     }
