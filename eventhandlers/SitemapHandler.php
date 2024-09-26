@@ -2,6 +2,7 @@
 
 namespace Initbiz\SeoStorm\EventHandlers;
 
+use Schema;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Initbiz\SeoStorm\Models\Settings;
@@ -12,6 +13,11 @@ class SitemapHandler
 {
     public function subscribe($event)
     {
+        // Prevent from running this subscriber in migrations that runs before SeoStorm is even installed
+        if (!Schema::hasTable('initbiz_seostorm_sitemap_items')) {
+            return;
+        }
+
         $settings = Settings::instance();
         if ($settings->get('enable_sitemap')) {
             $this->halcyonModels($event);

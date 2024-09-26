@@ -80,3 +80,5 @@
     - "Pushing only unique jobs to queue"
 5.2.0:
     - "Robots.txt translatable and available with Twig"
+5.2.1:
+    - "Clearing ghost sitemap items when updating Static pages"

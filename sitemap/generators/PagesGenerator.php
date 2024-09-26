@@ -494,15 +494,6 @@ class PagesGenerator extends AbstractGenerator
 
         $sitemapItem->save();
 
-        $sitemapItemsToDelete = SitemapItem::where('base_file_name', $staticPage->fileName)
-            ->where('id', '!=', $sitemapItem->id)
-            ->withSite($site)
-            ->get();
-
-        foreach ($sitemapItemsToDelete as $sitemapItemToDelete) {
-            $sitemapItemToDelete->delete();
-        }
-
         return $sitemapItem;
     }
 
@@ -514,12 +505,26 @@ class PagesGenerator extends AbstractGenerator
      */
     public function refreshForStaticPage(StaticPage $staticPage): void
     {
+        $site = $this->getSite();
+
         $item = $this->makeItemForStaticPage($staticPage);
-        if (is_null($item)) {
-            return;
+
+        if ($item instanceof SitemapItem) {
+            (new ScanPageForMediaItems())->pushForLoc($item->loc);
         }
 
-        (new ScanPageForMediaItems())->pushForLoc($item->loc);
+        // Remove old records
+        $ghostSitemapItemsQuery = SitemapItem::where('base_file_name', $staticPage->fileName)->withSite($site);
+
+        if ($item instanceof SitemapItem) {
+            $ghostSitemapItemsQuery->where('id', '!=', $item->id);
+        }
+
+        $ghostSitemapItems = $ghostSitemapItemsQuery->get();
+
+        foreach ($ghostSitemapItems as $ghostSitemapItem) {
+            $ghostSitemapItem->delete();
+        }
 
         SitemapMedia::deleteGhosts();
 
