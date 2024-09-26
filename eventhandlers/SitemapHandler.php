@@ -3,6 +3,7 @@
 namespace Initbiz\SeoStorm\EventHandlers;
 
 use Schema;
+use Artisan;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Initbiz\SeoStorm\Models\Settings;
@@ -28,6 +29,8 @@ class SitemapHandler
     public function halcyonModels($event): void
     {
         $event->listen('halcyon.saved: RainLab\Pages\Classes\Page', function ($model) {
+            Artisan::call('queue:restart');
+
             $settings = Settings::instance();
             foreach ($settings->getSitesEnabledInSitemap() as $site) {
                 $pagesGenerator = new PagesGenerator($site);
