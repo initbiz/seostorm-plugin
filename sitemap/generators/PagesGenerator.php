@@ -505,13 +505,13 @@ class PagesGenerator extends AbstractGenerator
      */
     public function refreshForStaticPage(StaticPage $staticPage): void
     {
-        $site = $this->getSite();
-
         $item = $this->makeItemForStaticPage($staticPage);
 
         if ($item instanceof SitemapItem) {
             (new ScanPageForMediaItems())->pushForLoc($item->loc);
         }
+
+        $site = $this->getSite();
 
         // Remove old records
         $ghostSitemapItemsQuery = SitemapItem::where('base_file_name', $staticPage->fileName)->withSite($site);
