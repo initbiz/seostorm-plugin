@@ -16,10 +16,8 @@ class SitemapHandler
     public function subscribe($event)
     {
         // Prevent from running this subscriber in migrations that runs before SeoStorm is even installed
-        if (!App::runningUnitTests()) {
-            if (!Schema::hasTable('initbiz_seostorm_seo_options')) {
-                return;
-            }
+        if (!Schema::hasTable('initbiz_seostorm_sitemap_items')) {
+            return;
         }
 
         $settings = Settings::instance();
