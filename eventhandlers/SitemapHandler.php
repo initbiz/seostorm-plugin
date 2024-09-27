@@ -2,6 +2,7 @@
 
 namespace Initbiz\SeoStorm\EventHandlers;
 
+use App;
 use Schema;
 use Artisan;
 use Cms\Classes\Page;
@@ -15,8 +16,10 @@ class SitemapHandler
     public function subscribe($event)
     {
         // Prevent from running this subscriber in migrations that runs before SeoStorm is even installed
-        if (!Schema::hasTable('initbiz_seostorm_sitemap_items')) {
-            return;
+        if (!App::runningUnitTests()) {
+            if (!Schema::hasTable('initbiz_seostorm_seo_options')) {
+                return;
+            }
         }
 
         $settings = Settings::instance();
