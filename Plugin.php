@@ -129,8 +129,22 @@ class Plugin extends PluginBase
     public function registerStormedModels()
     {
         $modelDefs = [
-            'Rainlab\Blog\Models\Post' => [
+            \Rainlab\Blog\Models\Post::class => [
                 'placement' => 'secondaryTabs',
+                'excludeFields' => [
+                    'model_class',
+                    'model_scope',
+                    'model_params',
+                    'lastmod',
+                    'use_updated_at',
+                    'changefreq',
+                    'priority',
+                    'enabled_in_sitemap',
+                ],
+            ],
+
+            \Rainlab\Blog\Models\Category::class => [
+                'placement' => 'tabs',
                 'excludeFields' => [
                     'model_class',
                     'model_scope',
