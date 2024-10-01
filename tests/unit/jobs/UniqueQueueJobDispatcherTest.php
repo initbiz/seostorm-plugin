@@ -4,14 +4,14 @@ namespace Initbiz\SeoStorm\Tests\Unit\Jobs;
 
 use Queue;
 use PluginTestCase;
-use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
+use Initbiz\SeoStorm\Jobs\ScanPageForMediaItemsJob;
 use Initbiz\SeoStorm\Jobs\UniqueQueueJobDispatcher;
 
 class UniqueQueueJobDispatcherTest extends PluginTestCase
 {
     public function testMarkingAsPending(): void
     {
-        $jobClass = ScanPageForMediaItems::class;
+        $jobClass = ScanPageForMediaItemsJob::class;
 
         $data1 = [
             'loc' => 'http://example.com'
@@ -43,7 +43,7 @@ class UniqueQueueJobDispatcherTest extends PluginTestCase
         $jobDispatcher = UniqueQueueJobDispatcher::instance();
         $jobDispatcher->resetCache();
 
-        $jobClass = ScanPageForMediaItems::class;
+        $jobClass = ScanPageForMediaItemsJob::class;
 
         $data1 = [
             'loc' => 'http://example.com'

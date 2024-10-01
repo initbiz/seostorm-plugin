@@ -11,7 +11,7 @@ use Illuminate\Http\Request as HttpRequest;
 use Initbiz\Sitemap\DOMElements\ImageDOMElement;
 use Initbiz\Sitemap\DOMElements\VideoDOMElement;
 
-class ScanPageForMediaItems
+class ScanPageForMediaItemsJob
 {
     public function fire($job, $data)
     {

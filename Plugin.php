@@ -128,6 +128,12 @@ class Plugin extends PluginBase
      */
     public function registerStormedModels()
     {
+        // Prevent from registering these models when running migrations
+        // Fix for blog posts seeder breaking creation
+        if (\App()->runningConsoleCommand('october:migrate')) {
+            return [];
+        }
+
         $modelDefs = [
             \Rainlab\Blog\Models\Post::class => [
                 'placement' => 'secondaryTabs',

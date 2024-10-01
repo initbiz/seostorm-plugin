@@ -8,6 +8,7 @@ use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use System\Models\SiteDefinition;
 use Initbiz\Seostorm\Models\SitemapItem;
+use Initbiz\SeoStorm\Jobs\ScanPageForMediaItemsJob;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
@@ -28,7 +29,7 @@ class SitemapHandlerTest extends StormedTestCase
 
     public function testSavingModelUpdatesSitemap()
     {
-        Queue::fake();
+        Queue::fake(ScanPageForMediaItemsJob::class);
 
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-fake-model-category');

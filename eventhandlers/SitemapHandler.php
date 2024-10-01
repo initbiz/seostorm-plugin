@@ -9,17 +9,14 @@ use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\Seostorm\Models\SitemapItem;
+use Initbiz\SeoStorm\Jobs\RefreshForCmsPageJob;
+use Initbiz\SeoStorm\Jobs\UniqueQueueJobDispatcher;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
 
 class SitemapHandler
 {
     public function subscribe($event)
     {
-        // Prevent from running this subscriber in migrations that runs before SeoStorm is even installed
-        if (!Schema::hasTable('initbiz_seostorm_sitemap_items')) {
-            return;
-        }
-
         $settings = Settings::instance();
         if ($settings->get('enable_sitemap')) {
             $this->halcyonModels($event);
@@ -39,12 +36,11 @@ class SitemapHandler
             }
         });
 
-        $event->listen('halcyon.saved: Cms\Classes\Page', function ($model) {
-            $settings = Settings::instance();
-            foreach ($settings->getSitesEnabledInSitemap() as $site) {
-                $pagesGenerator = new PagesGenerator($site);
-                $pagesGenerator->refreshForCmsPage($model);
-            }
+        $event->listen('halcyon.saved: Cms\Classes\Page', function ($page) {
+            $jobDispatcher = UniqueQueueJobDispatcher::instance();
+            $jobDispatcher->push(RefreshForCmsPageJob::class, [
+                'base_file_name' => $page->base_file_name,
+            ]);
         });
 
         $event->listen('halcyon.deleting: RainLab\Pages\Classes\Page', function ($staticPage) {
@@ -81,21 +77,19 @@ class SitemapHandler
 
             $class::extend(function ($model) use ($page) {
                 $model->bindEvent('model.afterDelete', function () use ($page) {
-                    $settings = Settings::instance();
-                    foreach ($settings->getSitesEnabledInSitemap() as $site) {
-                        $pagesGenerator = new PagesGenerator($site);
-                        $pagesGenerator->refreshForCmsPage($page);
-                    }
+                    $jobDispatcher = UniqueQueueJobDispatcher::instance();
+                    $jobDispatcher->push(RefreshForCmsPageJob::class, [
+                        'base_file_name' => $page->base_file_name,
+                    ]);
                 });
             });
 
             $class::extend(function ($model) use ($page) {
                 $model->bindEvent('model.saveComplete', function () use ($page) {
-                    $settings = Settings::instance();
-                    foreach ($settings->getSitesEnabledInSitemap() as $site) {
-                        $pagesGenerator = new PagesGenerator($site);
-                        $pagesGenerator->refreshForCmsPage($page);
-                    }
+                    $jobDispatcher = UniqueQueueJobDispatcher::instance();
+                    $jobDispatcher->push(RefreshForCmsPageJob::class, [
+                        'base_file_name' => $page->base_file_name,
+                    ]);
                 });
             });
         }

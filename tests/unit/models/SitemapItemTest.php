@@ -10,7 +10,8 @@ use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
-use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
+use Initbiz\SeoStorm\Jobs\RefreshForCmsPageJob;
+use Initbiz\SeoStorm\Jobs\ScanPageForMediaItemsJob;
 use Initbiz\SeoStorm\Jobs\UniqueQueueJobDispatcher;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
@@ -65,8 +66,8 @@ class SitemapItemTest extends StormedTestCase
         $pagesGenerator = new PagesGenerator($site);
         $pagesGenerator->refreshForCmsPage($page);
         $sitemapItem = SitemapItem::first();
-        Queue::assertPushed(ScanPageForMediaItems::class);
-        (new ScanPageForMediaItems())->scan($sitemapItem->loc);
+        Queue::assertPushed(ScanPageForMediaItemsJob::class);
+        (new ScanPageForMediaItemsJob())->scan($sitemapItem->loc);
 
         $sitemapItem = SitemapItem::with(['videos', 'images'])->first();
         $this->assertEquals(1, $sitemapItem->videos->count());
@@ -75,14 +76,14 @@ class SitemapItemTest extends StormedTestCase
         $this->assertEquals('image', $sitemapItem->images->first()->type);
 
         // Re-scan to ensure no new items were added
-        (new ScanPageForMediaItems())->scan($sitemapItem->loc);
+        (new ScanPageForMediaItemsJob())->scan($sitemapItem->loc);
         $this->assertEquals(2, SitemapMedia::count());
 
         $page = Page::load($theme, 'with-media-2.htm');
         $site = SiteDefinition::first();
         $pagesGenerator = new PagesGenerator($site);
         $pagesGenerator->refreshForCmsPage($page);
-        (new ScanPageForMediaItems())->scan($sitemapItem->loc);
+        (new ScanPageForMediaItemsJob())->scan($sitemapItem->loc);
 
         $this->assertEquals(2, SitemapMedia::count());
     }
@@ -100,10 +101,10 @@ class SitemapItemTest extends StormedTestCase
         $site = SiteDefinition::first();
         $pagesGenerator = new PagesGenerator($site);
         $pagesGenerator->refreshForCmsPage($page);
-        Queue::assertPushed(ScanPageForMediaItems::class);
+        Queue::assertPushed(ScanPageForMediaItemsJob::class);
         $sitemapItem = SitemapItem::first();
 
-        (new ScanPageForMediaItems())->scan($sitemapItem->loc);
+        (new ScanPageForMediaItemsJob())->scan($sitemapItem->loc);
 
         $sitemapItem = SitemapItem::first();
         $sitemapVideo = $sitemapItem->videos()->first();
@@ -122,8 +123,9 @@ class SitemapItemTest extends StormedTestCase
         $settings = Settings::instance();
         $settings->set('enable_images_sitemap', true);
         $settings->set('enable_videos_sitemap', true);
-        Queue::fake();
         Theme::setActiveTheme('test');
+
+        Queue::fake([ScanPageForMediaItemsJob::class]);
 
         $sitemapItems = SitemapItem::get();
         $this->assertEquals(0, $sitemapItems->count());
@@ -137,7 +139,7 @@ class SitemapItemTest extends StormedTestCase
         $sitemapItems = SitemapItem::where('base_file_name', 'with-media')->get();
         $this->assertEquals(1, $sitemapItems->count());
         foreach ($sitemapItems as $sitemapItem) {
-            (new ScanPageForMediaItems())->scan($sitemapItem->loc);
+            (new ScanPageForMediaItemsJob())->scan($sitemapItem->loc);
         }
 
         $sitemapMedia = SitemapMedia::all();
@@ -147,7 +149,7 @@ class SitemapItemTest extends StormedTestCase
 
         $sitemapItems = SitemapItem::where('base_file_name', 'with-media')->get();
         foreach ($sitemapItems as $sitemapItem) {
-            (new ScanPageForMediaItems())->scan($sitemapItem->loc);
+            (new ScanPageForMediaItemsJob())->scan($sitemapItem->loc);
         }
 
         $sitemapMedia = SitemapMedia::all();
@@ -181,7 +183,7 @@ class SitemapItemTest extends StormedTestCase
 
         $sitemapItems = SitemapItem::where('base_file_name', 'with-media')->get();
         foreach ($sitemapItems as $sitemapItem) {
-            (new ScanPageForMediaItems())->scan($sitemapItem->loc);
+            (new ScanPageForMediaItemsJob())->scan($sitemapItem->loc);
         }
 
         $sitemapMedia = SitemapMedia::all();
@@ -192,7 +194,7 @@ class SitemapItemTest extends StormedTestCase
 
         $sitemapItems = SitemapItem::where('base_file_name', 'with-media')->get();
         foreach ($sitemapItems as $sitemapItem) {
-            (new ScanPageForMediaItems())->scan($sitemapItem->loc);
+            (new ScanPageForMediaItemsJob())->scan($sitemapItem->loc);
         }
 
         $sitemapMedia = SitemapMedia::all();

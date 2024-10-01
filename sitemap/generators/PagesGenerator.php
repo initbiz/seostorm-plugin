@@ -18,9 +18,9 @@ use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
 use RainLab\Translate\Classes\MLStaticPage;
 use RainLab\Pages\Classes\Page as StaticPage;
-use Initbiz\SeoStorm\Jobs\ScanPageForMediaItems;
 use Initbiz\Sitemap\DOMElements\UrlsetDOMElement;
 use Initbiz\Sitemap\Generators\AbstractGenerator;
+use Initbiz\SeoStorm\Jobs\ScanPageForMediaItemsJob;
 use October\Rain\Support\Collection as SupportCollection;
 
 /**
@@ -420,7 +420,7 @@ class PagesGenerator extends AbstractGenerator
         }
 
         foreach ($items as $item) {
-            (new ScanPageForMediaItems())->pushForLoc($item->loc);
+            (new ScanPageForMediaItemsJob())->pushForLoc($item->loc);
         }
 
         SitemapMedia::deleteGhosts();
@@ -528,7 +528,7 @@ class PagesGenerator extends AbstractGenerator
         SitemapMedia::deleteGhosts();
 
         if ($item instanceof SitemapItem) {
-            (new ScanPageForMediaItems())->pushForLoc($item->loc);
+            (new ScanPageForMediaItemsJob())->pushForLoc($item->loc);
         }
 
         $this->fireSystemEvent('initbiz.seostorm.sitemapItemForStaticPageRefreshed', [$staticPage]);
