@@ -71,3 +71,16 @@
     - "Fix issue !82 - template_from_string"
 4.9.0:
     - "Allow disabling global prefix/suffix for title. Solves issue !65"
+5.0.0:
+    - "Provide automatic sitemaps with index, images and videos support"
+    - 5_0_0_create_sitemap_items_table.php
+    - 5_0_0_create_sitemap_media_table.php
+    - 5_0_0_create_sitemap_items_media_table.php
+5.1.0:
+    - "Pushing only unique jobs to queue"
+5.2.0:
+    - "Robots.txt translatable and available with Twig"
+5.2.1:
+    - "Clearing ghost sitemap items when updating Static pages"
+5.3.0:
+    - "Refreshing for CMS page queue job"
