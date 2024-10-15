@@ -49,16 +49,17 @@ class ScanPageForMediaItemsJob
             return;
         }
 
+        $parsedUrl = parse_url($loc);
+        $url = $parsedUrl['path'] ?? '/';
+
         // We need to temporarily replace request with faked one to get valid URLs
         $originalRequest = Request::getFacadeRoot();
-        $request = new HttpRequest();
+        $request = HttpRequest::create($loc);
         Request::swap($request);
 
         $currentSite = Site::getActiveSite();
         $controller = new CmsController();
         try {
-            $parsedUrl = parse_url($loc);
-            $url = $parsedUrl['path'] ?? '/';
             $response = $controller->run($url);
         } catch (\Throwable $th) {
             Request::swap($originalRequest);
