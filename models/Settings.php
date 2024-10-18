@@ -8,7 +8,6 @@ use System\Models\File;
 use Media\Classes\MediaLibrary;
 use System\Models\SettingModel;
 use System\Classes\SiteCollection;
-use October\Contracts\Database\MultisiteInterface;
 
 class Settings extends SettingModel
 {
