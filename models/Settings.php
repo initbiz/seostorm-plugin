@@ -33,7 +33,47 @@ class Settings extends SettingModel
         'robots_txt',
     ];
 
-    public $propagatable = [];
+    public $propagatable = [
+        'enable_sitemap',
+        'enable_index_sitemap',
+        'enable_images_sitemap',
+        'enable_videos_sitemap',
+        'sitemap_enabled_for_sites',
+        'enable_robots_txt',
+        'enable_robots_meta',
+        'favicon_enabled',
+        'favicon_from',
+        'favicon',
+        'favicon_fileupload',
+        'favicon_url',
+        'favicon_sizes',
+        'webmanifest_enabled',
+        'webmanifest_name',
+        'webmanifest_short_name',
+        'webmanifest_background_color',
+        'webmanifest_theme_color',
+        'webmanifest_display',
+        'webmanifest_custom_attributes',
+        'enable_og',
+        'enable_og',
+        'site_image_from',
+        'site_image_fileupload',
+        'site_image_url',
+        'og_site_name',
+        'fb_app_id',
+        'twitter_site',
+        'twitter_creator',
+        'og_locale_alternate',
+        'schema_image_from',
+        'schema_image',
+        'schema_image_fileupload',
+        'schema_image_url',
+        'publisher_type',
+        'publisher_same_as',
+        'publisher_name',
+        'publisher_logo_url',
+        'publisher_url',
+    ];
 
     protected $propagatableSync = true;
 
