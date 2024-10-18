@@ -5,6 +5,7 @@ enabled_in_sitemap:
     type: checkbox
     default: true
     span: left
+    trans: true
 
 use_updated_at:
     label: initbiz.seostorm::lang.form.general.use_updated_at_label

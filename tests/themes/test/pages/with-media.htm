@@ -1,0 +1,20 @@
+title = "With media"
+url = "/images/:slug?"
+layout = "default"
+seoOptionsEnabledInSitemap = "true"
+seoOptionsModelClass = "Initbiz\SeoStorm\Tests\Classes\FakeStormedModel"
+seoOptionsModelParams = "slug:slug"
+
+[seo]
+
+[fakeModelDetails]
+slug = "{{ :slug }}"
+==
+{% component 'seo' %}
+{% component 'fakeModelDetails' %}
+
+<img src="https://test.dev/images.jpg" alt="" srcset="">
+<img src="https://test.dev/images.jpg" alt="" srcset="">
+<img src="https://test.dev/images2.jpg" alt="" srcset="">
+
+{{ model.description|raw }}

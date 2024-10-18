@@ -1,0 +1,22 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: initbiz.seostorm::lang.models.sitemap_item.label
+
+# Model Form Field configuration
+form: $/initbiz/seostorm/models/sitemapitem/fields.yaml
+
+# Model Class name
+modelClass: Initbiz\Seostorm\Models\SitemapItem
+
+# Default redirect location
+defaultRedirect: initbiz/seostorm/sitemapitems
+
+# Update page
+update:
+    title: backend::lang.form.update_title
+    redirect: initbiz/seostorm/sitemapitems
+    redirectClose: initbiz/seostorm/sitemapitems
+
