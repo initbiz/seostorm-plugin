@@ -8,10 +8,13 @@ use System\Models\File;
 use Media\Classes\MediaLibrary;
 use System\Models\SettingModel;
 use System\Classes\SiteCollection;
+use October\Contracts\Database\MultisiteInterface;
 
 class Settings extends SettingModel
 {
     use \October\Rain\Database\Traits\Validation;
+    use \October\Rain\Database\Traits\Multisite;
+
 
     /**
      * Cache key to store current favicon hash (to check if it was updated)
@@ -30,6 +33,10 @@ class Settings extends SettingModel
         'og_locale',
         'robots_txt',
     ];
+
+    public $propagatable = [];
+
+    protected $propagatableSync = true;
 
     public $attachOne = [
         'site_image_fileupload' => [
