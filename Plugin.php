@@ -38,7 +38,7 @@ class Plugin extends PluginBase
     public function register()
     {
         $this->registerConsoleCommand('migrate:arcane', \Initbiz\SeoStorm\Console\MigrateArcane::class);
-        $this->registerConsoleCommand('sitemap:refresh', \Initbiz\SeoStorm\Console\RefreshSitemap::class);
+        $this->registerConsoleCommand('sitemap:refresh', \Initbiz\SeoStorm\Console\SitemapRefresh::class);
     }
 
     public function boot()

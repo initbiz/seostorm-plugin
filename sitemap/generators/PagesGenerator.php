@@ -77,7 +77,8 @@ class PagesGenerator extends AbstractGenerator
         $enabledPages = $this->getEnabledCmsPages($pages);
 
         foreach ($enabledPages as $page) {
-            if (($key = array_search($page->base_file_name, $baseFileNamesToClear)) !== false) {
+            $key = array_search($page->base_file_name, $baseFileNamesToClear);
+            if ($key !== false) {
                 unset($baseFileNamesToClear[$key]);
             }
 
@@ -92,7 +93,8 @@ class PagesGenerator extends AbstractGenerator
         if ($pluginManager->hasPlugin('RainLab.Pages') && !$pluginManager->isDisabled('RainLab.Pages')) {
             $staticPages = $this->getEnabledStaticPages();
             foreach ($staticPages as $staticPage) {
-                if (($key = array_search($staticPage->fileName, $baseFileNamesToClear)) !== false) {
+                $key = array_search($staticPage->fileName, $baseFileNamesToClear);
+                if ($key !== false) {
                     unset($baseFileNamesToClear[$key]);
                 }
 
