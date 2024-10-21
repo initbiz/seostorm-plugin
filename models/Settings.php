@@ -234,4 +234,18 @@ class Settings extends SettingModel
         // in beforeSave event, we're setting favicon_fileupload for every type: media, and url, too
         return $this->favicon_fileupload;
     }
+
+    /**
+     * findOtherSettingModel
+     * This was overwritten because of the protection against getting for records in the database too early
+     * when there is no appropriate table yet.
+     */
+    public function findOtherSettingModel()
+    {
+        if (!\System::hasDatabase()) {
+            return null;
+        }
+
+        return parent::findOtherSettingModel();
+    }
 }
