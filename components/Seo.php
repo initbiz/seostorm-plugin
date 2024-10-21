@@ -2,9 +2,7 @@
 
 namespace Initbiz\SeoStorm\Components;
 
-use App;
 use Cms\Facades\Cms;
-use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
 use Media\Classes\MediaLibrary;
 use Initbiz\SeoStorm\Models\Settings;
@@ -64,6 +62,10 @@ class Seo extends ComponentBase
 
         $this->page['seoStormSiteNameSeparator'] = $settings->site_name_separator;
         $this->page['seoStormSiteName'] = $settings->site_name;
+
+        if ($settings->favicon_enabled) {
+            $this->page['favicon'] = $settings->getFaviconObject();
+        }
     }
 
     // Site meta getters
@@ -339,7 +341,7 @@ class Seo extends ComponentBase
     {
         $url = '';
         if (empty($parsedTwig)) {
-            $url = Page::url('');
+            $url = $this->controller->currentPageUrl();
         } else {
             $url = Cms::url($parsedTwig);
         }
