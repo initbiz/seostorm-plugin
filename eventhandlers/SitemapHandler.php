@@ -2,8 +2,6 @@
 
 namespace Initbiz\SeoStorm\EventHandlers;
 
-use App;
-use Schema;
 use Artisan;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
@@ -17,6 +15,12 @@ class SitemapHandler
 {
     public function subscribe($event)
     {
+        // Prevent from registering these models when running migrations
+        // Fix for blog posts seeder breaking creation
+        if (\App()->runningConsoleCommand('october:migrate')) {
+            return;
+        }
+
         $settings = Settings::instance();
         if ($settings->get('enable_sitemap')) {
             $this->halcyonModels($event);
