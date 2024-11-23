@@ -1,0 +1,11 @@
+# ===================================
+#  List Column Definitions
+# ===================================
+
+columns:
+    loc:
+        label: initbiz.seostorm::lang.models.sitemap_media.loc
+        searchable: true
+    type:
+        label: initbiz.seostorm::lang.models.sitemap_media.type
+        searchable: true

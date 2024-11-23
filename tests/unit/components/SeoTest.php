@@ -23,13 +23,10 @@ class SeoTest extends StormedTestCase
     {
         parent::setUp();
         $componentManager = ComponentManager::instance();
+        $componentManager->listComponents();
         $componentManager->registerComponent(Seo::class, 'seo');
         $componentManager->registerComponent(FakeModelDetailsComponent::class, 'fakeModelDetails');
         $componentManager->registerComponent(ViewBag::class, 'viewBag');
-
-        $themesPath = 'plugins/initbiz/seostorm/tests/themes';
-        Config::set('system.themes_path', $themesPath);
-        app()->useThemesPath($themesPath);
     }
 
     public function testGetTitle()
@@ -255,7 +252,6 @@ class SeoTest extends StormedTestCase
         $site->theme = 'test';
         $site->save();
 
-        Site::setActiveSite($site);
         Site::applyActiveSite($site);
 
         Translator::forgetInstance();
@@ -266,6 +262,7 @@ class SeoTest extends StormedTestCase
         $page = Page::load($theme, 'with-fake-model');
 
         $result = $controller->runPage($page);
+
         $this->assertStringContainsString('<title>Test page title PL</title>', $result);
         $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurlpl">', $result);
     }
