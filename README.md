@@ -1,55 +1,29 @@
-SEO Storm - ultimate SEO tool for OctoberCMS!
-===
+# SEO Storm - ultimate SEO tool for OctoberCMS!
 
-[//]: # (Introduction)
+[//]: # "Introduction"
 
 ![SEO Storm - ultimate SEO tool for OctoberCMS](https://raw.githubusercontent.com/initbiz/seostorm-plugin/master/docs/seo-storm.png)
 
 Originally forked from the abandoned `Arcane.SEO` plugin we have made numerous improvements and added many new features.
 
----
-
-- [Key Features](#key-features)
-- [Using SEO Storm](#using-seo-storm)
-- [Common use-cases](#common-use-cases)
-    - [Global prefix/suffix in the page's title](#global-prefixsuffix-in-the-pages-title)
-    - [Automatically set the title of the page based on a model (such as a blog post)](#automatically-set-the-title-of-the-page-based-on-a-model-such-as-a-blog-post)
-    - [Generating your `sitemap.xml`](#generating-your-sitemapxml)
-- [Dynamic meta tags](#dynamic-meta-tags)
-    - [Fallback values](#fallback-values)
-- [Advanced `sitemap.xml`](#advanced-sitemapxml)
-    - [Model params](#model-params)
-    - [Model scopes](#model-scopes)
-- [Open Graph & Twitter cards](#open-graph-&-twitter-cards)
-- [Custom models with SEO parameters](#custom-models-with-seo-parameters)
-- [Troubleshooting](#troubleshooting)
-    - [Problem: Cards looking bad when pasting a link on social media](#problem-cards-looking-bad-when-pasting-a-link-on-social-media)
-- [Future plans/features](#future-plansfeatures)
-
----
-
 ## Key Features
 
-* Automatically generates titles and other meta tags on the page
-* Manages custom meta tags from the backend
-* Manages the robots meta tag in an easy way
-* Sets a favicon from October's Mediafinder
-* Manages Open Graph parameters
-* Edits `.htaccess` without leaving the backend
-* Partially migrates from `Arcane.SEO` with a single click
-* Generates a `sitemap.xml` file automatically with parameters in URLs
-* Supports `RainLab.Pages`,
-* Provides an easy way to extend custom models for SEO parameters in the backend
-* Uses Twig parameters to fill meta tags
-* Plus numerous smaller features you will love :)
+SEO Storm let's you:
 
-[//]: # (Documentation)
+-   generate titles and meta tags on the pages dynamically with Twig support,
+-   manage custom meta tags from the backend,
+-   manage robots meta tag from the backend,
+-   manage favicon using file upload, media or URL,
+-   manage Open Graph parameters,
+-   manage `.htaccess` file from the backend,
+-   generate a `sitemap.xml` file automatically with parameters in URLs, with multisite support and translation,
+-   generate sitemaps for prefixed multisites, videos, and images,
+-   generate webmanifest file (with the ability to extend it),
+-   extend your own models to use SEO parameters.
 
-## Using SEO Storm
+SEO Storm supports `RainLab.Pages`, `RainLab.Translate`, and `RainLab.Blog` out of the box.
 
-Install the plugin and then add the `SEO` component in site's `head` section, whether it's a page or layout.
-
-Go to `Settings` -> `SEO Storm` -> `General settings` and configure to suit your needs.
+[//]: # "Documentation"
 
 ## Common use-cases
 
@@ -81,24 +55,27 @@ That's basically everything you need. **Just make sure that all the pages you wa
 
 If you want to handle more advanced customizations, see the `Advanced sitemap.xml` section.
 
+> **We recommend changing queue engine to something else than `sync` if you have bigger pages.**
+
 ## Dynamic meta tags
 
 In many situations you'll want to have the meta attributes set dynamically based on the variables on the page. A typical example would be a blog post which uses the `{{ post }}` variable. Using `Dynamic meta tags` we can set the attributes based on such variables.
 
 Tags that are currently using Twig syntax:
-* `meta title`
-* `meta description`
-* `canonical URL`
-* `advanced robots`
-* `OG type`
-* `OG title`
-* `OG description`
-* `OG image`
-* `OG video`
-* `Twitter card`
-* `Twitter title`
-* `Twitter description`
-* `Twitter image`
+
+-   `meta title`
+-   `meta description`
+-   `canonical URL`
+-   `advanced robots`
+-   `OG type`
+-   `OG title`
+-   `OG description`
+-   `OG image`
+-   `OG video`
+-   `Twitter card`
+-   `Twitter title`
+-   `Twitter description`
+-   `Twitter image`
 
 ### Fallback values
 
@@ -128,6 +105,7 @@ Take a closer look at those two parameters:
 The first one will say SEO Storm, which model it should use for this page to generate URLs in the sitemap. The second one is pairing between the URL parameter and model attribute (which match which).
 
 ### Model params
+
 As described above, the first parameter of the definition is the URL parameter while the second one is the corresponding model attribute.
 
 > For example: `post:slug` means we have a `post` parameter in the URL and `slug` attribute in the model.
@@ -136,9 +114,11 @@ If you want to add more attributes, split them by pipe character (`|`). For exam
 
 You may want to create a URL such as `/blog/:category/:postslug`. To achieve this we use the dot syntax to fetch the attribute from the related object, as this example demonstrates:
 
-    postslug:slug|category:categories.slug
+```
+postslug:slug|category:categories.slug
+```
 
-This method will work for all relation types but if it's a  "one to many" relationship, remember that only the first one will be used.
+This method will work for all relation types but if it's a "one to many" relationship, remember that only the first one will be used.
 
 ### Model scopes
 
@@ -156,13 +136,14 @@ If you want to learn more about OG and Twitter cards take a look at [the guide f
 ![Open Graph and Twitter attributes](https://raw.githubusercontent.com/initbiz/seostorm-plugin/master/docs/open-graph-twitter-attributes.png)
 
 Currently supported tags are:
-- `og:title` defaults to page's `meta_title` or `title`,
-- `og:description` defaults to page's `meta_description`, or `site_description` from the `Settings`,
-- `og:image` defaults to `site_image` from the `Settings`,
-- `og:type` defaults to `website`,
-- `twitter:title` got from `og:title`,
-- `twitter:description` got from `og:description`,
-- `twitter:image` got from `og:image`.
+
+-   `og:title` defaults to page's `meta_title` or `title`,
+-   `og:description` defaults to page's `meta_description`, or `site_description` from the `Settings`,
+-   `og:image` defaults to `site_image` from the `Settings`,
+-   `og:type` defaults to `website`,
+-   `twitter:title` got from `og:title`,
+-   `twitter:description` got from `og:description`,
+-   `twitter:image` got from `og:image`.
 
 **Note:** Please read the guidelines from Facebook and Twitter linked above for recommended values on these tags. Take a look at the `Dynamic meta tags` section to see which of those support the Twig syntax.
 
@@ -171,6 +152,7 @@ Currently supported tags are:
 SEO Storm lets you easily define the models to which you'd like to have SEO parameters dynamically attached.
 
 > You don't have to make any other customizations - SEO Storm takes care of extending the models and storing the attributes in the DB.
+
 We call such models `Stormed`. To register a model as `Stormed` implement a `registerStormedModels` method in your plugin's registration file (`Plugin.php`).
 
 Add the `registerStormedModels()` method in your `Plugin.php` file, for example:
@@ -222,9 +204,9 @@ If you wish to customize the fields displayed in the backend you can use the `ex
 
 The following parameters are supported in the `registerStormedModels` method:
 
-* `placement` defines where the fields are going to be rendered. It's either: `fields`, `tabs` and `secondaryTabs`,
-* `prefix` defines the relation prefix to automatically add to the fields definition, by default it's `seo_options` (you have to know what you're doing before changing it, so please be careful)
-* `excludeFields` will exclude the fields from the form as described above
+-   `placement` defines where the fields are going to be rendered. It's either: `fields`, `tabs` and `secondaryTabs`,
+-   `prefix` defines the relation prefix to automatically add to the fields definition, by default it's `seo_options` (you have to know what you're doing before changing it, so please be careful)
+-   `excludeFields` will exclude the fields from the form as described above
 
 Note: By default, SEO Storm takes care of `CMS pages` and `Static pages` so you don't have to define them yourself.
 
@@ -233,8 +215,3 @@ Note: By default, SEO Storm takes care of `CMS pages` and `Static pages` so you 
 ### Problem: Cards looking bad when pasting a link on social media
 
 Reason: Open Graph is not enabled or it's configured improperly. See [the guide for Open Graph from Facebook](https://developers.facebook.com/docs/sharing/webmasters) and [the guide for Twitter cards from Twitter](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html) to get better understanding on the parameters.
-
-## Future plans/features
-
-1. Order `sitemap.xml` urls using models' priorities,
-1. Take all SEO attributes of the models into consideration while generating `sitemap.xml`

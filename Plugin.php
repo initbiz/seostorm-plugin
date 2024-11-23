@@ -6,6 +6,7 @@ use Event;
 use Cms\Twig\Extension;
 use Cms\Classes\Controller;
 use System\Classes\PluginBase;
+use Initbiz\SeoStorm\Classes\Router;
 use Initbiz\SeoStorm\Models\Htaccess;
 use Initbiz\SeoStorm\Models\Settings;
 use Twig\Extension\StringLoaderExtension;
@@ -36,14 +37,19 @@ class Plugin extends PluginBase
 
     public function register()
     {
+        $this->registerConsoleCommand('migrate:arcane', \Initbiz\SeoStorm\Console\MigrateArcane::class);
+        $this->registerConsoleCommand('sitemap:refresh', \Initbiz\SeoStorm\Console\SitemapRefresh::class);
     }
 
     public function boot()
     {
+        (new Router())->register();
+
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\BackendHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\StormedHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\RainlabPagesHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\RainlabTranslateHandler::class);
+        Event::subscribe(\Initbiz\SeoStorm\EventHandlers\SitemapHandler::class);
 
         // Load Twig extensions
 
@@ -84,7 +90,7 @@ class Plugin extends PluginBase
                 'class'       => Htaccess::class,
                 'order'       => 200,
                 'permissions' => ['initbiz.manage_seo'],
-            ]
+            ],
         ];
     }
 
@@ -123,8 +129,22 @@ class Plugin extends PluginBase
     public function registerStormedModels()
     {
         $modelDefs = [
-            'Rainlab\Blog\Models\Post' => [
+            \Rainlab\Blog\Models\Post::class => [
                 'placement' => 'secondaryTabs',
+                'excludeFields' => [
+                    'model_class',
+                    'model_scope',
+                    'model_params',
+                    'lastmod',
+                    'use_updated_at',
+                    'changefreq',
+                    'priority',
+                    'enabled_in_sitemap',
+                ],
+            ],
+
+            \Rainlab\Blog\Models\Category::class => [
+                'placement' => 'tabs',
                 'excludeFields' => [
                     'model_class',
                     'model_scope',
@@ -138,7 +158,7 @@ class Plugin extends PluginBase
             ],
         ];
 
-        if (env('APP_ENV') === 'testing') {
+        if (\App::runningUnitTests()) {
             $modelDefs['\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel'] = [
                 'placement' => 'tabs',
                 'excludeFields' => [
@@ -153,7 +173,7 @@ class Plugin extends PluginBase
     public function registerFormWidgets()
     {
         return [
-            '\Initbiz\SeoStorm\FormWidgets\Migrate' => 'seo_migrate'
+            \Initbiz\SeoStorm\FormWidgets\Migrate::class => 'seo_migrate'
         ];
     }
 }

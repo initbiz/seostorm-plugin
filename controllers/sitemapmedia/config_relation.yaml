@@ -1,0 +1,7 @@
+items:
+    label: initbiz.seostorm::lang.models.sitemap_media.items
+    view:
+        list: $/initbiz/seostorm/models/sitemapitem/columns.yaml
+        toolbarButtons: remove
+        recordUrl: initbiz/seostorm/sitemapitems/update/:id
+        recordsPerPage: 20

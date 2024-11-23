@@ -1,0 +1,12 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    type:
+        label: initbiz.seostorm::lang.models.sitemap_media.type
+        span: full
+    items:
+        label: initbiz.seostorm::lang.models.sitemap_media.items
+        type: partial
+        span: full

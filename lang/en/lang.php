@@ -5,7 +5,9 @@
     ],
     'permissions' => [
         'settings_tab' => 'SEO Storm',
-        'config' => 'Access SEO Storm configuration',
+        'config' => 'Access to SEO Storm configuration',
+        'sitemapmedia' => 'Access to SEO Storm Sitemap Media view',
+        'sitemapitems' => 'Access to SEO Storm Sitemap Items view',
     ],
     'form_widgets' => [
         'migrate' => 'Migrate',
@@ -88,15 +90,16 @@
             'description' => 'Configure SEO Storm',
             'tab_meta' => 'Meta',
             'tab_sitemap' => 'Sitemap',
-            'tab_head' => '<head>',
             'tab_robots' => 'Robots',
             'tab_favicon' => 'Favicon',
+            'tab_webmanifest' => 'Webmanifest',
             'tab_htaccess' => '.htaccess',
             'tab_social_media' => 'Social Media',
             'tab_migrate' => 'Migrate',
             'tab_schema' => 'Schema',
+
+            // Meta tab
             'enable_site_meta' => 'Enable title and description meta tags',
-            'enable_sitemap' => 'Enable sitemap.xml',
             'site_name' => 'Site name',
             'site_name_placeholder' => 'Your site name',
             'site_name_position' => 'Site name display',
@@ -109,16 +112,59 @@
             'site_name_separator_comment' => 'Character to separate site name from title, eg: Page Title|SiteName',
             'site_description' => 'Default description',
             'site_description_placeholder' => 'Your site description',
+
+            // Sitemap
+            'enable_sitemap' => 'Enable sitemap',
+            'enable_sitemap_comment' => 'Generate sitemap under /sitemap.xml',
+            'btn_browse_sitemapitems' => 'Browse sitemap items stored in the database',
+            'btn_refresh_sitemapitems' => 'Refresh items in the database',
+            'btn_back_to_settings' => 'SEO Storm settings',
+            'enable_index_sitemap' => 'Enable sitemap index',
+            'enable_index_sitemap_comment' => 'Generate sitemap index file under /index_sitemap.xml. <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/large-sitemaps">More info</a>',
+            'enable_images_sitemap' => 'Enable images sitemap',
+            'enable_images_sitemap_comment' => 'Generate sitemap for images and add to the index. <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps">More info</a>',
+            'enable_videos_sitemap' => 'Enable videos sitemap',
+            'enable_videos_sitemap_comment' => 'Generate sitemap for videos and add to the index. <a href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/video-sitemaps">More info</a>',
+            'index_sitemap_enabled_for_sites' => 'Sites to enable index for',
+            'index_sitemap_enabled_for_sites_comment' => '<strong>It will work only for sites using prefixes</strong>',
+
             'extra_meta' => 'Additional <head> content',
             'extra_meta_comment' => 'Additional meta tags',
+
+            // Robots
             'enable_robots_txt' => 'Enable robots.txt',
             'enable_robots_meta' => 'Enable robots meta tags',
             'robots_txt' => 'robots.txt',
-            'favicon_enabled' => 'Enable favicon.ico',
-            'favicon_enabled_comment' => 'This will generate a route to /favicon.ico',
-            'favicon_16' => 'Resize favicon to 16x16',
+            'robots_txt_comment' => 'You can use Twig here with "site" and "domain" variables available',
+
+            // Favicon
+            'favicon_enabled' => 'Enable favicon',
             'favicon' => 'Select your favicon',
-            'favicon_prompt' => 'Click %s to search the media library',
+            'favicon_sizes_label' => 'Additional favicon sizes',
+            'favicon_sizes_comment' => 'Provided sizes will be used to resize favicons and added to webmanifest file (32px and 180px are default)',
+            'favicon_field_label' => 'Favicon size in pixels (e.g. 16x16 px)',
+            'favicon_prompt' => 'Add next favicon size',
+            'favicon_url' => 'Provide URL to the favicon',
+            'favicon_fileupload' => 'Upload your favicon',
+            'favicon_from' => 'Choose upload method',
+            'favicon_from_media' => 'Upload favicon through media',
+            'favicon_from_fileupload' => 'Upload favicon through fileupload',
+            'favicon_from_url' => 'Upload favicon through URL',
+
+            // Webmanifest
+            'webmanifest_enabled' => 'Webmanifest enabled',
+            'webmanifest_comment' => 'This will generate webmanifest and a route to /manifest.webmanifest',
+            'webmanifest_name' => 'Name',
+            'webmanifest_short_name' => 'Short name',
+            'webmanifest_theme_color' => 'Theme color',
+            'webmanifest_background_color' => 'Background color',
+            'webmanifest_display' => 'Display property',
+            'webmanifest_custom_attributes' => 'Custom attributes',
+            'webmanifest_custom_attributes_comment' => 'Custom attributes added to your webmanifest',
+            'webmanifest_custom_attributes_key' => 'Key',
+            'webmanifest_custom_attributes_value' => 'Value',
+
+            // Social media
             'enable_og' => 'Enable Open Graph',
             'enable_og_comment' => 'Display the Open Graph meta tags',
             'site_image_from' => 'Where to get default site image from',
@@ -161,7 +207,7 @@
         'htaccess' => [
             'label' => '.htaccess',
             'description' => 'Manage .htaccess file',
-        ]
+        ],
     ],
     'components' => [
         'group' => [
@@ -189,5 +235,23 @@
     ],
     'editor' => [
         'translate' => 'Translate SEO'
-    ]
+    ],
+    'models' => [
+        'sitemap_item' => [
+            'label' => 'Sitemap items',
+            'btn_see_media' => 'Browse media items',
+            'list_label' => 'Sitemap items',
+            'loc' => 'Location',
+            'site_definition' => 'Site Definition',
+            'base_file_name' => 'Base File Name',
+            'images' => 'Images',
+            'videos' => 'Videos',
+        ],
+        'sitemap_media' => [
+            'label' => 'Sitemap Media',
+            'items' => 'Items',
+            'loc' => 'Loc',
+            'type' => 'Type',
+        ],
+    ],
 ];

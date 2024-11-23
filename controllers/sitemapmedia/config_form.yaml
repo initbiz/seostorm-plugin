@@ -1,0 +1,21 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: initbiz.seostorm::lang.models.sitemap_media.label
+
+# Model Form Field configuration
+form: $/initbiz/seostorm/models/sitemapmedia/fields.yaml
+
+# Model Class name
+modelClass: Initbiz\Seostorm\Models\SitemapMedia
+
+# Default redirect location
+defaultRedirect: initbiz/seostorm/sitemapmedia
+
+# Update page
+update:
+    title: backend::lang.form.update_title
+    redirect: initbiz/seostorm/sitemapmedia
+    redirectClose: initbiz/seostorm/sitemapmedia
