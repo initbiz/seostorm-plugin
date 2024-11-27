@@ -17,7 +17,7 @@ class SitemapHandler
     {
         // Prevent from registering these models when running migrations
         // Fix for blog posts seeder breaking creation
-        if (\App()->runningConsoleCommand('october:migrate')) {
+        if (($_SERVER['argv'][1] ?? "") === "october:migrate") {
             return;
         }
 
