@@ -2,8 +2,7 @@
 
 namespace Initbiz\SeoStorm\Components;
 
-use App;
-use Cms\Classes\Page;
+use Cms\Facades\Cms;
 use Cms\Classes\ComponentBase;
 use Media\Classes\MediaLibrary;
 use Initbiz\SeoStorm\Models\Settings;
@@ -58,6 +57,15 @@ class Seo extends ComponentBase
         } else {
             $this->seoAttributes = $this->page->settings;
         }
+
+        $settings = $this->getSettings();
+
+        $this->page['seoStormSiteNameSeparator'] = $settings->site_name_separator;
+        $this->page['seoStormSiteName'] = $settings->site_name;
+
+        if ($settings->favicon_enabled) {
+            $this->page['favicon'] = $settings->getFaviconObject();
+        }
     }
 
     // Site meta getters
@@ -82,17 +90,7 @@ class Seo extends ComponentBase
 
     public function getCanonicalUrl($parsedTwig = '')
     {
-        $url = Page::url($this->page->id);
-
-        if (isset($this->page->apiBag['staticPage'])) {
-            $url = url($this->seoAttributes['url']);
-        }
-
-        if (!empty($parsedTwig)) {
-            $url = url($parsedTwig);
-        }
-
-        return $url;
+        return $this->makeUrl($parsedTwig);
     }
 
     /**
@@ -102,7 +100,7 @@ class Seo extends ComponentBase
      */
     public function getTitleRaw()
     {
-        return $this->getPropertyTranslated('metaTitle') ?: $this->getSeoAttribute('title') ?: null;
+        return $this->getSeoAttribute('metaTitle') ?: $this->getSeoAttribute('title') ?: null;
     }
 
     /**
@@ -113,6 +111,12 @@ class Seo extends ComponentBase
     public function getTitle()
     {
         $title = $this->getTitleRaw();
+
+        $ignorePositionFromSettings = $this->getSeoAttribute('ignoreGlobalTitlePosition') ?? false;
+
+        if ($ignorePositionFromSettings) {
+            return $title;
+        }
 
         $settings = $this->getSettings();
 
@@ -133,7 +137,7 @@ class Seo extends ComponentBase
      */
     public function getDescription()
     {
-        $description = $this->getPropertyTranslated('metaDescription');
+        $description = $this->getSeoAttribute('metaDescription');
 
         if (!$description) {
             $description = $this->getSeoAttribute('description') ?? null;
@@ -157,7 +161,7 @@ class Seo extends ComponentBase
      */
     public function getOgTitle()
     {
-        return $this->getPropertyTranslated('ogTitle') ?? $this->getTitle();
+        return $this->getSeoAttribute('ogTitle') ?? $this->getTitle();
     }
 
     /**
@@ -168,7 +172,7 @@ class Seo extends ComponentBase
      */
     public function getOgDescription()
     {
-        return $this->getPropertyTranslated('ogDescription') ?? $this->getDescription();
+        return $this->getSeoAttribute('ogDescription') ?? $this->getDescription();
     }
 
     /**
@@ -180,11 +184,11 @@ class Seo extends ComponentBase
      */
     public function getOgImage()
     {
-        if ($ogImage = $this->getPropertyTranslated('ogRefImage')) {
+        if ($ogImage = $this->getSeoAttribute('ogRefImage')) {
             return $ogImage;
         }
 
-        if ($ogImage = $this->getPropertyTranslated('ogImage')) {
+        if ($ogImage = $this->getSeoAttribute('ogImage')) {
             return $ogImage;
         }
 
@@ -237,6 +241,28 @@ class Seo extends ComponentBase
         }
 
         return $twitterSite;
+    }
+
+    /**
+     * Returns og url or canonical if set in the viewBag
+     *
+     * @param string|null $ogUrl
+     * @param string|null $canonicalUrl
+     * @return string
+     */
+    public function getOgUrl(?string $ogUrl = null, ?string $canonicalUrl = null): string
+    {
+        $url = '';
+
+        if (!empty($canonicalUrl)) {
+            $url = $this->getCanonicalUrl($canonicalUrl);
+        }
+
+        if (!empty($ogUrl)) {
+            $url = $this->makeUrl($ogUrl);
+        }
+
+        return $url;
     }
 
     /**
@@ -306,16 +332,28 @@ class Seo extends ComponentBase
     }
 
     /**
-     * Returns the property from the viewBag
-     * taking translated version into consideration
+     * Helper for make url
      *
-     * @param string $viewBagProperty
-     * @return string|null
+     * @param string $parsedTwig
+     * @return string
      */
-    public function getPropertyTranslated(string $viewBagProperty)
+    private function makeUrl($parsedTwig = ''): string
     {
-        $locale = App::getLocale();
-        $localizedKey = 'locale' . strtolower($viewBagProperty);
-        return $this->getSeoAttribute($localizedKey)[$locale] ?? $this->getSeoAttribute($viewBagProperty) ?? null;
+        $url = '';
+        if (empty($parsedTwig)) {
+            $url = $this->controller->currentPageUrl();
+        } else {
+            $url = Cms::url($parsedTwig);
+        }
+
+        if (isset($this->page->apiBag['staticPage'])) {
+            $url = url($this->seoAttributes['url']);
+        }
+
+        if (!empty($parsedTwig)) {
+            $url = url($parsedTwig);
+        }
+
+        return $url;
     }
 }

@@ -10,6 +10,14 @@ meta_title:
         data-max: 60
         data-seo: title
 
+ignore_global_title_position:
+    label: initbiz.seostorm::lang.form.general.ignore_global_title_position_label
+    comment: initbiz.seostorm::lang.form.general.ignore_global_title_position_comment
+    type: checkbox
+    span: full
+    tab: initbiz.seostorm::lang.form.general.tab_meta
+    trans: true
+
 meta_description:
     label: initbiz.seostorm::lang.form.general.meta_description_label
     type: textarea
@@ -37,6 +45,7 @@ robot_index:
     commentAbove: initbiz.seostorm::lang.form.general.robot_index_comment
     tab: initbiz.seostorm::lang.form.general.tab_meta
     type: balloon-selector
+    trans: true
     options:
         index: Index
         noindex: Noindex
@@ -49,6 +58,7 @@ robot_follow:
     commentAbove: initbiz.seostorm::lang.form.general.robot_follow_comment
     tab: initbiz.seostorm::lang.form.general.tab_meta
     type: balloon-selector
+    trans: true
     options:
         follow: Follow
         nofollow: Nofollow

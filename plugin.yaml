@@ -8,3 +8,9 @@ permissions:
     initbiz.seostorm.config:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
         label: 'initbiz.seostorm::lang.permissions.config'
+    initbiz.seostorm.sitemapmedia:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.sitemapmedia'
+    initbiz.seostorm.sitemapitems:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.sitemapitems'

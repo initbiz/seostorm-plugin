@@ -110,6 +110,9 @@ class StormedManager extends Singleton
             $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
         }
 
+        $fields = Yaml::parseFile(plugins_path('initbiz/seostorm/config/schemafields.yaml'));
+        $fieldsDefinitions = array_merge($fieldsDefinitions, $fields);
+
         $this->fieldsDefs = $fieldsDefinitions;
 
         return $fieldsDefinitions;

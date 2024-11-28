@@ -2,13 +2,13 @@
     - "First version of the plugin"
     - 1_0_0_create_seo_options_table.php
 2.0.0:
-    - "!!! Deleted automatic RainLab.Blog handler"
+    - "Deleted automatic RainLab.Blog handler"
 3.0.0:
-    - "!!! Dropped Schema and minify support. Provided full compatibility with October 2.0"
+    - "Dropped Schema and minify support. Provided full compatibility with October 2.0"
 3.0.1:
     - "Fix bug with setting seo attributes"
 4.0.0:
-    - "!!! Seo attributes changed to camelCase issue initbiz/seostorm-plugin!23"
+    - "Seo attributes changed to camelCase issue initbiz/seostorm-plugin!23"
 4.0.1:
     - "Remove unneeded handler"
 4.0.2:
@@ -47,3 +47,44 @@
     - "Fix for old MYSQL"
 4.4.3:
     - "Fix run 404 page"
+4.5.0:
+    - "Add twig october extensions to templateFromString(can now be used in seo storm) and small fix canonical url"
+4.5.1:
+    - "Fix problem with loading extensions after they already were initialized"
+4.5.2:
+    - "Fix purgeable with default array"
+4.6.0:
+    - "Added compatibility with october 3.1"
+4.6.1:
+    - "Fix overwritten sitemap and the canonical tag is always added with the url of the current page"
+4.7.0:
+    - "Add Schema component"
+4.8.0:
+    - "Add robot_index and robot_follow as translatable fields"
+4.8.1:
+    - "Fix tests in October 3.6"
+4.8.2:
+    - "Fix issue !90 - String Loader Twig extension"
+4.8.3:
+    - "Fix issue !49 - CMS_STRICT_VARIABLES=true"
+4.8.4:
+    - "Fix issue !82 - template_from_string"
+4.9.0:
+    - "Allow disabling global prefix/suffix for title. Solves issue !65"
+5.0.0:
+    - "Provide automatic sitemaps with index, images and videos support"
+    - 5_0_0_create_sitemap_items_table.php
+    - 5_0_0_create_sitemap_media_table.php
+    - 5_0_0_create_sitemap_items_media_table.php
+5.1.0:
+    - "Pushing only unique jobs to queue"
+5.2.0:
+    - "Robots.txt translatable and available with Twig"
+5.2.1:
+    - "Clearing ghost sitemap items when updating Static pages"
+5.3.0:
+    - "Refreshing for CMS page queue job"
+5.3.1:
+    - "Make checking if console command backwards compatible"
+5.3.2:
+    - "Fixed an issue with static page disabled"

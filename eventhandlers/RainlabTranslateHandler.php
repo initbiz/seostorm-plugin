@@ -6,16 +6,24 @@ use Cms\Classes\Page;
 use October\Rain\Database\Model;
 use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Classes\StormedManager;
+use RainLab\Pages\Classes\Page as StaticPage;
 
 class RainlabTranslateHandler
 {
     public function subscribe($event)
     {
-        if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
-            $event->listen('cms.beforeRoute', function () use ($event) {
-                $this->addTranslatableSeoFields($event);
-                $this->addTranslatableSeoFieldsToEditor();
-            });
+        if (!PluginManager::instance()->exists('RainLab.Translate')) {
+            return;
+        }
+
+        $event->listen('cms.beforeRoute', function () use ($event) {
+            $this->addTranslatableSeoFields($event);
+        });
+
+        $this->addTranslatableSeoFieldsToEditor();
+
+        if (PluginManager::instance()->exists('RainLab.Pages')) {
+            $this->addTranslatableSeoFieldsToRainlabPages();
         }
     }
 
@@ -78,12 +86,33 @@ class RainlabTranslateHandler
             $stormedManager = StormedManager::instance();
             $fields = $stormedManager->addPrefix($stormedManager->getTranslatableSeoFieldsDefs(), 'seo_options', '%s_%s');
 
-            $editorFields = [];
             foreach ($fields as $key => $fieldDef) {
-                $editorFields[] = camel_case($key);
+                $newKey = camel_case($key);
+                if (!in_array($newKey, $model->translatable)) {
+                    $model->translatable[] = $newKey;
+                }
+            }
+        });
+    }
+
+    public function addTranslatableSeoFieldsToRainlabPages()
+    {
+        StaticPage::extend(function ($model) {
+            if (!$model->propertyExists('translatable')) {
+                $model->addDynamicProperty('translatable', []);
             }
 
-            $model->translatable = array_merge($model->translatable, $editorFields);
+            $stormedManager = StormedManager::instance();
+            $excludeFields = [
+                'model_class',
+                'model_scope',
+                'model_params',
+            ];
+
+            $fields = $stormedManager->getTranslatableSeoFieldsDefs($excludeFields);
+            $fields = $stormedManager->addPrefix($fields, 'viewBag');
+
+            $model->translatable = array_merge($model->translatable, array_keys($fields));
         });
     }
 }

@@ -2,35 +2,26 @@
 
 namespace Initbiz\SeoStorm\Tests\Classes;
 
+use Config;
 use Schema;
 use PluginTestCase;
-use October\Rain\Database\Model;
+use Cms\Classes\Theme;
 use System\Classes\MarkupManager;
 use System\Classes\PluginManager;
-use System\Classes\UpdateManager;
-use System\Classes\VersionManager;
 
 abstract class StormedTestCase extends PluginTestCase
 {
+    protected $isRainLabPagesDisabled;
+
     public function setUp(): void
     {
         parent::setUp();
+        $this->isRainLabPagesDisabled = (PluginManager::instance())->isDisabled('RainLab.Pages');
 
-        // Version manager remembers in the databaseVersions all versions
-        // between tests even if the table in db is empty
-        VersionManager::forgetInstance();
-
-        // Get the plugin manager
-        $pluginManager = PluginManager::instance();
-
-        Model::clearExtendedClasses();
-        Model::clearBootedModels();
-
-        // Register the plugins to make features like file configuration available
-        $pluginManager->registerAll(true);
-
-        // Boot all the plugins to test with dependencies of this plugin
-        $pluginManager->bootAll(true);
+        $themesPath = plugins_path('initbiz/seostorm/tests/themes');
+        Config::set('system.themes_path', $themesPath);
+        app()->useThemesPath($themesPath);
+        Theme::setActiveTheme('test');
 
         $markupManager = MarkupManager::instance();
         $markupManager->listFunctions();
@@ -56,21 +47,14 @@ abstract class StormedTestCase extends PluginTestCase
 
     public function tearDown(): void
     {
+        Theme::resetCache();
+
+        if ($this->isRainLabPagesDisabled) {
+            (PluginManager::instance())->disablePlugin('RainLab.Pages');
+        } else {
+            (PluginManager::instance())->enablePlugin('RainLab.Pages');
+        }
+
         parent::tearDown();
-
-        // Get the plugin manager
-        $pluginManager = PluginManager::instance();
-
-        // Ensure that plugins are registered again for the next test
-        $pluginManager->unregisterAll();
-    }
-
-    protected function runPluginRefreshCommand($code, $throwException = true)
-    {
-        // Plugin refresh does not migrate all of the tables
-        // That's why we're running update here so that all migrations
-        // will be run by plugin:refresh command
-        UpdateManager::instance()->updatePlugin($code);
-        parent::runPluginRefreshCommand($code, $throwException);
     }
 }
