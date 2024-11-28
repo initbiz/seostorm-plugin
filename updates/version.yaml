@@ -86,3 +86,5 @@
     - "Refreshing for CMS page queue job"
 5.3.1:
     - "Make checking if console command backwards compatible"
+5.3.2:
+    - "Fixed an issue with static page disabled"

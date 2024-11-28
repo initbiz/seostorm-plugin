@@ -427,8 +427,10 @@ class PagesGeneratorTest extends StormedTestCase
         $this->assertEquals(1, SitemapItem::count());
 
         $pagesGenerator = new PagesGenerator($plSite);
-        $staticPage = $pagesGenerator->getEnabledStaticPages($theme)[0];
-        $pagesGenerator->refreshForStaticPage($staticPage);
+        $staticPages = $pagesGenerator->getEnabledStaticPages($theme);
+        foreach ($staticPages as $staticPage) {
+            $pagesGenerator->refreshForStaticPage($staticPage);
+        }
 
         $this->assertEquals(2, SitemapItem::count());
 
@@ -444,5 +446,36 @@ class PagesGeneratorTest extends StormedTestCase
         // $staticPage->delete();
 
         // $this->assertEquals(0, SitemapItem::count());
+    }
+
+    public function testDisableSiteMapOnStaticPage(): void
+    {
+        $site = SiteDefinition::first();
+
+        $plSite = new SiteDefinition();
+        $plSite->is_prefixed = true;
+        $plSite->name = 'Polish';
+        $plSite->code = 'pl';
+        $plSite->route_prefix = '/pl';
+        $plSite->locale = 'pl';
+        $plSite->save();
+
+        $settings = Settings::instance();
+        $settings->enable_sitemap = true;
+        $settings->sitemap_enabled_for_sites = ['primary', 'pl'];
+        $settings->save();
+
+        $theme = Theme::load('test');
+        StaticPage::clearCache($theme);
+
+        $pagesGenerator = new PagesGenerator($site);
+        $staticPage = $pagesGenerator->getEnabledStaticPages($theme)[0];
+        $pagesGenerator->refreshForStaticPage($staticPage);
+
+        $staticPage = StaticPage::query()->find('test-static');
+        $staticPage->viewBag['enabled_in_sitemap'] = "0";
+        $pagesGenerator->refreshForStaticPage($staticPage);
+
+        $this->assertEquals(0, SitemapItem::count());
     }
 }

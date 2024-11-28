@@ -481,6 +481,11 @@ class PagesGenerator extends AbstractGenerator
 
         $sitemapItem = SitemapItem::where('loc', $loc)->withSite($site)->first();
 
+        //If staticPage is not enabled, do nothing
+        if (!(bool) $staticPage->enabled_in_sitemap) {
+            return null;
+        }
+
         if (!$sitemapItem) {
             $sitemapItem = new SitemapItem();
             $sitemapItem->loc = $loc;
