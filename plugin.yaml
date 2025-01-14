@@ -8,9 +8,37 @@ permissions:
     initbiz.seostorm.config:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
         label: 'initbiz.seostorm::lang.permissions.config'
+    initbiz.seostorm.config.meta:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.tab_meta'
+    initbiz.seostorm.config.sitemap:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.tab_sitemap'
+    initbiz.seostorm.config.robots:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.tab_robots'
+    initbiz.seostorm.config.favicon:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.tab_favicon'
+    initbiz.seostorm.config.webmanifest:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.tab_webmanifest'
+    initbiz.seostorm.config.social_media:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.tab_social_media'
+    initbiz.seostorm.config.schema:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.tab_schema'
+    initbiz.seostorm.config.migrate:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.tab_migrate'
+    initbiz.seostorm.htaccess:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.htaccess'
     initbiz.seostorm.sitemapmedia:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
         label: 'initbiz.seostorm::lang.permissions.sitemapmedia'
     initbiz.seostorm.sitemapitems:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
         label: 'initbiz.seostorm::lang.permissions.sitemapitems'
+
