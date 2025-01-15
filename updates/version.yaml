@@ -88,3 +88,5 @@
     - "Make checking if console command backwards compatible"
 5.3.2:
     - "Fixed an issue with static page disabled"
+5.3.3:
+    - "Repair and add permissions for settings"

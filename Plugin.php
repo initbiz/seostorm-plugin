@@ -80,7 +80,7 @@ class Plugin extends PluginBase
                 'category'    => 'initbiz.seostorm::lang.form.settings.category_label',
                 'class'       => Settings::class,
                 'order'       => 100,
-                'permissions' => ['initbiz.manage_seo'],
+                'permissions' => ['initbiz.seostorm.settings'],
             ],
             'htaccess' => [
                 'label'       => 'initbiz.seostorm::lang.form.htaccess.label',
@@ -89,7 +89,7 @@ class Plugin extends PluginBase
                 'category'    => 'initbiz.seostorm::lang.form.settings.category_label',
                 'class'       => Htaccess::class,
                 'order'       => 200,
-                'permissions' => ['initbiz.manage_seo'],
+                'permissions' => ['initbiz.seostorm.htaccess'],
             ],
         ];
     }
