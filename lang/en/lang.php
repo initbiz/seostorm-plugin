@@ -16,7 +16,7 @@
         'access_settings_social_media' => 'Access to Social Media tab',
         'access_settings_schema' => 'Access to Schema tab',
         'access_settings_migrate' => 'Access to Migrate tab',
-        'access_settings_htaccess' => 'Access to Htaccess configuration',
+        'access_htaccess' => 'Access to Htaccess configuration',
     ],
     'form_widgets' => [
         'migrate' => 'Migrate',
