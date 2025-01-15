@@ -5,36 +5,36 @@ plugin:
     icon: icon-search
 
 permissions:
-    initbiz.seostorm.config:
+    initbiz.seostorm.settings:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.config'
-    initbiz.seostorm.config.meta:
+        label: 'initbiz.seostorm::lang.permissions.access_settings'
+    initbiz.seostorm.settings.meta:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.tab_meta'
-    initbiz.seostorm.config.sitemap:
+        label: 'initbiz.seostorm::lang.permissions.access_settings_meta'
+    initbiz.seostorm.settings.sitemap:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.tab_sitemap'
-    initbiz.seostorm.config.robots:
+        label: 'initbiz.seostorm::lang.permissions.access_settings_sitemap'
+    initbiz.seostorm.settings.robots:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.tab_robots'
-    initbiz.seostorm.config.favicon:
+        label: 'initbiz.seostorm::lang.permissions.access_settings_robots'
+    initbiz.seostorm.settings.favicon:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.tab_favicon'
-    initbiz.seostorm.config.webmanifest:
+        label: 'initbiz.seostorm::lang.permissions.access_settings_favicon'
+    initbiz.seostorm.settings.webmanifest:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.tab_webmanifest'
-    initbiz.seostorm.config.social_media:
+        label: 'initbiz.seostorm::lang.permissions.access_settings_webmanifest'
+    initbiz.seostorm.settings.social_media:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.tab_social_media'
-    initbiz.seostorm.config.schema:
+        label: 'initbiz.seostorm::lang.permissions.access_settings_social_media'
+    initbiz.seostorm.settings.schema:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.tab_schema'
-    initbiz.seostorm.config.migrate:
+        label: 'initbiz.seostorm::lang.permissions.access_settings_schema'
+    initbiz.seostorm.settings.migrate:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.tab_migrate'
+        label: 'initbiz.seostorm::lang.permissions.access_settings_migrate'
     initbiz.seostorm.htaccess:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.htaccess'
+        label: 'initbiz.seostorm::lang.permissions.access_htaccess'
     initbiz.seostorm.sitemapmedia:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
         label: 'initbiz.seostorm::lang.permissions.sitemapmedia'
