@@ -5,12 +5,40 @@ plugin:
     icon: icon-search
 
 permissions:
-    initbiz.seostorm.config:
+    initbiz.seostorm.access_settings:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
-        label: 'initbiz.seostorm::lang.permissions.config'
+        label: 'initbiz.seostorm::lang.permissions.access_settings'
+    initbiz.seostorm.access_settings.access_meta:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.access_settings_meta'
+    initbiz.seostorm.access_settings.access_sitemap:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.access_settings_sitemap'
+    initbiz.seostorm.access_settings.access_robots:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.access_settings_robots'
+    initbiz.seostorm.access_settings.access_favicon:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.access_settings_favicon'
+    initbiz.seostorm.access_settings.access_webmanifest:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.access_settings_webmanifest'
+    initbiz.seostorm.access_settings.access_social_media:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.access_settings_social_media'
+    initbiz.seostorm.access_settings.access_schema:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.access_settings_schema'
+    initbiz.seostorm.access_settings.access_migrate:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.access_settings_migrate'
+    initbiz.seostorm.htaccess:
+        tab: 'initbiz.seostorm::lang.permissions.settings_tab'
+        label: 'initbiz.seostorm::lang.permissions.access_htaccess'
     initbiz.seostorm.sitemapmedia:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
         label: 'initbiz.seostorm::lang.permissions.sitemapmedia'
     initbiz.seostorm.sitemapitems:
         tab: 'initbiz.seostorm::lang.permissions.settings_tab'
         label: 'initbiz.seostorm::lang.permissions.sitemapitems'
+
