@@ -9,7 +9,7 @@ tabs:
             span: auto
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_meta
-            permissions: initbiz.seostorm.settings.meta
+            permissions: initbiz.seostorm.access_settings.access_meta
             default: true
 
         site_name:
@@ -18,7 +18,7 @@ tabs:
             placeholder: initbiz.seostorm::lang.form.settings.site_name_placeholder
             type: text
             tab: initbiz.seostorm::lang.form.settings.tab_meta
-            permissions: initbiz.seostorm.settings.meta
+            permissions: initbiz.seostorm.access_settings.access_meta
             trigger:
                 action: show
                 field: enable_site_meta
@@ -34,7 +34,7 @@ tabs:
             type: radio
             commentAbove: initbiz.seostorm::lang.form.settings.site_name_position_commentAbove
             tab: initbiz.seostorm::lang.form.settings.tab_meta
-            permissions: initbiz.seostorm.settings.meta
+            permissions: initbiz.seostorm.access_settings.access_meta
             default: nowhere
             trigger:
                 action: show
@@ -48,7 +48,7 @@ tabs:
             comment: initbiz.seostorm::lang.form.settings.site_name_separator_comment
             placeholder: initbiz.seostorm::lang.form.settings.site_name_separator_placeholder
             tab: initbiz.seostorm::lang.form.settings.tab_meta
-            permissions: initbiz.seostorm.settings.meta
+            permissions: initbiz.seostorm.access_settings.access_meta
             trigger:
                 action: show
                 field: enable_site_meta
@@ -61,7 +61,7 @@ tabs:
             placeholder: initbiz.seostorm::lang.form.settings.site_description_placeholder
             type: textarea
             tab: initbiz.seostorm::lang.form.settings.tab_meta
-            permissions: initbiz.seostorm.settings.meta
+            permissions: initbiz.seostorm.access_settings.access_meta
             trigger:
                 action: show
                 field: enable_site_meta
@@ -78,7 +78,7 @@ tabs:
             span: full
             type: codeeditor
             tab: initbiz.seostorm::lang.form.settings.tab_meta
-            permissions: initbiz.seostorm.settings.meta
+            permissions: initbiz.seostorm.access_settings.access_meta
             comment: initbiz.seostorm::lang.form.settings.extra_meta_comment
 
         #----------------------------------------------------------------------
@@ -91,14 +91,14 @@ tabs:
             span: left
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-            permissions: initbiz.seostorm.settings.sitemap
+            permissions: initbiz.seostorm.access_settings.access_sitemap
             default: true
 
         _btn_browse_sitemapitems:
             type: partial
             path: $/initbiz/seostorm/models/settings/_btn_browse_sitemapitems.htm
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-            permissions: initbiz.seostorm.settings.sitemap
+            permissions: initbiz.seostorm.access_settings.access_sitemap
             span: right
             trigger:
                 action: show
@@ -112,7 +112,7 @@ tabs:
             comment: initbiz.seostorm::lang.form.settings.enable_index_sitemap_comment
             commentHtml: true
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-            permissions: initbiz.seostorm.settings.sitemap
+            permissions: initbiz.seostorm.access_settings.access_sitemap
             trigger:
                 action: show
                 field: enable_sitemap
@@ -125,7 +125,7 @@ tabs:
             span: left
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-            permissions: initbiz.seostorm.settings.sitemap
+            permissions: initbiz.seostorm.access_settings.access_sitemap
             trigger:
                 action: show
                 field: enable_sitemap
@@ -138,7 +138,7 @@ tabs:
             span: right
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-            permissions: initbiz.seostorm.settings.sitemap
+            permissions: initbiz.seostorm.access_settings.access_sitemap
             trigger:
                 action: show
                 field: enable_sitemap
@@ -151,7 +151,7 @@ tabs:
             span: left
             type: checkboxlist
             tab: initbiz.seostorm::lang.form.settings.tab_sitemap
-            permissions: initbiz.seostorm.settings.sitemap
+            permissions: initbiz.seostorm.access_settings.access_sitemap
             hidden: true
             trigger:
                 action: show
@@ -166,7 +166,7 @@ tabs:
             span: auto
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_robots
-            permissions: initbiz.seostorm.settings.robots
+            permissions: initbiz.seostorm.access_settings.access_robots
             default: true
 
         enable_robots_meta:
@@ -174,7 +174,7 @@ tabs:
             span: auto
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_robots
-            permissions: initbiz.seostorm.settings.robots
+            permissions: initbiz.seostorm.access_settings.access_robots
             default: true
 
         robots_txt:
@@ -185,7 +185,7 @@ tabs:
             span: full
             type: codeeditor
             tab: initbiz.seostorm::lang.form.settings.tab_robots
-            permissions: initbiz.seostorm.settings.robots
+            permissions: initbiz.seostorm.access_settings.access_robots
             default: "User-agent: *\r\nAllow: /"
             hidden: false
             trigger:
@@ -200,13 +200,13 @@ tabs:
             label: initbiz.seostorm::lang.form.settings.favicon_enabled
             type: switch
             default: false
-            permissions: initbiz.seostorm.settings.favicon
+            permissions: initbiz.seostorm.access_settings.access_favicon
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
 
         favicon_from:
             label: initbiz.seostorm::lang.form.settings.favicon_from
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
-            permissions: initbiz.seostorm.settings.favicon
+            permissions: initbiz.seostorm.access_settings.access_favicon
             span: left
             type: dropdown
             options:
@@ -221,7 +221,7 @@ tabs:
             span: right
             prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
-            permissions: initbiz.seostorm.settings.favicon
+            permissions: initbiz.seostorm.access_settings.access_favicon
             trigger:
                 action: show
                 field: favicon_from
@@ -231,7 +231,7 @@ tabs:
             label: initbiz.seostorm::lang.form.settings.favicon_fileupload
             type: fileupload
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
-            permissions: initbiz.seostorm.settings.favicon
+            permissions: initbiz.seostorm.access_settings.access_favicon
             fileTypes: 'png,gif,jpg,jpeg,webp'
             span: right
             trigger:
@@ -243,7 +243,7 @@ tabs:
             label: initbiz.seostorm::lang.form.settings.favicon_url
             type: text
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
-            permissions: initbiz.seostorm.settings.favicon
+            permissions: initbiz.seostorm.access_settings.access_favicon
             span: right
             trigger:
                 action: show
@@ -256,7 +256,7 @@ tabs:
             type: repeater
             span: auto
             tab: initbiz.seostorm::lang.form.settings.tab_favicon
-            permissions: initbiz.seostorm.settings.favicon
+            permissions: initbiz.seostorm.access_settings.access_favicon
             prompt: initbiz.seostorm::lang.form.settings.favicon_prompt
             form:
                 fields:
@@ -277,14 +277,14 @@ tabs:
             span: full
             default: false
             tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
-            permissions: initbiz.seostorm.settings.webmanifest
+            permissions: initbiz.seostorm.access_settings.access_webmanifest
 
         webmanifest_name:
             label: initbiz.seostorm::lang.form.settings.webmanifest_name
             span: auto
             type: text
             tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
-            permissions: initbiz.seostorm.settings.webmanifest
+            permissions: initbiz.seostorm.access_settings.access_webmanifest
             trigger:
                 action: show
                 field: webmanifest_enabled
@@ -295,7 +295,7 @@ tabs:
             span: auto
             type: text
             tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
-            permissions: initbiz.seostorm.settings.webmanifest
+            permissions: initbiz.seostorm.access_settings.access_webmanifest
             trigger:
                 action: show
                 field: webmanifest_enabled
@@ -306,7 +306,7 @@ tabs:
             span: auto
             type: colorpicker
             tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
-            permissions: initbiz.seostorm.settings.webmanifest
+            permissions: initbiz.seostorm.access_settings.access_webmanifest
             trigger:
                 action: show
                 field: webmanifest_enabled
@@ -317,7 +317,7 @@ tabs:
             span: auto
             type: colorpicker
             tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
-            permissions: initbiz.seostorm.settings.webmanifest
+            permissions: initbiz.seostorm.access_settings.access_webmanifest
             trigger:
                 action: show
                 field: webmanifest_enabled
@@ -328,7 +328,7 @@ tabs:
             span: auto
             type: dropdown
             tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
-            permissions: initbiz.seostorm.settings.webmanifest
+            permissions: initbiz.seostorm.access_settings.access_webmanifest
             default: standalone
             options:
                 fullscreen: fullscreen
@@ -346,7 +346,7 @@ tabs:
             span: full
             type: repeater
             tab: initbiz.seostorm::lang.form.settings.tab_webmanifest
-            permissions: initbiz.seostorm.settings.webmanifest
+            permissions: initbiz.seostorm.access_settings.access_webmanifest
             trigger:
                 action: show
                 field: webmanifest_enabled
@@ -371,7 +371,7 @@ tabs:
             comment: initbiz.seostorm::lang.form.settings.enable_og_comment
             type: switch
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
-            permissions: initbiz.seostorm.settings.social_media
+            permissions: initbiz.seostorm.access_settings.access_social_media
             default: true
 
         site_image_hint:
@@ -379,12 +379,12 @@ tabs:
             span: right
             path: $/initbiz/seostorm/models/settings/_site_image_hint.htm
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
-            permissions: initbiz.seostorm.settings.social_media
+            permissions: initbiz.seostorm.access_settings.access_social_media
 
         site_image_from:
             label: initbiz.seostorm::lang.form.settings.site_image_from
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
-            permissions: initbiz.seostorm.settings.social_media
+            permissions: initbiz.seostorm.access_settings.access_social_media
             span: left
             type: dropdown
             default: fileupload
@@ -404,7 +404,7 @@ tabs:
             prompt: initbiz.seostorm::lang.form.settings.site_image_prompt
             type: mediafinder
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
-            permissions: initbiz.seostorm.settings.social_media
+            permissions: initbiz.seostorm.access_settings.access_social_media
             hidden: 0
             imageHeight: 260
             imageWidth: 260
@@ -416,7 +416,7 @@ tabs:
         site_image_fileupload:
             label: initbiz.seostorm::lang.form.settings.site_image
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
-            permissions: initbiz.seostorm.settings.social_media
+            permissions: initbiz.seostorm.access_settings.access_social_media
             span: right
             type: fileupload
             mode: image
@@ -430,7 +430,7 @@ tabs:
         site_image_url:
             label: initbiz.seostorm::lang.form.settings.site_image
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
-            permissions: initbiz.seostorm.settings.social_media
+            permissions: initbiz.seostorm.access_settings.access_social_media
             span: right
             type: text
             trigger:
@@ -445,7 +445,7 @@ tabs:
             span: left
             comment: initbiz.seostorm::lang.form.settings.og_site_name_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
-            permissions: initbiz.seostorm.settings.social_media
+            permissions: initbiz.seostorm.access_settings.access_social_media
             trigger:
                 action: enable
                 field: enable_og
@@ -462,7 +462,7 @@ tabs:
             span: left
             comment: initbiz.seostorm::lang.form.settings.fb_app_id_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
-            permissions: initbiz.seostorm.settings.social_media
+            permissions: initbiz.seostorm.access_settings.access_social_media
 
         twitter_site:
             label: initbiz.seostorm::lang.form.settings.twitter_site
@@ -475,7 +475,7 @@ tabs:
                 condition: checked
             comment: initbiz.seostorm::lang.form.settings.twitter_site_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
-            permissions: initbiz.seostorm.settings.social_media
+            permissions: initbiz.seostorm.access_settings.access_social_media
 
         twitter_creator:
             label: initbiz.seostorm::lang.form.settings.twitter_creator
@@ -488,7 +488,7 @@ tabs:
                 condition: checked
             comment: initbiz.seostorm::lang.form.settings.twitter_creator_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
-            permissions: initbiz.seostorm.settings.social_media
+            permissions: initbiz.seostorm.access_settings.access_social_media
 
         og_locale:
             label: initbiz.seostorm::lang.form.settings.og_locale
@@ -501,7 +501,7 @@ tabs:
             commentHtml: true
             comment: initbiz.seostorm::lang.form.settings.og_locale_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
-            permissions: initbiz.seostorm.settings.social_media
+            permissions: initbiz.seostorm.access_settings.access_social_media
 
         og_locale_alternate:
             label: initbiz.seostorm::lang.form.settings.og_locale_alternate
@@ -514,7 +514,7 @@ tabs:
             commentHtml: true
             comment: initbiz.seostorm::lang.form.settings.og_locale_alternate_comment
             tab: initbiz.seostorm::lang.form.settings.tab_social_media
-            permissions: initbiz.seostorm.settings.social_media
+            permissions: initbiz.seostorm.access_settings.access_social_media
 
         #----------------------------------------------------------------------
         # Schema
@@ -526,12 +526,12 @@ tabs:
             mode: info
             type: hint
             tab: initbiz.seostorm::lang.form.settings.tab_schema
-            permissions: initbiz.seostorm.settings.schema
+            permissions: initbiz.seostorm.access_settings.access_schema
 
         schema_image_from:
             label: initbiz.seostorm::lang.form.settings.schema_image_from
             tab: initbiz.seostorm::lang.form.settings.tab_schema
-            permissions: initbiz.seostorm.settings.schema
+            permissions: initbiz.seostorm.access_settings.access_schema
             span: left
             type: dropdown
             options:
@@ -546,7 +546,7 @@ tabs:
             prompt: initbiz.seostorm::lang.form.settings.schema_image_prompt
             type: mediafinder
             tab: initbiz.seostorm::lang.form.settings.tab_schema
-            permissions: initbiz.seostorm.settings.schema
+            permissions: initbiz.seostorm.access_settings.access_schema
             hidden: 0
             imageHeight: 260
             imageWidth: 260
@@ -557,7 +557,7 @@ tabs:
         schema_image_fileupload:
             label: initbiz.seostorm::lang.form.settings.schema_image
             tab: initbiz.seostorm::lang.form.settings.tab_schema
-            permissions: initbiz.seostorm.settings.schema
+            permissions: initbiz.seostorm.access_settings.access_schema
             span: right
             type: fileupload
             mode: image
@@ -571,7 +571,7 @@ tabs:
         schema_image_url:
             label: initbiz.seostorm::lang.form.settings.schema_image
             tab: initbiz.seostorm::lang.form.settings.tab_schema
-            permissions: initbiz.seostorm.settings.schema
+            permissions: initbiz.seostorm.access_settings.access_schema
             span: right
             type: text
             trigger:
@@ -585,7 +585,7 @@ tabs:
             mode: info
             type: hint
             tab: initbiz.seostorm::lang.form.settings.tab_schema
-            permissions: initbiz.seostorm.settings.schema
+            permissions: initbiz.seostorm.access_settings.access_schema
 
         publisher_type:
             label: initbiz.seostorm::lang.form.settings.publisher_type
@@ -594,14 +594,14 @@ tabs:
             placeholder: Organization
             span: left
             tab: initbiz.seostorm::lang.form.settings.tab_schema
-            permissions: initbiz.seostorm.settings.schema
+            permissions: initbiz.seostorm.access_settings.access_schema
 
         publisher_same_as:
             label: initbiz.seostorm::lang.form.settings.publisher_same_as
             type: repeater
             span: right
             tab: initbiz.seostorm::lang.form.settings.tab_schema
-            permissions: initbiz.seostorm.settings.schema
+            permissions: initbiz.seostorm.access_settings.access_schema
             form:
                 fields:
                     same_as_url:
@@ -616,7 +616,7 @@ tabs:
             type: text
             span: left
             tab: initbiz.seostorm::lang.form.settings.tab_schema
-            permissions: initbiz.seostorm.settings.schema
+            permissions: initbiz.seostorm.access_settings.access_schema
 
         publisher_logo_url:
             label: initbiz.seostorm::lang.form.settings.publisher_logo_url
@@ -624,14 +624,14 @@ tabs:
             type: text
             span: left
             tab: initbiz.seostorm::lang.form.settings.tab_schema
-            permissions: initbiz.seostorm.settings.schema
+            permissions: initbiz.seostorm.access_settings.access_schema
 
         publisher_url:
             label: initbiz.seostorm::lang.form.settings.publisher_url
             type: text
             span: left
             tab: initbiz.seostorm::lang.form.settings.tab_schema
-            permissions: initbiz.seostorm.settings.schema
+            permissions: initbiz.seostorm.access_settings.access_schema
 
         #----------------------------------------------------------------------
         # Migrate
@@ -640,5 +640,5 @@ tabs:
         _btn_migrate:
             type: seo_migrate
             tab: initbiz.seostorm::lang.form.settings.tab_migrate
-            permissions: initbiz.seostorm.settings.migrate
+            permissions: initbiz.seostorm.access_settings.access_migrate
 
