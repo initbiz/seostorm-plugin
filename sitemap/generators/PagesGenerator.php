@@ -457,7 +457,7 @@ class PagesGenerator extends AbstractGenerator
                 }
             }
 
-            if ((string) $viewBag['enabled_in_sitemap'] === "1") {
+            if (isset($viewBag['enabled_in_sitemap']) && (string) $viewBag['enabled_in_sitemap'] === "1") {
                 $enabledPages[] = $staticPage;
             }
         }
