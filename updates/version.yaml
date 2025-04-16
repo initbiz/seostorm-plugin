@@ -91,4 +91,4 @@
 5.3.3:
     - "Repair and add permissions for settings"
 5.3.4:
-    - "Fixed an issue with accessing the array element"
+    - "Fix permissions for settings"
