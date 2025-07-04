@@ -112,7 +112,7 @@ class RainlabTranslateHandler
             $fields = $stormedManager->getTranslatableSeoFieldsDefs($excludeFields);
             $fields = $stormedManager->addPrefix($fields, 'viewBag');
 
-            $model->translatable = array_merge($model->translatable, array_keys($fields));
+            $model->translatable = array_unique(array_merge($model->translatable, array_keys($fields)));
         });
     }
 }
