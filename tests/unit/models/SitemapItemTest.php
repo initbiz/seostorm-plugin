@@ -90,6 +90,9 @@ class SitemapItemTest extends StormedTestCase
 
     public function testParseSiteVideos(): void
     {
+        $settings = Settings::instance();
+        $settings->set('enable_images_sitemap', true);
+        $settings->set('enable_videos_sitemap', true);
         Queue::fake();
 
         $jobDispatcher = UniqueQueueJobDispatcher::instance();
