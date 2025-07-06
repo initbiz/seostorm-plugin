@@ -12,7 +12,7 @@
     "require": {
         "php": "^8.1",
         "composer/installers": "~1.0",
-        "october/system": "^3.1",
+        "october/system": "^3.1|^4.0",
         "initbiz/sitemap": "^1.0"
     }
 }

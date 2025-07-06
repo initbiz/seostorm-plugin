@@ -92,3 +92,5 @@
     - "Repair and add permissions for settings"
 5.3.4:
     - "Fix permissions for settings"
+5.3.5:
+    - "Adding compatibility with october 4"
