@@ -94,3 +94,5 @@
     - "Fix permissions for settings"
 5.3.5:
     - "Adding compatibility with october 4"
+5.3.6:
+    - "Fix problem with RainLab translate"
