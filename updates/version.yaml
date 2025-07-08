@@ -96,3 +96,5 @@
     - "Adding compatibility with october 4"
 5.3.6:
     - "Fix problem with RainLab translate"
+5.3.7:
+    - "Fix translating meta fields"
