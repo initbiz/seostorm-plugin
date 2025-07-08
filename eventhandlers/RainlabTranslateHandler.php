@@ -85,13 +85,15 @@ class RainlabTranslateHandler
 
             $stormedManager = StormedManager::instance();
             $fields = $stormedManager->addPrefix($stormedManager->getTranslatableSeoFieldsDefs(), 'seo_options', '%s_%s');
+            $translatable = $model->translatable ?? [];
 
             foreach ($fields as $key => $fieldDef) {
                 $newKey = camel_case($key);
                 if (!in_array($newKey, $model->translatable)) {
-                    $model->translatable[] = $newKey;
+                    $translatable[] = $newKey;
                 }
             }
+            $model->translatable = $translatable;
         });
     }
 
