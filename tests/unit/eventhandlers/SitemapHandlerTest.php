@@ -31,6 +31,7 @@ class SitemapHandlerTest extends StormedTestCase
     {
         Queue::fake(ScanPageForMediaItemsJob::class);
 
+        Theme::setActiveTheme('test');
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-fake-model-category');
 
@@ -73,6 +74,7 @@ class SitemapHandlerTest extends StormedTestCase
             url('/') . '/model/category/model-2',
         ];
 
+        dd($expectedArray, $sitemapItems);
         $this->assertEquals($expectedArray, $sitemapItems);
     }
 }

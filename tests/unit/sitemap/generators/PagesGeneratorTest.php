@@ -472,7 +472,7 @@ class PagesGeneratorTest extends StormedTestCase
         $staticPage = $pagesGenerator->getEnabledStaticPages($theme)[0];
         $pagesGenerator->refreshForStaticPage($staticPage);
 
-        $staticPage = StaticPage::query()->find('test-static');
+        $staticPage = StaticPage::on('test')->find('test-static');
         $staticPage->viewBag['enabled_in_sitemap'] = "0";
         $pagesGenerator->refreshForStaticPage($staticPage);
 
