@@ -1,4 +1,7 @@
-<?php return [
+<?php
+
+declare(strict_types=1);
+return [
     'plugin' => [
         'name' => 'SEO Storm',
         'description' => 'Полное управление SEO для OctoberCMS',

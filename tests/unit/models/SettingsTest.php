@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Tests\Unit\Models;
 
 use Http;
-use Config;
 use Storage;
 use PluginTestCase;
 use System\Models\File;

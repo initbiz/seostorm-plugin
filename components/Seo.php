@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Components;
 
 use Cms\Facades\Cms;
@@ -120,9 +122,9 @@ class Seo extends ComponentBase
 
         $settings = $this->getSettings();
 
-        if ($settings->site_name_position == 'prefix') {
+        if ($settings->site_name_position === 'prefix') {
             $title = "{$settings->site_name} {$settings->site_name_separator} {$title}";
-        } elseif ($settings->site_name_position == 'suffix') {
+        } elseif ($settings->site_name_position === 'suffix') {
             $title = "{$title} {$settings->site_name_separator} {$settings->site_name}";
         }
 

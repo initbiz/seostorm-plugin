@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Classes;
 
 use Yaml;
@@ -128,10 +130,10 @@ class StormedManager extends Singleton
     public function excludeFields($fieldsDefinitions, $excludeFields)
     {
         // Inverted excluding
-        if (in_array('*', $excludeFields)) {
+        if (in_array('*', $excludeFields, true)) {
             $newExcludeFields = [];
             foreach ($fieldsDefinitions as $key => $fieldDef) {
-                if (!in_array($key, $excludeFields)) {
+                if (!in_array($key, $excludeFields, true)) {
                     $newExcludeFields[] = $key;
                 }
             }
@@ -141,7 +143,7 @@ class StormedManager extends Singleton
         // Exclude fields
         $readyFieldsDefs = [];
         foreach ($fieldsDefinitions as $key => $fieldDef) {
-            if (!in_array($key, $excludeFields)) {
+            if (!in_array($key, $excludeFields, true)) {
                 $readyFieldsDefs[$key] = $fieldDef;
             }
         }

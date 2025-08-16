@@ -30,7 +30,7 @@ class PagesGenerator extends AbstractGenerator
 {
     use EventEmitter;
 
-    const HASH_PAGE_CACHE_KEY = 'initbiz.seostorm.pages_content_hashes';
+    public const HASH_PAGE_CACHE_KEY = 'initbiz.seostorm.pages_content_hashes';
 
     /**
      * Collection of pages to parse, if not set, will be taken from the current theme
@@ -77,7 +77,7 @@ class PagesGenerator extends AbstractGenerator
         $enabledPages = $this->getEnabledCmsPages($pages);
 
         foreach ($enabledPages as $page) {
-            $key = array_search($page->base_file_name, $baseFileNamesToClear);
+            $key = array_search($page->base_file_name, $baseFileNamesToClear, true);
             if ($key !== false) {
                 unset($baseFileNamesToClear[$key]);
             }
@@ -93,7 +93,7 @@ class PagesGenerator extends AbstractGenerator
         if ($pluginManager->hasPlugin('RainLab.Pages') && !$pluginManager->isDisabled('RainLab.Pages')) {
             $staticPages = $this->getEnabledStaticPages();
             foreach ($staticPages as $staticPage) {
-                $key = array_search($staticPage->fileName, $baseFileNamesToClear);
+                $key = array_search($staticPage->fileName, $baseFileNamesToClear, true);
                 if ($key !== false) {
                     unset($baseFileNamesToClear[$key]);
                 }
