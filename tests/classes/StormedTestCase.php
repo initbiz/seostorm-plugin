@@ -8,10 +8,10 @@ use Config;
 use Schema;
 use PluginTestCase;
 use Cms\Classes\Theme;
-use Initbiz\SeoStorm\EventHandlers\SitemapHandler;
 use System\Classes\MarkupManager;
 use System\Classes\PluginManager;
 use Initbiz\SeoStorm\Models\Settings;
+use Initbiz\SeoStorm\EventHandlers\SitemapHandler;
 
 abstract class StormedTestCase extends PluginTestCase
 {

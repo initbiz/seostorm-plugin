@@ -92,7 +92,7 @@ class SitemapHandler
      */
     public function registerEventsInTheme(Theme $theme): void
     {
-        if (in_array($theme->getDirName(), self::$themesWithEvents)) {
+        if (in_array($theme->getDirName(), self::$themesWithEvents, true)) {
             return;
         }
 

@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Initbiz\SeoStorm\Tests\Unit\Classes;
 
 use Queue;
-use Config;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
-use Initbiz\SeoStorm\EventHandlers\SitemapHandler;
 use System\Models\SiteDefinition;
 use Initbiz\Seostorm\Models\SitemapItem;
+use Initbiz\SeoStorm\EventHandlers\SitemapHandler;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItemsJob;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;

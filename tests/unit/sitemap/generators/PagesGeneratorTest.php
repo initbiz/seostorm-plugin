@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Initbiz\SeoStorm\Tests\Unit\Classes;
 
 use Queue;
-use Config;
 use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;

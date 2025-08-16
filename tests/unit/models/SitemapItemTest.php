@@ -12,13 +12,13 @@ use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
+use Initbiz\SeoStorm\EventHandlers\SitemapHandler;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItemsJob;
 use Initbiz\SeoStorm\Jobs\UniqueQueueJobDispatcher;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
 use Initbiz\SeoStorm\Tests\Classes\FakeModelDetailsComponent;
-use Initbiz\SeoStorm\EventHandlers\SitemapHandler;
 
 class SitemapItemTest extends StormedTestCase
 {
