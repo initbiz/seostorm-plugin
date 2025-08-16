@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Tests\Unit\Classes;
 
 use Queue;
-use Config;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use System\Models\SiteDefinition;
 use Initbiz\Seostorm\Models\SitemapItem;
+use Initbiz\SeoStorm\EventHandlers\SitemapHandler;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItemsJob;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
@@ -20,10 +22,6 @@ class SitemapHandlerTest extends StormedTestCase
     {
         parent::setUp();
 
-        $themesPath = plugins_path('initbiz/seostorm/tests/themes');
-        Config::set('system.themes_path', $themesPath);
-        app()->useThemesPath($themesPath);
-
         PagesGenerator::resetCache();
     }
 
@@ -33,6 +31,8 @@ class SitemapHandlerTest extends StormedTestCase
 
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-fake-model-category');
+        $sitemapHandler = new SitemapHandler();
+        $sitemapHandler->registerEventsInTheme($theme);
 
         $category = new FakeStormedCategory();
         $category->name = 'Category';

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\EventHandlers;
 
 use Artisan;
@@ -13,6 +15,13 @@ use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
 
 class SitemapHandler
 {
+    /**
+     * Storing themes codes to prevent from registering events twice
+     *
+     * @var array
+     */
+    private static array $themesWithEvents = [];
+
     public function subscribe($event)
     {
         // Prevent from registering these models when running migrations
@@ -72,7 +81,24 @@ class SitemapHandler
     public function seoStormedModels($event): void
     {
         $currentTheme = Theme::getActiveTheme();
-        $pages = Page::listInTheme($currentTheme, true);
+        $this->registerEventsInTheme($currentTheme);
+    }
+
+    /**
+     * Register listeners on afterDelete and afterSave events on all CMS pages in the theme
+     *
+     * @param Theme $theme
+     * @return void
+     */
+    public function registerEventsInTheme(Theme $theme): void
+    {
+        if (in_array($theme->getDirName(), self::$themesWithEvents, true)) {
+            return;
+        }
+
+        self::$themesWithEvents[] = $theme->getDirName();
+
+        $pages = Page::listInTheme($theme, true);
         foreach ($pages as $page) {
             $class = $page->seoOptionsModelClass ?? "";
             if (empty($class) || !class_exists($class)) {
@@ -97,5 +123,10 @@ class SitemapHandler
                 });
             });
         }
+    }
+
+    public static function clearCache(): void
+    {
+        self::$themesWithEvents = [];
     }
 }

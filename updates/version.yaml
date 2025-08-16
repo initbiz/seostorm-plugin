@@ -98,3 +98,5 @@
     - "Fix problem with RainLab translate"
 5.3.7:
     - "Fix translating meta fields"
+5.3.8:
+    - "Fix running tests from project"
