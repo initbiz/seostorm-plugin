@@ -31,7 +31,9 @@ class SitemapHandlerTest extends StormedTestCase
     {
         Queue::fake(ScanPageForMediaItemsJob::class);
 
+        Config::set('system.themes_path', 'plugins/initbiz/seostorm/tests/themes');
         Theme::setActiveTheme('test');
+
         $theme = Theme::load('test');
         $page = Page::load($theme, 'with-fake-model-category');
 
