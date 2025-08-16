@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Models;
 
 use Site;
@@ -13,7 +15,6 @@ class Settings extends SettingModel
 {
     use \October\Rain\Database\Traits\Validation;
     use \October\Rain\Database\Traits\Multisite;
-
 
     /**
      * Cache key to store current favicon hash (to check if it was updated)
@@ -199,7 +200,7 @@ class Settings extends SettingModel
 
         // Always include primary site
         $primarySiteCode = Site::getPrimarySite()->code;
-        if (!in_array($primarySiteCode, $codes)) {
+        if (!in_array($primarySiteCode, $codes, true)) {
             $codes[] = $primarySiteCode;
         }
 

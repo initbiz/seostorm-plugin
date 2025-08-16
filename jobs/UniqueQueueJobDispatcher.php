@@ -63,7 +63,7 @@ class UniqueQueueJobDispatcher
 
         $pendingJobs = $this->getPendingJobsForClass($jobClass);
 
-        return in_array($hash, $pendingJobs);
+        return in_array($hash, $pendingJobs, true);
     }
 
     /**
