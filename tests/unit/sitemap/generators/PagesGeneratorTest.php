@@ -23,10 +23,6 @@ class PagesGeneratorTest extends StormedTestCase
     {
         parent::setUp();
 
-        $themesPath = plugins_path('initbiz/seostorm/tests/themes');
-        Config::set('system.themes_path', $themesPath);
-        app()->useThemesPath($themesPath);
-
         PagesGenerator::resetCache();
         SitemapItem::truncate();
     }
