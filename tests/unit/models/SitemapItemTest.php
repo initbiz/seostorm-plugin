@@ -17,6 +17,7 @@ use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
 use Initbiz\SeoStorm\Tests\Classes\FakeModelDetailsComponent;
+use Initbiz\SeoStorm\EventHandlers\SitemapHandler;
 
 class SitemapItemTest extends StormedTestCase
 {
@@ -127,6 +128,9 @@ class SitemapItemTest extends StormedTestCase
         $settings->set('enable_images_sitemap', true);
         $settings->set('enable_videos_sitemap', true);
         Theme::setActiveTheme('test');
+        $theme = Theme::load('test');
+        $sitemapHandler = new SitemapHandler();
+        $sitemapHandler->registerEventsInTheme($theme);
 
         Queue::fake([ScanPageForMediaItemsJob::class]);
 

@@ -82,6 +82,12 @@ class SitemapHandler
         $this->registerEventsInTheme($currentTheme);
     }
 
+    /**
+     * Register listeners on afterDelete and afterSave events on all CMS pages in the theme
+     *
+     * @param Theme $theme
+     * @return void
+     */
     public function registerEventsInTheme(Theme $theme): void
     {
         if (in_array($theme->getDirName(), self::$themesWithEvents)) {
