@@ -1,8 +1,8 @@
 <?php
 
-namespace Initbiz\SeoStorm\Components;
+declare(strict_types=1);
 
-use Initbiz\SeoStorm\Components\Seo;
+namespace Initbiz\SeoStorm\Components;
 
 class Schema extends Seo
 {

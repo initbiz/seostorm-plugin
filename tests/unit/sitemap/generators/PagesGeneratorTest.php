@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Tests\Unit\Classes;
 
 use Queue;
-use Config;
 use Carbon\Carbon;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
@@ -22,10 +23,6 @@ class PagesGeneratorTest extends StormedTestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $themesPath = plugins_path('initbiz/seostorm/tests/themes');
-        Config::set('system.themes_path', $themesPath);
-        app()->useThemesPath($themesPath);
 
         PagesGenerator::resetCache();
         SitemapItem::truncate();
@@ -472,7 +469,7 @@ class PagesGeneratorTest extends StormedTestCase
         $staticPage = $pagesGenerator->getEnabledStaticPages($theme)[0];
         $pagesGenerator->refreshForStaticPage($staticPage);
 
-        $staticPage = StaticPage::query()->find('test-static');
+        $staticPage = StaticPage::on('test')->find('test-static');
         $staticPage->viewBag['enabled_in_sitemap'] = "0";
         $pagesGenerator->refreshForStaticPage($staticPage);
 

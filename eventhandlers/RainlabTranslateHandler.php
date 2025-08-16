@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\EventHandlers;
 
 use Cms\Classes\Page;
@@ -89,7 +91,7 @@ class RainlabTranslateHandler
 
             foreach ($fields as $key => $fieldDef) {
                 $newKey = camel_case($key);
-                if (!in_array($newKey, $model->translatable)) {
+                if (!in_array($newKey, $model->translatable, true)) {
                     $translatable[] = $newKey;
                 }
             }

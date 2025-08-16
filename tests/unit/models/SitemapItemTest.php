@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Tests\Unit\Models;
 
 use Queue;
@@ -10,7 +12,7 @@ use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\Seostorm\Models\SitemapItem;
 use Initbiz\Seostorm\Models\SitemapMedia;
-use Initbiz\SeoStorm\Jobs\RefreshForCmsPageJob;
+use Initbiz\SeoStorm\EventHandlers\SitemapHandler;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItemsJob;
 use Initbiz\SeoStorm\Jobs\UniqueQueueJobDispatcher;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
@@ -127,6 +129,9 @@ class SitemapItemTest extends StormedTestCase
         $settings->set('enable_images_sitemap', true);
         $settings->set('enable_videos_sitemap', true);
         Theme::setActiveTheme('test');
+        $theme = Theme::load('test');
+        $sitemapHandler = new SitemapHandler();
+        $sitemapHandler->registerEventsInTheme($theme);
 
         Queue::fake([ScanPageForMediaItemsJob::class]);
 

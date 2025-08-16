@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Tests\Classes;
 
 use Config;
@@ -8,6 +10,8 @@ use PluginTestCase;
 use Cms\Classes\Theme;
 use System\Classes\MarkupManager;
 use System\Classes\PluginManager;
+use Initbiz\SeoStorm\Models\Settings;
+use Initbiz\SeoStorm\EventHandlers\SitemapHandler;
 
 abstract class StormedTestCase extends PluginTestCase
 {
@@ -22,6 +26,8 @@ abstract class StormedTestCase extends PluginTestCase
         Config::set('system.themes_path', $themesPath);
         app()->useThemesPath($themesPath);
         Theme::setActiveTheme('test');
+        SitemapHandler::clearCache();
+        Settings::clearInternalCache();
 
         $markupManager = MarkupManager::instance();
         $markupManager->listFunctions();
