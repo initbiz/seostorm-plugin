@@ -100,3 +100,5 @@
     - "Fix translating meta fields"
 5.3.8:
     - "Fix running tests from project"
+5.3.9:
+    - "Fix for !113"

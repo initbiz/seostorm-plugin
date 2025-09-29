@@ -655,6 +655,11 @@ class PagesGenerator extends AbstractGenerator
             $cacheArray = json_decode(Cache::get(self::HASH_PAGE_CACHE_KEY), true);
         }
 
+        // There is a way to make it array, see here: https://github.com/initbiz/seostorm-plugin/issues/113
+        if (is_array($content)) {
+            $content = json_encode($content);
+        }
+
         $md5 = md5($content);
         if (
             !isset($cacheArray[$key]) ||
