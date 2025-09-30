@@ -8,6 +8,7 @@ use Cms\Facades\Cms;
 use Cms\Classes\ComponentBase;
 use Media\Classes\MediaLibrary;
 use Initbiz\SeoStorm\Models\Settings;
+use Initbiz\SeoStorm\Models\SeoOptions;
 
 class Seo extends ComponentBase
 {
@@ -51,13 +52,24 @@ class Seo extends ComponentBase
 
     public function onRun()
     {
+        $this->seoAttributes = $this->page->settings;
+
         if (isset($this->page->apiBag['staticPage'])) {
             $this->seoAttributes = $this->page['viewBag'] = array_merge(
                 $this->page->apiBag['staticPage']->viewBag,
                 $this->page->attributes
             );
-        } else {
-            $this->seoAttributes = $this->page->settings;
+        } elseif (isset($this->page->apiBag['boxes-model-type'])) {
+            $seoOptions = SeoOptions::where('stormed_type', $this->page->apiBag['boxes-model-type'])
+                ->where('stormed_id', $this->page->apiBag['boxes-page-id'])
+                ->first();
+
+            if ($seoOptions) {
+                $this->seoAttributes = array_merge(
+                    $this->page->attributes,
+                    array_filter($seoOptions->options)
+                );
+            }
         }
 
         $settings = $this->getSettings();
@@ -356,6 +368,6 @@ class Seo extends ComponentBase
             $url = url($parsedTwig);
         }
 
-        return $url;
+        return $url ?? url()->current();
     }
 }
