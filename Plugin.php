@@ -158,6 +158,18 @@ class Plugin extends PluginBase
                     'enabled_in_sitemap',
                 ],
             ],
+
+            \OFFLINE\Boxes\Models\Page::class => [
+                'placement' => 'tabs',
+                'excludeFields' => [
+                    'model_class',
+                    'model_scope',
+                    'model_params',
+                    'lastmod',
+                    'use_updated_at',
+                    'enabled_in_sitemap',
+                ],
+            ],
         ];
 
         if (\App::runningUnitTests()) {

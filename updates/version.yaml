@@ -102,3 +102,5 @@
     - "Fix running tests from project"
 5.3.9:
     - "Fix for !113"
+5.4.0:
+    - "Added support for the Offline.Boxes plugin"
