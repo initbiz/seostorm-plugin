@@ -2,28 +2,34 @@
 
 [//]: # "Introduction"
 
-![SEO Storm - ultimate SEO tool for OctoberCMS](https://raw.githubusercontent.com/initbiz/seostorm-plugin/master/docs/seo-storm.png)
+![SEO Storm - ultimate SEO tool for OctoberCMS](assets/img/seo-storm-banner.png)
 
-Originally forked from the abandoned `Arcane.SEO` plugin we have made numerous improvements and added many new features.
+<!-- Originally forked from the abandoned `Arcane.SEO` plugin we have made numerous improvements and added many new features. -->
 
 ## Key Features
 
-SEO Storm let's you:
+SEO Storm is the only SEO tool you'll ever need for your October CMS project.
 
--   generate titles and meta tags on the pages dynamically with Twig support,
--   manage custom meta tags from the backend,
--   manage robots meta tag from the backend,
--   manage favicon using file upload, media or URL,
--   manage Open Graph parameters,
--   manage `.htaccess` file from the backend,
--   generate a `sitemap.xml` file automatically with parameters in URLs, with multisite support and translation,
--   generate sitemaps for prefixed multisites, videos, and images,
--   generate webmanifest file (with the ability to extend it),
--   extend your own models to use SEO parameters.
+It lets you:
 
-SEO Storm supports `RainLab.Pages`, `RainLab.Translate`, and `RainLab.Blog` out of the box.
+-   Set automatically generated titles and other meta tags on the page,
+-   Extend your models with SEO attributes,
+-   Manage Open Graph parameters,
+-   Configure automatic sitemap.xml generation with multilingual support,
+-   Set SEO attributes in `RainLab.Pages` and `RainLab.Blog` out of the box,
+-   Manage custom meta tags from the backend,
+-   Manage `robots.txt` file from the backend,
+-   Set custom favicon from the backend,
+-   Edit `.htaccess` without leaving the backend,
+-   Use Twig parameters in meta tags.
 
 [//]: # "Documentation"
+
+## Using SEO Storm
+
+Install the plugin and then add the `SEO` component in site's `head` section, whether it's a page or layout.
+
+Go to `Settings` -> `SEO Storm` -> `General settings` and configure it according to your preferences.
 
 ## Common use-cases
 
@@ -33,7 +39,7 @@ SEO Storm supports `RainLab.Pages`, `RainLab.Translate`, and `RainLab.Blog` out 
 1. Fill the `Site name` and `Site name separator` fields.
 1. Select if you want to have the `Site name` added to the beginning or to the end (prefix or suffix).
 
-![Global prefix/suffix in the page's title](https://raw.githubusercontent.com/initbiz/seostorm-plugin/master/docs/common-global-prefix-suffix-title.png)
+![Global prefix/suffix in the page's title](assets/img/common-global-prefix-suffix-title.png)
 
 ### Automatically set the title of the page based on a model (such as a blog post)
 
@@ -41,7 +47,7 @@ The following instructions will work for any other field that is accessible from
 
 Go to `Editor` -> `Pages` -> Select the page -> and click the `SEO Storm` button. Complete the field using Twig syntax as shown in the screenshot below:
 
-![Automatically set the meta attribute based on model values](https://raw.githubusercontent.com/initbiz/seostorm-plugin/master/docs/common-auto-meta-parameter.png)
+![Automatically set the meta attribute based on model values](assets/img/common-auto-meta-parameter.png)
 
 The same approach will work for most of the other parameters. See the `Dynamic meta tags` section for more information.
 
@@ -51,11 +57,9 @@ Go to `Settings` -> `SEO Storm` -> `General settings` and set `Enable sitemap.xm
 
 That's basically everything you need. **Just make sure that all the pages you want to be included in the `sitemap.xml` have the `Enable in sitemap.xml` option checked**
 
-![Enable in sitemap.xml checkbox](https://raw.githubusercontent.com/initbiz/seostorm-plugin/master/docs/enable-in-sitemap.png)
+![Enable in sitemap.xml checkbox](assets/img/enable-in-sitemap.png)
 
 If you want to handle more advanced customizations, see the `Advanced sitemap.xml` section.
-
-> **We recommend changing queue engine to something else than `sync` if you have bigger pages.**
 
 ## Dynamic meta tags
 
@@ -95,7 +99,7 @@ You may want to fill parameters in you URLs based on the models in the page (e.g
 
 In the following example we have the model `Question`, but you may easily use `Post` or any other value that this page is displaying.
 
-![Advanced sitemap.xml configuration](https://raw.githubusercontent.com/initbiz/seostorm-plugin/master/docs/advanced-sitemap-xml-params.png)
+![Advanced sitemap.xml configuration](assets/img/advanced-sitemap-xml-params.png)
 
 Take a closer look at those two parameters:
 
@@ -114,9 +118,7 @@ If you want to add more attributes, split them by pipe character (`|`). For exam
 
 You may want to create a URL such as `/blog/:category/:postslug`. To achieve this we use the dot syntax to fetch the attribute from the related object, as this example demonstrates:
 
-```
-postslug:slug|category:categories.slug
-```
+    postslug:slug|category:categories.slug
 
 This method will work for all relation types but if it's a "one to many" relationship, remember that only the first one will be used.
 
@@ -133,7 +135,7 @@ You can set Open Graph and Twitter cards attributes using SEO Storm, as well. Ke
 
 If you want to learn more about OG and Twitter cards take a look at [the guide for Open Graph from Facebook](https://developers.facebook.com/docs/sharing/webmasters) and [the guide for Twitter cards from Twitter](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html).
 
-![Open Graph and Twitter attributes](https://raw.githubusercontent.com/initbiz/seostorm-plugin/master/docs/open-graph-twitter-attributes.png)
+![Open Graph and Twitter attributes](assets/img/open-graph-twitter-attributes.png)
 
 Currently supported tags are:
 
@@ -152,8 +154,7 @@ Currently supported tags are:
 SEO Storm lets you easily define the models to which you'd like to have SEO parameters dynamically attached.
 
 > You don't have to make any other customizations - SEO Storm takes care of extending the models and storing the attributes in the DB.
-
-We call such models `Stormed`. To register a model as `Stormed` implement a `registerStormedModels` method in your plugin's registration file (`Plugin.php`).
+> We call such models `Stormed`. To register a model as `Stormed` implement a `registerStormedModels` method in your plugin's registration file (`Plugin.php`).
 
 Add the `registerStormedModels()` method in your `Plugin.php` file, for example:
 
@@ -170,7 +171,7 @@ Add the `registerStormedModels()` method in your `Plugin.php` file, for example:
 
 Using this definition SEO Storm will take care of extending the model and form widgets in backend controllers. The above example will add SEO fields to the `ExampleModel` as shown in the following example (the example uses our `Question` model):
 
-![Example stormed model registration](https://raw.githubusercontent.com/initbiz/seostorm-plugin/master/docs/example-stormed-model.png)
+![Example stormed model registration](assets/img/example-stormed-model.png)
 
 If you wish to customize the fields displayed in the backend you can use the `excludeFields` attribute in the registration method. You may also use inverted syntax, so that all the fields are removed except the ones listed. See the example below:
 
@@ -215,3 +216,8 @@ Note: By default, SEO Storm takes care of `CMS pages` and `Static pages` so you 
 ### Problem: Cards looking bad when pasting a link on social media
 
 Reason: Open Graph is not enabled or it's configured improperly. See [the guide for Open Graph from Facebook](https://developers.facebook.com/docs/sharing/webmasters) and [the guide for Twitter cards from Twitter](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html) to get better understanding on the parameters.
+
+## Future plans/features
+
+1. Order `sitemap.xml` urls using models' priorities,
+1. Take all SEO attributes of the models into consideration while generating `sitemap.xml`
