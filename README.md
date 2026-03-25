@@ -2,7 +2,7 @@
 
 [//]: # "Introduction"
 
-![SEO Storm - ultimate SEO tool for OctoberCMS](assets/img/seo-storm-banner.png)
+![SEO Storm - ultimate SEO tool for OctoberCMS](docs/seo-storm-banner.png)
 
 <!-- Originally forked from the abandoned `Arcane.SEO` plugin we have made numerous improvements and added many new features. -->
 
@@ -39,7 +39,7 @@ Go to `Settings` -> `SEO Storm` -> `General settings` and configure it according
 1. Fill the `Site name` and `Site name separator` fields.
 1. Select if you want to have the `Site name` added to the beginning or to the end (prefix or suffix).
 
-![Global prefix/suffix in the page's title](assets/img/common-global-prefix-suffix-title.png)
+![Global prefix/suffix in the page's title](docs/common-global-prefix-suffix-title.png)
 
 ### Automatically set the title of the page based on a model (such as a blog post)
 
@@ -47,7 +47,7 @@ The following instructions will work for any other field that is accessible from
 
 Go to `Editor` -> `Pages` -> Select the page -> and click the `SEO Storm` button. Complete the field using Twig syntax as shown in the screenshot below:
 
-![Automatically set the meta attribute based on model values](assets/img/common-auto-meta-parameter.png)
+![Automatically set the meta attribute based on model values](docs/common-auto-meta-parameter.png)
 
 The same approach will work for most of the other parameters. See the `Dynamic meta tags` section for more information.
 
@@ -57,7 +57,7 @@ Go to `Settings` -> `SEO Storm` -> `General settings` and set `Enable sitemap.xm
 
 That's basically everything you need. **Just make sure that all the pages you want to be included in the `sitemap.xml` have the `Enable in sitemap.xml` option checked**
 
-![Enable in sitemap.xml checkbox](assets/img/enable-in-sitemap.png)
+![Enable in sitemap.xml checkbox](docs/enable-in-sitemap.png)
 
 If you want to handle more advanced customizations, see the `Advanced sitemap.xml` section.
 
@@ -99,7 +99,7 @@ You may want to fill parameters in you URLs based on the models in the page (e.g
 
 In the following example we have the model `Question`, but you may easily use `Post` or any other value that this page is displaying.
 
-![Advanced sitemap.xml configuration](assets/img/advanced-sitemap-xml-params.png)
+![Advanced sitemap.xml configuration](docs/advanced-sitemap-xml-params.png)
 
 Take a closer look at those two parameters:
 
@@ -135,7 +135,7 @@ You can set Open Graph and Twitter cards attributes using SEO Storm, as well. Ke
 
 If you want to learn more about OG and Twitter cards take a look at [the guide for Open Graph from Facebook](https://developers.facebook.com/docs/sharing/webmasters) and [the guide for Twitter cards from Twitter](https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/abouts-cards.html).
 
-![Open Graph and Twitter attributes](assets/img/open-graph-twitter-attributes.png)
+![Open Graph and Twitter attributes](docs/open-graph-twitter-attributes.png)
 
 Currently supported tags are:
 
@@ -171,7 +171,7 @@ Add the `registerStormedModels()` method in your `Plugin.php` file, for example:
 
 Using this definition SEO Storm will take care of extending the model and form widgets in backend controllers. The above example will add SEO fields to the `ExampleModel` as shown in the following example (the example uses our `Question` model):
 
-![Example stormed model registration](assets/img/example-stormed-model.png)
+![Example stormed model registration](docs/example-stormed-model.png)
 
 If you wish to customize the fields displayed in the backend you can use the `excludeFields` attribute in the registration method. You may also use inverted syntax, so that all the fields are removed except the ones listed. See the example below:
 
