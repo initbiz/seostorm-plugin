@@ -104,3 +104,5 @@
     - "Fix for !113"
 5.4.0:
     - "Added support for the Offline.Boxes plugin"
+5.4.1:
+    - "Fix WebmanifestController crash when favicon_sizes/webmanifest_custom_attributes are null"
