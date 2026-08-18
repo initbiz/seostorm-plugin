@@ -23,7 +23,7 @@ class WebmanifestController
             'display' => $settings->webmanifest_display,
         ];
 
-        foreach ($settings->webmanifest_custom_attributes as $webmanifestAttribute) {
+        foreach ($settings->webmanifest_custom_attributes ?? [] as $webmanifestAttribute) {
             $webmanifestArray[$webmanifestAttribute['key']] = $webmanifestAttribute['value'];
         }
 
@@ -48,7 +48,7 @@ class WebmanifestController
         $settings = Settings::instance();
 
         $favicon = $settings->getFaviconObject();
-        $sizes = array_column($settings->favicon_sizes, 'size');
+        $sizes = array_column($settings->favicon_sizes ?? [], 'size');
 
         // 32 and 180 are used as default sizes in HTML
         $sizes = array_merge(['32', '180'], $sizes);
