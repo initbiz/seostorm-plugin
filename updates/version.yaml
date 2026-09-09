@@ -106,3 +106,5 @@
     - "Added support for the Offline.Boxes plugin"
 5.4.1:
     - "Fix WebmanifestController crash when favicon_sizes/webmanifest_custom_attributes are null"
+5.4.2:
+    - "Added compatibility with October CMS 4.4 for translated SEO fields"
