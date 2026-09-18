@@ -11,6 +11,7 @@ use System\Classes\PluginBase;
 use Initbiz\SeoStorm\Classes\Router;
 use Initbiz\SeoStorm\Models\Htaccess;
 use Initbiz\SeoStorm\Models\Settings;
+use Twig\Environment as TwigEnvironment;
 use Twig\Extension\StringLoaderExtension;
 
 /**
@@ -101,8 +102,22 @@ class Plugin extends PluginBase
         return [
             'functions' => [
                 // See https://github.com/initbiz/seostorm-plugin/issues/82 for explanation
-                'template_from_string' => [$this, 'templateFromString'],
-                'templateFromString' => [$this, 'templateFromString'],
+                // needs_environment ensures the TemplateWrapper is bound to the same
+                // Twig\Environment that is rendering the current page/partial, since
+                // Twig 3.29 rejects a TemplateWrapper used by an Environment other
+                // than the one that created it.
+                'template_from_string' => [
+                    [$this, 'templateFromString'],
+                    [
+                        'needs_environment' => true,
+                    ]
+                ],
+                'templateFromString' => [
+                    [$this, 'templateFromString'],
+                    [
+                        'needs_environment' => true,
+                    ]
+                ],
             ]
         ];
     }
@@ -110,17 +125,17 @@ class Plugin extends PluginBase
     /**
      * Extend twig to parse twig from twig with StringLoaderExtension
      *
+     * @param TwigEnvironment $env
      * @param string $template
      * @return string
      */
-    public function templateFromString($template)
+    public function templateFromString(TwigEnvironment $env, $template)
     {
         if (is_null($template)) {
             $template = '';
         }
 
-        $twig = app()->get('twig.environment');
-        return StringLoaderExtension::templateFromString($twig, $template);
+        return StringLoaderExtension::templateFromString($env, $template);
     }
 
     /**

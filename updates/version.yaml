@@ -108,3 +108,5 @@
     - "Fix WebmanifestController crash when favicon_sizes/webmanifest_custom_attributes are null"
 5.4.2:
     - "Added compatibility with October CMS 4.4 for translated SEO fields"
+5.4.3:
+    - "Make it work with Twig 3.29+"
