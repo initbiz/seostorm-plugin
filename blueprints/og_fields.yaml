@@ -1,0 +1,86 @@
+uuid: 4789825d-4b31-407c-a687-05b5c1c8b32d
+name: SEO OG Fields
+type: mixin
+handle: Initbiz\SeoStorm\OgFields
+
+fields:
+
+    og_title:
+        label: initbiz.seostorm::lang.form.general.og_title_label
+        commentAbove: initbiz.seostorm::lang.form.general.og_title_comment
+        tab: initbiz.seostorm::lang.form.general.tab_open_graph
+        placeholder: initbiz.seostorm::lang.form.general.og_title_placeholder
+        span: auto
+        type: text
+        trans: true
+        column: false
+        scope: false
+
+    og_description:
+        label: initbiz.seostorm::lang.form.general.og_description_label
+        commentAbove: initbiz.seostorm::lang.form.general.og_description_comment
+        tab: initbiz.seostorm::lang.form.general.tab_open_graph
+        placeholder: initbiz.seostorm::lang.form.general.og_description_placeholder
+        type: textarea
+        size: tiny
+        column: false
+        scope: false
+        span: auto
+        trans: true
+    og_url:
+        scope: false
+        column: false
+        label: initbiz.seostorm::lang.form.general.og_url_label
+        tab: initbiz.seostorm::lang.form.general.tab_open_graph
+        span: auto
+        type: text
+        trans: true
+    og_type:
+        scope: false
+        column: false
+        label: initbiz.seostorm::lang.form.general.og_type_label
+        tab: initbiz.seostorm::lang.form.general.tab_open_graph
+        placeholder: initbiz.seostorm::lang.form.general.og_type_placeholder
+        span: auto
+
+    og_card:
+        scope: false
+        label: initbiz.seostorm::lang.form.general.og_card_label
+        tab: initbiz.seostorm::lang.form.general.tab_open_graph
+        type: dropdown
+        default: summary_large_image
+        span: left
+        column: false
+        options:
+            summary_large_image: summary_large_image
+            summary: summary
+            app: app
+            player: player
+
+    og_image:
+        column: false
+        label: initbiz.seostorm::lang.form.general.og_image_label
+        commentAbove: initbiz.seostorm::lang.form.general.og_image_comment
+        type: mediafinder
+        mode: image
+        tab: initbiz.seostorm::lang.form.general.tab_open_graph
+        span: auto
+
+    og_ref_image:
+        label: initbiz.seostorm::lang.form.general.og_ref_image_label
+        commentAbove: initbiz.seostorm::lang.form.general.og_ref_image_comment
+        tab: initbiz.seostorm::lang.form.general.tab_open_graph
+        placeholder: initbiz.seostorm::lang.form.general.og_ref_image_placeholder
+        span: auto
+    twitter_site:
+        label: initbiz.seostorm::lang.form.settings.twitter_site
+        type: text
+        span: auto
+        comment: initbiz.seostorm::lang.form.settings.twitter_site_comment
+        tab: initbiz.seostorm::lang.form.general.tab_open_graph
+    twitter_creator:
+        label: initbiz.seostorm::lang.form.settings.twitter_creator
+        type: text
+        span: auto
+        comment: initbiz.seostorm::lang.form.settings.twitter_creator_comment
+        tab: initbiz.seostorm::lang.form.general.tab_open_graph

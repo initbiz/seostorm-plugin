@@ -22,6 +22,7 @@ use Initbiz\Sitemap\DOMElements\UrlsetDOMElement;
 use Initbiz\Sitemap\Generators\AbstractGenerator;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItemsJob;
 use October\Rain\Support\Collection as SupportCollection;
+use Tailor\Models\EntryRecord;
 
 /**
  * This generator provides sitemaps for CMS pages as well as added by RainLab.Pages
@@ -233,6 +234,66 @@ class PagesGenerator extends AbstractGenerator
 
         $modelClass = $page->seoOptionsModelClass ?? "";
         $lastmod = $this->getLastmodForCmsPage($page);
+
+        if ((int)$page->seoOptionsIsTailorClass === 1 && !empty($modelClass)) {
+
+            // $modelClass is Tailor section handle, e.g. "Blog\Post"
+            $entries = EntryRecord::inSection($modelClass)->get();
+
+            foreach ($entries as $entry) {
+                // If you have Tailor SEO options on the entry:
+                if (($entry->seo_options['enabled_in_sitemap'] ?? '1') === "0") {
+                    continue;
+                }
+
+                // Build params for URL
+                if (!empty($page->seoOptionsModelParams)) {
+                    // e.g. "slug:slug"
+                    $params = $this->generateParamsToUrl($page->seoOptionsModelParams, $entry);
+                } else {
+                    // simple fallback: assume you just need :slug
+                    $params = ['slug' => $entry->slug];
+                }
+
+                // Now we fill the pattern with these params
+                $loc = $this->fillUrlPatternWithParams($urlPattern, $params);
+
+                // Take updated_at if requested
+                $itemLastmod = $lastmod;
+                if ($page->seoOptionsUseUpdatedAt && isset($entry->updated_at)) {
+                    $itemLastmod = $entry->updated_at;
+                }
+
+                $sitemapItem = SitemapItem::where('loc', $loc)->withSite($site)->first();
+                if (!$sitemapItem) {
+                    $sitemapItem = new SitemapItem();
+                    $sitemapItem->loc = $loc;
+                }
+
+                $sitemapItem->lastmod = $itemLastmod;
+                $sitemapItem->priority = $page->seoOptionsPriority;
+                $sitemapItem->changefreq = $page->seoOptionsChangefreq;
+                $sitemapItem->base_file_name = $page->base_file_name;
+                $sitemapItem->site_definition_id = $site->id;
+
+                $toSave = $this->fireSystemEvent('initbiz.seostorm.beforeAddingSitemapItem', [$page, $sitemapItem], true);
+                if ($toSave === false) {
+                    continue;
+                }
+
+                $eventParams = [$page, $sitemapItem, $entry];
+                $toSave = $this->fireSystemEvent('initbiz.seostorm.beforeAddingSitemapItemWithModel', $eventParams, true);
+                if ($toSave === false) {
+                    continue;
+                }
+
+                $sitemapItem->save();
+                $sitemapItems[] = $sitemapItem;
+            }
+
+            return $sitemapItems;
+        }
+
 
         if (class_exists($modelClass)) {
             // If there a model class specified we'll iterate over them
