@@ -99,25 +99,19 @@ class Plugin extends PluginBase
 
     public function registerMarkupTags()
     {
+        $templateFromStringDef = [
+            [$this, 'templateFromString'],
+            ['needs_environment' => true],
+        ];
+
+        if (version_compare(TwigEnvironment::VERSION, '3.29.0', '<')) {
+            $templateFromStringDef = [$this, 'templateFromStringLegacy'];
+        }
+
         return [
             'functions' => [
-                // See https://github.com/initbiz/seostorm-plugin/issues/82 for explanation
-                // needs_environment ensures the TemplateWrapper is bound to the same
-                // Twig\Environment that is rendering the current page/partial, since
-                // Twig 3.29 rejects a TemplateWrapper used by an Environment other
-                // than the one that created it.
-                'template_from_string' => [
-                    [$this, 'templateFromString'],
-                    [
-                        'needs_environment' => true,
-                    ]
-                ],
-                'templateFromString' => [
-                    [$this, 'templateFromString'],
-                    [
-                        'needs_environment' => true,
-                    ]
-                ],
+                'template_from_string' => $templateFromStringDef,
+                'templateFromString' => $templateFromStringDef,
             ]
         ];
     }
@@ -135,6 +129,24 @@ class Plugin extends PluginBase
             $template = '';
         }
 
+        return StringLoaderExtension::templateFromString($env, $template);
+    }
+
+    /**
+     * Extend twig to parse twig from twig with StringLoaderExtension - Legacy version
+     * 
+     * @deprecated 5.4.3
+     *
+     * @param string $template
+     * @return string
+     */
+    public function templateFromStringLegacy($template)
+    {
+        if (is_null($template)) {
+            $template = '';
+        }
+
+        $env = app()->get('twig.environment');
         return StringLoaderExtension::templateFromString($env, $template);
     }
 
