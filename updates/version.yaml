@@ -110,3 +110,5 @@
     - "Added compatibility with October CMS 4.4 for translated SEO fields"
 5.4.3:
     - "Make it work with Twig 3.29+"
+5.4.4:
+    - "Keep backward compatibility with older Twig versions"
