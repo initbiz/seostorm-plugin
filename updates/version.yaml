@@ -112,3 +112,5 @@
     - "Make it work with Twig 3.29+"
 5.4.4:
     - "Keep backward compatibility with older Twig versions"
+5.5.0:
+    - "Make favicon settings site-specific"
