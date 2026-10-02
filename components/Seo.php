@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Initbiz\SeoStorm\Components;
 
+use App;
+use Site;
 use Cms\Facades\Cms;
 use Cms\Classes\ComponentBase;
 use Media\Classes\MediaLibrary;
 use Initbiz\SeoStorm\Models\Settings;
 use Initbiz\SeoStorm\Models\SeoOptions;
+use Initbiz\SeoStorm\Classes\StormedManager;
 
 class Seo extends ComponentBase
 {
@@ -52,10 +55,23 @@ class Seo extends ComponentBase
 
     public function onRun()
     {
-        $this->seoAttributes = $this->page->settings;
+        $this->seoAttributes = $this->getSeoAttributes();
+        $settings = $this->getSettings();
+
+        $this->page['seoStormSiteNameSeparator'] = $settings->site_name_separator;
+        $this->page['seoStormSiteName'] = $settings->site_name;
+
+        if ($settings->favicon_enabled) {
+            $this->page['favicon'] = $settings->getFaviconObject();
+        }
+    }
+
+    public function getSeoAttributes()
+    {
+        $seoAttributes = $this->page->settings;
 
         if (isset($this->page->apiBag['staticPage'])) {
-            $this->seoAttributes = $this->page['viewBag'] = array_merge(
+            $seoAttributes = $this->page['viewBag'] = array_merge(
                 $this->page->apiBag['staticPage']->viewBag,
                 $this->page->attributes
             );
@@ -65,21 +81,40 @@ class Seo extends ComponentBase
                 ->first();
 
             if ($seoOptions) {
-                $this->seoAttributes = array_merge(
+                $seoAttributes = array_merge(
                     $this->page->attributes,
                     array_filter($seoOptions->options)
                 );
             }
+        } else {
+            $seoAttributes = array_merge($seoAttributes, $this->getTranslatedSeoAttributes());
         }
 
-        $settings = $this->getSettings();
+        return $seoAttributes;
+    }
 
-        $this->page['seoStormSiteNameSeparator'] = $settings->site_name_separator;
-        $this->page['seoStormSiteName'] = $settings->site_name;
+    protected function getTranslatedSeoAttributes(): array
+    {
+        $locale = App::getLocale();
+        $defaultLocale = Site::getPrimarySite()->hard_locale;
 
-        if ($settings->favicon_enabled) {
-            $this->page['favicon'] = $settings->getFaviconObject();
+        if (!$locale || $locale === $defaultLocale) {
+            return [];
         }
+
+        $viewBag = $this->page->attributes['viewBag'] ?? [];
+        $translated = [];
+
+        foreach (StormedManager::instance()->getTranslatableSeoFieldsDefs() as $field => $fieldDef) {
+            $attribute = 'seoOptions' . studly_case($field);
+            $value = array_get($viewBag, 'locale' . ucfirst($attribute) . '.' . $locale);
+
+            if (!empty($value)) {
+                $translated[$attribute] = $value;
+            }
+        }
+
+        return $translated;
     }
 
     // Site meta getters

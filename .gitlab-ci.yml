@@ -1,0 +1,21 @@
+include:
+    - component: $CI_SERVER_FQDN/operational/gitlab-ci-components/push-branch-to-github@1
+      inputs:
+          github_repo_url: "https://initbiz-machine-user:${GITHUB_MACHINE_USER_WRITE_TOKEN}@github.com/initbiz/seostorm-plugin.git"
+
+    - component: $CI_SERVER_FQDN/operational/gitlab-ci-components/push-tags-to-github@1
+      inputs:
+          github_repo_url: "https://initbiz-machine-user:${GITHUB_MACHINE_USER_WRITE_TOKEN}@github.com/initbiz/seostorm-plugin.git"
+
+Push-Branches-To-GitHub:
+    rules:
+        - if: $CI_COMMIT_BRANCH == "master"
+        - if: $CI_COMMIT_BRANCH == "develop"
+    extends:
+        - .push-branch-to-github
+
+Push-Tags-To-GitHub:
+    rules:
+        - if: $CI_COMMIT_TAG
+    extends:
+        - .push-tags-to-github

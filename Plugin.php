@@ -11,6 +11,7 @@ use System\Classes\PluginBase;
 use Initbiz\SeoStorm\Classes\Router;
 use Initbiz\SeoStorm\Models\Htaccess;
 use Initbiz\SeoStorm\Models\Settings;
+use Twig\Environment as TwigEnvironment;
 use Twig\Extension\StringLoaderExtension;
 
 /**
@@ -98,11 +99,19 @@ class Plugin extends PluginBase
 
     public function registerMarkupTags()
     {
+        $templateFromStringDef = [
+            [$this, 'templateFromString'],
+            ['needs_environment' => true],
+        ];
+
+        if (version_compare(TwigEnvironment::VERSION, '3.29.0', '<')) {
+            $templateFromStringDef = [$this, 'templateFromStringLegacy'];
+        }
+
         return [
             'functions' => [
-                // See https://github.com/initbiz/seostorm-plugin/issues/82 for explanation
-                'template_from_string' => [$this, 'templateFromString'],
-                'templateFromString' => [$this, 'templateFromString'],
+                'template_from_string' => $templateFromStringDef,
+                'templateFromString' => $templateFromStringDef,
             ]
         ];
     }
@@ -110,17 +119,35 @@ class Plugin extends PluginBase
     /**
      * Extend twig to parse twig from twig with StringLoaderExtension
      *
+     * @param TwigEnvironment $env
      * @param string $template
      * @return string
      */
-    public function templateFromString($template)
+    public function templateFromString(TwigEnvironment $env, $template)
     {
         if (is_null($template)) {
             $template = '';
         }
 
-        $twig = app()->get('twig.environment');
-        return StringLoaderExtension::templateFromString($twig, $template);
+        return StringLoaderExtension::templateFromString($env, $template);
+    }
+
+    /**
+     * Extend twig to parse twig from twig with StringLoaderExtension - Legacy version
+     * 
+     * @deprecated 5.4.3
+     *
+     * @param string $template
+     * @return string
+     */
+    public function templateFromStringLegacy($template)
+    {
+        if (is_null($template)) {
+            $template = '';
+        }
+
+        $env = app()->get('twig.environment');
+        return StringLoaderExtension::templateFromString($env, $template);
     }
 
     /**

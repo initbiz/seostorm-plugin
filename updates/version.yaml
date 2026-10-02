@@ -104,3 +104,13 @@
     - "Fix for !113"
 5.4.0:
     - "Added support for the Offline.Boxes plugin"
+5.4.1:
+    - "Fix WebmanifestController crash when favicon_sizes/webmanifest_custom_attributes are null"
+5.4.2:
+    - "Added compatibility with October CMS 4.4 for translated SEO fields"
+5.4.3:
+    - "Make it work with Twig 3.29+"
+5.4.4:
+    - "Keep backward compatibility with older Twig versions"
+5.5.0:
+    - "Make favicon settings site-specific"
