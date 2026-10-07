@@ -1,4 +1,16 @@
 include:
+    - component: $CI_SERVER_FQDN/operational/gitlab-ci-components/setup-project-playground-3@1
+      inputs:
+          octobercms_license_key: "${PLAYGROUND_LICENSE_KEY}"
+          github_machine_user_token: ${GITHUB_MACHINE_USER_TOKEN}
+
+    - component: $CI_SERVER_FQDN/operational/gitlab-ci-components/setup-project-playground-4@1
+      inputs:
+          octobercms_license_key: "${PLAYGROUND_LICENSE_KEY}"
+          github_machine_user_token: ${GITHUB_MACHINE_USER_TOKEN}
+
+    - component: $CI_SERVER_FQDN/operational/gitlab-ci-components/rules-mr-events@1
+
     - component: $CI_SERVER_FQDN/operational/gitlab-ci-components/push-branch-to-github@1
       inputs:
           github_repo_url: "https://initbiz-machine-user:${GITHUB_MACHINE_USER_WRITE_TOKEN}@github.com/initbiz/seostorm-plugin.git"
@@ -6,6 +18,16 @@ include:
     - component: $CI_SERVER_FQDN/operational/gitlab-ci-components/push-tags-to-github@1
       inputs:
           github_repo_url: "https://initbiz-machine-user:${GITHUB_MACHINE_USER_WRITE_TOKEN}@github.com/initbiz/seostorm-plugin.git"
+     
+    - component: $CI_SERVER_FQDN/operational/gitlab-ci-components/install-plugin-from-branch@1  
+
+Tests:
+    extends:
+        - .rules-mr-events
+        - .setup-project-playground-4
+    script:
+        - !reference [.install-plugin-from-branch, script]
+        - vendor/bin/pest --parallel --ci --bail
 
 Push-Branches-To-GitHub:
     rules:
