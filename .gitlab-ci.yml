@@ -29,6 +29,22 @@ Tests:
         - !reference [.install-plugin-from-branch, script]
         - vendor/bin/pest --parallel --ci --bail
 
+Tests-october-3:
+    extends:
+        - .rules-mr-events
+        - .setup-project-playground-3
+    script:
+        - !reference [.install-plugin-from-branch, script]
+        - vendor/bin/pest --parallel --ci --bail
+
+Linter:
+    extends:
+        - .rules-mr-events
+        - .setup-project-playground-4
+    script:
+        - !reference [.install-plugin-from-branch, script]
+        - php artisan linter:code -b plugins/initbiz/leaflet
+
 Push-Branches-To-GitHub:
     rules:
         - if: $CI_COMMIT_BRANCH == "master"
