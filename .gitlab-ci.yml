@@ -43,7 +43,7 @@ Linter:
         - .setup-project-playground-4
     script:
         - !reference [.install-plugin-from-branch, script]
-        - php artisan linter:code -b plugins/initbiz/leaflet
+        - php artisan linter:code -b plugins/initbiz/seostorm
 
 Push-Branches-To-GitHub:
     rules:
