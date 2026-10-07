@@ -114,3 +114,5 @@
     - "Keep backward compatibility with older Twig versions"
 5.5.0:
     - "Make favicon settings site-specific"
+5.5.1:
+    - "Update documentation"
