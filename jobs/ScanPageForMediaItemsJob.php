@@ -73,6 +73,7 @@ class ScanPageForMediaItemsJob
         Site::applyActiveSite($currentSite);
 
         if ($response->getStatusCode() !== 200) {
+            Request::swap($originalRequest);
             return;
         }
 

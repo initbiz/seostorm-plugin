@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Initbiz\Seostorm\Models;
+namespace Initbiz\SeoStorm\Models;
 
 use Model;
 use October\Rain\Database\Builder;
@@ -33,14 +33,14 @@ class SitemapMedia extends Model
     ];
 
     public $jsonable = [
-        'additional_data'
+        'additional_data',
     ];
 
     public $belongsToMany = [
         'items' => [
             SitemapItem::class,
-            'table' => 'initbiz_seostorm_sitemap_items_media'
-        ]
+            'table' => 'initbiz_seostorm_sitemap_items_media',
+        ],
     ];
 
     public function scopeOnlyImages(Builder $query): Builder

@@ -21,13 +21,11 @@ class Plugin extends PluginBase
 {
     public function __construct($app)
     {
-        $parent = parent::__construct($app);
+        parent::__construct($app);
 
         if (app()->runningUnitTests()) {
             $this->require = array_merge($this->require, ['RainLab.Translate']);
         }
-
-        return $parent;
     }
 
     public function registerComponents()
@@ -134,7 +132,7 @@ class Plugin extends PluginBase
 
     /**
      * Extend twig to parse twig from twig with StringLoaderExtension - Legacy version
-     * 
+     *
      * @deprecated 5.4.3
      *
      * @param string $template
@@ -158,7 +156,7 @@ class Plugin extends PluginBase
     public function registerStormedModels()
     {
         $modelDefs = [
-            \Rainlab\Blog\Models\Post::class => [
+            \RainLab\Blog\Models\Post::class => [
                 'placement' => 'secondaryTabs',
                 'excludeFields' => [
                     'model_class',
@@ -172,7 +170,7 @@ class Plugin extends PluginBase
                 ],
             ],
 
-            \Rainlab\Blog\Models\Category::class => [
+            \RainLab\Blog\Models\Category::class => [
                 'placement' => 'tabs',
                 'excludeFields' => [
                     'model_class',

@@ -8,7 +8,7 @@ use Queue;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use System\Models\SiteDefinition;
-use Initbiz\Seostorm\Models\SitemapItem;
+use Initbiz\SeoStorm\Models\SitemapItem;
 use Initbiz\SeoStorm\EventHandlers\SitemapHandler;
 use Initbiz\SeoStorm\Jobs\ScanPageForMediaItemsJob;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;

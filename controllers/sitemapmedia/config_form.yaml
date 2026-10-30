@@ -9,7 +9,7 @@ name: initbiz.seostorm::lang.models.sitemap_media.label
 form: $/initbiz/seostorm/models/sitemapmedia/fields.yaml
 
 # Model Class name
-modelClass: Initbiz\Seostorm\Models\SitemapMedia
+modelClass: Initbiz\SeoStorm\Models\SitemapMedia
 
 # Default redirect location
 defaultRedirect: initbiz/seostorm/sitemapmedia

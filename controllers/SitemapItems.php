@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Initbiz\Seostorm\Controllers;
+namespace Initbiz\SeoStorm\Controllers;
 
 use Request;
 use BackendMenu;
@@ -39,7 +39,9 @@ class SitemapItems extends Controller
     /**
      * @var array required permissions
      */
-    public $requiredPermissions = ['initbiz.seostorm.sitemapitems'];
+    public $requiredPermissions = [
+        'initbiz.seostorm.sitemapitems',
+    ];
 
     /**
      * __construct the controller

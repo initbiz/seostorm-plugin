@@ -11,7 +11,7 @@ use Cms\Classes\Theme;
 use System\Classes\PluginManager;
 use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Models\Settings;
-use Initbiz\Seostorm\Models\SitemapItem;
+use Initbiz\SeoStorm\Models\SitemapItem;
 use RainLab\Pages\Classes\Page as StaticPage;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;

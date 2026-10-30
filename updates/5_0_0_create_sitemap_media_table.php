@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Initbiz\Seostorm\Updates;
+namespace Initbiz\SeoStorm\Updates;
 
 use Schema;
 use October\Rain\Database\Schema\Blueprint;

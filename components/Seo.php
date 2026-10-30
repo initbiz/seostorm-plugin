@@ -333,7 +333,7 @@ class Seo extends ComponentBase
     /**
      * Returns the URL of the site image
      *
-     * @return string site image url
+     * @return string|null site image url
      */
     public function getSiteImageFromSettings()
     {
@@ -347,6 +347,8 @@ class Seo extends ComponentBase
         } elseif ($siteImageFrom === "url") {
             return $settings->site_image_url;
         }
+
+        return null;
     }
 
     // Global helpers
