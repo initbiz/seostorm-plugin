@@ -8,7 +8,6 @@ return [
     ],
     'permissions' => [
         'settings_tab' => 'SEO Storm',
-        'config' => 'Доступ к настройкам SEO Storm',
     ],
     'form_widgets' => [
         'migrate' => 'Миграция',
@@ -48,7 +47,6 @@ return [
             'priority_label' => 'Приоритет',
             'priority_comment' => 'Оцените важность страницы для поисковых систем',
             'og_type_label' => 'OG:type',
-            'og_type_comment' => 'По умолчанию - website',
             'og_type_placeholder' => 'website article video etc...',
             'og_card_label' => 'OG:card',
             'og_ref_image_label' => 'OG:image',
@@ -75,10 +73,8 @@ return [
             'description' => 'Конфигурация SEO Storm',
             'tab_meta' => 'Мета',
             'tab_sitemap' => 'Карта сайта',
-            'tab_head' => '<head>',
             'tab_robots' => 'Robots',
             'tab_favicon' => 'Favicon',
-            'tab_htaccess' => '.htaccess',
             'tab_social_media' => 'Соц. сети',
             'tab_migrate' => 'Миграция',
             'enable_site_meta' => 'Генерировать мета-теги',
@@ -101,8 +97,6 @@ return [
             'enable_robots_meta' => 'Включить генерацию специальных мета-тегов для поисковых роботов (index, follow)',
             'robots_txt' => 'robots.txt',
             'favicon_enabled' => 'Отобразить favicon.ico',
-            'favicon_enabled_comment' => 'Favicon будет доступен по адресу /favicon.ico',
-            'favicon_16' => 'Обрезать favicon до 16x16',
             'favicon' => 'Выберите favicon',
             'favicon_prompt' => 'Нажмите для поиска файла в медиа-библиотеке',
             'enable_og' => 'Генерировать Open Graph',
@@ -129,12 +123,6 @@ return [
         ]
     ],
     'components' => [
-        'group' => [
-            'properties' => 'Свойства',
-            'product' => 'Продукт',
-            'offer' => 'Предложение',
-            'reviews' => 'Отзывы',
-        ],
         'seo' => [
             'name' => 'Seo',
             'description' => "Генерация мета-тегов в месте установки. Вывозите компонент внутри тега <head>",

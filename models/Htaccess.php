@@ -26,7 +26,7 @@ class Htaccess extends Model
 
     public function afterSave()
     {
-        $htaccess = $this->value["htaccess"];
+        $htaccess = $this->get('htaccess');
         File::put(base_path(".htaccess"), $htaccess);
     }
 }

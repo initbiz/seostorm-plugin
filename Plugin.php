@@ -155,8 +155,10 @@ class Plugin extends PluginBase
      */
     public function registerStormedModels()
     {
-        $modelDefs = [
-            \RainLab\Blog\Models\Post::class => [
+        $modelDefs = [];
+
+        if (class_exists(\RainLab\Blog\Models\Post::class)) {
+            $modelDefs[\RainLab\Blog\Models\Post::class] = [
                 'placement' => 'secondaryTabs',
                 'excludeFields' => [
                     'model_class',
@@ -168,9 +170,11 @@ class Plugin extends PluginBase
                     'priority',
                     'enabled_in_sitemap',
                 ],
-            ],
+            ];
+        }
 
-            \RainLab\Blog\Models\Category::class => [
+        if (class_exists(\RainLab\Blog\Models\Category::class)) {
+            $modelDefs[\RainLab\Blog\Models\Category::class] = [
                 'placement' => 'tabs',
                 'excludeFields' => [
                     'model_class',
@@ -182,9 +186,11 @@ class Plugin extends PluginBase
                     'priority',
                     'enabled_in_sitemap',
                 ],
-            ],
+            ];
+        }
 
-            \OFFLINE\Boxes\Models\Page::class => [
+        if (class_exists(\OFFLINE\Boxes\Models\Page::class)) {
+            $modelDefs[\OFFLINE\Boxes\Models\Page::class] = [
                 'placement' => 'tabs',
                 'excludeFields' => [
                     'model_class',
@@ -194,8 +200,8 @@ class Plugin extends PluginBase
                     'use_updated_at',
                     'enabled_in_sitemap',
                 ],
-            ],
-        ];
+            ];
+        }
 
         if (\App::runningUnitTests()) {
             $modelDefs['\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel'] = [
