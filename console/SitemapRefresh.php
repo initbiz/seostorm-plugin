@@ -6,8 +6,8 @@ namespace Initbiz\SeoStorm\Console;
 
 use Illuminate\Console\Command;
 use Initbiz\SeoStorm\Models\Settings;
-use Initbiz\Seostorm\Models\SitemapItem;
-use Initbiz\Seostorm\Models\SitemapMedia;
+use Initbiz\SeoStorm\Models\SitemapItem;
+use Initbiz\SeoStorm\Models\SitemapMedia;
 use Symfony\Component\Console\Input\InputOption;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;
 

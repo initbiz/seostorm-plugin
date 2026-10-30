@@ -6,7 +6,7 @@ namespace Initbiz\SeoStorm\Sitemap\Generators;
 
 use Site;
 use System\Models\SiteDefinition;
-use Initbiz\Seostorm\Models\SitemapItem;
+use Initbiz\SeoStorm\Models\SitemapItem;
 use Initbiz\Sitemap\DOMElements\UrlDOMElement;
 use Initbiz\Sitemap\DOMElements\UrlsetDOMElement;
 use Initbiz\Sitemap\Generators\AbstractGenerator;

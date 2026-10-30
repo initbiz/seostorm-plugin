@@ -1,0 +1,3 @@
+parameters:
+    databaseMigrationsPath:
+        - '%rootDir%/../../../plugins/initbiz/seostorm/updates/'

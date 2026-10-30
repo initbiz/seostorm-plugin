@@ -6,7 +6,7 @@
 list: $/initbiz/seostorm/models/sitemapitem/columns.yaml
 
 # Model Class name
-modelClass: Initbiz\Seostorm\Models\SitemapItem
+modelClass: Initbiz\SeoStorm\Models\SitemapItem
 
 # List Title
 title: Manage Sitemap items
