@@ -62,7 +62,6 @@ return [
             'priority_label' => 'Priority',
             'priority_comment' => 'Rank the importance of the page to search engines',
             'og_type_label' => 'OG:type',
-            'og_type_comment' => 'Defaults to website',
             'og_type_placeholder' => 'website article video etc...',
             'og_card_label' => 'OG:card',
             'og_ref_image_label' => 'OG:image',
@@ -105,7 +104,6 @@ return [
             'tab_robots' => 'Robots',
             'tab_favicon' => 'Favicon',
             'tab_webmanifest' => 'Webmanifest',
-            'tab_htaccess' => '.htaccess',
             'tab_social_media' => 'Social Media',
             'tab_migrate' => 'Migrate',
             'tab_schema' => 'Schema',
@@ -215,6 +213,7 @@ return [
             'schema_image_from_fileupload' => 'File upload',
             'schema_image_from_url' => 'Url',
             'schema_image' => 'Schema image',
+            'schema_image_prompt' => 'Drag files or click here',
         ],
         'htaccess' => [
             'label' => '.htaccess',
@@ -222,12 +221,6 @@ return [
         ],
     ],
     'components' => [
-        'group' => [
-            'properties' => 'Properties',
-            'product' => 'Product',
-            'offer' => 'Offer',
-            'reviews' => 'Reviews',
-        ],
         'seo' => [
             'name' => 'Seo',
             'description' => 'Renders SEO meta tags in place',
@@ -235,14 +228,6 @@ return [
         'schema' => [
             'name' => 'Schema markup',
             'description' => 'Renders schema markup',
-            'type' => [
-                'title' => 'Schema type',
-                'description' => 'Select schema type'
-            ],
-            'image' => [
-                'title' => 'Image URL',
-                'description' => 'Image URL'
-            ],
         ],
     ],
     'editor' => [

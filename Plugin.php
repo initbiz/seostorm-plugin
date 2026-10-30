@@ -21,13 +21,11 @@ class Plugin extends PluginBase
 {
     public function __construct($app)
     {
-        $parent = parent::__construct($app);
+        parent::__construct($app);
 
         if (app()->runningUnitTests()) {
             $this->require = array_merge($this->require, ['RainLab.Translate']);
         }
-
-        return $parent;
     }
 
     public function registerComponents()
@@ -134,7 +132,7 @@ class Plugin extends PluginBase
 
     /**
      * Extend twig to parse twig from twig with StringLoaderExtension - Legacy version
-     * 
+     *
      * @deprecated 5.4.3
      *
      * @param string $template
@@ -157,8 +155,10 @@ class Plugin extends PluginBase
      */
     public function registerStormedModels()
     {
-        $modelDefs = [
-            \Rainlab\Blog\Models\Post::class => [
+        $modelDefs = [];
+
+        if (class_exists(\RainLab\Blog\Models\Post::class)) {
+            $modelDefs[\RainLab\Blog\Models\Post::class] = [
                 'placement' => 'secondaryTabs',
                 'excludeFields' => [
                     'model_class',
@@ -170,9 +170,11 @@ class Plugin extends PluginBase
                     'priority',
                     'enabled_in_sitemap',
                 ],
-            ],
+            ];
+        }
 
-            \Rainlab\Blog\Models\Category::class => [
+        if (class_exists(\RainLab\Blog\Models\Category::class)) {
+            $modelDefs[\RainLab\Blog\Models\Category::class] = [
                 'placement' => 'tabs',
                 'excludeFields' => [
                     'model_class',
@@ -184,9 +186,11 @@ class Plugin extends PluginBase
                     'priority',
                     'enabled_in_sitemap',
                 ],
-            ],
+            ];
+        }
 
-            \OFFLINE\Boxes\Models\Page::class => [
+        if (class_exists(\OFFLINE\Boxes\Models\Page::class)) {
+            $modelDefs[\OFFLINE\Boxes\Models\Page::class] = [
                 'placement' => 'tabs',
                 'excludeFields' => [
                     'model_class',
@@ -196,8 +200,8 @@ class Plugin extends PluginBase
                     'use_updated_at',
                     'enabled_in_sitemap',
                 ],
-            ],
-        ];
+            ];
+        }
 
         if (\App::runningUnitTests()) {
             $modelDefs['\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel'] = [

@@ -116,3 +116,5 @@
     - "Make favicon settings site-specific"
 5.5.1:
     - "Update documentation"
+5.5.2:
+    - "Fix schema image from settings, restore the request after a media scan and update phpunit.xml to PHPUnit 12"

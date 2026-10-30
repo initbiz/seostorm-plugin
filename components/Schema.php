@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Initbiz\SeoStorm\Components;
 
+use Media\Classes\MediaLibrary;
+
 class Schema extends Seo
 {
     public function componentDetails()
@@ -47,20 +49,22 @@ class Schema extends Seo
     /**
      * Returns the URL of the schema image
      *
-     * @return string schema image url
+     * @return string|null schema image url
      */
     public function getSchemaImageFromSettings()
     {
         $settings = $this->getSettings();
-        $schemaImage = $settings->schema_image;
+        $schemaImageFrom = $settings->schema_image_from;
 
-        if ($schemaImage === 'media' && $settings->schema_image) {
+        if ($schemaImageFrom === 'media' && $settings->schema_image) {
             return MediaLibrary::instance()->getPathUrl($settings->schema_image);
-        } elseif ($schemaImage === "fileupload") {
-            return $settings->site_image_fileupload()->getSimpleValue();
-        } elseif ($schemaImage === "url") {
+        } elseif ($schemaImageFrom === "fileupload") {
+            return $settings->schema_image_fileupload?->getPath();
+        } elseif ($schemaImageFrom === "url") {
             return $settings->schema_image_url;
         }
+
+        return null;
     }
 
     /**

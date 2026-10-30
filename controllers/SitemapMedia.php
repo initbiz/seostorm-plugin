@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Initbiz\Seostorm\Controllers;
+namespace Initbiz\SeoStorm\Controllers;
 
 use BackendMenu;
 use Backend\Classes\Controller;
@@ -36,7 +36,9 @@ class SitemapMedia extends Controller
     /**
      * @var array required permissions
      */
-    public $requiredPermissions = ['initbiz.seostorm.sitemapmedia'];
+    public $requiredPermissions = [
+        'initbiz.seostorm.sitemapmedia',
+    ];
 
     /**
      * __construct the controller

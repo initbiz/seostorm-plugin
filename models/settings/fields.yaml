@@ -537,7 +537,7 @@ tabs:
             options:
                 media: initbiz.seostorm::lang.form.settings.schema_image_from_media
                 fileupload: initbiz.seostorm::lang.form.settings.schema_image_from_fileupload
-                url: initbiz.seostorm::lang.form.settings.site_image_from_url
+                url: initbiz.seostorm::lang.form.settings.schema_image_from_url
 
         schema_image:
             label: initbiz.seostorm::lang.form.settings.schema_image

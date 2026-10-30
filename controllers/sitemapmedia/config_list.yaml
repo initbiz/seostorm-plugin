@@ -6,7 +6,7 @@
 list: $/initbiz/seostorm/models/sitemapmedia/columns.yaml
 
 # Model Class name
-modelClass: Initbiz\Seostorm\Models\SitemapMedia
+modelClass: Initbiz\SeoStorm\Models\SitemapMedia
 
 # List Title
 title: Manage Sitemap Media

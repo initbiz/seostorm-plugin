@@ -8,7 +8,7 @@ use Artisan;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
 use Initbiz\SeoStorm\Models\Settings;
-use Initbiz\Seostorm\Models\SitemapItem;
+use Initbiz\SeoStorm\Models\SitemapItem;
 use Initbiz\SeoStorm\Jobs\RefreshForCmsPageJob;
 use Initbiz\SeoStorm\Jobs\UniqueQueueJobDispatcher;
 use Initbiz\SeoStorm\Sitemap\Generators\PagesGenerator;

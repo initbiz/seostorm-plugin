@@ -59,43 +59,45 @@ class ScanPageForMediaItemsJob
         $request = HttpRequest::create($loc);
         Request::swap($request);
 
-        $currentSite = Site::getActiveSite();
-        $controller = new CmsController();
         try {
-            $response = $controller->run($url);
-        } catch (\Throwable $th) {
+            $currentSite = Site::getActiveSite();
+            $controller = new CmsController();
+            try {
+                $response = $controller->run($url);
+            } catch (\Throwable $th) {
+                trace_log('Problem with parsing page ' . $loc);
+                // In case of any issue in the page, we need to ignore it and proceed
+                return;
+            } finally {
+                Site::applyActiveSite($currentSite);
+            }
+
+            if ($response->getStatusCode() !== 200) {
+                return;
+            }
+
+            $content = $response->getContent();
+
+            $dom = new \DOMDocument();
+            $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
+
+            $settings = Settings::instance();
+
+            $imagesEnabledInSitemap = $settings->get('enable_images_sitemap') ?? false;
+            if ($imagesEnabledInSitemap) {
+                $images = $this->getImagesFromDOM($dom);
+                $sitemapItem->syncImages($images);
+            }
+
+            $videosEnabledInSitemap = $settings->get('enable_videos_sitemap') ?? false;
+            if ($videosEnabledInSitemap) {
+                $videos = $this->getVideosFromDOM($dom);
+                $sitemapItem->syncVideos($videos);
+            }
+        } finally {
+            // Restore the original request, even if the page wasn't found or syncing failed
             Request::swap($originalRequest);
-            Site::applyActiveSite($currentSite);
-            trace_log('Problem with parsing page ' . $loc);
-            // In case of any issue in the page, we need to ignore it and proceed
-            return;
         }
-        Site::applyActiveSite($currentSite);
-
-        if ($response->getStatusCode() !== 200) {
-            return;
-        }
-
-        $content = $response->getContent();
-
-        $dom = new \DOMDocument();
-        $dom->loadHTML($content ?? ' ', LIBXML_NOERROR);
-
-        $settings = Settings::instance();
-
-        $imagesEnabledInSitemap = $settings->get('enable_images_sitemap') ?? false;
-        if ($imagesEnabledInSitemap) {
-            $images = $this->getImagesFromDOM($dom);
-            $sitemapItem->syncImages($images);
-        }
-
-        $videosEnabledInSitemap = $settings->get('enable_videos_sitemap') ?? false;
-        if ($videosEnabledInSitemap) {
-            $videos = $this->getVideosFromDOM($dom);
-            $sitemapItem->syncVideos($videos);
-        }
-
-        Request::swap($originalRequest);
     }
 
     /**

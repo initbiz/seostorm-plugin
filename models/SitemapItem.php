@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Initbiz\Seostorm\Models;
+namespace Initbiz\SeoStorm\Models;
 
 use Model;
 use System\Models\SiteDefinition;
@@ -62,7 +62,10 @@ class SitemapItem extends Model
     ];
 
     public $belongsTo = [
-        'site_definition' => SiteDefinition::class
+        'site_definition' => [
+            SiteDefinition::class,
+            'table' => 'system_site_definitions',
+        ],
     ];
 
     public function scopeWithSite(Builder $query, SiteDefinition $site): Builder
