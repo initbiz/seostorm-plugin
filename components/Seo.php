@@ -398,7 +398,8 @@ class Seo extends ComponentBase
         }
 
         if (isset($this->page->apiBag['staticPage'])) {
-            $url = url($this->seoAttributes['url']);
+            // Cms::url adds the active site's route prefix, url() doesn't
+            $url = Cms::url($this->seoAttributes['url']);
         }
 
         if (!empty($parsedTwig)) {

@@ -14,8 +14,11 @@ use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Components\Seo;
 use Initbiz\SeoStorm\Models\Settings;
 use RainLab\Translate\Classes\Translator;
+use RainLab\Pages\Classes\Page as StaticPage;
+use RainLab\Pages\Classes\Router as PagesRouter;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
+use RainLab\Pages\Classes\Controller as PagesController;
 use Initbiz\SeoStorm\Tests\Classes\FakeModelDetailsComponent;
 
 class SeoTest extends StormedTestCase
@@ -162,6 +165,56 @@ class SeoTest extends StormedTestCase
         $result = $controller->runPage($page);
 
         $this->assertStringContainsString(env('APP_URL') . '/custom/canonical', $result);
+    }
+
+    public function testCanonicalStaticPage()
+    {
+        $settings = Settings::instance();
+        $settings->enable_site_meta = true;
+        $settings->save();
+        Settings::clearInternalCache();
+
+        $theme = Theme::load('test');
+        StaticPage::clearCache($theme);
+        (new PagesRouter($theme))->clearCache();
+
+        $page = PagesController::instance()->initCmsPage('/test-static');
+        $controller = new Controller($theme);
+        $result = $controller->runPage($page);
+
+        $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/test-static">', $result);
+    }
+
+    public function testCanonicalStaticPageOnPrefixedSite()
+    {
+        $settings = Settings::instance();
+        $settings->enable_site_meta = true;
+        $settings->save();
+        Settings::clearInternalCache();
+
+        Site::resetCache();
+
+        $plSite = new SiteDefinition();
+        $plSite->is_prefixed = true;
+        $plSite->name = 'Polish';
+        $plSite->code = 'pl';
+        $plSite->route_prefix = '/pl';
+        $plSite->locale = 'pl';
+        $plSite->save();
+
+        Site::applyActiveSite($plSite);
+
+        Translator::forgetInstance();
+
+        $theme = Theme::load('test');
+        StaticPage::clearCache($theme);
+        (new PagesRouter($theme))->clearCache();
+
+        $page = PagesController::instance()->initCmsPage('/test-statyczna');
+        $controller = new Controller($theme);
+        $result = $controller->runPage($page);
+
+        $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/pl/test-statyczna">', $result);
     }
 
     // Open graph
