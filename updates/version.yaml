@@ -118,3 +118,5 @@
     - "Update documentation"
 5.5.2:
     - "Fix schema image from settings, restore the request after a media scan and update phpunit.xml to PHPUnit 12"
+5.5.3:
+    - "Fix canonical and og:url of static pages missing the site route prefix"
