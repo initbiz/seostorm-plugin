@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Components;
 
 use App;
+use Site;
 use Cms\Facades\Cms;
-use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
 use Media\Classes\MediaLibrary;
 use Initbiz\SeoStorm\Models\Settings;
+use Initbiz\SeoStorm\Models\SeoOptions;
+use Initbiz\SeoStorm\Classes\StormedManager;
 
 class Seo extends ComponentBase
 {
@@ -51,14 +55,66 @@ class Seo extends ComponentBase
 
     public function onRun()
     {
+        $this->seoAttributes = $this->getSeoAttributes();
+        $settings = $this->getSettings();
+
+        $this->page['seoStormSiteNameSeparator'] = $settings->site_name_separator;
+        $this->page['seoStormSiteName'] = $settings->site_name;
+
+        if ($settings->favicon_enabled) {
+            $this->page['favicon'] = $settings->getFaviconObject();
+        }
+    }
+
+    public function getSeoAttributes()
+    {
+        $seoAttributes = $this->page->settings;
+
         if (isset($this->page->apiBag['staticPage'])) {
-            $this->seoAttributes = $this->page['viewBag'] = array_merge(
+            $seoAttributes = $this->page['viewBag'] = array_merge(
                 $this->page->apiBag['staticPage']->viewBag,
                 $this->page->attributes
             );
+        } elseif (isset($this->page->apiBag['boxes-model-type'])) {
+            $seoOptions = SeoOptions::where('stormed_type', $this->page->apiBag['boxes-model-type'])
+                ->where('stormed_id', $this->page->apiBag['boxes-page-id'])
+                ->first();
+
+            if ($seoOptions) {
+                $seoAttributes = array_merge(
+                    $this->page->attributes,
+                    array_filter($seoOptions->options)
+                );
+            }
         } else {
-            $this->seoAttributes = $this->page->settings;
+            $seoAttributes = array_merge($seoAttributes, $this->getTranslatedSeoAttributes());
         }
+
+        return $seoAttributes;
+    }
+
+    protected function getTranslatedSeoAttributes(): array
+    {
+        $locale = App::getLocale();
+        $defaultLocale = Site::getPrimarySite()->hard_locale;
+
+        if (!$locale || $locale === $defaultLocale) {
+            return [];
+        }
+
+        $viewBag = $this->page->attributes['viewBag'] ?? [];
+        $translated = [];
+
+        foreach (StormedManager::instance()->getTranslatableSeoFieldsDefs() as $field => $fieldDef) {
+            $attribute = 'seoOptions' . studly_case($field);
+            $value = array_get($viewBag, 'locale' . ucfirst($attribute) . '.' . $locale);
+
+            if (!empty($value)) {
+                $translated[$attribute] = $value;
+            }
+        }
+
+        return $translated;
     }
 
     // Site meta getters
@@ -105,11 +161,17 @@ class Seo extends ComponentBase
     {
         $title = $this->getTitleRaw();
 
+        $ignorePositionFromSettings = $this->getSeoAttribute('ignoreGlobalTitlePosition') ?? false;
+
+        if ($ignorePositionFromSettings) {
+            return $title;
+        }
+
         $settings = $this->getSettings();
 
-        if ($settings->site_name_position == 'prefix') {
+        if ($settings->site_name_position === 'prefix') {
             $title = "{$settings->site_name} {$settings->site_name_separator} {$title}";
-        } elseif ($settings->site_name_position == 'suffix') {
+        } elseif ($settings->site_name_position === 'suffix') {
             $title = "{$title} {$settings->site_name_separator} {$settings->site_name}";
         }
 
@@ -271,7 +333,7 @@ class Seo extends ComponentBase
     /**
      * Returns the URL of the site image
      *
-     * @return string site image url
+     * @return string|null site image url
      */
     public function getSiteImageFromSettings()
     {
@@ -285,6 +347,8 @@ class Seo extends ComponentBase
         } elseif ($siteImageFrom === "url") {
             return $settings->site_image_url;
         }
+
+        return null;
     }
 
     // Global helpers
@@ -328,19 +392,20 @@ class Seo extends ComponentBase
     {
         $url = '';
         if (empty($parsedTwig)) {
-            $url = Page::url('');
+            $url = $this->controller->currentPageUrl();
         } else {
             $url = Cms::url($parsedTwig);
         }
 
         if (isset($this->page->apiBag['staticPage'])) {
-            $url = url($this->seoAttributes['url']);
+            // Cms::url adds the active site's route prefix, url() doesn't
+            $url = Cms::url($this->seoAttributes['url']);
         }
 
         if (!empty($parsedTwig)) {
             $url = url($parsedTwig);
         }
 
-        return $url;
+        return $url ?? url()->current();
     }
 }

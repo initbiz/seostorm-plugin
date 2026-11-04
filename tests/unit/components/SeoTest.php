@@ -1,22 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Tests\Unit\Components;
 
 use Site;
 use Cms\Classes\Page;
 use Cms\Classes\Theme;
-use Cms\Classes\Router;
 use Cms\Classes\Controller;
 use Cms\Components\ViewBag;
-use System\Classes\SiteManager;
 use Cms\Classes\ComponentManager;
 use System\Models\SiteDefinition;
 use Initbiz\SeoStorm\Components\Seo;
 use Initbiz\SeoStorm\Models\Settings;
-use RainLab\Translate\Classes\Locale;
 use RainLab\Translate\Classes\Translator;
+use RainLab\Pages\Classes\Page as StaticPage;
+use RainLab\Pages\Classes\Router as PagesRouter;
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;
 use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
+use RainLab\Pages\Classes\Controller as PagesController;
 use Initbiz\SeoStorm\Tests\Classes\FakeModelDetailsComponent;
 
 class SeoTest extends StormedTestCase
@@ -24,7 +26,14 @@ class SeoTest extends StormedTestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Site::resetCache();
+        Translator::forgetInstance();
+        // CMS route used by canonical URLs is registered only when handling a request
+        $this->app['router']->registerLateRoutes();
+
         $componentManager = ComponentManager::instance();
+        $componentManager->listComponents();
         $componentManager->registerComponent(Seo::class, 'seo');
         $componentManager->registerComponent(FakeModelDetailsComponent::class, 'fakeModelDetails');
         $componentManager->registerComponent(ViewBag::class, 'viewBag');
@@ -66,6 +75,8 @@ class SeoTest extends StormedTestCase
 
         $settings = Settings::instance();
         $settings->enable_site_meta = true;
+        $settings->save();
+        Settings::clearInternalCache();
 
         $component->setSettings($settings);
         $result = $controller->runPage($page);
@@ -113,6 +124,8 @@ class SeoTest extends StormedTestCase
 
         $settings = Settings::instance();
         $settings->enable_robots_meta = true;
+        $settings->save();
+        Settings::clearInternalCache();
 
         $component->setSettings($settings);
         $result = $controller->runPage($page);
@@ -144,6 +157,8 @@ class SeoTest extends StormedTestCase
 
         $settings = Settings::instance();
         $settings->enable_site_meta = true;
+        $settings->save();
+        Settings::clearInternalCache();
 
         $component->setSettings($settings);
         $result = $controller->runPage($page);
@@ -156,6 +171,56 @@ class SeoTest extends StormedTestCase
         $result = $controller->runPage($page);
 
         $this->assertStringContainsString(env('APP_URL') . '/custom/canonical', $result);
+    }
+
+    public function testCanonicalStaticPage()
+    {
+        $settings = Settings::instance();
+        $settings->enable_site_meta = true;
+        $settings->save();
+        Settings::clearInternalCache();
+
+        $theme = Theme::load('test');
+        StaticPage::clearCache($theme);
+        (new PagesRouter($theme))->clearCache();
+
+        $page = PagesController::instance()->initCmsPage('/test-static');
+        $controller = new Controller($theme);
+        $result = $controller->runPage($page);
+
+        $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/test-static">', $result);
+    }
+
+    public function testCanonicalStaticPageOnPrefixedSite()
+    {
+        $settings = Settings::instance();
+        $settings->enable_site_meta = true;
+        $settings->save();
+        Settings::clearInternalCache();
+
+        Site::resetCache();
+
+        $plSite = new SiteDefinition();
+        $plSite->is_prefixed = true;
+        $plSite->name = 'Polish';
+        $plSite->code = 'pl';
+        $plSite->route_prefix = '/pl';
+        $plSite->locale = 'pl';
+        $plSite->save();
+
+        Site::applyActiveSite($plSite);
+
+        Translator::forgetInstance();
+
+        $theme = Theme::load('test');
+        StaticPage::clearCache($theme);
+        (new PagesRouter($theme))->clearCache();
+
+        $page = PagesController::instance()->initCmsPage('/test-statyczna');
+        $controller = new Controller($theme);
+        $result = $controller->runPage($page);
+
+        $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/pl/test-statyczna">', $result);
     }
 
     // Open graph
@@ -186,6 +251,8 @@ class SeoTest extends StormedTestCase
 
         $settings = Settings::instance();
         $settings->enable_site_meta = true;
+        $settings->save();
+        Settings::clearInternalCache();
 
         $component->setSettings($settings);
         $result = $controller->runPage($page);
@@ -202,7 +269,7 @@ class SeoTest extends StormedTestCase
 
         $theme = Theme::load('test');
         $controller = new Controller($theme);
-        $page = Page::load($theme, 'with-fake-model.htm');
+        $page = Page::load($theme, 'with-fake-model');
         $result = $controller->runPage($page);
         $this->assertStringContainsString('<title>Test page title</title>', $result);
         $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurl">', $result);
@@ -218,7 +285,7 @@ class SeoTest extends StormedTestCase
         $translator = Translator::instance();
         $translator->setLocale('pl');
 
-        $page = Page::load($theme, 'with-fake-model.htm');
+        $page = Page::load($theme, 'with-fake-model');
         $page->rewriteTranslatablePageAttributes('pl');
         $result = $controller->runPage($page);
         $this->assertStringContainsString('<title>Test page title PL</title>', $result);
@@ -245,16 +312,17 @@ class SeoTest extends StormedTestCase
         $site->theme = 'test';
         $site->save();
 
-        Site::setActiveSite($site);
         Site::applyActiveSite($site);
 
         Translator::forgetInstance();
 
         $theme = Theme::load('test');
         $controller = new Controller($theme);
-        $page = Page::find('with-fake-model.htm');
+
+        $page = Page::load($theme, 'with-fake-model');
 
         $result = $controller->runPage($page);
+
         $this->assertStringContainsString('<title>Test page title PL</title>', $result);
         $this->assertStringContainsString('<link rel="canonical" href="' . url('/') . '/modelurlpl">', $result);
     }

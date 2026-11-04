@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Behaviors;
 
 use October\Rain\Database\Model;
@@ -12,11 +14,11 @@ class Purgeable extends \October\Rain\Extension\ExtensionBase
      * public $purgeable = [];
      */
 
-     /**
-      * Model
-      *
-      * @var Model
-      */
+    /**
+     * Model
+     *
+     * @var Model
+     */
     protected $model;
 
     public function __construct($parent)
@@ -40,7 +42,7 @@ class Purgeable extends \October\Rain\Extension\ExtensionBase
             $this->model->addDynamicProperty('purgeable', []);
         }
 
-        $this->model->purgeable = array_merge($this->model->purgeable?? [], ['purgeable']);
+        $this->model->purgeable = array_merge($this->model->purgeable ?? [], ['purgeable']);
         $dynPropNames = array_keys(array_diff_key($this->model->getDynamicProperties(), ['purgeable' => 0]));
         $this->model->purgeable = array_merge($this->model->purgeable, $dynPropNames);
 

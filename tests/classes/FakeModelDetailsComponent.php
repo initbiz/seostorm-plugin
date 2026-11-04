@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Tests\Classes;
 
 use Cms\Classes\ComponentBase;
-use Initbiz\SeoStorm\Tests\Classes\FakeStormedModel;
 
 class FakeModelDetailsComponent extends ComponentBase
 {

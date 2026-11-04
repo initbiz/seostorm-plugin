@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Updates;
 
-use Schema;
-use Illuminate\Support\Facades\DB;
 use Initbiz\SeoStorm\Models\SeoOptions;
 use October\Rain\Database\Updates\Migration;
 

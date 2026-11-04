@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Classes;
 
 use Cms\Classes\Page;
@@ -26,6 +28,10 @@ class Migrator
 
     public static function settings()
     {
+        if (!class_exists(\Arcane\Seo\Models\Settings::class)) {
+            return;
+        }
+
         $arcaneSettings = \Arcane\Seo\Models\Settings::instance();
         $stormSettings = Settings::instance();
         foreach ($arcaneSettings->attributes as $key => $value) {
@@ -75,7 +81,7 @@ class Migrator
 
     public static function rainlabBlog()
     {
-        if (!PluginManager::instance()->hasPlugin('RainLab.Blog')) {
+        if (!class_exists(\RainLab\Blog\Models\Post::class)) {
             return;
         }
 

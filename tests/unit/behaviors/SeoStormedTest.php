@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Tests\Behaviors;
 
 use Initbiz\SeoStorm\Tests\Classes\StormedTestCase;

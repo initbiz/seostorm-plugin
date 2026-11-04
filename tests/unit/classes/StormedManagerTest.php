@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Tests\Unit\Classes;
 
 use Initbiz\SeoStorm\Classes\StormedManager;
@@ -49,10 +51,10 @@ class StormedManagerTest extends StormedTestCase
             $this->assertArrayHasKey($attribute, $seoFields);
         }
 
-        $seoFields = $stormedManager->getSeoFieldsDefs(['changeFreq']);
-        $this->assertArrayNotHasKey('changeFreq', $seoFields);
+        $seoFields = $stormedManager->getSeoFieldsDefs(['changefreq']);
+        $this->assertArrayNotHasKey('changefreq', $seoFields);
         foreach ($seoFieldsAttributes as $attribute) {
-            if ($attribute !== 'changeFreq') {
+            if ($attribute !== 'changefreq') {
                 $this->assertArrayHasKey($attribute, $seoFields);
             }
         }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\EventHandlers;
 
 use Initbiz\SeoStorm\Models\SeoOptions;
@@ -27,7 +29,7 @@ class StormedHandler
                 continue;
             }
 
-            $stormedModelClass::extend(function ($model) use ($stormedManager) {
+            $stormedModelClass::extend(function ($model) {
                 $behaviorName = 'Initbiz.SeoStorm.Behaviors.SeoStormed';
                 if (!$model->isClassExtendedWith($behaviorName)) {
                     $model->extendClassWith($behaviorName);

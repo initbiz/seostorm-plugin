@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Models;
 
 use Model;
@@ -17,16 +19,6 @@ class SeoOptions extends Model
     public $table = 'initbiz_seostorm_seo_options';
 
     /**
-     * @var array Guarded fields
-     */
-    protected $guarded = ['*'];
-
-    /**
-     * @var array Fillable fields
-     */
-    protected $fillable = [];
-
-    /**
      * @var array Validation rules for attributes
      */
     public $rules = [];
@@ -34,7 +26,9 @@ class SeoOptions extends Model
     /**
      * @var array Attributes to be cast to JSON
      */
-    protected $jsonable = ['options'];
+    protected $jsonable = [
+        'options',
+    ];
 
     public $timestamps = false;
 

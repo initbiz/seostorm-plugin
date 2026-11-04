@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm;
 
 use Event;
 use Cms\Twig\Extension;
 use Cms\Classes\Controller;
 use System\Classes\PluginBase;
+use Initbiz\SeoStorm\Classes\Router;
 use Initbiz\SeoStorm\Models\Htaccess;
 use Initbiz\SeoStorm\Models\Settings;
+use Twig\Environment as TwigEnvironment;
 use Twig\Extension\StringLoaderExtension;
 
 /**
@@ -15,6 +19,15 @@ use Twig\Extension\StringLoaderExtension;
  */
 class Plugin extends PluginBase
 {
+    public function __construct($app)
+    {
+        parent::__construct($app);
+
+        if (app()->runningUnitTests()) {
+            $this->require = array_merge($this->require, ['RainLab.Translate']);
+        }
+    }
+
     public function registerComponents()
     {
         return [
@@ -25,14 +38,19 @@ class Plugin extends PluginBase
 
     public function register()
     {
+        $this->registerConsoleCommand('migrate:arcane', \Initbiz\SeoStorm\Console\MigrateArcane::class);
+        $this->registerConsoleCommand('sitemap:refresh', \Initbiz\SeoStorm\Console\SitemapRefresh::class);
     }
 
     public function boot()
     {
+        (new Router())->register();
+
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\BackendHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\StormedHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\RainlabPagesHandler::class);
         Event::subscribe(\Initbiz\SeoStorm\EventHandlers\RainlabTranslateHandler::class);
+        Event::subscribe(\Initbiz\SeoStorm\EventHandlers\SitemapHandler::class);
 
         // Load Twig extensions
 
@@ -63,7 +81,7 @@ class Plugin extends PluginBase
                 'category'    => 'initbiz.seostorm::lang.form.settings.category_label',
                 'class'       => Settings::class,
                 'order'       => 100,
-                'permissions' => ['initbiz.manage_seo'],
+                'permissions' => ['initbiz.seostorm.access_settings'],
             ],
             'htaccess' => [
                 'label'       => 'initbiz.seostorm::lang.form.htaccess.label',
@@ -72,16 +90,26 @@ class Plugin extends PluginBase
                 'category'    => 'initbiz.seostorm::lang.form.settings.category_label',
                 'class'       => Htaccess::class,
                 'order'       => 200,
-                'permissions' => ['initbiz.manage_seo'],
-            ]
+                'permissions' => ['initbiz.seostorm.htaccess'],
+            ],
         ];
     }
 
     public function registerMarkupTags()
     {
+        $templateFromStringDef = [
+            [$this, 'templateFromString'],
+            ['needs_environment' => true],
+        ];
+
+        if (version_compare(TwigEnvironment::VERSION, '3.29.0', '<')) {
+            $templateFromStringDef = [$this, 'templateFromStringLegacy'];
+        }
+
         return [
             'functions' => [
-                'template_from_string' => [$this, 'templateFromString'],
+                'template_from_string' => $templateFromStringDef,
+                'templateFromString' => $templateFromStringDef,
             ]
         ];
     }
@@ -89,13 +117,35 @@ class Plugin extends PluginBase
     /**
      * Extend twig to parse twig from twig with StringLoaderExtension
      *
+     * @param TwigEnvironment $env
      * @param string $template
      * @return string
      */
-    public function templateFromString($template)
+    public function templateFromString(TwigEnvironment $env, $template)
     {
-        $twig = app()->get('twig.environment');
-        return twig_template_from_string($twig, $template);
+        if (is_null($template)) {
+            $template = '';
+        }
+
+        return StringLoaderExtension::templateFromString($env, $template);
+    }
+
+    /**
+     * Extend twig to parse twig from twig with StringLoaderExtension - Legacy version
+     *
+     * @deprecated 5.4.3
+     *
+     * @param string $template
+     * @return string
+     */
+    public function templateFromStringLegacy($template)
+    {
+        if (is_null($template)) {
+            $template = '';
+        }
+
+        $env = app()->get('twig.environment');
+        return StringLoaderExtension::templateFromString($env, $template);
     }
 
     /**
@@ -105,8 +155,10 @@ class Plugin extends PluginBase
      */
     public function registerStormedModels()
     {
-        $modelDefs = [
-            'Rainlab\Blog\Models\Post' => [
+        $modelDefs = [];
+
+        if (class_exists(\RainLab\Blog\Models\Post::class)) {
+            $modelDefs[\RainLab\Blog\Models\Post::class] = [
                 'placement' => 'secondaryTabs',
                 'excludeFields' => [
                     'model_class',
@@ -118,10 +170,40 @@ class Plugin extends PluginBase
                     'priority',
                     'enabled_in_sitemap',
                 ],
-            ],
-        ];
+            ];
+        }
 
-        if (env('APP_ENV') === 'testing') {
+        if (class_exists(\RainLab\Blog\Models\Category::class)) {
+            $modelDefs[\RainLab\Blog\Models\Category::class] = [
+                'placement' => 'tabs',
+                'excludeFields' => [
+                    'model_class',
+                    'model_scope',
+                    'model_params',
+                    'lastmod',
+                    'use_updated_at',
+                    'changefreq',
+                    'priority',
+                    'enabled_in_sitemap',
+                ],
+            ];
+        }
+
+        if (class_exists(\OFFLINE\Boxes\Models\Page::class)) {
+            $modelDefs[\OFFLINE\Boxes\Models\Page::class] = [
+                'placement' => 'tabs',
+                'excludeFields' => [
+                    'model_class',
+                    'model_scope',
+                    'model_params',
+                    'lastmod',
+                    'use_updated_at',
+                    'enabled_in_sitemap',
+                ],
+            ];
+        }
+
+        if (\App::runningUnitTests()) {
             $modelDefs['\Initbiz\SeoStorm\Tests\Classes\FakeStormedModel'] = [
                 'placement' => 'tabs',
                 'excludeFields' => [
@@ -136,7 +218,7 @@ class Plugin extends PluginBase
     public function registerFormWidgets()
     {
         return [
-            '\Initbiz\SeoStorm\FormWidgets\Migrate' => 'seo_migrate'
+            \Initbiz\SeoStorm\FormWidgets\Migrate::class => 'seo_migrate'
         ];
     }
 }

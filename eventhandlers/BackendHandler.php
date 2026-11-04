@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\EventHandlers;
 
 use App;
-use Site;
 use Cms\Classes\Page;
 use System\Classes\PluginManager;
 use RainLab\Translate\Classes\Locale;

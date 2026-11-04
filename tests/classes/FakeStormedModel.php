@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Initbiz\SeoStorm\Tests\Classes;
 
 use Model;
-use Initbiz\SeoStorm\Tests\Classes\FakeStormedCategory;
 
 class FakeStormedModel extends Model
 {
