@@ -475,4 +475,73 @@ class PagesGeneratorTest extends StormedTestCase
 
         $this->assertEquals(0, SitemapItem::count());
     }
+
+    public function testStaticPageOnOneSite(): void
+    {
+        Queue::fake();
+
+        $site = SiteDefinition::first();
+        $plSite = new SiteDefinition();
+        $plSite->is_prefixed = true;
+        $plSite->name = 'Polish';
+        $plSite->code = 'pl';
+        $plSite->route_prefix = '/pl';
+        $plSite->locale = 'pl';
+        $plSite->save();
+
+        $settings = Settings::instance();
+        $settings->enable_sitemap = true;
+        $settings->sitemap_enabled_for_sites = ['primary', 'pl'];
+        $settings->save();
+
+        $theme = Theme::load('test');
+        StaticPage::clearCache($theme);
+
+        // Disabled in the base file, enabled in static-pages-pl
+        $staticPage = StaticPage::on('test')->find('test-static');
+        $staticPage->viewBag['enabled_in_sitemap'] = "0";
+
+        (new PagesGenerator($site))->refreshForStaticPage($staticPage);
+        (new PagesGenerator($plSite))->refreshForStaticPage($staticPage);
+
+        $this->assertEquals(0, SitemapItem::withSite($site)->count());
+
+        $plSitemapItem = SitemapItem::withSite($plSite)->first();
+        $url = str_replace(url('/'), 'http://initwebsite.devt', $plSitemapItem->loc);
+        $this->assertEquals('http://initwebsite.devt/pl/test-statyczna', $url);
+    }
+
+    public function testDisabledStaticPageRemoved(): void
+    {
+        Queue::fake();
+
+        $site = SiteDefinition::first();
+        $plSite = new SiteDefinition();
+        $plSite->is_prefixed = true;
+        $plSite->name = 'Polish';
+        $plSite->code = 'pl';
+        $plSite->route_prefix = '/pl';
+        $plSite->locale = 'pl';
+        $plSite->save();
+
+        $settings = Settings::instance();
+        $settings->enable_sitemap = true;
+        $settings->sitemap_enabled_for_sites = ['primary', 'pl'];
+        $settings->save();
+
+        $theme = Theme::load('test');
+        StaticPage::clearCache($theme);
+
+        // Left over from the time the page was enabled in the sitemap
+        $sitemapItem = new SitemapItem();
+        $sitemapItem->loc = url('/test-static-disable');
+        $sitemapItem->base_file_name = 'test-static-disabled.htm';
+        $sitemapItem->site_definition_id = $site->id;
+        $sitemapItem->save();
+
+        (new PagesGenerator($site))->generate(collect());
+
+        $sitemapItemsCount = SitemapItem::where('base_file_name', 'test-static-disabled.htm')->count();
+        $this->assertEquals(0, $sitemapItemsCount);
+    }
 }

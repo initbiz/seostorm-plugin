@@ -26,6 +26,12 @@ class SeoTest extends StormedTestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Site::resetCache();
+        Translator::forgetInstance();
+        // CMS route used by canonical URLs is registered only when handling a request
+        $this->app['router']->registerLateRoutes();
+
         $componentManager = ComponentManager::instance();
         $componentManager->listComponents();
         $componentManager->registerComponent(Seo::class, 'seo');

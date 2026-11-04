@@ -120,3 +120,5 @@
     - "Fix schema image from settings, restore the request after a media scan and update phpunit.xml to PHPUnit 12"
 5.5.3:
     - "Fix canonical and og:url of static pages missing the site route prefix"
+5.5.4:
+    - "Respect per-site 'enabled in sitemap' of static pages and remove sitemap items of disabled ones"
