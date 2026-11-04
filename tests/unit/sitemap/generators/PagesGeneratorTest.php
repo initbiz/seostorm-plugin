@@ -496,6 +496,8 @@ class PagesGeneratorTest extends StormedTestCase
 
         $theme = Theme::load('test');
         StaticPage::clearCache($theme);
+        // Translate reads the page's theme before Halcyon sets its datasource
+        StaticPage::getDatasourceResolver()->setDefaultDatasource('test');
 
         // Disabled in the base file, enabled in static-pages-pl
         $staticPage = StaticPage::on('test')->find('test-static');

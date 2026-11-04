@@ -122,3 +122,5 @@
     - "Fix canonical and og:url of static pages missing the site route prefix"
 5.5.4:
     - "Respect per-site 'enabled in sitemap' of static pages and remove sitemap items of disabled ones"
+5.5.5:
+    - "Make tests independent of the order they run in"
