@@ -13,6 +13,7 @@ use System\Traits\EventEmitter;
 use October\Rain\Database\Model;
 use System\Classes\PluginManager;
 use System\Models\SiteDefinition;
+use Cms\Classes\CmsObjectCollection;
 use October\Rain\Database\Collection;
 use Initbiz\SeoStorm\Models\SitemapItem;
 use Initbiz\SeoStorm\Models\SitemapMedia;
@@ -91,8 +92,12 @@ class PagesGenerator extends AbstractGenerator
 
         $pluginManager = PluginManager::instance();
         if ($pluginManager->hasPlugin('RainLab.Pages') && !$pluginManager->isDisabled('RainLab.Pages')) {
-            $staticPages = $this->getEnabledStaticPages();
-            foreach ($staticPages as $staticPage) {
+            foreach ($this->getStaticPages() as $staticPage) {
+                if (!$this->isStaticPageEnabledInSitemap($staticPage)) {
+                    $baseFileNamesToClear[] = $staticPage->fileName;
+                    continue;
+                }
+
                 $key = array_search($staticPage->fileName, $baseFileNamesToClear, true);
                 if ($key !== false) {
                     unset($baseFileNamesToClear[$key]);
@@ -433,6 +438,21 @@ class PagesGenerator extends AbstractGenerator
     // RainLab.Pages
 
     /**
+     * List all Static pages of the theme
+     *
+     * @param Theme|null $theme active theme by default
+     * @return CmsObjectCollection<StaticPage>
+     */
+    public function getStaticPages(?Theme $theme = null): CmsObjectCollection
+    {
+        if (empty($theme)) {
+            $theme = Theme::getActiveTheme();
+        }
+
+        return StaticPage::listInTheme($theme, true);
+    }
+
+    /**
      * List Static pages that are enabled in the Sitemap
      *
      * @param Theme|null $theme
@@ -440,29 +460,41 @@ class PagesGenerator extends AbstractGenerator
      */
     public function getEnabledStaticPages(?Theme $theme = null): array
     {
-        if (empty($theme)) {
-            $theme = Theme::getActiveTheme();
-        }
-
-        $staticPages = StaticPage::listInTheme($theme, true);
-
         $enabledPages = [];
 
-        foreach ($staticPages as $staticPage) {
-            $viewBag = $staticPage->viewBag;
-            if (PluginManager::instance()->hasPlugin('RainLab.Translate')) {
-                $translatableModel = MLStaticPage::findLocale($this->getSite()->locale, $staticPage);
-                if (!is_null($translatableModel)) {
-                    $viewBag = array_merge($viewBag, $translatableModel->viewBag);
-                }
-            }
-
-            if (isset($viewBag['enabled_in_sitemap']) && (string) $viewBag['enabled_in_sitemap'] === "1") {
+        foreach ($this->getStaticPages($theme) as $staticPage) {
+            if ($this->isStaticPageEnabledInSitemap($staticPage)) {
                 $enabledPages[] = $staticPage;
             }
         }
 
         return $enabledPages;
+    }
+
+    /**
+     * Checks if the static page has sitemap enabled on the site,
+     * the site's translation of the page overrides the base setting
+     *
+     * @param StaticPage $staticPage
+     * @return boolean
+     */
+    public function isStaticPageEnabledInSitemap(StaticPage $staticPage): bool
+    {
+        $hasTranslate = PluginManager::instance()->hasPlugin('RainLab.Translate');
+        $locale = $this->getSite()->locale;
+
+        $viewBag = $staticPage->viewBag;
+        // Without the locale MLStaticPage would load the base file again
+        if ($hasTranslate && !empty($locale)) {
+            $translatableModel = MLStaticPage::findLocale($locale, $staticPage);
+            if (!is_null($translatableModel)) {
+                $viewBag = array_merge($viewBag, $translatableModel->viewBag);
+            }
+        }
+
+        $enabled = $viewBag['enabled_in_sitemap'] ?? false;
+
+        return (bool) $enabled;
     }
 
     /**
@@ -482,7 +514,7 @@ class PagesGenerator extends AbstractGenerator
         $sitemapItem = SitemapItem::where('loc', $loc)->withSite($site)->first();
 
         //If staticPage is not enabled, do nothing
-        if (!(bool) $staticPage->enabled_in_sitemap) {
+        if (!$this->isStaticPageEnabledInSitemap($staticPage)) {
             return null;
         }
 
