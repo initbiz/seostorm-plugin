@@ -73,6 +73,11 @@ priority:
         field: enabled_in_sitemap
         condition: checked
 
+is_tailor_class:
+    label: Is tailor?
+    type: checkbox
+    tab: initbiz.seostorm::lang.form.general.tab_sitemap
+    description: If checked the sitemap generator will query the tailor model, add the model class for example Blog\Post below instead of the full model path.
 model_class:
     label: initbiz.seostorm::lang.form.general.model_class_label
     commentAbove: initbiz.seostorm::lang.form.general.model_class_comment
@@ -84,6 +89,7 @@ model_class:
         action: show
         field: enabled_in_sitemap
         condition: checked
+
 
 model_scope:
     label: initbiz.seostorm::lang.form.general.model_scope_label
